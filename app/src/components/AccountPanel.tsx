@@ -15,12 +15,15 @@ import { isSupabaseConfigured } from '../services/supabase'
 import {
   kontoLoeschen, ladeProfil, passwortAendern, passwortZuruecksetzen, signInWithEmail,
   signInWithPassword, signInWithProvider, signOut, signUpWithPassword, speichereAnzeigename,
-  verfuegbareAnbieter, type Profil,
+  verfuegbareAnbieter, type LinkErgebnis, type Profil,
 } from '../services/account'
 
 interface Props {
   session: Session | null
   onZuTouren: () => void
+  /** Ergebnis der Rückkehr von einem E-Mail-Link, falls es eines gab. */
+  linkErgebnis: LinkErgebnis | null
+  onLinkErgebnisGelesen: () => void
 }
 
 const ANBIETER_NAMEN: Record<string, string> = {
@@ -30,7 +33,7 @@ const ANBIETER_NAMEN: Record<string, string> = {
 
 const MIN_PASSWORT = 8
 
-export function AccountPanel({ session, onZuTouren }: Props) {
+export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnisGelesen }: Props) {
   const [anbieter, setAnbieter] = useState<string[]>([])
 
   useEffect(() => {
@@ -48,16 +51,33 @@ export function AccountPanel({ session, onZuTouren }: Props) {
     )
   }
 
+  const meldung = linkErgebnis && (
+    <div
+      className={`rounded-lg p-3 text-sm leading-relaxed ${
+        linkErgebnis.art === 'fehler'
+          ? 'bg-amber-500/10 text-amber-200'
+          : 'bg-emerald-500/10 text-emerald-200'
+      }`}
+      role="status"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <p>{linkErgebnis.meldung}</p>
+        <button onClick={onLinkErgebnisGelesen} aria-label="Hinweis schliessen"
+                className="-mr-1 -mt-1 shrink-0 rounded p-1 opacity-60 hover:opacity-100">✕</button>
+      </div>
+    </div>
+  )
+
   return session
-    ? <AngemeldeteAnsicht session={session} onZuTouren={onZuTouren} />
-    : <AnmeldeAnsicht anbieter={anbieter} />
+    ? <AngemeldeteAnsicht session={session} onZuTouren={onZuTouren} meldung={meldung} />
+    : <AnmeldeAnsicht anbieter={anbieter} meldung={meldung} />
 }
 
 /* ---------------------------------------------------------------- */
 /* Nicht angemeldet                                                   */
 /* ---------------------------------------------------------------- */
 
-function AnmeldeAnsicht({ anbieter }: { anbieter: string[] }) {
+function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: React.ReactNode }) {
   const [modus, setModus] = useState<'anmelden' | 'registrieren'>('anmelden')
   const [email, setEmail] = useState('')
   const [passwort, setPasswort] = useState('')
@@ -116,6 +136,7 @@ function AnmeldeAnsicht({ anbieter }: { anbieter: string[] }) {
 
   return (
     <Rahmen titel={modus === 'anmelden' ? 'Anmelden' : 'Konto anlegen'}>
+      {meldung}
       <div className="flex gap-1 rounded-lg bg-white/5 p-1">
         {([['anmelden', 'Anmelden'], ['registrieren', 'Registrieren']] as const).map(([key, label]) => (
           <button
@@ -208,7 +229,9 @@ function AnmeldeAnsicht({ anbieter }: { anbieter: string[] }) {
 /* Angemeldet                                                         */
 /* ---------------------------------------------------------------- */
 
-function AngemeldeteAnsicht({ session, onZuTouren }: { session: Session; onZuTouren: () => void }) {
+function AngemeldeteAnsicht({
+  session, onZuTouren, meldung,
+}: { session: Session; onZuTouren: () => void; meldung: React.ReactNode }) {
   const [profil, setProfil] = useState<Profil | null>(null)
   const [name, setName] = useState('')
   const [nameStand, setNameStand] = useState<'idle' | 'busy' | 'ok'>('idle')
@@ -249,6 +272,7 @@ function AngemeldeteAnsicht({ session, onZuTouren }: { session: Session; onZuTou
 
   return (
     <Rahmen titel="Konto">
+      {meldung}
       <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-white/5 p-4">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-slate-100">{session.user.email}</p>

@@ -25,7 +25,7 @@ import { AccountPanel } from './components/AccountPanel'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
-import { saveRoute, saveTrip, useSession } from './services/account'
+import { linkErgebnisAuslesen, saveRoute, saveTrip, useSession, type LinkErgebnis } from './services/account'
 
 const INITIAL_FILTERS: MapFilters = {
   activity: 'all',
@@ -40,6 +40,13 @@ type View = 'karte' | 'community' | 'touren' | 'konto'
 export default function App() {
   const [view, setView] = useState<View>('karte')
   const { session } = useSession()
+  // Rückkehr von einem Bestätigungs-, Anmelde- oder Passwortlink auswerten,
+  // bevor die Adresszeile aufgeräumt wird.
+  const [linkErgebnis, setLinkErgebnis] = useState<LinkErgebnis | null>(null)
+  useEffect(() => {
+    const ergebnis = linkErgebnisAuslesen()
+    if (ergebnis) { setLinkErgebnis(ergebnis); setView('konto') }
+  }, [])
   const [regionCode, setRegionCode] = useState(DEFAULT_REGION)
   const [basemap, setBasemap] = useState<BasemapKey>(DEFAULT_BASEMAP)
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
@@ -324,7 +331,12 @@ export default function App() {
 
       {view === 'konto' && (
         <main className="flex-1 overflow-y-auto">
-          <AccountPanel session={session} onZuTouren={() => setView('touren')} />
+          <AccountPanel
+            session={session}
+            onZuTouren={() => setView('touren')}
+            linkErgebnis={linkErgebnis}
+            onLinkErgebnisGelesen={() => setLinkErgebnis(null)}
+          />
         </main>
       )}
 

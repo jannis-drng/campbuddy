@@ -198,6 +198,25 @@ Die Anbieter-Knöpfe werden **zur Laufzeit beim Auth-Dienst erfragt** und nur an
 wenn der Anbieter im Projekt wirklich eingerichtet ist. Ein Knopf, der in eine Fehlerseite
 führt, wäre schlimmer als kein Knopf.
 
+#### Zuerst: Weiterleitungs-Adressen setzen
+
+**Ohne diesen Schritt landet jeder Bestätigungslink auf `http://localhost:3000` und
+schlägt fehl** — das ist die Standard-*Site URL* eines neuen Supabase-Projekts.
+
+Supabase → *Authentication* → *URL Configuration*:
+
+| Feld | Wert |
+|---|---|
+| Site URL | `https://jannis-drng.github.io/campbuddy/` |
+| Redirect URLs | `https://jannis-drng.github.io/campbuddy/**` und `http://localhost:5177/campbuddy/**` |
+
+Die App schickt bei jeder Anmeldung ihre eigene Adresse als Ziel mit. Supabase akzeptiert
+das aber nur, wenn die Adresse auf der Liste steht — sonst fällt es stillschweigend auf die
+Site URL zurück.
+
+E-Mail-Links gelten nur begrenzt und **nur einmal**. Ein zweiter Klick auf denselben Link
+ergibt `otp_expired`. Die App zeigt das jetzt als lesbaren Hinweis statt einer leeren Seite.
+
 #### Google-Login einrichten
 
 1. Google Cloud Console → *APIs & Services* → *Credentials* → *OAuth client ID*, Typ

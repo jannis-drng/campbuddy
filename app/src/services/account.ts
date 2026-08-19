@@ -371,3 +371,49 @@ export async function kontoLoeschen(): Promise<void> {
   }
   await sb.auth.signOut()
 }
+
+/* ---------------- Rückkehr von einem E-Mail-Link ---------------- */
+
+export interface LinkErgebnis {
+  art: 'fehler' | 'passwort-neu' | 'bestaetigt'
+  meldung: string
+}
+
+/**
+ * Wertet aus, was Supabase beim Zurückspringen von einem E-Mail-Link in die
+ * Adresszeile schreibt, und räumt sie danach auf.
+ *
+ * Ohne das bliebe ein abgelaufener Link vollkommen stumm: die Seite lädt
+ * normal, man ist nicht angemeldet, und im URL-Fragment steht unsichtbar der
+ * Grund.
+ */
+export function linkErgebnisAuslesen(): LinkErgebnis | null {
+  const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : ''
+  if (!hash) return null
+
+  const p = new URLSearchParams(hash)
+  const fehlerCode = p.get('error_code')
+  const fehler = p.get('error')
+  const typ = p.get('type')
+  if (!fehler && !typ) return null
+
+  const aufraeumen = () =>
+    window.history.replaceState(null, '', window.location.pathname + window.location.search)
+
+  if (fehler) {
+    aufraeumen()
+    const meldung =
+      fehlerCode === 'otp_expired'
+        ? 'Der Link ist abgelaufen oder wurde schon benutzt. E-Mail-Links gelten nur begrenzt und nur einmal — fordere unten einen neuen an.'
+        : fehlerCode === 'access_denied'
+          ? 'Die Anmeldung wurde abgebrochen oder abgelehnt.'
+          : (p.get('error_description') ?? 'Der Link konnte nicht eingelöst werden.').replace(/\+/g, ' ')
+    return { art: 'fehler', meldung }
+  }
+
+  aufraeumen()
+  if (typ === 'recovery') {
+    return { art: 'passwort-neu', meldung: 'Du bist angemeldet. Setze jetzt unten ein neues Passwort.' }
+  }
+  return { art: 'bestaetigt', meldung: 'E-Mail bestätigt. Du bist angemeldet.' }
+}
