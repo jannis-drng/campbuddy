@@ -10,6 +10,7 @@ import type {
   ActivityMode, LegalStatus, MapFilters, Permission, Point, RegionCode, ReviewStatus, Zone,
 } from './types'
 import { REGIONS } from './regions'
+import { getSupabase } from '../services/supabase'
 
 import osmZonesVS from './zones/CH-VS.osm.json'
 import legalVS from './zones/CH-VS.legal.json'
@@ -125,4 +126,61 @@ export function verificationStats(zones: Zone[]) {
     quelle: zones.filter((z) => z.review_status === 'quelle').length,
     vorOrt: zones.filter((z) => z.review_status === 'vor-ort').length,
   }
+}
+
+/* ---------------- Daten aus dem Backend ---------------- */
+
+/**
+ * Holt Zonen und Punkte aus Supabase, falls konfiguriert.
+ *
+ * Warum beides — gebündelt UND aus der Datenbank? Die gebündelten Dateien sind
+ * sofort da, kosten nichts und funktionieren ohne Netz (Voraussetzung für die
+ * Offline-Karte [SPÄTER]). Die Datenbank ist dafür aktuell: eine korrigierte
+ * Rechtseinstufung wirkt sofort, ohne die Seite neu zu bauen. Deshalb rendert
+ * die App zuerst die gebündelte Fassung und ersetzt sie, sobald die frische da
+ * ist. Schlägt das fehl, bleibt es bei der gebündelten — nie ein leerer Zustand.
+ */
+export async function fetchRemoteZones(region: RegionCode): Promise<Zone[] | null> {
+  const sb = getSupabase()
+  if (!sb) return null
+  const { data, error } = await sb.from('zones').select('*').eq('region', region)
+  if (error || !data || data.length === 0) return null
+
+  return data.map((row): Zone => ({
+    id: row.id,
+    region: row.region,
+    name: row.name,
+    status: row.status,
+    tent_allowed: row.tent_allowed,
+    vehicle_allowed: row.vehicle_allowed,
+    fire_allowed: row.fire_allowed,
+    conditions: row.conditions,
+    source: row.source,
+    source_url: row.source_url,
+    last_verified: row.last_verified,
+    review_status: row.review_status,
+    notes: row.notes,
+    geometry: row.geometry,
+  }))
+}
+
+export async function fetchRemotePoints(region: RegionCode): Promise<Point[] | null> {
+  const sb = getSupabase()
+  if (!sb) return null
+  const { data, error } = await sb.from('points').select('*').eq('region', region)
+  if (error || !data || data.length === 0) return null
+
+  return data.map((row): Point => ({
+    id: row.id,
+    region: row.region,
+    type: row.type,
+    name: row.name,
+    lat: row.lat,
+    lng: row.lng,
+    elevation: row.elevation,
+    info: row.info ?? {},
+    source: row.source,
+    source_url: row.source_url,
+    last_verified: row.last_verified,
+  }))
 }

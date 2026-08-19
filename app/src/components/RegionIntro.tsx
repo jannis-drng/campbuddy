@@ -7,7 +7,14 @@ import { useState } from 'react'
 import type { Region } from '../data/types'
 import { STATUS_LABEL } from './ui'
 
-export function RegionIntro({ region, stats }: { region: Region; stats: { total: number; entwurf: number } }) {
+export function RegionIntro({
+  region, stats, quelle,
+}: {
+  region: Region
+  stats: { total: number; entwurf: number }
+  /** Woher die angezeigten Zonen stammen — Transparenz über den Datenstand. */
+  quelle: 'gebündelt' | 'datenbank'
+}) {
   const [open, setOpen] = useState(true)
   if (!open) {
     return (
@@ -55,6 +62,7 @@ export function RegionIntro({ region, stats }: { region: Region; stats: { total:
       <p className="mt-3 rounded-lg bg-amber-500/10 p-2.5 text-[11px] leading-relaxed text-amber-200/90">
         Datenstand: {stats.total} Flächen erfasst, davon {stats.entwurf} noch nicht amtlich geprüft.
         Ungeprüfte Flächen haben einen gestrichelten Rand.
+        {quelle === 'datenbank' && ' Aktuelle Fassung aus der Datenbank.'}
       </p>
     </div>
   )

@@ -138,12 +138,33 @@ gespeichert werden könnte.
 
 ### Einrichten
 
-1. Im Supabase-Projekt unter *SQL Editor* die Datei
-   [`supabase/migrations/0001_init.sql`](./supabase/migrations/0001_init.sql) ausführen.
-   Sie legt `profiles`, `routes` und `trips` nach Abschnitt 8 an — inklusive Row Level
-   Security und Policies.
-2. `app/.env.example` nach `app/.env.local` kopieren und beide Werte eintragen.
-3. `npm run deploy --prefix app`.
+Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
+
+| Datei | Inhalt |
+|---|---|
+| [`0001_init.sql`](./supabase/migrations/0001_init.sql) | `profiles`, `routes`, `trips` (8.3, 8.4, 8.6) mit RLS |
+| [`0002_legal_data.sql`](./supabase/migrations/0002_legal_data.sql) | `zones`, `points`, `gear_items` (8.1, 8.2, 8.5), öffentlich lesbar |
+| [`0003_seed_zones.sql`](./supabase/migrations/0003_seed_zones.sql) | die 10 Wallis-Zonen |
+| [`0004_seed_points.sql`](./supabase/migrations/0004_seed_points.sql) | die 148 Punkte |
+
+Dann `app/.env.example` nach `app/.env.local` kopieren, beide Werte eintragen und
+`npm run deploy --prefix app`.
+
+Die Seed-Dateien sind mehrfach ausführbar (`on conflict do update`). Nach einem
+`npm run import:osm` lassen sie sich neu erzeugen.
+
+### Warum die Daten doppelt liegen
+
+Zonen und Punkte stecken sowohl gebündelt in der App als auch in der Datenbank —
+Absicht, kein Versehen:
+
+- Die **gebündelte** Fassung ist sofort da, kostet keinen Netzzugriff und funktioniert
+  offline. Das ist die Voraussetzung für die Offline-Karte [SPÄTER].
+- Die **Datenbank** ist dafür aktuell: eine korrigierte Rechtseinstufung wirkt sofort für
+  alle, ohne die Seite neu zu bauen. Genau das braucht die laufende Rechtspflege.
+
+Die App zeigt zuerst die gebündelte Fassung und ersetzt sie, sobald die Datenbank
+antwortet. Antwortet sie nicht, bleibt es bei der gebündelten — die Karte ist nie leer.
 
 ### Zu den Schlüsseln
 

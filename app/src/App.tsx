@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
-import { filterPoints, getPoints, getRegion, getZones, verificationStats } from './data/legalData'
-import type { MapFilters } from './data/types'
+import {
+  fetchRemotePoints, fetchRemoteZones, filterPoints, getPoints, getRegion, getZones, verificationStats,
+} from './data/legalData'
+import type { MapFilters, Point, Zone } from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
@@ -47,8 +49,26 @@ export default function App() {
   const [gpxTrack, setGpxTrack] = useState<Position[] | null>(null)
 
   const region = getRegion(regionCode)
-  const allZones = useMemo(() => getZones(regionCode), [regionCode])
-  const allPoints = useMemo(() => getPoints(regionCode), [regionCode])
+  // Gebündelte Fassung als Startanzeige …
+  const bundledZones = useMemo(() => getZones(regionCode), [regionCode])
+  const bundledPoints = useMemo(() => getPoints(regionCode), [regionCode])
+  // … die durch die Datenbankfassung ersetzt wird, sobald sie da ist.
+  const [remoteZones, setRemoteZones] = useState<Zone[] | null>(null)
+  const [remotePoints, setRemotePoints] = useState<Point[] | null>(null)
+
+  useEffect(() => {
+    let aktuell = true
+    setRemoteZones(null); setRemotePoints(null)
+    // Fehler werden bewusst verschluckt: die gebündelte Fassung ist bereits
+    // sichtbar, ein Backend-Ausfall darf die Karte nicht beeinträchtigen.
+    fetchRemoteZones(regionCode).then((z) => { if (aktuell && z) setRemoteZones(z) }).catch(() => {})
+    fetchRemotePoints(regionCode).then((p) => { if (aktuell && p) setRemotePoints(p) }).catch(() => {})
+    return () => { aktuell = false }
+  }, [regionCode])
+
+  const allZones = remoteZones ?? bundledZones
+  const allPoints = remotePoints ?? bundledPoints
+  const datenquelle = remoteZones ? 'datenbank' : 'gebündelt'
   // Zonen werden nie gefiltert — nur umgefärbt (siehe effectiveStatus).
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters])
   const stats = useMemo(() => verificationStats(allZones), [allZones])
@@ -208,7 +228,7 @@ export default function App() {
             />
           ) : (
             <>
-              <RegionIntro region={region} stats={stats} />
+              <RegionIntro region={region} stats={stats} quelle={datenquelle} />
               <button
                 onClick={() => setRouteOpen(true)}
                 className="absolute bottom-3 left-3 z-10 min-h-9 rounded-lg border border-white/10 bg-slate-900/90 px-3 py-2 text-sm text-slate-200 shadow-lg backdrop-blur hover:bg-slate-800"
