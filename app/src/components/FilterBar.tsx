@@ -26,6 +26,7 @@ const POINT_TOGGLES: { key: keyof MapFilters; label: string }[] = [
   { key: 'showHuts', label: 'Hütten' },
   { key: 'showCampsites', label: 'Campingplätze' },
   { key: 'showVehicleSpots', label: 'Stellplätze' },
+  { key: 'showPeaks', label: 'Gipfel' },
 ]
 
 export function FilterBar({ filters, onChange, counts }: Props) {

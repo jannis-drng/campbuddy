@@ -9,21 +9,26 @@ import { useEffect, useRef } from 'react'
 import {
   AttributionControl, GeolocateControl, GeoJSONSource, Map as MlMap, NavigationControl, ScaleControl,
 } from 'maplibre-gl'
+import type maplibregl from 'maplibre-gl'
 // maplibre-gl reicht die Expression-Typen nicht nach aussen durch; sie stammen
 // aus der Style-Spec, die MapLibre selbst verwendet.
 import type { ExpressionSpecification } from '@maplibre/maplibre-gl-style-spec'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { ActivityMode, Point, Region, Zone } from '../data/types'
+import type { ActivityMode, Peak, Point, Region, Zone } from '../data/types'
 import type { Position } from '../data/geo'
 import { effectiveStatus } from '../data/legalData'
-import { ATTRIBUTION, MAP_STYLE_URL, POINT_COLORS, STATUS_COLORS } from './mapConfig'
+import {
+  ATTRIBUTION, BASEMAPS, POINT_COLORS, STATUS_COLORS, TEXT_FONT, type BasemapKey,
+} from './mapConfig'
 
 interface Props {
   region: Region
   zones: Zone[]
   points: Point[]
+  peaks: Peak[]
   /** Steuert nur die Einfärbung — es werden nie Zonen ausgeblendet. */
   activity: ActivityMode
+  basemap: BasemapKey
   /**
    * Ob die Karte gerade sichtbar ist. Sie bleibt beim Ansichtswechsel bewusst
    * montiert: ein Neuaufbau würde Kartenposition und geladene Kacheln verwerfen.
@@ -42,7 +47,7 @@ interface Props {
 }
 
 export function MapView({
-  region, zones, points, activity, visible, route, waypoints, drawing,
+  region, zones, points, peaks, activity, basemap, visible, route, waypoints, drawing,
   onZoneClick, onPointClick, onAddWaypoint,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
@@ -53,15 +58,15 @@ export function MapView({
 
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
-  const latest = useRef({ zones, points, activity, drawing, onZoneClick, onPointClick, onAddWaypoint })
-  latest.current = { zones, points, activity, drawing, onZoneClick, onPointClick, onAddWaypoint }
+  const latest = useRef({ zones, points, peaks, activity, drawing, onZoneClick, onPointClick, onAddWaypoint })
+  latest.current = { zones, points, peaks, activity, drawing, onZoneClick, onPointClick, onAddWaypoint }
 
   useEffect(() => {
     if (!container.current || map.current) return
 
     const m = new MlMap({
       container: container.current,
-      style: MAP_STYLE_URL,
+      style: BASEMAPS[basemap].style,
       center: region.center,
       zoom: region.zoom,
       maxZoom: 17,
@@ -88,6 +93,7 @@ export function MapView({
       if (!m.style || m.getSource('zones')) return
       addLayers(m)
       updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
+      ;(m.getSource('peaks') as GeoJSONSource | undefined)?.setData(peaksToGeoJson(latest.current.peaks))
       ;(m.getSource('route') as GeoJSONSource | undefined)
         ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
       ready.current = true
@@ -149,6 +155,12 @@ export function MapView({
   useEffect(() => {
     const m = map.current
     if (!m || !ready.current) return
+    ;(m.getSource('peaks') as GeoJSONSource | undefined)?.setData(peaksToGeoJson(peaks))
+  }, [peaks])
+
+  useEffect(() => {
+    const m = map.current
+    if (!m || !ready.current) return
     ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route, waypoints))
   }, [route, waypoints])
 
@@ -156,6 +168,16 @@ export function MapView({
     const m = map.current
     if (m) m.getCanvas().style.cursor = drawing ? 'crosshair' : ''
   }, [drawing])
+
+  // Hintergrundkarte wechseln. setStyle verwirft alle Quellen und Layer —
+  // setupLayers hängt an 'style.load' und baut sie deshalb selbst wieder auf.
+  const ersterBasemap = useRef(basemap)
+  useEffect(() => {
+    const m = map.current
+    if (!m || basemap === ersterBasemap.current) return
+    ersterBasemap.current = basemap
+    m.setStyle(BASEMAPS[basemap].style)
+  }, [basemap])
 
   // Während des Ausblendens hat der Container die Grösse 0; ohne resize bliebe
   // der Canvas danach leer.
@@ -222,6 +244,7 @@ function addLayers(m: MlMap) {
   m.addSource('zones', { type: 'geojson', data: empty })
   m.addSource('points', { type: 'geojson', data: empty })
   m.addSource('route', { type: 'geojson', data: empty })
+  m.addSource('peaks', { type: 'geojson', data: empty })
 
   m.addLayer({
     id: 'zones-fill',
@@ -252,9 +275,39 @@ function addLayers(m: MlMap) {
     type: 'symbol',
     source: 'zones',
     minzoom: 8,
-    layout: { 'text-field': ['get', 'name'], 'text-size': 12 },
+    layout: { 'text-field': ['get', 'name'], 'text-size': 12, 'text-font': TEXT_FONT },
     paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 },
   })
+
+  // Gipfel in drei Stufen: hohe früh, niedrige erst beim Hineinzoomen. Alle
+  // 1291 gleichzeitig wären eine unlesbare Punktwolke.
+  const peakTiers: [string, number, maplibregl.FilterSpecification][] = [
+    ['peaks-hoch', 8, ['>=', ['get', 'elevation'], 3500]],
+    ['peaks-mittel', 11, ['all', ['>=', ['get', 'elevation'], 2500], ['<', ['get', 'elevation'], 3500]]],
+    ['peaks-niedrig', 13, ['<', ['get', 'elevation'], 2500]],
+  ]
+  for (const [id, minzoom, filter] of peakTiers) {
+    m.addLayer({
+      id,
+      type: 'symbol',
+      source: 'peaks',
+      minzoom,
+      filter,
+      layout: {
+        'text-field': ['concat', '▲ ', ['get', 'name'], '\n', ['to-string', ['get', 'elevation']], ' m'],
+        'text-size': 11,
+        'text-font': TEXT_FONT,
+        'text-anchor': 'top',
+        'text-offset': [0, 0.2],
+        'text-allow-overlap': false,
+      },
+      paint: {
+        'text-color': '#7c2d12',
+        'text-halo-color': '#ffffff',
+        'text-halo-width': 1.5,
+      },
+    })
+  }
 
   m.addLayer({
     id: 'points-circle',
@@ -303,9 +356,23 @@ function addLayers(m: MlMap) {
     type: 'symbol',
     source: 'points',
     minzoom: 10.5,
-    layout: { 'text-field': ['get', 'name'], 'text-size': 11, 'text-offset': [0, 1.1], 'text-anchor': 'top' },
+    layout: {
+      'text-field': ['get', 'name'], 'text-size': 11, 'text-font': TEXT_FONT,
+      'text-offset': [0, 1.1], 'text-anchor': 'top',
+    },
     paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 },
   })
+}
+
+function peaksToGeoJson(peaks: Peak[]): GeoJSON.FeatureCollection {
+  return {
+    type: 'FeatureCollection',
+    features: peaks.map((p) => ({
+      type: 'Feature',
+      properties: { name: p.name, elevation: p.elevation },
+      geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
+    })),
+  }
 }
 
 function updateData(m: MlMap, zones: Zone[], points: Point[], activity: ActivityMode) {

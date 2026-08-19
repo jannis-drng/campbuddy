@@ -3,30 +3,95 @@
  *
  * Alle externen Kartendienste stehen hier gebündelt. Wechselt der Anbieter,
  * ändert sich nur diese Datei — die Legalitäts-Daten bleiben unberührt.
- *
- * Bewusst gewählt: MapLibre GL + OpenFreeMap-Vektorkacheln (OpenStreetMap-Daten).
- * Kein API-Key, keine Lizenzgebühr, kein Nutzungslimit-Vertrag — siehe
- * Abschnitt 6 der Spezifikation.
  */
+import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
 
-export const MAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty'
+/**
+ * Beschriftungen brauchen eine Schriftquelle. Vektor-Styles bringen die mit,
+ * reine Rasterkarten nicht — ohne diesen Eintrag blieben Zonen- und
+ * Punktnamen auf der Outdoor-Karte unsichtbar.
+ */
+const GLYPHS = 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf'
+export const TEXT_FONT = ['Open Sans Regular']
 
-/** Fällt an, wenn der Kachel-Dienst nicht erreichbar ist: reine OSM-Rasterkarte. */
-export const FALLBACK_STYLE = {
-  version: 8 as const,
-  sources: {
-    osm: {
-      type: 'raster' as const,
-      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-      tileSize: 256,
-      attribution: '© OpenStreetMap-Mitwirkende',
+export type BasemapKey = 'outdoor' | 'landeskarte' | 'standard'
+
+export interface Basemap {
+  key: BasemapKey
+  label: string
+  hint: string
+  /** Auf diese Regionen beschränkt. undefined = überall verfügbar. */
+  regions?: string[]
+  style: StyleSpecification | string
+}
+
+/** Baut einen Style aus einer einzelnen Rasterquelle. */
+function rasterStyle(tiles: string[], attribution: string, maxzoom: number): StyleSpecification {
+  return {
+    version: 8,
+    glyphs: GLYPHS,
+    sources: {
+      base: { type: 'raster', tiles, tileSize: 256, maxzoom, attribution },
     },
+    layers: [
+      { id: 'hintergrund', type: 'background', paint: { 'background-color': '#f2efe9' } },
+      { id: 'base', type: 'raster', source: 'base' },
+    ],
+  }
+}
+
+/**
+ * Die wählbaren Hintergrundkarten.
+ *
+ * 'outdoor' ist der Standard: Höhenlinien, Wanderwege, Gipfel und Hütten sind
+ * für dieses Projekt wichtiger als Strassennamen. OpenTopoMap ist ein
+ * ehrenamtliches Projekt — bei stark steigender Nutzung gehört ein eigener
+ * Kachelserver her, nicht mehr Last auf deren Infrastruktur.
+ */
+export const BASEMAPS: Record<BasemapKey, Basemap> = {
+  outdoor: {
+    key: 'outdoor',
+    label: 'Outdoor',
+    hint: 'Höhenlinien, Wanderwege, Gipfel',
+    style: rasterStyle(
+      [
+        'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+        'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+        'https://c.tile.opentopomap.org/{z}/{x}/{y}.png',
+      ],
+      'Kartendaten © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM · ' +
+        'Darstellung © <a href="https://opentopomap.org/">OpenTopoMap</a> (CC-BY-SA)',
+      17,
+    ),
   },
-  layers: [{ id: 'osm', type: 'raster' as const, source: 'osm' }],
+  landeskarte: {
+    key: 'landeskarte',
+    label: 'Landeskarte',
+    hint: 'amtliche Schweizer Karte (swisstopo)',
+    regions: ['CH-VS'],
+    style: rasterStyle(
+      ['https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg'],
+      '© <a href="https://www.swisstopo.admin.ch/">swisstopo</a>',
+      18,
+    ),
+  },
+  standard: {
+    key: 'standard',
+    label: 'Standard',
+    hint: 'Strassenkarte',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+  },
+}
+
+export const DEFAULT_BASEMAP: BasemapKey = 'outdoor'
+
+/** Welche Hintergrundkarten stehen in dieser Region zur Wahl? */
+export function basemapsFor(region: string): Basemap[] {
+  return Object.values(BASEMAPS).filter((b) => !b.regions || b.regions.includes(region))
 }
 
 export const ATTRIBUTION =
-  '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende · Kacheln: <a href="https://openfreemap.org/">OpenFreeMap</a>'
+  '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende'
 
 /**
  * Farbcode der Legalitäts-Ebene. Grün/Gelb/Rot wie in der Spezifikation,

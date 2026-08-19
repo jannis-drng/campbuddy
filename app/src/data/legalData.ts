@@ -7,7 +7,7 @@
  * die UI bleibt unverändert, weil sie nur diese Signaturen kennt.
  */
 import type {
-  ActivityMode, LegalStatus, MapFilters, Permission, Point, RegionCode, ReviewStatus, Zone,
+  ActivityMode, LegalStatus, MapFilters, Peak, Permission, Point, RegionCode, ReviewStatus, Zone,
 } from './types'
 import { REGIONS } from './regions'
 import { getSupabase } from '../services/supabase'
@@ -15,6 +15,7 @@ import { getSupabase } from '../services/supabase'
 import osmZonesVS from './zones/CH-VS.osm.json'
 import legalVS from './zones/CH-VS.legal.json'
 import pointsVS from './points/CH-VS.json'
+import peaksVS from './peaks/CH-VS.json'
 
 interface LegalEntry {
   status: LegalStatus
@@ -43,6 +44,10 @@ const LEGAL_SOURCES: Record<RegionCode, { zones: Record<string, LegalEntry> }> =
 
 const POINT_SOURCES: Record<RegionCode, Point[]> = {
   'CH-VS': pointsVS as unknown as Point[],
+}
+
+const PEAK_SOURCES: Record<RegionCode, Peak[]> = {
+  'CH-VS': peaksVS as unknown as Peak[],
 }
 
 /**
@@ -78,6 +83,10 @@ export function getZones(region: RegionCode): Zone[] {
 
 export function getPoints(region: RegionCode): Point[] {
   return POINT_SOURCES[region] ?? []
+}
+
+export function getPeaks(region: RegionCode): Peak[] {
+  return PEAK_SOURCES[region] ?? []
 }
 
 export function getRegion(region: RegionCode) {

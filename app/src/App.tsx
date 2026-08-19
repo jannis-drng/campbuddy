@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import {
-  fetchRemotePoints, fetchRemoteZones, filterPoints, getPoints, getRegion, getZones, verificationStats,
+  fetchRemotePoints, fetchRemoteZones, filterPoints, getPeaks, getPoints, getRegion, getZones,
+  verificationStats,
 } from './data/legalData'
 import type { MapFilters, Point, Zone } from './data/types'
 import { MapView } from './map/MapView'
@@ -17,6 +18,8 @@ import type { Position } from './data/geo'
 import { parseGpx } from './services/gpx'
 import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/routing'
 import { AccountPanel } from './components/AccountPanel'
+import { BasemapSwitcher } from './components/BasemapSwitcher'
+import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
 import { saveRoute, saveTrip, useSession } from './services/account'
 
@@ -25,6 +28,7 @@ const INITIAL_FILTERS: MapFilters = {
   showHuts: true,
   showCampsites: true,
   showVehicleSpots: true,
+  showPeaks: true,
 }
 
 type View = 'karte' | 'tour' | 'konto'
@@ -33,6 +37,7 @@ export default function App() {
   const [view, setView] = useState<View>('karte')
   const { session } = useSession()
   const [regionCode, setRegionCode] = useState(DEFAULT_REGION)
+  const [basemap, setBasemap] = useState<BasemapKey>(DEFAULT_BASEMAP)
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
   const [selection, setSelection] = useState<Selection>(null)
 
@@ -52,6 +57,7 @@ export default function App() {
   // Gebündelte Fassung als Startanzeige …
   const bundledZones = useMemo(() => getZones(regionCode), [regionCode])
   const bundledPoints = useMemo(() => getPoints(regionCode), [regionCode])
+  const allPeaks = useMemo(() => getPeaks(regionCode), [regionCode])
   // … die durch die Datenbankfassung ersetzt wird, sobald sie da ist.
   const [remoteZones, setRemoteZones] = useState<Zone[] | null>(null)
   const [remotePoints, setRemotePoints] = useState<Point[] | null>(null)
@@ -192,7 +198,9 @@ export default function App() {
             region={region}
             zones={allZones}
             points={points}
+            peaks={filters.showPeaks ? allPeaks : []}
             activity={filters.activity}
+            basemap={basemap}
             visible={view === 'karte'}
             route={routeGeometry}
             waypoints={gpxTrack ? [] : waypoints}
@@ -237,6 +245,7 @@ export default function App() {
               </button>
             </>
           )}
+          <BasemapSwitcher region={regionCode} value={basemap} onChange={setBasemap} />
           <Legend activity={filters.activity} />
           <InfoPanel
             selection={selection}

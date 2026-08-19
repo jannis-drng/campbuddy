@@ -62,6 +62,17 @@ export interface Point {
   last_verified: string | null
 }
 
+/** Benannter Gipfel mit Höhe — Orientierung und später Etappenbenennung. */
+export interface Peak {
+  id: string
+  region: RegionCode
+  name: string
+  lat: number
+  lng: number
+  elevation: number
+  source_url: string
+}
+
 export type RegionCode = string
 
 export interface Region {
@@ -91,6 +102,7 @@ export interface MapFilters {
   showHuts: boolean
   showCampsites: boolean
   showVehicleSpots: boolean
+  showPeaks: boolean
 }
 
 /** Jahreszeit-Einstufung für die Ausrüstungswahl. */

@@ -34,6 +34,21 @@ Campingplätze in Routennähe liegen. Export als GPX.
 |---|---|---|
 | Zonen | 10 Schutzgebietsflächen | Geometrie aus OpenStreetMap, rechtliche Einstufung selbst gepflegt |
 | Punkte | 148 (79 Hütten, 48 Campingplätze, 21 Stellplätze) | OpenStreetMap |
+| Gipfel | 1291 benannte Gipfel mit Höhe | OpenStreetMap |
+
+## Hintergrundkarten
+
+Wählbar direkt auf der Karte. Voreinstellung ist **Outdoor**, weil Höhenlinien,
+Wanderwege und Gipfel für dieses Projekt wichtiger sind als Strassennamen.
+
+| Karte | Quelle | Hinweis |
+|---|---|---|
+| Outdoor | [OpenTopoMap](https://opentopomap.org/) | Höhenlinien, Wege, Gipfel, Hütten. Ehrenamtliches Projekt — bei stark steigender Nutzung gehört ein eigener Kachelserver her |
+| Landeskarte | [swisstopo](https://www.swisstopo.admin.ch/) | amtliche Schweizer Karte, nur für CH-Regionen |
+| Standard | [OpenFreeMap](https://openfreemap.org/) | Strassenkarte |
+
+Reine Rasterkarten bringen keine Schriftquelle mit. Ohne den `glyphs`-Eintrag in
+`mapConfig.ts` blieben alle Zonen-, Punkt- und Gipfelnamen unsichtbar.
 
 ## Architektur
 

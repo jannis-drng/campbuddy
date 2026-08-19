@@ -3,6 +3,7 @@
  *
  * Holt aus OpenStreetMap:
  *  - Punkte: Berghütten, Biwakhütten, Campingplätze  ->  src/data/points/<region>.json
+ *  - Gipfel: benannte Gipfel mit Höhenangabe            ->  src/data/peaks/<region>.json
  *  - Zonen:  Schutzgebiete (Rohgeometrie)            ->  src/data/zones/<region>.osm.json
  *
  * WICHTIG: Das liefert nur GEOMETRIE + Sachdaten aus OSM.
@@ -23,7 +24,26 @@ const ENDPOINT = 'https://overpass-api.de/api/interpreter'
 
 const round = (n) => Math.round(n * 1e5) / 1e5
 
-async function overpass(query) {
+/**
+ * Overpass ist ein Gemeinschaftsserver und antwortet unter Last mit einem
+ * Laufzeitfehler statt mit Daten. Deshalb mehrere Anläufe mit wachsender
+ * Pause, bevor der Import aufgibt.
+ */
+async function overpass(query, versuche = 4) {
+  for (let versuch = 1; ; versuch++) {
+    try {
+      return await overpassEinmal(query)
+    } catch (e) {
+      const letzterVersuch = versuch >= versuche
+      if (letzterVersuch) throw e
+      const pause = versuch * 20
+      console.log(`   Overpass-Fehler (Versuch ${versuch}/${versuche}), warte ${pause}s …`)
+      await new Promise((r) => setTimeout(r, pause * 1000))
+    }
+  }
+}
+
+async function overpassEinmal(query) {
   const res = await fetch(ENDPOINT, {
     method: 'POST',
     headers: {
@@ -33,8 +53,11 @@ async function overpass(query) {
     },
     body: 'data=' + encodeURIComponent(query),
   })
-  if (!res.ok) throw new Error(`Overpass ${res.status}: ${await res.text()}`)
-  return res.json()
+  const text = await res.text()
+  if (!res.ok) throw new Error(`Overpass ${res.status}`)
+  // Bei Überlast antwortet Overpass mit HTTP 200 und einer HTML-Fehlerseite.
+  if (text.trimStart().startsWith('<')) throw new Error('Overpass überlastet')
+  return JSON.parse(text)
 }
 
 /* ---------------- Punkte: Hütten & Campingplätze ---------------- */
@@ -94,6 +117,45 @@ async function importPoints() {
   console.log(`Punkte: ${points.length} -> ${out}`)
   const byType = points.reduce((m, p) => ({ ...m, [p.type]: (m[p.type] ?? 0) + 1 }), {})
   console.log('  ', byType)
+}
+
+/* ---------------- Gipfel ---------------- */
+
+async function importPeaks() {
+  // Nur benannte Gipfel mit Höhenangabe: ein namenloser Punkt ohne Höhe hilft
+  // bei der Orientierung nicht und bläht die Karte nur auf.
+  const q = `
+    [out:json][timeout:180];
+    area["ISO3166-2"="${REGION}"]->.a;
+    node["natural"="peak"]["name"]["ele"](area.a);
+    // 'out tags' liefert KEINE Koordinaten — für Knoten braucht es 'out body'.
+    out body;`
+  const data = await overpass(q)
+
+  const peaks = data.elements
+    .map((el) => {
+      const ele = Math.round(Number(el.tags.ele))
+      if (!Number.isFinite(ele)) return null
+      if (!Number.isFinite(el.lat) || !Number.isFinite(el.lon)) return null
+      return {
+        id: `osm-node-${el.id}`,
+        region: REGION,
+        name: el.tags.name,
+        lat: round(el.lat),
+        lng: round(el.lon),
+        elevation: ele,
+        source_url: `https://www.openstreetmap.org/node/${el.id}`,
+      }
+    })
+    .filter(Boolean)
+    // Die höchsten zuerst: so lassen sich später die prominenten zuerst zeigen.
+    .sort((a, b) => b.elevation - a.elevation)
+
+  const out = resolve(ROOT, 'src/data/peaks', `${REGION}.json`)
+  mkdirSync(dirname(out), { recursive: true })
+  writeFileSync(out, JSON.stringify(peaks, null, 2) + '\n')
+  console.log(`Gipfel: ${peaks.length} -> ${out}`)
+  if (peaks.length > 0) console.log(`   höchster: ${peaks[0].name} (${peaks[0].elevation} m)`)
 }
 
 /* ---------------- Zonen: Schutzgebiete (Geometrie) ---------------- */
@@ -189,5 +251,6 @@ const samePoint = (a, b) => a[0] === b[0] && a[1] === b[1]
 
 console.log(`Import für Region ${REGION} …`)
 await importPoints()
+await importPeaks()
 await importProtectedAreas()
 console.log('Fertig. Rechtliche Bewertung der Zonen: src/data/zones/*.legal.json pflegen.')
