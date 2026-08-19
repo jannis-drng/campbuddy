@@ -168,7 +168,7 @@ Code-Änderung.
 |---|---|
 | **Karte** | Legalitäts-Ebene und Routenplanung. Beim Zeichnen zeigt das Seitenpanel nur Länge und Gehzeit; „Tour auswerten" öffnet die vollständige Auswertung mit Legalität, Höhenprofil, Etappen, Ausrüstung, Verpflegung und Wetter |
 | **Community** | Routen, die andere veröffentlicht haben. Ansehen ohne Konto, Merken mit |
-| **Deine Touren** | Gespeicherte Routen und Touren, Favoriten, und der Generator für eine Tour ohne gezeichnete Route |
+| **Deine Touren** | Gespeicherte Routen, Touren und Favoriten |
 | **Konto** | Anmeldung per Magic Link |
 
 In der Auswertung sind **Dauer und Schlafhöhe aus der Route übernommen** — die Tage aus
@@ -234,6 +234,10 @@ Supabase vergibt zwei Sorten, und der Unterschied ist sicherheitsrelevant:
 `.env.local` ist über `*.local` von Git ausgeschlossen.
 
 ## Ausrüstungs-Generator
+
+Er lebt ausschliesslich in der Tour-Auswertung auf der Karte — dort liegen die Eckdaten,
+aus denen die Liste entsteht. Eine zweite, leere Planungsansicht ohne Route gibt es
+bewusst nicht.
 
 Die Empfehlungen beruhen auf offen dokumentierten Faustformeln, nicht auf Messwerten.
 Alle Annahmen stehen als Konstanten in `packlist.ts` und werden im UI ausgewiesen:

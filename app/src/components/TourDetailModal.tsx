@@ -231,7 +231,7 @@ export function TourDetailModal({
             <p className="mb-3 text-[11px] leading-relaxed text-slate-500">
               Dauer und Schlafhöhe sind aus deiner Route übernommen und lassen sich anpassen.
             </p>
-            <TripPlanner region={region} onSave={onSaveTrip} initial={vorbelegung} eingebettet />
+            <TripPlanner region={region} onSave={onSaveTrip} initial={vorbelegung} />
           </section>
 
           {/* ---- Route speichern ---- */}

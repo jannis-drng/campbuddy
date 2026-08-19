@@ -1,6 +1,8 @@
 /**
- * Tourplanung [BALD] — Abschnitte 4.3 und 4.5 der Spezifikation.
+ * Ausrüstungs- und Verpflegungsgenerator mit Wetter (Abschnitte 4.3 und 4.5).
  *
+ * Wird ausschliesslich in die Tour-Auswertung eingebettet — dort liegen die
+ * Eckdaten, aus denen die Liste entsteht.
  * Führt Tour-Eckdaten, Wettervorhersage und generierte Packliste zusammen.
  * Die Affiliate-Ebene ist eingebunden, aber weiterhin unangebunden: solange
  * keine Partner-ID konfiguriert ist, steht am Produkt "Kauf-Link bald verfügbar".
@@ -46,7 +48,7 @@ function seasonForDate(d: Date): Season {
 }
 
 export function TripPlanner({
-  region, onSave, initial, eingebettet = false,
+  region, onSave, initial,
 }: {
   region: Region
   /** null = kein Backend oder nicht angemeldet. */
@@ -57,8 +59,6 @@ export function TripPlanner({
    * bei Standardwerten zu beginnen.
    */
   initial?: Partial<TripParams>
-  /** In ein anderes Panel eingebettet — ohne eigene Überschrift und Aussenabstand. */
-  eingebettet?: boolean
 }) {
   const [trip, setTrip] = useState<TripParams>(() => ({ ...defaultTrip(), ...initial }))
 
@@ -143,16 +143,7 @@ export function TripPlanner({
     setTrip((t) => ({ ...t, [key]: value }))
 
   return (
-    <div className={eingebettet ? 'space-y-5' : 'mx-auto max-w-4xl space-y-6 px-4 py-5 pb-16'}>
-      {!eingebettet && (
-        <section>
-          <h2 className="text-lg font-semibold">Tour planen</h2>
-          <p className="mt-0.5 text-sm text-slate-400">
-            Aus deinen Eckdaten und der Vorhersage für {region.name} entsteht eine Packliste
-            und die Verpflegungsmenge.
-          </p>
-        </section>
-      )}
+    <div className="space-y-5">
 
       {/* ---- Eckdaten ---- */}
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">

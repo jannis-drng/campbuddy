@@ -309,11 +309,10 @@ export default function App() {
 
       <main className={view === 'touren' ? 'flex-1 overflow-y-auto' : 'hidden'}>
         <MyToursPanel
-          region={region}
           session={session}
-          onSaveTrip={handleSaveTrip}
           onLoadRoute={routeLaden}
           onAnmelden={() => setView('konto')}
+          onZurKarte={() => setView('karte')}
         />
       </main>
 

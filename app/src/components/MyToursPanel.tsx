@@ -1,34 +1,31 @@
 /**
- * "Deine Touren" — alles Gespeicherte an einer Stelle, plus die Planung
- * von Ausrüstung und Verpflegung (Abschnitte 4.3, 4.5, 4.6).
+ * "Deine Touren" — alles Gespeicherte an einer Stelle (Abschnitt 4.6).
  *
- * Wichtig: der Generator läuft ohne Konto. Nur das Speichern und die
- * Favoriten brauchen eine Anmeldung — die Spezifikation verlangt in
- * Abschnitt 3 ausdrücklich, dass die App ohne Login nutzbar bleibt.
+ * Geplant wird ausschliesslich auf der Karte: dort entsteht die Route, und die
+ * Auswertung dazu enthält Ausrüstung, Verpflegung und Wetter. Hier liegt nur,
+ * was daraus gespeichert wurde.
  */
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import { lineLength } from '../data/geo'
-import type { Region, TripParams } from '../data/types'
 import { isSupabaseConfigured, type StoredRoute, type StoredTrip } from '../services/supabase'
 import {
   deleteRoute, deleteTrip, listFavoriteRoutes, listRoutes, listTrips, removeFavorite, setRoutePublic,
 } from '../services/account'
-import { TripPlanner } from './TripPlanner'
 
 interface Props {
-  region: Region
   session: Session | null
-  onSaveTrip: ((name: string, trip: TripParams) => Promise<void>) | null
   onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
   onAnmelden: () => void
+  /** Führt zur Karte, wo Touren entstehen. */
+  onZurKarte: () => void
 }
 
 const formatKm = (m: number) =>
   m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
 
-export function MyToursPanel({ region, session, onSaveTrip, onLoadRoute, onAnmelden }: Props) {
+export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: Props) {
   const [routen, setRouten] = useState<StoredRoute[]>([])
   const [touren, setTouren] = useState<StoredTrip[]>([])
   const [favoriten, setFavoriten] = useState<StoredRoute[]>([])
@@ -56,7 +53,7 @@ export function MyToursPanel({ region, session, onSaveTrip, onLoadRoute, onAnmel
       <div>
         <h2 className="text-lg font-semibold">Deine Touren</h2>
         <p className="mt-0.5 text-sm text-slate-400">
-          Gespeicherte Routen und Touren — und die Planung von Ausrüstung und Verpflegung.
+          Gespeicherte Routen, Touren und Favoriten. Geplant wird auf der Karte.
         </p>
       </div>
 
@@ -65,14 +62,23 @@ export function MyToursPanel({ region, session, onSaveTrip, onLoadRoute, onAnmel
       {!session && isSupabaseConfigured && (
         <div className="rounded-lg bg-white/5 p-4">
           <p className="text-sm leading-relaxed text-slate-300">
-            Ohne Anmeldung kannst du hier planen, aber nichts speichern.
+            Zum Speichern von Routen und Touren ist eine Anmeldung nötig. Karte,
+            Routenplanung und Auswertung funktionieren ohne.
           </p>
-          <button
-            onClick={onAnmelden}
-            className="mt-2 min-h-9 rounded-lg bg-emerald-500/15 px-3 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
-          >
-            Anmelden
-          </button>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              onClick={onAnmelden}
+              className="min-h-9 rounded-lg bg-emerald-500/15 px-3 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+            >
+              Anmelden
+            </button>
+            <button
+              onClick={onZurKarte}
+              className="min-h-9 rounded-lg bg-white/5 px-3 text-sm text-slate-300 ring-1 ring-white/10 hover:bg-white/10"
+            >
+              Zur Karte
+            </button>
+          </div>
         </div>
       )}
 
@@ -173,9 +179,15 @@ export function MyToursPanel({ region, session, onSaveTrip, onLoadRoute, onAnmel
         </>
       )}
 
-      <div className="border-t border-white/10 pt-2">
-        <TripPlanner region={region} onSave={onSaveTrip} />
-      </div>
+      {session && (
+        <p className="border-t border-white/10 pt-5 text-xs leading-relaxed text-slate-500">
+          Neue Touren entstehen auf der Karte: Route zeichnen, „Tour auswerten" öffnen und
+          dort speichern. Die Auswertung enthält auch Ausrüstung, Verpflegung und Wetter.{' '}
+          <button onClick={onZurKarte} className="text-sky-400 underline underline-offset-2 hover:text-sky-300">
+            Zur Karte
+          </button>
+        </p>
+      )}
     </div>
   )
 }
