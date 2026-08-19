@@ -79,11 +79,15 @@ export interface Region {
   }
 }
 
+/**
+ * Wofür die Karte gerade eingefärbt wird.
+ * 'all' zeigt die Gesamteinstufung der Zone, sonst die Regel für genau diese Aktivität.
+ */
+export type ActivityMode = 'all' | 'tent' | 'vehicle' | 'fire'
+
 /** Filterzustand der Kartenansicht. */
 export interface MapFilters {
-  tent: boolean
-  vehicle: boolean
-  fire: boolean
+  activity: ActivityMode
   showHuts: boolean
   showCampsites: boolean
   showVehicleSpots: boolean

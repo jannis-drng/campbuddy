@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
-import { filterPoints, filterZones, getPoints, getRegion, getZones, verificationStats } from './data/legalData'
+import { filterPoints, getPoints, getRegion, getZones, verificationStats } from './data/legalData'
 import type { MapFilters } from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
@@ -10,9 +10,7 @@ import { Legend } from './components/Legend'
 import { RegionIntro } from './components/RegionIntro'
 
 const INITIAL_FILTERS: MapFilters = {
-  tent: false,
-  vehicle: false,
-  fire: false,
+  activity: 'all',
   showHuts: true,
   showCampsites: true,
   showVehicleSpots: true,
@@ -26,7 +24,7 @@ export default function App() {
   const region = getRegion(regionCode)
   const allZones = useMemo(() => getZones(regionCode), [regionCode])
   const allPoints = useMemo(() => getPoints(regionCode), [regionCode])
-  const zones = useMemo(() => filterZones(allZones, filters), [allZones, filters])
+  // Zonen werden nie gefiltert — nur umgefärbt (siehe effectiveStatus).
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters])
   const stats = useMemo(() => verificationStats(allZones), [allZones])
 
@@ -56,18 +54,19 @@ export default function App() {
       </header>
 
       <DisclaimerBar />
-      <FilterBar filters={filters} onChange={setFilters} counts={{ zones: zones.length, points: points.length }} />
+      <FilterBar filters={filters} onChange={setFilters} counts={{ zones: allZones.length, points: points.length }} />
 
       <main className="relative flex-1">
         <MapView
           region={region}
-          zones={zones}
+          zones={allZones}
           points={points}
+          activity={filters.activity}
           onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
           onPointClick={(point) => setSelection({ kind: 'point', point })}
         />
         <RegionIntro region={region} stats={stats} />
-        <Legend />
+        <Legend activity={filters.activity} />
         <InfoPanel selection={selection} onClose={() => setSelection(null)} />
       </main>
     </div>

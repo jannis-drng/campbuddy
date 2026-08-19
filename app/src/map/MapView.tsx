@@ -13,26 +13,29 @@ import {
 // aus der Style-Spec, die MapLibre selbst verwendet.
 import type { ExpressionSpecification } from '@maplibre/maplibre-gl-style-spec'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { Point, Region, Zone } from '../data/types'
+import type { ActivityMode, Point, Region, Zone } from '../data/types'
+import { effectiveStatus } from '../data/legalData'
 import { ATTRIBUTION, MAP_STYLE_URL, POINT_COLORS, STATUS_COLORS } from './mapConfig'
 
 interface Props {
   region: Region
   zones: Zone[]
   points: Point[]
+  /** Steuert nur die Einfärbung — es werden nie Zonen ausgeblendet. */
+  activity: ActivityMode
   onZoneClick: (zone: Zone) => void
   onPointClick: (point: Point) => void
 }
 
-export function MapView({ region, zones, points, onZoneClick, onPointClick }: Props) {
+export function MapView({ region, zones, points, activity, onZoneClick, onPointClick }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MlMap | null>(null)
   const ready = useRef(false)
 
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
-  const latest = useRef({ zones, points, onZoneClick, onPointClick })
-  latest.current = { zones, points, onZoneClick, onPointClick }
+  const latest = useRef({ zones, points, activity, onZoneClick, onPointClick })
+  latest.current = { zones, points, activity, onZoneClick, onPointClick }
 
   useEffect(() => {
     if (!container.current || map.current) return
@@ -59,7 +62,7 @@ export function MapView({ region, zones, points, onZoneClick, onPointClick }: Pr
     m.on('load', () => {
       ready.current = true
       addLayers(m)
-      updateData(m, latest.current.zones, latest.current.points)
+      updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
 
       // Punkte vor Zonen prüfen: der kleinere Treffer gewinnt.
       m.on('click', (e) => {
@@ -89,8 +92,8 @@ export function MapView({ region, zones, points, onZoneClick, onPointClick }: Pr
   // Filter-/Datenwechsel: nur die Quellen aktualisieren, die Karte bleibt stehen.
   useEffect(() => {
     const m = map.current
-    if (m && ready.current) updateData(m, zones, points)
-  }, [zones, points])
+    if (m && ready.current) updateData(m, zones, points, activity)
+  }, [zones, points, activity])
 
   // h-full/w-full statt absolute inset-0: MapLibre setzt auf dem Container selbst
   // `.maplibregl-map { position: relative }` und würde ein `absolute` überschreiben,
@@ -98,12 +101,18 @@ export function MapView({ region, zones, points, onZoneClick, onPointClick }: Pr
   return <div ref={container} className="h-full w-full" aria-label={`Legalitätskarte ${region.name}`} />
 }
 
-function zonesToGeoJson(zones: Zone[]): GeoJSON.FeatureCollection {
+function zonesToGeoJson(zones: Zone[], activity: ActivityMode): GeoJSON.FeatureCollection {
   return {
     type: 'FeatureCollection',
     features: zones.map((z) => ({
       type: 'Feature',
-      properties: { id: z.id, name: z.name, status: z.status, review_status: z.review_status },
+      properties: {
+        id: z.id,
+        name: z.name,
+        // Nicht z.status: bei gewählter Aktivität zählt deren eigene Regel.
+        status: effectiveStatus(z, activity),
+        review_status: z.review_status,
+      },
       geometry: z.geometry,
     })),
   }
@@ -196,7 +205,7 @@ function addLayers(m: MlMap) {
   })
 }
 
-function updateData(m: MlMap, zones: Zone[], points: Point[]) {
-  ;(m.getSource('zones') as GeoJSONSource | undefined)?.setData(zonesToGeoJson(zones))
+function updateData(m: MlMap, zones: Zone[], points: Point[], activity: ActivityMode) {
+  ;(m.getSource('zones') as GeoJSONSource | undefined)?.setData(zonesToGeoJson(zones, activity))
   ;(m.getSource('points') as GeoJSONSource | undefined)?.setData(pointsToGeoJson(points))
 }

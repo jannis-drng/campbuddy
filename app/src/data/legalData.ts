@@ -7,7 +7,7 @@
  * die UI bleibt unverändert, weil sie nur diese Signaturen kennt.
  */
 import type {
-  LegalStatus, MapFilters, Permission, Point, RegionCode, ReviewStatus, Zone,
+  ActivityMode, LegalStatus, MapFilters, Permission, Point, RegionCode, ReviewStatus, Zone,
 } from './types'
 import { REGIONS } from './regions'
 
@@ -83,19 +83,30 @@ export function getRegion(region: RegionCode) {
   return REGIONS[region]
 }
 
-/**
- * Filter der Kartenansicht. Die Aktivitäts-Filter sind ausschliessend gemeint:
- * "nur Zelt" blendet Zonen aus, in denen Zelten sicher verboten ist.
- */
-export function filterZones(zones: Zone[], f: MapFilters): Zone[] {
-  const active = [
-    f.tent ? 'tent_allowed' : null,
-    f.vehicle ? 'vehicle_allowed' : null,
-    f.fire ? 'fire_allowed' : null,
-  ].filter(Boolean) as (keyof Zone)[]
+const PERMISSION_TO_STATUS: Record<Permission, LegalStatus> = {
+  yes: 'allowed',
+  no: 'forbidden',
+  conditional: 'tolerated',
+  unknown: 'unknown',
+}
 
-  if (active.length === 0) return zones
-  return zones.filter((z) => active.some((k) => z[k] !== 'no'))
+const ACTIVITY_FIELD = {
+  tent: 'tent_allowed',
+  vehicle: 'vehicle_allowed',
+  fire: 'fire_allowed',
+} as const
+
+/**
+ * Welche Einstufung soll für die gewählte Aktivität angezeigt werden?
+ *
+ * Bewusst KEIN Ausblenden: ein Aktivitätsfilter färbt die Karte um, statt Zonen
+ * zu entfernen. Würde "nur Zelt" die Flächen mit Zeltverbot verstecken, sähe ein
+ * Verbotsgebiet aus wie unmarkiertes Gelände — und unmarkiert heisst in dieser
+ * Region "geduldet". Ein Filter darf ein Verbot niemals unsichtbar machen.
+ */
+export function effectiveStatus(zone: Zone, activity: ActivityMode): LegalStatus {
+  if (activity === 'all') return zone.status
+  return PERMISSION_TO_STATUS[zone[ACTIVITY_FIELD[activity]]]
 }
 
 export function filterPoints(points: Point[], f: MapFilters): Point[] {
