@@ -16,6 +16,8 @@ import { RoutePanel } from './components/RoutePanel'
 import { analyseRoute } from './data/routeAnalysis'
 import type { Position } from './data/geo'
 import { parseGpx } from './services/gpx'
+import { loadElevationProfile, type ElevationPoint } from './services/elevation'
+import { analyseProfil, planeEtappen } from './data/hiking'
 import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/routing'
 import { AccountPanel } from './components/AccountPanel'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
@@ -52,6 +54,9 @@ export default function App() {
   const [profile, setProfile] = useState<RoutingProfile>('foot')
   // … und eine importierte GPX-Spur, die unverändert übernommen wird.
   const [gpxTrack, setGpxTrack] = useState<Position[] | null>(null)
+  const [profil, setProfil] = useState<ElevationPoint[]>([])
+  const [hoehenBusy, setHoehenBusy] = useState(false)
+  const [hoehenFehler, setHoehenFehler] = useState<string | null>(null)
 
   const region = getRegion(regionCode)
   // Gebündelte Fassung als Startanzeige …
@@ -90,6 +95,29 @@ export default function App() {
     () => analyseRoute(routeGeometry, allZones, allPoints),
     [routeGeometry, allZones, allPoints],
   )
+
+  // Höhenprofil nachladen, sobald der Streckenverlauf steht. Entprellt, damit
+  // beim Setzen mehrerer Wegpunkte nicht jedes Zwischenergebnis abgefragt wird.
+  useEffect(() => {
+    if (routeGeometry.length < 2) { setProfil([]); setHoehenFehler(null); return }
+    const controller = new AbortController()
+    const timer = setTimeout(() => {
+      setHoehenBusy(true)
+      setHoehenFehler(null)
+      loadElevationProfile(routeGeometry, controller.signal)
+        .then(setProfil)
+        .catch((e: unknown) => {
+          if ((e as Error).name === 'AbortError') return
+          setHoehenFehler((e as Error).message)
+          setProfil([])
+        })
+        .finally(() => setHoehenBusy(false))
+    }, 600)
+    return () => { clearTimeout(timer); controller.abort() }
+  }, [routeGeometry])
+
+  const wanderStats = useMemo(() => analyseProfil(profil), [profil])
+  const etappen = useMemo(() => planeEtappen(profil, allPoints), [profil, allPoints])
 
   // Wegpunkte auf reale Wege rastern. Entprellt, weil die genutzte
   // OSRM-Instanz von der OSM-Community bereitgestellt wird.
@@ -221,6 +249,11 @@ export default function App() {
               waypointCount={gpxTrack ? 0 : waypoints.length}
               routed={routed}
               routingBusy={routingBusy}
+              profil={profil}
+              stats={wanderStats}
+              etappen={etappen}
+              hoehenBusy={hoehenBusy}
+              hoehenFehler={hoehenFehler}
               profile={profile}
               isImported={gpxTrack != null}
               analysis={analysis}

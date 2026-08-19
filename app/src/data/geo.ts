@@ -104,3 +104,41 @@ function distanceToSegment(p: Position, a: Position, b: Position): number {
   const nearest: Position = [a[0] + ((b[0] - a[0]) * t), a[1] + ((b[1] - a[1]) * t)]
   return distanceMeters(p, nearest)
 }
+
+/**
+ * Verteilt `count` Stützpunkte gleichmässig über die Streckenlänge.
+ *
+ * Für das Höhenprofil: die Rohgeometrie hat je nach Routing hunderte bis
+ * tausende Punkte, ungleich verteilt. Gleichmässige Abstände machen das
+ * Profil lesbar und halten die Zahl der Höhenabfragen klein.
+ */
+export function resampleByCount(line: Position[], count: number): { position: Position; distance_m: number }[] {
+  if (line.length === 0) return []
+  if (line.length === 1) return [{ position: line[0], distance_m: 0 }]
+
+  const gesamt = lineLength(line)
+  if (gesamt === 0) return [{ position: line[0], distance_m: 0 }]
+
+  // Kumulierte Distanz je Originalpunkt.
+  const kumuliert: number[] = [0]
+  for (let i = 1; i < line.length; i++) {
+    kumuliert.push(kumuliert[i - 1] + distanceMeters(line[i - 1], line[i]))
+  }
+
+  const out: { position: Position; distance_m: number }[] = []
+  let j = 1
+  for (let k = 0; k < count; k++) {
+    const ziel = (gesamt * k) / (count - 1)
+    while (j < kumuliert.length - 1 && kumuliert[j] < ziel) j++
+    const vor = kumuliert[j - 1]
+    const nach = kumuliert[j]
+    const t = nach === vor ? 0 : (ziel - vor) / (nach - vor)
+    const a = line[j - 1]
+    const b = line[j]
+    out.push({
+      position: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t],
+      distance_m: ziel,
+    })
+  }
+  return out
+}

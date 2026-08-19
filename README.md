@@ -124,7 +124,28 @@ darauf. Beides funktioniert ohne fremden Dienst:
   zwischen zwei Stützpunkten durchfällt, und weist Streckenanteile je Zone aus.
 
 - **Weg-Routing** rastet gezeichnete Wegpunkte auf reale Wege ein, mit Profil für
-  Fuss, Rad und Auto samt geschätzter Reisezeit.
+  Fuss, Rad und Auto.
+- **Höhenprofil** entlang der Route über die Elevation-API von Open-Meteo, daraus
+  Auf- und Abstieg, Gehzeit, Schwierigkeit und ein Etappenvorschlag.
+
+### Gehzeit und Schwierigkeit
+
+Die Zeit der Routing-Engine kennt keine Höhenmeter und ist im Gebirge deutlich zu
+optimistisch. Gerechnet wird deshalb nach der **Alpenvereinsformel** (DIN 33466):
+4 km/h eben, 300 hm/h aufwärts, 500 hm/h abwärts; die grössere der beiden Zeiten voll,
+die kleinere zur Hälfte. Pausen sind nicht enthalten.
+
+Höhenmodelle rauschen. Ohne Gegenmassnahme summierte sich jedes Rastergezappel zu
+erfundenen Höhenmetern — eine flache Talwanderung käme auf mehrere hundert. Das Profil
+wird deshalb geglättet, und Höhenänderungen zählen erst ab 8 Metern.
+
+Die Schwierigkeit bewertet **nur die Kondition** aus Länge und Aufstieg. Ob ein Weg
+ausgesetzt oder seilversichert ist, steht nicht in den Daten; eine SAC-Bergwanderskala
+daraus abzuleiten wäre geraten.
+
+Etappen werden nach Gehzeit geteilt, nicht nach Kilometern — 12 km im Flachen und 12 km
+mit 1200 Höhenmetern sind nicht derselbe Tag. Zu jedem Etappenende sucht die App die
+nächste erfasste Übernachtungsmöglichkeit.
 
 Das Routing läuft über die öffentliche OSRM-Instanz der FOSSGIS e.V. — dieselbe, die
 openstreetmap.org verwendet. **Kein API-Schlüssel, keine Registrierung, 0 €.**

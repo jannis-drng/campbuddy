@@ -9,6 +9,9 @@ import type { Position } from '../data/geo'
 import type { Region } from '../data/types'
 import { NEARBY_RADIUS_M, summarise, type RouteAnalysis } from '../data/routeAnalysis'
 import { PROFILE_LABEL, SNAP_WARN_M, type RoutedPath, type RoutingProfile } from '../map/routing'
+import type { ElevationPoint } from '../services/elevation'
+import { formatDauer, STUNDEN_PRO_TAG, type Etappe, type HikingStats } from '../data/hiking'
+import { ElevationProfile } from './ElevationProfile'
 import { toGpx } from '../services/gpx'
 import { STATUS_CLASS, STATUS_LABEL } from './ui'
 
@@ -19,6 +22,11 @@ interface Props {
   waypointCount: number
   routed: RoutedPath | null
   routingBusy: boolean
+  profil: ElevationPoint[]
+  stats: HikingStats | null
+  etappen: Etappe[]
+  hoehenBusy: boolean
+  hoehenFehler: string | null
   profile: RoutingProfile
   isImported: boolean
   analysis: RouteAnalysis
@@ -46,6 +54,7 @@ const formatDuration = (seconds: number): string => {
 
 export function RoutePanel({
   onSave, route, waypointCount, routed, routingBusy, profile, isImported,
+  profil, stats, etappen, hoehenBusy, hoehenFehler,
   analysis, region, drawing, error,
   onProfileChange, onToggleDrawing, onUndo, onClear, onImportGpx, onClose,
 }: Props) {
@@ -196,6 +205,79 @@ export function RoutePanel({
             </section>
 
             <section>
+              <h3 className="mb-1.5 text-sm font-semibold text-slate-200">Profil &amp; Aufwand</h3>
+
+              {hoehenBusy && <p className="text-xs text-slate-400">Höhendaten werden geladen …</p>}
+              {hoehenFehler && (
+                <p className="rounded-lg bg-amber-500/10 p-2.5 text-xs text-amber-200/90">
+                  Höhendaten nicht verfügbar ({hoehenFehler}). Gehzeit und Schwierigkeit
+                  lassen sich ohne sie nicht bestimmen.
+                </p>
+              )}
+
+              {profil.length > 1 && (
+                <ElevationProfile profil={profil} etappenGrenzen={etappen.slice(0, -1).map((e) => e.bis_m)} />
+              )}
+
+              {stats && (
+                <>
+                  <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 text-sm">
+                    <Kennzahl label="Aufstieg" wert={`${stats.ascent_m} hm`} />
+                    <Kennzahl label="Abstieg" wert={`${stats.descent_m} hm`} />
+                    <Kennzahl label="Höchster Punkt" wert={`${stats.max_ele} m`} />
+                    <Kennzahl label="Gehzeit" wert={formatDauer(stats.duration_s)} />
+                  </div>
+
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${
+                      { leicht: 'bg-green-500/15 text-green-300 ring-green-500/30',
+                        mittel: 'bg-yellow-500/15 text-yellow-300 ring-yellow-500/30',
+                        schwer: 'bg-orange-500/15 text-orange-300 ring-orange-500/30',
+                        'sehr schwer': 'bg-red-500/15 text-red-300 ring-red-500/30' }[stats.schwierigkeit]
+                    }`}>
+                      {stats.schwierigkeit}
+                    </span>
+                    <span className="text-[11px] text-slate-500">Kondition</span>
+                  </div>
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
+                    {stats.begruendung} Gehzeit nach der Alpenvereinsformel
+                    (4 km/h eben, 300 hm/h aufwärts, 500 hm/h abwärts), ohne längere Pausen.
+                  </p>
+                </>
+              )}
+            </section>
+
+            {etappen.length > 0 && (
+              <section>
+                <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
+                  Etappenvorschlag ({etappen.length} Tage)
+                </h3>
+                <ul className="space-y-1.5">
+                  {etappen.map((e) => (
+                    <li key={e.nummer} className="rounded-lg bg-white/5 p-2.5">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="text-sm font-medium text-slate-100">Tag {e.nummer}</span>
+                        <span className="text-[11px] text-slate-500">
+                          {formatKm(e.distance_m)} · {e.ascent_m} hm · {formatDauer(e.duration_s)}
+                        </span>
+                      </div>
+                      <p className="mt-0.5 text-xs text-slate-400">
+                        {e.schlafplatz
+                          ? `Übernachtung: ${e.schlafplatz.point.name} (${formatKm(e.schlafplatz.distance)} vom Etappenende)`
+                          : 'Keine erfasste Übernachtung in der Nähe des Etappenendes — hier zählt die Rechtslage der Zone.'}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
+                  Aufgeteilt nach Gehzeit bei {STUNDEN_PRO_TAG} Stunden pro Tag, nicht nach
+                  Kilometern — 12 km im Flachen und 12 km mit 1200 Höhenmetern sind nicht
+                  derselbe Tag.
+                </p>
+              </section>
+            )}
+
+            <section>
               <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
                 Durchquerte Zonen{analysis.crossed.length > 0 && ` (${analysis.crossed.length})`}
               </h3>
@@ -288,5 +370,14 @@ export function RoutePanel({
         )}
       </div>
     </aside>
+  )
+}
+
+function Kennzahl({ label, wert }: { label: string; wert: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-2 border-b border-white/5 pb-1">
+      <span className="text-xs text-slate-400">{label}</span>
+      <span className="font-medium text-slate-100">{wert}</span>
+    </div>
   )
 }
