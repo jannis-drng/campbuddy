@@ -11,7 +11,8 @@ import type { Position } from '../data/geo'
 import { lineLength } from '../data/geo'
 import { isSupabaseConfigured, type StoredRoute, type StoredTrip } from '../services/supabase'
 import {
-  deleteRoute, deleteTrip, listFavoriteRoutes, listRoutes, listTrips, removeFavorite, setRoutePublic,
+  deleteRoute, deleteTrip, ladeProfil, listFavoriteRoutes, listRoutes, listTrips, removeFavorite,
+  setRoutePublic,
 } from '../services/account'
 
 interface Props {
@@ -31,6 +32,12 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
   const [favoriten, setFavoriten] = useState<StoredRoute[]>([])
   const [fehler, setFehler] = useState<string | null>(null)
   const [stand, setStand] = useState(0)
+  const [anzeigename, setAnzeigename] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!session) { setAnzeigename(null); return }
+    ladeProfil().then((p) => setAnzeigename(p?.anzeigename ?? null)).catch(() => {})
+  }, [session])
 
   useEffect(() => {
     if (!session) { setRouten([]); setTouren([]); setFavoriten([]); return }
@@ -41,7 +48,9 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
 
   const veroeffentlichen = async (r: StoredRoute) => {
     try {
-      await setRoutePublic(r.id, !r.is_public)
+      // Beim Veröffentlichen den Anzeigenamen aus dem Profil mitgeben, damit
+      // die Route nicht anonym in der Community steht.
+      await setRoutePublic(r.id, !r.is_public, r.is_public ? undefined : anzeigename ?? undefined)
       setRouten((liste) => liste.map((x) => (x.id === r.id ? { ...x, is_public: !x.is_public } : x)))
     } catch (e) {
       setFehler((e as Error).message)
@@ -126,6 +135,13 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
               </li>
             ))}
           </Abschnitt>
+
+          {routen.some((r) => r.is_public) && !anzeigename && (
+            <p className="rounded-lg bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-200/90">
+              Du hast Routen veröffentlicht, aber keinen Anzeigenamen gesetzt — sie erscheinen
+              ohne Urheberangabe. Im Kontobereich lässt sich einer eintragen.
+            </p>
+          )}
 
           <Abschnitt titel="Favoriten aus der Community" anzahl={favoriten.length}
                      leer="Noch keine. Im Community-Bereich lassen sich Routen mit ☆ merken.">

@@ -1,9 +1,9 @@
 /**
- * Konto und gespeicherte Inhalte [BALD] — Abschnitte 4.6, 8.4, 8.6.
+ * Konto und gespeicherte Inhalte — Abschnitte 4.6, 8.3, 8.4, 8.6.
  *
- * Anmeldung per Magic Link: es werden keine Passwörter erfasst, gespeichert
- * oder übertragen. Das ist für ein Solo-Projekt die sicherste Variante —
- * es gibt schlicht kein Passwort, das man falsch behandeln könnte.
+ * Drei Wege hinein: Passwort, Magic Link und OAuth. Passwörter werden nie
+ * gespeichert oder geloggt — sie gehen direkt an Supabase, das sie gehasht
+ * ablegt. Die App selbst sieht sie nur im Formularfeld.
  *
  * Alle Funktionen sind no-ops, solange kein Backend konfiguriert ist. Die
  * Karte muss ohne Konto vollständig funktionieren (Abschnitt 3).
@@ -33,7 +33,101 @@ export function useSession() {
   return { session, ready }
 }
 
-/** Schickt den Anmeldelink. Kein Passwort, kein Konto-Anlegen-Formular. */
+/** Wohin der Bestätigungs- bzw. Anmeldelink zurückführt. */
+function rueckkehrAdresse(): string {
+  return window.location.href.split('?')[0].split('#')[0]
+}
+
+/**
+ * Registrierung mit Passwort. Supabase verlangt eine Mailbestätigung, bevor
+ * die Sitzung gültig wird — deshalb kommt hier meist noch keine Session zurück.
+ */
+export async function signUpWithPassword(
+  email: string,
+  password: string,
+): Promise<{ bestaetigungNoetig: boolean }> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: rueckkehrAdresse() },
+  })
+  if (error) throw new Error(uebersetzeFehler(error.message))
+  return { bestaetigungNoetig: data.session == null }
+}
+
+export async function signInWithPassword(email: string, password: string): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { error } = await sb.auth.signInWithPassword({ email, password })
+  if (error) throw new Error(uebersetzeFehler(error.message))
+}
+
+/** Anmeldung über einen externen Anbieter (Google, Apple, …). */
+export async function signInWithProvider(provider: string): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: provider as Parameters<typeof sb.auth.signInWithOAuth>[0]['provider'],
+    options: { redirectTo: rueckkehrAdresse() },
+  })
+  if (error) throw new Error(uebersetzeFehler(error.message))
+}
+
+/**
+ * Welche externen Anbieter sind im Projekt tatsächlich eingerichtet?
+ *
+ * Wird direkt beim Auth-Dienst erfragt, statt eine Liste im Code zu pflegen:
+ * ein Knopf für einen nicht konfigurierten Anbieter führt sonst in eine
+ * Fehlerseite.
+ */
+export async function verfuegbareAnbieter(): Promise<string[]> {
+  const sb = getSupabase()
+  if (!sb) return []
+  try {
+    const url = import.meta.env.VITE_SUPABASE_URL!.replace(/\/$/, '')
+    const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
+    const res = await fetch(`${url}/auth/v1/settings`, { headers: { apikey: key } })
+    if (!res.ok) return []
+    const json = await res.json()
+    return Object.entries(json.external ?? {})
+      .filter(([name, aktiv]) => aktiv === true && !['email', 'phone', 'anonymous_users'].includes(name))
+      .map(([name]) => name)
+  } catch {
+    return []
+  }
+}
+
+/** Passwort vergessen: Link zum Neusetzen anfordern. */
+export async function passwortZuruecksetzen(email: string): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: rueckkehrAdresse() })
+  if (error) throw new Error(uebersetzeFehler(error.message))
+}
+
+/** Passwort ändern — setzt eine bestehende Anmeldung voraus. */
+export async function passwortAendern(neu: string): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { error } = await sb.auth.updateUser({ password: neu })
+  if (error) throw new Error(uebersetzeFehler(error.message))
+}
+
+/** Supabase antwortet auf Englisch; die häufigen Fälle übersetzt. */
+function uebersetzeFehler(nachricht: string): string {
+  const m = nachricht.toLowerCase()
+  if (m.includes('invalid login credentials')) return 'E-Mail oder Passwort stimmt nicht.'
+  if (m.includes('email not confirmed')) return 'Bitte bestätige zuerst den Link in deiner E-Mail.'
+  if (m.includes('user already registered')) return 'Für diese Adresse gibt es schon ein Konto. Melde dich an oder setze das Passwort zurück.'
+  if (m.includes('password should be at least')) return 'Das Passwort ist zu kurz.'
+  if (m.includes('provider is not enabled')) return 'Dieser Anmeldeweg ist im Projekt noch nicht eingerichtet.'
+  if (m.includes('rate limit') || m.includes('too many')) return 'Zu viele Versuche. Warte einen Moment.'
+  return nachricht
+}
+
+/** Schickt den Anmeldelink — der passwortlose Weg. */
 export async function signInWithEmail(email: string): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
@@ -41,7 +135,7 @@ export async function signInWithEmail(email: string): Promise<void> {
     email,
     options: { emailRedirectTo: window.location.href.split('?')[0] },
   })
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(uebersetzeFehler(error.message))
 }
 
 export async function signOut(): Promise<void> {
@@ -218,4 +312,62 @@ export async function removeFavorite(routeId: string): Promise<void> {
   if (!sb) return
   const { error } = await sb.from('favorites').delete().eq('route_id', routeId)
   if (error) throw new Error(error.message)
+}
+
+/* ---------------- Profil und Abo ---------------- */
+
+export interface Profil {
+  id: string
+  anzeigename: string | null
+  subscription_status: 'free' | 'paid'
+  abo_bis: string | null
+}
+
+export async function ladeProfil(): Promise<Profil | null> {
+  const sb = getSupabase()
+  if (!sb) return null
+  const { data: userData } = await sb.auth.getUser()
+  const id = userData.user?.id
+  if (!id) return null
+
+  const { data, error } = await sb
+    .from('profiles')
+    .select('id, anzeigename, subscription_status, abo_bis')
+    .eq('id', id)
+    .maybeSingle()
+  // Fehlt die Spalte, ist Migration 0006 noch nicht eingespielt — kein Grund,
+  // die Kontoseite unbrauchbar zu machen.
+  if (error) return { id, anzeigename: null, subscription_status: 'free', abo_bis: null }
+  return (data as Profil) ?? { id, anzeigename: null, subscription_status: 'free', abo_bis: null }
+}
+
+export async function speichereAnzeigename(anzeigename: string): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { data: userData } = await sb.auth.getUser()
+  const id = userData.user?.id
+  if (!id) throw new Error('Nicht angemeldet')
+  const { error } = await sb
+    .from('profiles')
+    .upsert({ id, anzeigename: anzeigename.trim() || null })
+  if (error) throw new Error(error.message)
+}
+
+/**
+ * Konto und alle daran hängenden Daten löschen (DSGVO, Recht auf Löschung).
+ * Die eigentliche Löschung macht eine Datenbankfunktion — ein Client kann
+ * sich nicht selbst aus auth.users entfernen.
+ */
+export async function kontoLoeschen(): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { error } = await sb.rpc('delete_own_account')
+  if (error) {
+    throw new Error(
+      error.message.includes('delete_own_account')
+        ? 'Die Löschfunktion fehlt in der Datenbank — Migration 0006 noch nicht eingespielt.'
+        : error.message,
+    )
+  }
+  await sb.auth.signOut()
 }

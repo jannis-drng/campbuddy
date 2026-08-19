@@ -186,8 +186,53 @@ Ein Login wird nur gebraucht, um Routen und Touren zu speichern (Abschnitt 3: �
 nötig zum Ansehen"). Ist kein Backend konfiguriert, blendet die App den Konto-Bereich
 komplett aus, statt Fehler zu zeigen.
 
-Anmeldung per **Magic Link**: es gibt kein Passwort, das erfasst, übertragen oder
-gespeichert werden könnte.
+### Anmeldewege
+
+Drei nebeneinander:
+
+- **E-Mail + Passwort** mit Registrierung, Mailbestätigung und Zurücksetzen.
+- **Magic Link** — passwortlos, für alle, die sich nichts merken wollen.
+- **Externe Anbieter** (Google, Apple, GitHub …).
+
+Die Anbieter-Knöpfe werden **zur Laufzeit beim Auth-Dienst erfragt** und nur angezeigt,
+wenn der Anbieter im Projekt wirklich eingerichtet ist. Ein Knopf, der in eine Fehlerseite
+führt, wäre schlimmer als kein Knopf.
+
+#### Google-Login einrichten
+
+1. Google Cloud Console → *APIs & Services* → *Credentials* → *OAuth client ID*, Typ
+   „Web application".
+2. Als *Authorized redirect URI* eintragen:
+   `https://<projekt-ref>.supabase.co/auth/v1/callback`
+3. Client-ID und Client-Secret in Supabase unter *Authentication → Providers → Google*
+   eintragen und aktivieren.
+
+#### Apple-Login einrichten
+
+Aufwändiger und **kostenpflichtig**: es braucht ein Apple-Developer-Programm (99 $/Jahr).
+Im Developer-Portal eine Service-ID anlegen, „Sign in with Apple" aktivieren, dieselbe
+Callback-URL hinterlegen, einen Schlüssel erzeugen und Team-ID, Key-ID und Schlüssel in
+Supabase eintragen.
+
+Danach erscheinen die Knöpfe von selbst — im Code ist nichts zu ändern.
+
+### Kontoverwaltung
+
+Anzeigename (steht an veröffentlichten Routen, die E-Mail-Adresse wird nie veröffentlicht),
+Passwort ändern, Abmelden, und **Konto löschen**.
+
+Das Löschen ist DSGVO-relevant und lässt sich vom Browser aus nicht direkt machen — ein
+Client hat keine Adminrechte auf `auth.users`. Migration 0006 legt dafür die Funktion
+`delete_own_account()` an, die mit den Rechten ihres Eigentümers läuft und ausschliesslich
+den eigenen Datensatz entfernt. Profil, Routen, Touren und Favoriten hängen per
+`ON DELETE CASCADE` daran.
+
+### Abo
+
+Im Kontobereich als Platzhalter sichtbar, wie in Abschnitt 5 vorgesehen: Status und
+Laufzeit liegen im Profil, es ist nichts buchbar und nichts abgerechnet. Die Spalten sind
+bewusst schon angelegt — nachträglich eine Spalte in eine Tabelle mit Nutzerdaten zu ziehen
+ist unangenehmer, als sie leer mitzuführen.
 
 ### Einrichten
 
@@ -200,6 +245,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0003_seed_zones.sql`](./supabase/migrations/0003_seed_zones.sql) | die 10 Wallis-Zonen |
 | [`0004_seed_points.sql`](./supabase/migrations/0004_seed_points.sql) | die 148 Punkte |
 | [`0005_community.sql`](./supabase/migrations/0005_community.sql) | Veröffentlichen von Routen und Favoriten |
+| [`0006_konto.sql`](./supabase/migrations/0006_konto.sql) | Anzeigename, Abo-Platzhalter, Konto löschen |
 
 Dann `app/.env.example` nach `app/.env.local` kopieren, beide Werte eintragen und
 `npm run deploy --prefix app`.
