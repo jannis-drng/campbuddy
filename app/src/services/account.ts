@@ -139,6 +139,15 @@ export async function deleteTrip(id: string): Promise<void> {
 /* ---------------- Community ---------------- */
 
 /**
+ * Fehlt die Tabelle oder Spalte, ist die zugehörige Migration schlicht noch
+ * nicht eingespielt. Das ist ein Einrichtungszustand, kein Fehler des Nutzers —
+ * eine rohe Postgres-Meldung gehört ihm nicht vor die Nase.
+ */
+function istSchemaFehlt(error: { code?: string } | null): boolean {
+  return error?.code === '42703' || error?.code === 'PGRST205' || error?.code === '42P01'
+}
+
+/**
  * Öffentlich geteilte Routen. Braucht keine Anmeldung — die Lese-Policy gibt
  * ausschliesslich als `is_public` markierte Zeilen frei.
  */
@@ -151,6 +160,7 @@ export async function listPublicRoutes(limit = 50): Promise<StoredRoute[]> {
     .eq('is_public', true)
     .order('created_at', { ascending: false })
     .limit(limit)
+  if (istSchemaFehlt(error)) return []
   if (error) throw new Error(error.message)
   return (data ?? []) as StoredRoute[]
 }
@@ -183,6 +193,7 @@ export async function listFavoriteRoutes(): Promise<StoredRoute[]> {
     .from('favorites')
     .select('route_id, routes(*)')
     .order('created_at', { ascending: false })
+  if (istSchemaFehlt(error)) return []
   if (error) throw new Error(error.message)
   // Supabase typisiert eingebettete Relationen als Array, liefert bei einer
   // 1:1-Beziehung aber ein Objekt. Beides abfangen.

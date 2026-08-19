@@ -162,6 +162,19 @@ entprellt. Für dauerhaft hohe Last einen OpenRouteService-Schlüssel in `mapCon
 `ROUTING.apiKey` eintragen — die Routing-Schicht schaltet dann automatisch um, ohne
 Code-Änderung.
 
+## Aufbau der App
+
+| Bereich | Inhalt |
+|---|---|
+| **Karte** | Legalitäts-Ebene, Routen zeichnen und auswerten, Höhenprofil, Etappen |
+| **Community** | Routen, die andere veröffentlicht haben. Ansehen ohne Konto, Merken mit |
+| **Deine Touren** | Gespeicherte Routen und Touren, Favoriten, Ausrüstungs- und Verpflegungsgenerator |
+| **Konto** | Anmeldung per Magic Link |
+
+Veröffentlichen ist **opt-in**: gespeicherte Routen sind privat, bis man sie unter
+„Deine Touren" ausdrücklich auf öffentlich stellt. Der Autorenname ist frei wählbar —
+niemand soll seine E-Mail-Adresse veröffentlichen müssen, um eine Route zu teilen.
+
 ## Konto und gespeicherte Touren
 
 Optional. **Ohne Konto funktioniert alles** — Karte, Routenplanung, Ausrüstungsgenerator.
@@ -182,6 +195,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0002_legal_data.sql`](./supabase/migrations/0002_legal_data.sql) | `zones`, `points`, `gear_items` (8.1, 8.2, 8.5), öffentlich lesbar |
 | [`0003_seed_zones.sql`](./supabase/migrations/0003_seed_zones.sql) | die 10 Wallis-Zonen |
 | [`0004_seed_points.sql`](./supabase/migrations/0004_seed_points.sql) | die 148 Punkte |
+| [`0005_community.sql`](./supabase/migrations/0005_community.sql) | Veröffentlichen von Routen und Favoriten |
 
 Dann `app/.env.example` nach `app/.env.local` kopieren, beide Werte eintragen und
 `npm run deploy --prefix app`.
