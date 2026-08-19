@@ -8,16 +8,22 @@ import { useRef } from 'react'
 import type { Position } from '../data/geo'
 import type { Region } from '../data/types'
 import { NEARBY_RADIUS_M, summarise, type RouteAnalysis } from '../data/routeAnalysis'
-import { ROUTING } from '../map/mapConfig'
+import { PROFILE_LABEL, SNAP_WARN_M, type RoutedPath, type RoutingProfile } from '../map/routing'
 import { toGpx } from '../services/gpx'
 import { STATUS_CLASS, STATUS_LABEL } from './ui'
 
 interface Props {
   route: Position[]
+  waypointCount: number
+  routed: RoutedPath | null
+  routingBusy: boolean
+  profile: RoutingProfile
+  isImported: boolean
   analysis: RouteAnalysis
   region: Region
   drawing: boolean
   error: string | null
+  onProfileChange: (p: RoutingProfile) => void
   onToggleDrawing: () => void
   onUndo: () => void
   onClear: () => void
@@ -30,9 +36,16 @@ const POINT_LABEL = { hut: 'Hütte', campsite: 'Campingplatz', vehicle_spot: 'St
 const formatKm = (m: number) =>
   m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
 
+const formatDuration = (seconds: number): string => {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.round((seconds % 3600) / 60)
+  return h > 0 ? `${h} h ${m} min` : `${m} min`
+}
+
 export function RoutePanel({
-  route, analysis, region, drawing, error,
-  onToggleDrawing, onUndo, onClear, onImportGpx, onClose,
+  route, waypointCount, routed, routingBusy, profile, isImported,
+  analysis, region, drawing, error,
+  onProfileChange, onToggleDrawing, onUndo, onClear, onImportGpx, onClose,
 }: Props) {
   const fileInput = useRef<HTMLInputElement>(null)
 
@@ -60,6 +73,27 @@ export function RoutePanel({
       <div className="space-y-5 px-5 py-4">
         {/* ---- Werkzeuge ---- */}
         <section className="space-y-2">
+          <div>
+            <span className="mb-1 block text-[11px] uppercase tracking-wide text-slate-500">Unterwegs</span>
+            <div className="flex flex-wrap gap-1.5">
+              {(['foot', 'bike', 'car'] as RoutingProfile[]).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => onProfileChange(p)}
+                  aria-pressed={profile === p}
+                  disabled={isImported}
+                  className={`min-h-9 rounded-full px-3 py-1.5 text-sm transition disabled:opacity-40 ${
+                    profile === p
+                      ? 'bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-500/40'
+                      : 'bg-white/5 text-slate-400 ring-1 ring-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  {PROFILE_LABEL[p]}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-1.5">
             <button
               onClick={onToggleDrawing}
@@ -103,8 +137,21 @@ export function RoutePanel({
 
           {drawing && (
             <p className="text-xs text-slate-400">
-              Klick in die Karte setzt einen Wegpunkt.
-              {!ROUTING.enabled && ' Die Wegpunkte werden gerade verbunden — ohne Routing-Schlüssel folgt die Linie keinem Weg.'}
+              Klick in die Karte setzt einen Wegpunkt. Dazwischen wird auf reale Wege geroutet.
+            </p>
+          )}
+          {routingBusy && <p className="text-xs text-slate-400">Weg wird gesucht …</p>}
+          {routed?.snapped && routed.snapDistance_m != null && routed.snapDistance_m > SNAP_WARN_M && (
+            <p className="rounded-lg bg-amber-500/10 p-2.5 text-xs leading-relaxed text-amber-200/90">
+              Ein Wegpunkt wurde {formatKm(routed.snapDistance_m)} auf den nächsten erfassten Weg
+              verschoben. Die Auswertung gilt für die verschobene Strecke, nicht für den
+              angeklickten Ort.
+            </p>
+          )}
+          {routed && !routed.snapped && waypointCount >= 2 && (
+            <p className="rounded-lg bg-amber-500/10 p-2.5 text-xs leading-relaxed text-amber-200/90">
+              Kein Weg-Routing möglich ({routed.fallbackReason}). Die Wegpunkte sind nur gerade
+              verbunden — Länge und Zonenauswertung sind dadurch ungenau.
             </p>
           )}
           {error && <p className="rounded-lg bg-red-500/10 p-2.5 text-xs text-red-300">{error}</p>}
@@ -112,16 +159,19 @@ export function RoutePanel({
 
         {route.length < 2 ? (
           <p className="rounded-lg bg-white/5 p-3 text-sm leading-relaxed text-slate-400">
-            Zeichne eine Route oder importiere eine GPX-Datei aus deinem Tourenplaner.
-            CampBuddy legt dann die Legalitäts-Ebene darüber und zeigt dir, wo unterwegs
-            Übernachten zulässig ist.
+            Zeichne eine Route — die Wegpunkte werden auf reale Wege geroutet — oder
+            importiere eine GPX-Datei aus deinem Tourenplaner. CampBuddy legt dann die
+            Legalitäts-Ebene darüber und zeigt dir, wo unterwegs Übernachten zulässig ist.
           </p>
         ) : (
           <>
             <section>
               <div className="flex items-baseline justify-between gap-2">
                 <h3 className="text-sm font-semibold text-slate-200">Fazit</h3>
-                <span className="text-xs text-slate-500">{formatKm(analysis.length_m)}</span>
+                <span className="text-xs text-slate-500">
+                  {formatKm(analysis.length_m)}
+                  {routed?.duration_s != null && !isImported && ` · ${formatDuration(routed.duration_s)}`}
+                </span>
               </div>
               <p className="mt-1 text-sm leading-relaxed text-slate-300">
                 {summarise(analysis, region.legal_framework.baseline_status)}
@@ -181,6 +231,14 @@ export function RoutePanel({
                 </p>
               )}
             </section>
+
+            {routed?.snapped && !isImported && (
+              <p className="text-[11px] leading-relaxed text-slate-500">
+                Weg-Routing über die öffentliche OSRM-Instanz der FOSSGIS e.V. auf
+                OpenStreetMap-Daten. Die Gehzeit ist eine Schätzung der Engine und
+                berücksichtigt Höhenmeter nur begrenzt.
+              </p>
+            )}
 
             <p className="rounded-lg bg-amber-500/10 p-3 text-[12px] leading-relaxed text-amber-200/90">
               Die Auswertung ist nur so verlässlich wie der Prüfstand der Zonen. Ausserhalb

@@ -48,16 +48,15 @@ export const POINT_COLORS = {
 /**
  * Routing-Engine (Abschnitt 4.2, Abschnitt 6).
  *
- * Zonen und Punkte kommen ohne fremden Dienst aus; nur das Einrasten einer
- * gezeichneten Linie auf reale Wege braucht eine Engine. Beide vorgesehenen
- * Anbieter verlangen einen kostenlosen API-Schlüssel — solange keiner
- * hinterlegt ist, bleibt das Zeichnen bei geraden Verbindungen zwischen den
- * Wegpunkten, und die App sagt das im UI auch offen.
+ * Standard ist die öffentliche OSRM-Instanz der FOSSGIS e.V. — dieselbe, die
+ * openstreetmap.org nutzt. Kein API-Schlüssel, keine Registrierung, OSM-Daten.
  *
- * Zum Aktivieren: Schlüssel eintragen, `enabled` auf true. Kein Code-Umbau.
+ * `apiKey` bleibt leer, solange das reicht. Wird die Nutzung so hoch, dass die
+ * Community-Instanz nicht mehr angemessen ist, hier einen OpenRouteService-
+ * Schlüssel eintragen — die Routing-Schicht schaltet dann automatisch um.
  */
 export const ROUTING = {
-  enabled: false,
+  osrmBase: 'https://routing.openstreetmap.de',
   provider: 'openrouteservice' as 'openrouteservice' | 'graphhopper',
   apiKey: '',
   endpoints: {

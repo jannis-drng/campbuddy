@@ -30,8 +30,10 @@ interface Props {
    * MapLibre muss nach dem Wiedereinblenden nur seine Grösse neu messen.
    */
   visible: boolean
-  /** Gezeichnete oder importierte Route. Leer = keine Route. */
+  /** Der tatsächliche Streckenverlauf (auf Wege gerastert oder gerade). */
   route: Position[]
+  /** Die vom Nutzer gesetzten Wegpunkte — nur diese bekommen einen Griff. */
+  waypoints: Position[]
   /** Im Zeichenmodus setzt ein Kartenklick einen Wegpunkt statt eine Zone zu öffnen. */
   drawing: boolean
   onZoneClick: (zone: Zone) => void
@@ -40,14 +42,14 @@ interface Props {
 }
 
 export function MapView({
-  region, zones, points, activity, visible, route, drawing,
+  region, zones, points, activity, visible, route, waypoints, drawing,
   onZoneClick, onPointClick, onAddWaypoint,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MlMap | null>(null)
   const ready = useRef(false)
-  const routeRef = useRef(route)
-  routeRef.current = route
+  const routeRef = useRef({ route, waypoints })
+  routeRef.current = { route, waypoints }
 
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
@@ -80,7 +82,8 @@ export function MapView({
       ready.current = true
       addLayers(m)
       updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
-      ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(routeRef.current))
+      ;(m.getSource('route') as GeoJSONSource | undefined)
+        ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
 
       m.on('click', (e) => {
         // Im Zeichenmodus hat das Setzen eines Wegpunkts Vorrang.
@@ -127,8 +130,8 @@ export function MapView({
   useEffect(() => {
     const m = map.current
     if (!m || !ready.current) return
-    ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route))
-  }, [route])
+    ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route, waypoints))
+  }, [route, waypoints])
 
   useEffect(() => {
     const m = map.current
@@ -291,8 +294,10 @@ function updateData(m: MlMap, zones: Zone[], points: Point[], activity: Activity
   ;(m.getSource('points') as GeoJSONSource | undefined)?.setData(pointsToGeoJson(points))
 }
 
-function routeToGeoJson(route: Position[]): GeoJSON.FeatureCollection {
-  const features: GeoJSON.Feature[] = route.map((p) => ({
+function routeToGeoJson(route: Position[], waypoints: Position[]): GeoJSON.FeatureCollection {
+  // Nur die gesetzten Wegpunkte bekommen einen Griff — eine gerasterte Route
+  // hat hunderte Stützpunkte, die niemand als Punkte sehen will.
+  const features: GeoJSON.Feature[] = waypoints.map((p) => ({
     type: 'Feature',
     properties: {},
     geometry: { type: 'Point', coordinates: p },

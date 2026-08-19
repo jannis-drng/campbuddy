@@ -26,8 +26,7 @@ oder als GPX aus einem beliebigen Tourenplaner importieren; CampBuddy wertet aus
 Zonen sie durchquert, wie viel der Strecke in Verbotsgebieten liegt und welche Hütten und
 Campingplätze in Routennähe liegen. Export als GPX.
 
-**`[BALD]` — offen:** Login/Speichern (4.6), weitere Regionen. Das Einrasten gezeichneter
-Linien auf reale Wege braucht einen Routing-Schlüssel (siehe unten).
+**`[BALD]` — offen:** Login/Speichern (4.6), weitere Regionen.
 
 | Ebene | Inhalt | Quelle |
 |---|---|---|
@@ -107,11 +106,23 @@ darauf. Beides funktioniert ohne fremden Dienst:
 - **Analyse** verdichtet die Route auf 250-Meter-Schritte, damit keine schmale Zone
   zwischen zwei Stützpunkten durchfällt, und weist Streckenanteile je Zone aus.
 
-Was noch fehlt, ist das **Einrasten auf reale Wege**: dafür braucht es eine Routing-Engine.
-OpenRouteService und GraphHopper bieten kostenlose Kontingente, verlangen aber einen
-API-Schlüssel. Solange in `mapConfig.ts` unter `ROUTING` keiner hinterlegt ist, verbindet
-die App die Wegpunkte mit geraden Linien und sagt das im UI offen. Schlüssel eintragen,
-`enabled: true` — kein Code-Umbau.
+- **Weg-Routing** rastet gezeichnete Wegpunkte auf reale Wege ein, mit Profil für
+  Fuss, Rad und Auto samt geschätzter Reisezeit.
+
+Das Routing läuft über die öffentliche OSRM-Instanz der FOSSGIS e.V. — dieselbe, die
+openstreetmap.org verwendet. **Kein API-Schlüssel, keine Registrierung, 0 €.**
+
+Zwei Sicherungen, weil die Legalitäts-Auswertung auf der gerouteten Linie beruht:
+
+- OSRM zieht jede Koordinate auf den nächsten Weg. Liegt ein Wegpunkt weiter als 2 km von
+  jedem erfassten Weg entfernt, fällt die App auf gerade Verbindungen zurück, statt eine
+  Route für einen ganz anderen Ort auszuwerten. Zwischen 250 m und 2 km wird gewarnt.
+- Fällt der Dienst aus, verbindet die App die Wegpunkte gerade und weist das im UI aus.
+
+Die Instanz wird von der OSM-Community auf Spendenbasis betrieben. Anfragen sind deshalb
+entprellt. Für dauerhaft hohe Last einen OpenRouteService-Schlüssel in `mapConfig.ts` unter
+`ROUTING.apiKey` eintragen — die Routing-Schicht schaltet dann automatisch um, ohne
+Code-Änderung.
 
 ## Ausrüstungs-Generator
 

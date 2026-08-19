@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import { filterPoints, getPoints, getRegion, getZones, verificationStats } from './data/legalData'
 import type { MapFilters } from './data/types'
@@ -13,6 +13,7 @@ import { RoutePanel } from './components/RoutePanel'
 import { analyseRoute } from './data/routeAnalysis'
 import type { Position } from './data/geo'
 import { parseGpx } from './services/gpx'
+import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/routing'
 
 const INITIAL_FILTERS: MapFilters = {
   activity: 'all',
@@ -30,9 +31,16 @@ export default function App() {
   const [selection, setSelection] = useState<Selection>(null)
 
   const [routeOpen, setRouteOpen] = useState(false)
-  const [route, setRoute] = useState<Position[]>([])
   const [drawing, setDrawing] = useState(false)
   const [routeError, setRouteError] = useState<string | null>(null)
+  // Die vom Nutzer gesetzten Stützpunkte …
+  const [waypoints, setWaypoints] = useState<Position[]>([])
+  // … das Ergebnis des Weg-Routings dazwischen …
+  const [routed, setRouted] = useState<RoutedPath | null>(null)
+  const [routingBusy, setRoutingBusy] = useState(false)
+  const [profile, setProfile] = useState<RoutingProfile>('foot')
+  // … und eine importierte GPX-Spur, die unverändert übernommen wird.
+  const [gpxTrack, setGpxTrack] = useState<Position[] | null>(null)
 
   const region = getRegion(regionCode)
   const allZones = useMemo(() => getZones(regionCode), [regionCode])
@@ -42,20 +50,49 @@ export default function App() {
   const stats = useMemo(() => verificationStats(allZones), [allZones])
   // Die Analyse läuft über alle Punkte, nicht die gefilterten: eine ausgeblendete
   // Hütte ist trotzdem eine Schlafmöglichkeit an der Route.
-  const analysis = useMemo(
-    () => analyseRoute(route, allZones, allPoints),
-    [route, allZones, allPoints],
+  // Eine importierte Spur folgt bereits realen Wegen und wird nicht neu geroutet.
+  const routeGeometry = useMemo<Position[]>(
+    () => gpxTrack ?? routed?.coordinates ?? waypoints,
+    [gpxTrack, routed, waypoints],
   )
+
+  const analysis = useMemo(
+    () => analyseRoute(routeGeometry, allZones, allPoints),
+    [routeGeometry, allZones, allPoints],
+  )
+
+  // Wegpunkte auf reale Wege rastern. Entprellt, weil die genutzte
+  // OSRM-Instanz von der OSM-Community bereitgestellt wird.
+  useEffect(() => {
+    if (gpxTrack || waypoints.length < 2) { setRouted(null); return }
+    const controller = new AbortController()
+    const timer = setTimeout(() => {
+      setRoutingBusy(true)
+      routeWaypoints(waypoints, profile, controller.signal)
+        .then(setRouted)
+        .catch((e: unknown) => {
+          if ((e as Error).name !== 'AbortError') setRouteError((e as Error).message)
+        })
+        .finally(() => setRoutingBusy(false))
+    }, 400)
+    return () => { clearTimeout(timer); controller.abort() }
+  }, [waypoints, profile, gpxTrack])
 
   const importGpx = async (file: File) => {
     try {
       const { points } = parseGpx(await file.text())
-      setRoute(points)
+      setGpxTrack(points)
+      setWaypoints([])
+      setRouted(null)
       setDrawing(false)
       setRouteError(null)
     } catch (e) {
       setRouteError(`GPX konnte nicht gelesen werden: ${(e as Error).message}`)
     }
+  }
+
+  const clearRoute = () => {
+    setWaypoints([]); setGpxTrack(null); setRouted(null); setRouteError(null)
   }
 
   return (
@@ -118,22 +155,34 @@ export default function App() {
             points={points}
             activity={filters.activity}
             visible={view === 'karte'}
-            route={route}
+            route={routeGeometry}
+            waypoints={gpxTrack ? [] : waypoints}
             drawing={drawing}
             onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
             onPointClick={(point) => setSelection({ kind: 'point', point })}
-            onAddWaypoint={(position) => setRoute((r) => [...r, position])}
+            onAddWaypoint={(position) => {
+              // Ein neuer Klick beginnt eine gezeichnete Route; eine importierte
+              // Spur würde sonst stillschweigend mit Wegpunkten vermischt.
+              setGpxTrack(null)
+              setWaypoints((w) => [...w, position])
+            }}
           />
           {routeOpen ? (
             <RoutePanel
-              route={route}
+              route={routeGeometry}
+              waypointCount={gpxTrack ? 0 : waypoints.length}
+              routed={routed}
+              routingBusy={routingBusy}
+              profile={profile}
+              isImported={gpxTrack != null}
               analysis={analysis}
               region={region}
               drawing={drawing}
               error={routeError}
+              onProfileChange={setProfile}
               onToggleDrawing={() => setDrawing((d) => !d)}
-              onUndo={() => setRoute((r) => r.slice(0, -1))}
-              onClear={() => { setRoute([]); setRouteError(null) }}
+              onUndo={() => setWaypoints((w) => w.slice(0, -1))}
+              onClear={clearRoute}
               onImportGpx={importGpx}
               onClose={() => { setRouteOpen(false); setDrawing(false) }}
             />
