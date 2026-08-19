@@ -1,0 +1,117 @@
+/**
+ * SCHICHT 1 — ZUGRIFFS-API auf die Legalitäts-Daten.
+ *
+ * Das ist die einzige Stelle, an der die UI an die Rechtsdaten kommt.
+ * Heute: statisches JSON, gebündelt ins Frontend (kostenlos, kein Backend).
+ * Später: dieselben Funktionen gegen Supabase/PostGIS implementieren —
+ * die UI bleibt unverändert, weil sie nur diese Signaturen kennt.
+ */
+import type {
+  LegalStatus, MapFilters, Permission, Point, RegionCode, ReviewStatus, Zone,
+} from './types'
+import { REGIONS } from './regions'
+
+import osmZonesVS from './zones/CH-VS.osm.json'
+import legalVS from './zones/CH-VS.legal.json'
+import pointsVS from './points/CH-VS.json'
+
+interface LegalEntry {
+  status: LegalStatus
+  tent_allowed: Permission
+  vehicle_allowed: Permission
+  fire_allowed: Permission
+  conditions: string | null
+  notes: string | null
+  review_status: ReviewStatus
+  last_verified: string | null
+}
+
+interface OsmFeature {
+  id: string
+  properties: { name: string; source: string; source_url: string; [k: string]: unknown }
+  geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
+}
+
+const GEOMETRY_SOURCES: Record<RegionCode, { features: OsmFeature[] }> = {
+  'CH-VS': osmZonesVS as unknown as { features: OsmFeature[] },
+}
+
+const LEGAL_SOURCES: Record<RegionCode, { zones: Record<string, LegalEntry> }> = {
+  'CH-VS': legalVS as unknown as { zones: Record<string, LegalEntry> },
+}
+
+const POINT_SOURCES: Record<RegionCode, Point[]> = {
+  'CH-VS': pointsVS as unknown as Point[],
+}
+
+/**
+ * Setzt Geometrie (OSM) und rechtliche Bewertung (eigene Pflege) zusammen.
+ * Flächen ohne Bewertung erscheinen bewusst als 'unknown' statt zu verschwinden —
+ * eine ungeprüfte Fläche ist eine Information, keine Lücke.
+ */
+export function getZones(region: RegionCode): Zone[] {
+  const geo = GEOMETRY_SOURCES[region]
+  const legal = LEGAL_SOURCES[region]
+  if (!geo) return []
+
+  return geo.features.map((f): Zone => {
+    const entry = legal?.zones[f.id]
+    return {
+      id: f.id,
+      region,
+      name: f.properties.name,
+      status: entry?.status ?? 'unknown',
+      tent_allowed: entry?.tent_allowed ?? 'unknown',
+      vehicle_allowed: entry?.vehicle_allowed ?? 'unknown',
+      fire_allowed: entry?.fire_allowed ?? 'unknown',
+      conditions: entry?.conditions ?? null,
+      source: f.properties.source,
+      source_url: f.properties.source_url,
+      last_verified: entry?.last_verified ?? null,
+      review_status: entry?.review_status ?? 'entwurf',
+      notes: entry?.notes ?? null,
+      geometry: f.geometry,
+    }
+  })
+}
+
+export function getPoints(region: RegionCode): Point[] {
+  return POINT_SOURCES[region] ?? []
+}
+
+export function getRegion(region: RegionCode) {
+  return REGIONS[region]
+}
+
+/**
+ * Filter der Kartenansicht. Die Aktivitäts-Filter sind ausschliessend gemeint:
+ * "nur Zelt" blendet Zonen aus, in denen Zelten sicher verboten ist.
+ */
+export function filterZones(zones: Zone[], f: MapFilters): Zone[] {
+  const active = [
+    f.tent ? 'tent_allowed' : null,
+    f.vehicle ? 'vehicle_allowed' : null,
+    f.fire ? 'fire_allowed' : null,
+  ].filter(Boolean) as (keyof Zone)[]
+
+  if (active.length === 0) return zones
+  return zones.filter((z) => active.some((k) => z[k] !== 'no'))
+}
+
+export function filterPoints(points: Point[], f: MapFilters): Point[] {
+  return points.filter((p) =>
+    (p.type === 'hut' && f.showHuts) ||
+    (p.type === 'campsite' && f.showCampsites) ||
+    (p.type === 'vehicle_spot' && f.showVehicleSpots),
+  )
+}
+
+/** Wie viele Zonen sind tatsächlich belegt statt nur abgeleitet? */
+export function verificationStats(zones: Zone[]) {
+  return {
+    total: zones.length,
+    entwurf: zones.filter((z) => z.review_status === 'entwurf').length,
+    quelle: zones.filter((z) => z.review_status === 'quelle').length,
+    vorOrt: zones.filter((z) => z.review_status === 'vor-ort').length,
+  }
+}

@@ -1,0 +1,2962 @@
+[
+  {
+    "id": "osm-node-13135143793",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Almagellerhütte",
+    "lat": 46.10761,
+    "lng": 8.00767,
+    "elevation": 2894,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 957 11 79",
+      "website": "https://www.almagellerhuette.ch/",
+      "capacity": "120",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/13135143793",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6593760147",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Alpenlodge Grimselpass",
+    "lat": 46.56086,
+    "lng": 8.34457,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6593760147",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-440492081",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Alphubel",
+    "lat": 46.06463,
+    "lng": 7.77453,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.campingtaesch.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/440492081",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-487190671",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Attermenzen",
+    "lat": 46.08571,
+    "lng": 7.7823,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.camping-randa.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/487190671",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-3063139306",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Bains de Saillon",
+    "lat": 46.17384,
+    "lng": 7.19403,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/3063139306",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8857192925",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Baltschiederklause",
+    "lat": 46.39498,
+    "lng": 7.88979,
+    "elevation": null,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": null,
+      "website": "https://www.rhone.ch/baltschiederklause",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8857192925",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-14079831901",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Baraque du club alpin d'Arolla",
+    "lat": 46.01104,
+    "lng": 7.48118,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/14079831901",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-294171060",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Berggasthaus Trift",
+    "lat": 46.03004,
+    "lng": 7.72107,
+    "elevation": 2337,
+    "info": {
+      "operator": "Familie Hugo und Fabienne Biner",
+      "phone": "+41 79 408 70 20",
+      "website": "http://www.zermatt.ch/trift",
+      "capacity": "48",
+      "opening_hours": "Jun-Sep",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/294171060",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-799408881",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Bergheimat",
+    "lat": 46.12763,
+    "lng": 7.93598,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/799408881",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-13135956569",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Berghütte Hohsaas",
+    "lat": 46.13923,
+    "lng": 7.99177,
+    "elevation": 3140,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.hohsaashuette.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/13135956569",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-13917632701",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Berghütte Hohsaas",
+    "lat": 46.13922,
+    "lng": 7.99181,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/13917632701",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6617740631",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Binntalhütte",
+    "lat": 46.37471,
+    "lng": 8.29181,
+    "elevation": 2267,
+    "info": {
+      "operator": "SAC CAS",
+      "phone": "+41 27 971 47 97",
+      "website": "https://cabane-binntal.ch/",
+      "capacity": "50",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6617740631",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-1880342036",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Bivacco Città di Gallarate",
+    "lat": 45.95197,
+    "lng": 7.87729,
+    "elevation": 3960,
+    "info": {
+      "operator": "Club Alpino Italiano sezione di Gallarate",
+      "phone": null,
+      "website": null,
+      "capacity": "9",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/1880342036",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-1818068910",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Bortelhütten",
+    "lat": 46.29386,
+    "lng": 8.09335,
+    "elevation": 2113,
+    "info": {
+      "operator": "Skiklub Brig-Simplon",
+      "phone": "+41 27 924 52 10",
+      "website": "https://www.bortelhuette.ch/",
+      "capacity": "40",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/1818068910",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-316985701",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Britanniahütte",
+    "lat": 46.06006,
+    "lng": 7.93502,
+    "elevation": 3030,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 957 22 88",
+      "website": "https://www.britannia.ch/",
+      "capacity": "101",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/316985701",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11215332056",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane Becs de Bosson",
+    "lat": 46.16419,
+    "lng": 7.51633,
+    "elevation": 2985,
+    "info": {
+      "operator": null,
+      "phone": "+41 78 743 79 89",
+      "website": "https://www.cabanedesbecs.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11215332056",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-567341871",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane Bella-Tola",
+    "lat": 46.23289,
+    "lng": 7.6143,
+    "elevation": 2346,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 4761567",
+      "website": "https://cabanebellatola.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/567341871",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-309750964",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane Brunet",
+    "lat": 46.03034,
+    "lng": 7.2742,
+    "elevation": 2104,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 778 18 10",
+      "website": "https://www.cabanebrunet.ch/",
+      "capacity": "56",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/309750964",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4411039606",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane d'Anthème",
+    "lat": 46.16577,
+    "lng": 6.90429,
+    "elevation": 2037,
+    "info": {
+      "operator": "Fernand Jordan",
+      "phone": "+41 79 473 71 40",
+      "website": "https://antheme.ch/",
+      "capacity": "35",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4411039606",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4399549524",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane d'Arpitettaz",
+    "lat": 46.10089,
+    "lng": 7.67936,
+    "elevation": 2786,
+    "info": {
+      "operator": "SAC CAS",
+      "phone": "+41 27 475 40 28",
+      "website": "https://www.arpitettaz.ch/",
+      "capacity": "32",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4399549524",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6811520910",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane d'Orny",
+    "lat": 46.00191,
+    "lng": 7.06281,
+    "elevation": 2826,
+    "info": {
+      "operator": "SAC-CAS Section Diableret",
+      "phone": "+41 27 783 18 87",
+      "website": "https://cas-diablerets.ch/cabanes/cabane-orny/",
+      "capacity": "83",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6811520910",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11136343328",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Balavaux",
+    "lat": 46.15546,
+    "lng": 7.27795,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 78 255 88 07",
+      "website": "https://www.cabanebalavaux.com/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11136343328",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-309758417",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Bertol CAS",
+    "lat": 46.00602,
+    "lng": 7.52767,
+    "elevation": 3311,
+    "info": {
+      "operator": "SAC - CAS Section Neuchateloise",
+      "phone": "+41 27 283 19 29",
+      "website": "http://www.bertol.ch",
+      "capacity": "80",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/309758417",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11773953799",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de l'Illhorn",
+    "lat": 46.25608,
+    "lng": 7.59706,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 78 205 80 03",
+      "website": "https://cabaneillhorn.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11773953799",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4399832720",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de la Tsa",
+    "lat": 46.03035,
+    "lng": 7.50382,
+    "elevation": 2607,
+    "info": {
+      "operator": null,
+      "phone": "+41 76 261 11 48",
+      "website": "https://www.cabtza.com/",
+      "capacity": "32",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4399832720",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-936745007",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de la Tsissette",
+    "lat": 45.95376,
+    "lng": 7.15549,
+    "elevation": 2005,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://latsissette.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/936745007",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-302898492",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Mille",
+    "lat": 46.01367,
+    "lng": 7.20657,
+    "elevation": 2473,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 783 11 82",
+      "website": "https://www.cabanedemille.ch",
+      "capacity": "40",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/302898492",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4399562394",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Moiry",
+    "lat": 46.09069,
+    "lng": 7.59549,
+    "elevation": 2825,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 475 45 34",
+      "website": "https://cabane-moiry.ch/",
+      "capacity": "96",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4399562394",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11203686940",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Prarochet",
+    "lat": 46.31443,
+    "lng": 7.24745,
+    "elevation": 2555,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 395 27 27",
+      "website": "https://www.ski-club-saviese.ch",
+      "capacity": "44",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11203686940",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-309757022",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Saleinaz CAS",
+    "lat": 45.97644,
+    "lng": 7.07037,
+    "elevation": 2691,
+    "info": {
+      "operator": "CAS Section Neuchâteloise",
+      "phone": "+41 27 783 17 00",
+      "website": "https://www.cas-neuchatel.ch/cabanes/cabane-de-saleinaz-2691m/",
+      "capacity": "48",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/309757022",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6920077295",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Sorniot",
+    "lat": 46.16932,
+    "lng": 7.09491,
+    "elevation": 2064,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 746 24 26",
+      "website": "http://www.sorniot.ch",
+      "capacity": "46",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6920077295",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4411041258",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Susanfe",
+    "lat": 46.13943,
+    "lng": 6.8981,
+    "elevation": 2110,
+    "info": {
+      "operator": null,
+      "phone": "+41 24 479 16 46",
+      "website": "https://susanfe.ch/",
+      "capacity": "71",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4411041258",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-309753126",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane de Valsorey",
+    "lat": 45.93037,
+    "lng": 7.27176,
+    "elevation": 3037,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 787 11 22",
+      "website": "https://www.valsorey.ch/",
+      "capacity": "52",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/309753126",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11331670994",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane des Audannes",
+    "lat": 46.34345,
+    "lng": 7.38408,
+    "elevation": 2506,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 310 90 60",
+      "website": "https://www.audannes.ch/",
+      "capacity": "46",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11331670994",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-10167629346",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane des Vignettes CAS",
+    "lat": 45.98979,
+    "lng": 7.47574,
+    "elevation": 3160,
+    "info": {
+      "operator": "SAC - CAS Sektion Monte Rosa",
+      "phone": "+41 27 283 13 22",
+      "website": "https://cabane-des-vignettes.ch/",
+      "capacity": "125",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/10167629346",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-9362492877",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane des Violettes",
+    "lat": 46.34238,
+    "lng": 7.50005,
+    "elevation": 2209,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 481 39 19",
+      "website": "http://www.cabanedesviolettes.ch",
+      "capacity": "24",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/9362492877",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-7126563688",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane du Col de Cou",
+    "lat": 46.15044,
+    "lng": 6.7928,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.cabane-col-de-cou.net/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/7126563688",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6919661171",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane du Demècre",
+    "lat": 46.17407,
+    "lng": 7.08224,
+    "elevation": 2361,
+    "info": {
+      "operator": "Les Trotteurs de Fully",
+      "phone": "+41 27 746 35 87",
+      "website": "https://www.demecre.ch/",
+      "capacity": "27",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6919661171",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8210223277",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane du Mountet CAS",
+    "lat": 46.06005,
+    "lng": 7.65354,
+    "elevation": 2886,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 475 14 31",
+      "website": "https://cas-diablerets.ch/",
+      "capacity": "80",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8210223277",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-568030396",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane du Plan du Jeu",
+    "lat": 45.90248,
+    "lng": 7.20559,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/568030396",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6811522337",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane du Trient",
+    "lat": 45.9996,
+    "lng": 7.04365,
+    "elevation": 3170,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 783 14 38",
+      "website": "https://cas-diablerets.ch/cabanes/cabane-du-trient/",
+      "capacity": "90",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6811522337",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-309753131",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane du Vélan",
+    "lat": 45.91694,
+    "lng": 7.24546,
+    "elevation": 2642,
+    "info": {
+      "operator": "CAS Bourg-Saint-Pierre",
+      "phone": "+41 27 787 13 13",
+      "website": "https://www.velan.ch/",
+      "capacity": "62",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/309753131",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-309753135",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane FXB Panossière",
+    "lat": 45.99872,
+    "lng": 7.29976,
+    "elevation": 2641,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 771 33 22",
+      "website": "https://www.panossiere.ch/",
+      "capacity": "75",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/309753135",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11862748732",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane La Luy",
+    "lat": 46.12648,
+    "lng": 7.17371,
+    "elevation": null,
+    "info": {
+      "operator": "Ski-Club \"La Luy\"",
+      "phone": null,
+      "website": "https://www.skiclublaluy.ch/cabane/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11862748732",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-309759750",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Cabane Mont Fort",
+    "lat": 46.08356,
+    "lng": 7.28105,
+    "elevation": 2457,
+    "info": {
+      "operator": null,
+      "phone": "+41 77 269 45 27",
+      "website": "https://cabanemontfort.com",
+      "capacity": "58",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/309759750",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-281362008",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping & Schwimmbad Mühleye",
+    "lat": 46.29907,
+    "lng": 7.87232,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 946 20 84",
+      "website": "https://www.camping-visp.ch/",
+      "capacity": null,
+      "opening_hours": "Mar 25-Oct 31",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/281362008",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-1306453004",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Alp Safari",
+    "lat": 46.2239,
+    "lng": 7.4239,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 203 17 95",
+      "website": "https://alpsafari.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/1306453004",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-320484762",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Bella-Tola",
+    "lat": 46.2991,
+    "lng": 7.63749,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 473 14 91",
+      "website": "https://www.bella-tola.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/320484762",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-297101485",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Brigga (Sektor C)",
+    "lat": 46.45666,
+    "lng": 8.2297,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.campingbrigga.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/297101485",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-331710989",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping d'Anniviers",
+    "lat": 46.2176,
+    "lng": 7.5828,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 475 14 09",
+      "website": "http://camping-anniviers.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/331710989",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-233244021",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping d'Evolène",
+    "lat": 46.11106,
+    "lng": 7.49681,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.camping-evolene.ch/index.php/fr/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/233244021",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-417318351",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping de l'Arpille",
+    "lat": 46.05848,
+    "lng": 7.00137,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 722 26 88",
+      "website": "http://coldelaforclaz.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/417318351",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-335526670",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping de la Sarvaz",
+    "lat": 46.15926,
+    "lng": 7.16783,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.sarvaz.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/335526670",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-422272426",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping des Glaciers",
+    "lat": 45.93438,
+    "lng": 7.09369,
+    "elevation": 1600,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 783 18 26",
+      "website": "https://www.camping-glaciers.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/422272426",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-337165391",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping du Pont",
+    "lat": 46.18833,
+    "lng": 7.58918,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 658 24 51",
+      "website": "http://www.potentille.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/337165391",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-265244406",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Eggishorn",
+    "lat": 46.41014,
+    "lng": 8.13988,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 971 03 16",
+      "website": "http://www.camping-eggishorn.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/265244406",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-359601766",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Fafleralp",
+    "lat": 46.43515,
+    "lng": 7.8616,
+    "elevation": 1765,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 155 03 04",
+      "website": "camping-fafleralp.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/359601766",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-469924419",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Forêt des Mélèzes et village Sioux",
+    "lat": 46.0177,
+    "lng": 7.33136,
+    "elevation": null,
+    "info": {
+      "operator": "Thierry & Vera Rausis",
+      "phone": null,
+      "website": "https://www.bonatchiesse.ch/hebergementterraindecamping",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/469924419",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-1274041096",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Gemmi Agarn",
+    "lat": 46.29793,
+    "lng": 7.6585,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 473 11 54",
+      "website": "https://campgemmi.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/1274041096",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-274171059",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Geschina",
+    "lat": 46.3088,
+    "lng": 7.99373,
+    "elevation": null,
+    "info": {
+      "operator": "Fam. Eyer & Schmid",
+      "phone": "+41 27 923 06 88",
+      "website": "https://www.geschina.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/274171059",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-60230464",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Giessen",
+    "lat": 46.36984,
+    "lng": 8.20427,
+    "elevation": null,
+    "info": {
+      "operator": "Familie Guntern",
+      "phone": "+41 27 971 46 19",
+      "website": "https://www.camping-giessen.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/60230464",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-1865226747",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping La Châtaigneraie",
+    "lat": 46.17389,
+    "lng": 7.03524,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/1865226747",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4655565490",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Les Carettes",
+    "lat": 46.38216,
+    "lng": 6.85676,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4655565490",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-1392043239",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Les Marécottes",
+    "lat": 46.10788,
+    "lng": 7.00723,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/1392043239",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-363391259",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Monument",
+    "lat": 46.30774,
+    "lng": 7.61133,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/363391259",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-26860701",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Moubra",
+    "lat": 46.30408,
+    "lng": 7.48063,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 481 28 51",
+      "website": "https://www.campingmoubra.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/26860701",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-245104137",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Moubra",
+    "lat": 46.30466,
+    "lng": 7.48149,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/245104137",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-297101489",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Riverside",
+    "lat": 46.46398,
+    "lng": 8.24411,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 973 30 30",
+      "website": "https://www.campingriverside.ch/",
+      "capacity": "150",
+      "opening_hours": "week 01-53",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/297101489",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-237890941",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Sedunum",
+    "lat": 46.21035,
+    "lng": 7.31118,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 793 28 06",
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/237890941",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-232588276",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Sportarena Leukerbad",
+    "lat": 46.38161,
+    "lng": 7.62302,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/232588276",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-148642887",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Torrent",
+    "lat": 46.29855,
+    "lng": 7.65755,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 327 63 12",
+      "website": "https://campingtorrent.ch",
+      "capacity": null,
+      "opening_hours": "Mo-Su 08:00-12:00; Mo-Su 14:00-22:00",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/148642887",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-236932688",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Valcentre",
+    "lat": 46.23774,
+    "lng": 7.41491,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://campingvalcentre.ch",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/236932688",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-569323858",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Camping Zermatt",
+    "lat": 46.02615,
+    "lng": 7.75011,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.campingzermatt.ch",
+      "capacity": null,
+      "opening_hours": "May 25 - Sep 30",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/569323858",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4513441913",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Chalet de Savolayre C.A.S",
+    "lat": 46.22825,
+    "lng": 6.87727,
+    "elevation": null,
+    "info": {
+      "operator": "CAS Monté Rosa Monthey",
+      "phone": null,
+      "website": null,
+      "capacity": "31",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4513441913",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-14053736601",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Chandoline Echertes",
+    "lat": 46.24754,
+    "lng": 7.60363,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": "24/7",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/14053736601",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559811",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Col de la Dent Blanche CAS Bivouac",
+    "lat": 46.04193,
+    "lng": 7.60709,
+    "elevation": 3540,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": null,
+      "website": "https://www.cas-jaman.ch/cabanes/bivouac-de-la-dent-blanche",
+      "capacity": "15",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559811",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8453717926",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Driesthütte",
+    "lat": 46.40713,
+    "lng": 8.01938,
+    "elevation": 2181,
+    "info": {
+      "operator": "Burgerschaft Naters",
+      "phone": null,
+      "website": "http://www.burgerschaft-naters.ch/?id=49",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8453717926",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-10177900507",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Finsteraarhornhütte",
+    "lat": 46.52198,
+    "lng": 8.11447,
+    "elevation": 3048,
+    "info": {
+      "operator": null,
+      "phone": "+41 33 855 29 55",
+      "website": "https://www.finsteraarhornhuette.ch/",
+      "capacity": "116",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/10177900507",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4987947849",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Galmihornhütte",
+    "lat": 46.48927,
+    "lng": 8.24289,
+    "elevation": 2113,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 410 12 58",
+      "website": "https://galmihornhuette.ch/",
+      "capacity": "35",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4987947849",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6920374590",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Gîte d'alpage de Dorbon",
+    "lat": 46.25917,
+    "lng": 7.19047,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 78 761 52 47",
+      "website": "https://www.dorbon.ch/",
+      "capacity": "20",
+      "opening_hours": "Jun 08 - Sep 29",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6920374590",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-14098779289",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Gletscherstube Märjelen",
+    "lat": 46.44042,
+    "lng": 8.10204,
+    "elevation": 2360,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 971 47 83",
+      "website": "http://www.gletscherstube.ch",
+      "capacity": "34",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/14098779289",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-440494717",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Gräshenbiel",
+    "lat": 46.19319,
+    "lng": 7.82716,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41793160132",
+      "website": null,
+      "capacity": "43",
+      "opening_hours": null,
+      "seasonal": "yes"
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/440494717",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-13729864528",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Grünsee Mountain Lodge",
+    "lat": 46.00599,
+    "lng": 7.7797,
+    "elevation": 2296,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 900 23 00",
+      "website": "https://gruenseemountainlodge.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/13729864528",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11242272119",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Hollandiahütte",
+    "lat": 46.47527,
+    "lng": 7.96017,
+    "elevation": 3238,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 939 11 35",
+      "website": "https://www.hollandiahuette.ch/",
+      "capacity": "86",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11242272119",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-9070906905",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Hörnlihütte",
+    "lat": 45.9822,
+    "lng": 7.67701,
+    "elevation": 3260,
+    "info": {
+      "operator": "SAC",
+      "phone": "+41 27 967 22 64",
+      "website": "https://hoernlihuette.ch/",
+      "capacity": "120",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/9070906905",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-1458720984",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Kinhütte",
+    "lat": 46.08853,
+    "lng": 7.80709,
+    "elevation": 2584,
+    "info": {
+      "operator": "Gebrüder Imboden, Täsch",
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/1458720984",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559966",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "L'Aiguillette à la Singla CAS Bivouac",
+    "lat": 45.94147,
+    "lng": 7.45408,
+    "elevation": 3179,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": null,
+      "website": "https://cas-chasseron.ch/",
+      "capacity": "12",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559966",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-7884143085",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "La Cabane à Joseph",
+    "lat": 46.36882,
+    "lng": 6.80384,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "http://www.st-gingolph.com/documents/randoB1.pdf",
+      "capacity": null,
+      "opening_hours": "24/7",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/7884143085",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-331365827",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "La Chataigneraie",
+    "lat": 46.1754,
+    "lng": 7.0363,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/331365827",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-530262741",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "La Mare au Diable",
+    "lat": 46.23994,
+    "lng": 6.84983,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 79 301 33 33",
+      "website": "https://www.morgins-loisirs.ch/index.php/camping",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/530262741",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-2820208447",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "La Peule",
+    "lat": 45.89862,
+    "lng": 7.11259,
+    "elevation": 2071,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/2820208447",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-1090591832",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Le Peuty",
+    "lat": 46.04609,
+    "lng": 6.99442,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/1090591832",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6913946927",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Lui d'Aout",
+    "lat": 46.19345,
+    "lng": 7.13871,
+    "elevation": 1957,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6913946927",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-251403227",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Mischabelhütte",
+    "lat": 46.10942,
+    "lng": 7.8888,
+    "elevation": 3340,
+    "info": {
+      "operator": "Akademischer Alpen-Club Zürich",
+      "phone": "+41 27 957 13 17",
+      "website": "https://www.mischabelhuette.ch/",
+      "capacity": "120",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/251403227",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559916",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Mischabeljochbiwak SAC",
+    "lat": 46.07421,
+    "lng": 7.86582,
+    "elevation": 3847,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559916",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-3012482981",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Mittlenberghütte",
+    "lat": 46.38553,
+    "lng": 8.27785,
+    "elevation": 2395,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 971 45 48",
+      "website": "https://mittlenberghuette.ch/",
+      "capacity": "18",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/3012482981",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559908",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Monte Leone-Hütte",
+    "lat": 46.26074,
+    "lng": 8.08032,
+    "elevation": 2848,
+    "info": {
+      "operator": "SAC - CAS, Section Sommartel",
+      "phone": "+41 27 979 14 12",
+      "website": "https://www.cas-sommartel.ch/",
+      "capacity": "20",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559908",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11063882922",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Monte Rosa Hütte",
+    "lat": 45.95693,
+    "lng": 7.81457,
+    "elevation": 2883,
+    "info": {
+      "operator": "Monte Rosa Hütte Zermatt Betriebs GmbH",
+      "phone": "+41 27 967 21 15",
+      "website": "https://monterosahuette.ch",
+      "capacity": "120",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11063882922",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-219360252",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Neivilles TCS Camping",
+    "lat": 46.0976,
+    "lng": 7.08029,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/219360252",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-10101322757",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Oberaarjochhütte",
+    "lat": 46.52607,
+    "lng": 8.17306,
+    "elevation": 3258,
+    "info": {
+      "operator": "SAC",
+      "phone": "+41 33 973 13 82",
+      "website": "https://www.oberaarjochhuette.ch/",
+      "capacity": "30",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/10101322757",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-11262553552",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Oberaletschhütte",
+    "lat": 46.42494,
+    "lng": 7.97381,
+    "elevation": 2640,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 927 17 67",
+      "website": "http://www.oberaletsch.ch",
+      "capacity": "58",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/11262553552",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4642006491",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Peutex",
+    "lat": 46.10805,
+    "lng": 6.99973,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4642006491",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-3021885871",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Plan de l'Au",
+    "lat": 46.0501,
+    "lng": 7.07934,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/3021885871",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-60528576",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Rastplatz \"Stalden\"",
+    "lat": 46.36514,
+    "lng": 7.99353,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/60528576",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-2400526754",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge d’ Airoz (Refuge d’ Aïroz)",
+    "lat": 46.26638,
+    "lng": 7.27461,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "http://www.alpe-airoz.com",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/2400526754",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4411068612",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge de Bonavau",
+    "lat": 46.15081,
+    "lng": 6.86624,
+    "elevation": 1550,
+    "info": {
+      "operator": null,
+      "phone": "+41 78 823 33 98",
+      "website": "https://www.facebook.com/Refuge.Bonavau/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4411068612",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-4411036267",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge de Chalin",
+    "lat": 46.17922,
+    "lng": 6.94721,
+    "elevation": 2595,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 24 466 31 24",
+      "website": "https://www.cas-chaussy.ch/",
+      "capacity": "8",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/4411036267",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559748",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge des Bouquetins CAS",
+    "lat": 45.97088,
+    "lng": 7.53052,
+    "elevation": 2980,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": null,
+      "website": "http://www.cas-valdejoux.ch",
+      "capacity": "26",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559748",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-10045457453",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge des Dents du Midi",
+    "lat": 46.16429,
+    "lng": 6.93902,
+    "elevation": 2884,
+    "info": {
+      "operator": "Club Alpin Suisse (section Argentine)",
+      "phone": "+41 79 680 60 71",
+      "website": "https://www.cas-argentine.ch/",
+      "capacity": "20",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/10045457453",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6920281757",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge du Lac",
+    "lat": 46.27984,
+    "lng": 7.21446,
+    "elevation": 1462,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 346 14 28",
+      "website": "https://www.refugederborence.ch/",
+      "capacity": "36",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6920281757",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-458867305",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge Igloo des Pantalons Blancs",
+    "lat": 46.04054,
+    "lng": 7.36852,
+    "elevation": 3280,
+    "info": {
+      "operator": null,
+      "phone": "+41 77 812 18 87",
+      "website": "https://new.clubalpinsion.ch/",
+      "capacity": "15",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/458867305",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6893389795",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge La Vouivre",
+    "lat": 46.34509,
+    "lng": 6.83258,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 24 481 14 80",
+      "website": "https://www.lactaney.com/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6893389795",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-849977275",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Refuge Le Peuty",
+    "lat": 46.04663,
+    "lng": 6.9939,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 78 719 29 83",
+      "website": "https://www.refugelepeuty.ch/",
+      "capacity": "22",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/849977275",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-3141305154",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Relais d'Arpette",
+    "lat": 46.03028,
+    "lng": 7.09341,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 783 12 21",
+      "website": "https://arpette.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/3141305154",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-7740615063",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Relais de la Tzoucdana",
+    "lat": 46.12597,
+    "lng": 7.63146,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 475 12 19",
+      "website": "https://tzoucdana.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/7740615063",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-288630307",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Rive Bleue",
+    "lat": 46.38611,
+    "lng": 6.85991,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.camping-rive-bleue.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/288630307",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-289916794",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Rive Bleue",
+    "lat": 46.38758,
+    "lng": 6.85977,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/289916794",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-298982796",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Santa Monica",
+    "lat": 46.30212,
+    "lng": 7.80379,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/298982796",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-10167539308",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Schönbielhütte SAC",
+    "lat": 46.00198,
+    "lng": 7.62896,
+    "elevation": 2694,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 967 13 54",
+      "website": "https://www.section-monte-rosa.ch/",
+      "capacity": "70",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/10167539308",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-799407326",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Schönblick",
+    "lat": 46.11115,
+    "lng": 7.94268,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/799407326",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-225927333",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Simplonblick",
+    "lat": 46.30298,
+    "lng": 7.79535,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/225927333",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8674197882",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Binii",
+    "lat": 46.25706,
+    "lng": 7.34396,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.saviese-tourisme.ch/",
+      "capacity": "12",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8674197882",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-1300597462",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Stellplatz Camp Bietschhorn",
+    "lat": 46.27707,
+    "lng": 7.82419,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://nomady.camp/cabin/44/camp-bietschhorn-burchen/preview",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/1300597462",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-375675526",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Clos des Frès",
+    "lat": 46.17379,
+    "lng": 7.57168,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": "8",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/375675526",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8674197881",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Curala",
+    "lat": 46.0769,
+    "lng": 7.21818,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 775 38 70",
+      "website": "https://www.verbier.ch/en/offers/p4-curala-motorhome-park-le-chable-en-4625148/",
+      "capacity": "16",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8674197881",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8663157015",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Hexenplatz",
+    "lat": 46.3108,
+    "lng": 7.63444,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": "5",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8663157015",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8663147976",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Lac Souterrain",
+    "lat": 46.25548,
+    "lng": 7.42605,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": "6",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8663147976",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-1189941372",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Stellplatz Lampertji 6",
+    "lat": 46.3073,
+    "lng": 7.74208,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 78 820 23 52",
+      "website": "https://www.lampertji6.ch/stellplatz",
+      "capacity": "100",
+      "opening_hours": "24/7",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/1189941372",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-9033053684",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Martigny",
+    "lat": 46.09597,
+    "lng": 7.07606,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/9033053684",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-403575074",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Saas-Fee",
+    "lat": 46.11083,
+    "lng": 7.93361,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.saas-fee.ch/de/unterkuenfte/camping/abstellplatz-fuer-camper",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/403575074",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-9053862657",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Seepark Augstbord",
+    "lat": 46.28858,
+    "lng": 7.80143,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 934 56 56",
+      "website": "https://unterbaech.ch/",
+      "capacity": "6",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/9053862657",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-1308278140",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Seepark Augstbord",
+    "lat": 46.28866,
+    "lng": 7.80145,
+    "elevation": null,
+    "info": {
+      "operator": "Unterbäch Tourismus",
+      "phone": null,
+      "website": "https://www.parknsleep.app/ps/27264132",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/1308278140",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-3067123015",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Simplonpass",
+    "lat": 46.24919,
+    "lng": 8.03029,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": null,
+      "capacity": "15",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/3067123015",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8674197885",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Wildi",
+    "lat": 46.0932,
+    "lng": 7.78,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.matterhornparking.ch/",
+      "capacity": "15",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8674197885",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8674197879",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Zinal",
+    "lat": 46.14038,
+    "lng": 7.62401,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41274761705",
+      "website": "https://www.valdanniviers.ch/",
+      "capacity": "8",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8674197879",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8674197884",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Stellplatz Zumoberhaus",
+    "lat": 46.27731,
+    "lng": 7.81501,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "https://www.moosalpregion.ch/",
+      "capacity": "4",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8674197884",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559964",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Stockhorn-Biwak",
+    "lat": 46.37742,
+    "lng": 7.88101,
+    "elevation": 2598,
+    "info": {
+      "operator": "SAC Blümlisalp",
+      "phone": null,
+      "website": "http://www.stockhornbiwak.ch",
+      "capacity": "18",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559964",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-335528058",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Swiss-Plage",
+    "lat": 46.3004,
+    "lng": 7.56509,
+    "elevation": null,
+    "info": {
+      "operator": "Famille Genoud",
+      "phone": "+41 27 455 66 08",
+      "website": "https://www.swissplage.ch/fr/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/335528058",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8453717925",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Tällihütte",
+    "lat": 46.40322,
+    "lng": 8.01663,
+    "elevation": 1951,
+    "info": {
+      "operator": null,
+      "phone": null,
+      "website": "http://www.burgerschaft-naters.ch/?id=49",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8453717925",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559963",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Täschhütte",
+    "lat": 46.05157,
+    "lng": 7.83001,
+    "elevation": 2701,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 967 39 13",
+      "website": "https://www.taeschhuette.ch",
+      "capacity": "74",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559963",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-236984494",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "TCS Camping Sion",
+    "lat": 46.2116,
+    "lng": 7.316,
+    "elevation": null,
+    "info": {
+      "operator": "TCS",
+      "phone": null,
+      "website": "https://www.tcs.ch/fr/camping-voyages/camping-insider/campings/tcs-campings/camping-sion.php",
+      "capacity": "679",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/236984494",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-1315723958",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Van d'en Haut",
+    "lat": 46.14005,
+    "lng": 6.99254,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 761 26 61",
+      "website": "https://www.campingdevandenhaut.com/tarifs/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/1315723958",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8747425935",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Wald-stellplatz Rhodania",
+    "lat": 46.46623,
+    "lng": 8.24477,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 76 533 46 42",
+      "website": "https://www.waldstellplatz.ch/",
+      "capacity": "20",
+      "opening_hours": "1 May - 31 Oct",
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8747425935",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-502559977",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Weisshornhütte SAC",
+    "lat": 46.08596,
+    "lng": 7.74359,
+    "elevation": 2932,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 967 12 62",
+      "website": "https://www.sac-basel.ch/huetten/weisshornhuette",
+      "capacity": "31",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/502559977",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-13135956571",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Weissmieshütte SAC",
+    "lat": 46.14376,
+    "lng": 7.97788,
+    "elevation": 2726,
+    "info": {
+      "operator": "SAC - CAS",
+      "phone": "+41 27 957 25 54",
+      "website": "https://www.weissmieshuette.ch/",
+      "capacity": "125",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/13135956571",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-8674197883",
+    "region": "CH-VS",
+    "type": "vehicle_spot",
+    "name": "Winter-Stellplatz Mühleye",
+    "lat": 46.29774,
+    "lng": 7.87363,
+    "elevation": null,
+    "info": {
+      "operator": "Camping & Schwimmbad Mühleye",
+      "phone": "+41 27 946 20 84",
+      "website": "https://camping-visp.ch/",
+      "capacity": "10",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/8674197883",
+    "last_verified": null
+  },
+  {
+    "id": "osm-node-6684839287",
+    "region": "CH-VS",
+    "type": "hut",
+    "name": "Wiwannihütte",
+    "lat": 46.3447,
+    "lng": 7.86183,
+    "elevation": 2470,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 946 74 78",
+      "website": "https://www.wiwanni.ch/",
+      "capacity": "44",
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/node/6684839287",
+    "last_verified": null
+  },
+  {
+    "id": "osm-way-662194723",
+    "region": "CH-VS",
+    "type": "campsite",
+    "name": "Woodland Village",
+    "lat": 46.29411,
+    "lng": 7.41518,
+    "elevation": null,
+    "info": {
+      "operator": null,
+      "phone": "+41 27 565 21 10",
+      "website": "https://woodlandvillage.ch/",
+      "capacity": null,
+      "opening_hours": null,
+      "seasonal": null
+    },
+    "source": "OpenStreetMap",
+    "source_url": "https://www.openstreetmap.org/way/662194723",
+    "last_verified": null
+  }
+]

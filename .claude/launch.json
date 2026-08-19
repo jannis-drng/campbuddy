@@ -1,0 +1,33 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "campbuddy-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "app",
+        "--",
+        "--port",
+        "5177"
+      ],
+      "port": 5177
+    },
+    {
+      "name": "campbuddy-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--prefix",
+        "app",
+        "--",
+        "--port",
+        "5178"
+      ],
+      "port": 5178
+    }
+  ]
+}

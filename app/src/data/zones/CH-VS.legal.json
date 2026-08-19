@@ -1,0 +1,105 @@
+{
+  "_hinweis": "RECHTLICHE EINSTUFUNG — manuell gepflegt. Die Geometrie kommt aus CH-VS.osm.json (OpenStreetMap), die Bewertung hier. Jeder Eintrag traegt review_status und last_verified. 'entwurf' bedeutet: aus dem allgemeinen Rechtsrahmen abgeleitet, NICHT amtlich geprüft. Beim Prüfen: source/source_url setzen, review_status auf 'quelle' bzw. 'vor-ort' heben und last_verified auf das Prüfdatum setzen.",
+  "zones": {
+    "osm-way-38781889": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Naturschutzgebiet im UNESCO-Welterbe Schweizer Alpen Jungfrau-Aletsch. Betreten nur auf markierten Wegen, Übernachten im Freien untersagt.",
+      "notes": "Strengste Kategorie in dieser Region. Kontrollen durch Wildhut sind hier realistisch.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-31267813": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Geschuetzte Moorlandschaft und Flachmoor von nationaler Bedeutung. Zelten und Feuer untersagt.",
+      "notes": "Moorböden sind trittempfindlich; Schutz ist bundesrechtlich verankert.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1016426058": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Ausgewiesenes Schutzgebiet. Übernachten im Freien untersagt.",
+      "notes": null,
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-16399080": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Naturreservat mit Feuchtgebiet von nationaler Bedeutung. Zelten, Feuer und Verlassen der Wege untersagt.",
+      "notes": "Liegt am Genferseeufer, grenzüberschreitend zum Kanton Waadt.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-2818263": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Regionaler Naturpark: kein pauschales Zeltverbot, aber Kernzonen, Wildruhezonen und Reservate innerhalb des Parks sind gesperrt. Feuer nur an eingerichteten Feuerstellen und ausserhalb von Waldbrand-Warnstufen.",
+      "notes": "Trockenwald Pfynwald ist im Sommer stark waldbrandgefährdet — Feuerverbote sind häufig.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-2818256": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Regionaler Naturpark: einzelnes Biwak oberhalb der Waldgrenze ausserhalb der Schutz- und Wildruhezonen verbreitet geduldet. Fahrzeug-Übernachtung nur auf bewilligten Plätzen.",
+      "notes": null,
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-17036144": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Regionaler Naturpark: Biwak ausserhalb der Kern- und Schutzzonen in der Regel geduldet. Gemeindliche Regelungen können abweichen.",
+      "notes": null,
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-80977246": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "unknown",
+      "fire_allowed": "unknown",
+      "conditions": "Liegt in Italien — andere Rechtslage als in der Schweiz. Für diese Region noch nicht recherchiert.",
+      "notes": "Grenzüberschreitend aus dem OSM-Import übernommen.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-16158979": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "unknown",
+      "fire_allowed": "unknown",
+      "conditions": "Liegt in Italien — andere Rechtslage als in der Schweiz. Für diese Region noch nicht recherchiert.",
+      "notes": "Grenzüberschreitend aus dem OSM-Import übernommen.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-16166657": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "unknown",
+      "fire_allowed": "unknown",
+      "conditions": "Liegt in Italien — andere Rechtslage als in der Schweiz. Für diese Region noch nicht recherchiert.",
+      "notes": "Grenzüberschreitend aus dem OSM-Import übernommen.",
+      "review_status": "entwurf",
+      "last_verified": null
+    }
+  }
+}
