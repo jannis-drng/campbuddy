@@ -166,10 +166,14 @@ Code-Änderung.
 
 | Bereich | Inhalt |
 |---|---|
-| **Karte** | Legalitäts-Ebene, Routen zeichnen und auswerten, Höhenprofil, Etappen |
+| **Karte** | Legalitäts-Ebene und Routenplanung. Beim Zeichnen zeigt das Seitenpanel nur Länge und Gehzeit; „Tour auswerten" öffnet die vollständige Auswertung mit Legalität, Höhenprofil, Etappen, Ausrüstung, Verpflegung und Wetter |
 | **Community** | Routen, die andere veröffentlicht haben. Ansehen ohne Konto, Merken mit |
-| **Deine Touren** | Gespeicherte Routen und Touren, Favoriten, Ausrüstungs- und Verpflegungsgenerator |
+| **Deine Touren** | Gespeicherte Routen und Touren, Favoriten, und der Generator für eine Tour ohne gezeichnete Route |
 | **Konto** | Anmeldung per Magic Link |
+
+In der Auswertung sind **Dauer und Schlafhöhe aus der Route übernommen** — die Tage aus
+den Etappen, die Höhe aus den Etappenübernachtungen. Die Packliste passt damit zur
+konkreten Tour, statt bei Standardwerten zu beginnen; anpassen lässt sich beides.
 
 Veröffentlichen ist **opt-in**: gespeicherte Routen sind privat, bis man sie unter
 „Deine Touren" ausdrücklich auf öffentlich stellt. Der Autorenname ist frei wählbar —

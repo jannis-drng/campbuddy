@@ -13,6 +13,7 @@ import { Legend } from './components/Legend'
 import { RegionIntro } from './components/RegionIntro'
 import { MyToursPanel } from './components/MyToursPanel'
 import { CommunityPanel } from './components/CommunityPanel'
+import { TourDetailModal } from './components/TourDetailModal'
 import { RoutePanel } from './components/RoutePanel'
 import { analyseRoute } from './data/routeAnalysis'
 import type { Position } from './data/geo'
@@ -45,6 +46,7 @@ export default function App() {
   const [selection, setSelection] = useState<Selection>(null)
 
   const [routeOpen, setRouteOpen] = useState(false)
+  const [auswertungOffen, setAuswertungOffen] = useState(false)
   const [drawing, setDrawing] = useState(false)
   const [routeError, setRouteError] = useState<string | null>(null)
   // Die vom Nutzer gesetzten Stützpunkte …
@@ -167,6 +169,7 @@ export default function App() {
     setRouted(null)
     setView('karte')
     setRouteOpen(true)
+    setAuswertungOffen(false)
   }
 
   const clearRoute = () => {
@@ -258,22 +261,16 @@ export default function App() {
           />
           {routeOpen ? (
             <RoutePanel
-              onSave={handleSaveRoute}
               route={routeGeometry}
               waypoints={gpxTrack ? [] : waypoints}
               waypointCount={gpxTrack ? 0 : waypoints.length}
               onRemoveWaypoint={(index) => setWaypoints((w) => w.filter((_, i) => i !== index))}
               routed={routed}
               routingBusy={routingBusy}
-              profil={profil}
               stats={wanderStats}
-              etappen={etappen}
               hoehenBusy={hoehenBusy}
-              hoehenFehler={hoehenFehler}
               profile={profile}
               isImported={gpxTrack != null}
-              analysis={analysis}
-              region={region}
               drawing={drawing}
               error={routeError}
               onProfileChange={setProfile}
@@ -281,6 +278,7 @@ export default function App() {
               onUndo={() => setWaypoints((w) => w.slice(0, -1))}
               onClear={clearRoute}
               onImportGpx={importGpx}
+              onAuswerten={() => { setDrawing(false); setAuswertungOffen(true) }}
               onClose={() => { setRouteOpen(false); setDrawing(false) }}
             />
           ) : (
@@ -330,6 +328,21 @@ export default function App() {
           <AccountPanel session={session} onZuTouren={() => setView('touren')} />
         </main>
       )}
+
+      <TourDetailModal
+        offen={auswertungOffen}
+        onClose={() => setAuswertungOffen(false)}
+        region={region}
+        route={routeGeometry}
+        analysis={analysis}
+        stats={wanderStats}
+        profil={profil}
+        etappen={etappen}
+        hoehenBusy={hoehenBusy}
+        hoehenFehler={hoehenFehler}
+        onSaveRoute={handleSaveRoute}
+        onSaveTrip={handleSaveTrip}
+      />
     </div>
   )
 }

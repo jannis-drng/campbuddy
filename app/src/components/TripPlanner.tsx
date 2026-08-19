@@ -5,7 +5,7 @@
  * Die Affiliate-Ebene ist eingebunden, aber weiterhin unangebunden: solange
  * keine Partner-ID konfiguriert ist, steht am Produkt "Kauf-Link bald verfügbar".
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Region, Season, TripParams } from '../data/types'
 import { buildPacklist, formatWeight } from '../affiliate/packlist'
 import { buildAffiliateUrl } from '../affiliate/affiliateConfig'
@@ -46,13 +46,31 @@ function seasonForDate(d: Date): Season {
 }
 
 export function TripPlanner({
-  region, onSave,
+  region, onSave, initial, eingebettet = false,
 }: {
   region: Region
   /** null = kein Backend oder nicht angemeldet. */
   onSave: ((name: string, trip: TripParams) => Promise<void>) | null
+  /**
+   * Vorbelegung aus einer gezeichneten Route: Dauer aus den Etappen, Schlafhöhe
+   * aus dem Höhenprofil. Dadurch passt die Packliste zur konkreten Tour, statt
+   * bei Standardwerten zu beginnen.
+   */
+  initial?: Partial<TripParams>
+  /** In ein anderes Panel eingebettet — ohne eigene Überschrift und Aussenabstand. */
+  eingebettet?: boolean
 }) {
-  const [trip, setTrip] = useState<TripParams>(defaultTrip)
+  const [trip, setTrip] = useState<TripParams>(() => ({ ...defaultTrip(), ...initial }))
+
+  // Ändert sich die Route, sollen Dauer und Höhe der Packliste folgen — es sei
+  // denn, der Nutzer hat den Wert inzwischen selbst gesetzt.
+  const initialSchluessel = JSON.stringify(initial ?? {})
+  const letzteVorbelegung = useRef(initialSchluessel)
+  useEffect(() => {
+    if (!initial || initialSchluessel === letzteVorbelegung.current) return
+    letzteVorbelegung.current = initialSchluessel
+    setTrip((t) => ({ ...t, ...initial }))
+  }, [initial, initialSchluessel])
   // Die Jahreszeit folgt dem Startdatum, bis sie einmal von Hand gesetzt wurde.
   // Sonst stünde bei einem Dezember-Termin weiter "Sommer" und die
   // Temperaturschätzung wäre um Größenordnungen daneben.
@@ -125,14 +143,16 @@ export function TripPlanner({
     setTrip((t) => ({ ...t, [key]: value }))
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-5 pb-16">
-      <section>
-        <h2 className="text-lg font-semibold">Tour planen</h2>
-        <p className="mt-0.5 text-sm text-slate-400">
-          Aus deinen Eckdaten und der Vorhersage für {region.name} entsteht eine Packliste
-          und die Verpflegungsmenge.
-        </p>
-      </section>
+    <div className={eingebettet ? 'space-y-5' : 'mx-auto max-w-4xl space-y-6 px-4 py-5 pb-16'}>
+      {!eingebettet && (
+        <section>
+          <h2 className="text-lg font-semibold">Tour planen</h2>
+          <p className="mt-0.5 text-sm text-slate-400">
+            Aus deinen Eckdaten und der Vorhersage für {region.name} entsteht eine Packliste
+            und die Verpflegungsmenge.
+          </p>
+        </section>
+      )}
 
       {/* ---- Eckdaten ---- */}
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">

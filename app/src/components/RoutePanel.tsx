@@ -1,75 +1,49 @@
 /**
- * Route + Legalitäts-Ebene (Abschnitt 4.2).
+ * Route zeichnen (Abschnitt 4.2).
  *
- * Der Teil, der CampBuddy von Routenplanern unterscheidet: nicht die Route
- * selbst, sondern die Antwort auf "wo darf ich entlang dieser Route schlafen".
+ * Bewusst schlank: beim Zeichnen zeigt das Panel nur Länge und Gehzeit. Die
+ * vollständige Auswertung — Legalität, Profil, Etappen, Ausrüstung, Wetter —
+ * öffnet sich erst auf Knopfdruck als eigenes Fenster. Sonst zappelten bei
+ * jedem gesetzten Wegpunkt zwei Bildschirmhöhen Inhalt.
  */
-import { useRef, useState } from 'react'
-import type { Position } from '../data/geo'
-import type { Region } from '../data/types'
-import { NEARBY_RADIUS_M, summarise, type RouteAnalysis } from '../data/routeAnalysis'
+import { useRef } from 'react'
+import { lineLength, type Position } from '../data/geo'
+import { formatDauer, type HikingStats } from '../data/hiking'
 import { PROFILE_LABEL, SNAP_WARN_M, type RoutedPath, type RoutingProfile } from '../map/routing'
-import type { ElevationPoint } from '../services/elevation'
-import { formatDauer, STUNDEN_PRO_TAG, type Etappe, type HikingStats } from '../data/hiking'
-import { ElevationProfile } from './ElevationProfile'
 import { toGpx } from '../services/gpx'
-import { STATUS_CLASS, STATUS_LABEL } from './ui'
 
 interface Props {
-  /** null = kein Backend oder nicht angemeldet; dann wird nicht zum Speichern eingeladen. */
-  onSave: ((name: string) => Promise<void>) | null
   route: Position[]
   waypoints: Position[]
   waypointCount: number
-  onRemoveWaypoint: (index: number) => void
   routed: RoutedPath | null
   routingBusy: boolean
-  profil: ElevationPoint[]
-  stats: HikingStats | null
-  etappen: Etappe[]
-  hoehenBusy: boolean
-  hoehenFehler: string | null
   profile: RoutingProfile
   isImported: boolean
-  analysis: RouteAnalysis
-  region: Region
+  stats: HikingStats | null
+  hoehenBusy: boolean
   drawing: boolean
   error: string | null
   onProfileChange: (p: RoutingProfile) => void
   onToggleDrawing: () => void
   onUndo: () => void
   onClear: () => void
+  onRemoveWaypoint: (index: number) => void
   onImportGpx: (file: File) => void
+  onAuswerten: () => void
   onClose: () => void
 }
-
-const POINT_LABEL = { hut: 'Hütte', campsite: 'Campingplatz', vehicle_spot: 'Stellplatz' } as const
 
 const formatKm = (m: number) =>
   m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
 
 export function RoutePanel({
-  onSave, route, waypoints, waypointCount, onRemoveWaypoint, routed, routingBusy, profile, isImported,
-  profil, stats, etappen, hoehenBusy, hoehenFehler,
-  analysis, region, drawing, error,
-  onProfileChange, onToggleDrawing, onUndo, onClear, onImportGpx, onClose,
+  route, waypoints, waypointCount, routed, routingBusy, profile, isImported,
+  stats, hoehenBusy, drawing, error,
+  onProfileChange, onToggleDrawing, onUndo, onClear, onRemoveWaypoint,
+  onImportGpx, onAuswerten, onClose,
 }: Props) {
   const fileInput = useRef<HTMLInputElement>(null)
-  const [saveName, setSaveName] = useState('')
-  const [saveState, setSaveState] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
-  const [saveError, setSaveError] = useState<string | null>(null)
-
-  const save = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!onSave || !saveName.trim()) return
-    setSaveState('busy'); setSaveError(null)
-    try {
-      await onSave(saveName.trim())
-      setSaveState('ok'); setSaveName('')
-    } catch (err) {
-      setSaveState('error'); setSaveError((err as Error).message)
-    }
-  }
 
   const downloadGpx = () => {
     const blob = new Blob([toGpx(route)], { type: 'application/gpx+xml' })
@@ -81,19 +55,22 @@ export function RoutePanel({
     URL.revokeObjectURL(url)
   }
 
+  // Aus der Geometrie, nicht aus dem Routing-Ergebnis: eine importierte
+  // GPX-Spur wird nicht geroutet und hätte dort keine Länge.
+  const laenge = route.length >= 2 ? lineLength(route) : 0
+
   return (
-    <aside className="absolute inset-x-0 bottom-0 z-20 max-h-[65vh] overflow-y-auto border-t border-white/10 bg-slate-900/97 text-slate-100 shadow-2xl backdrop-blur sm:inset-y-0 sm:right-auto sm:bottom-auto sm:left-0 sm:max-h-none sm:w-[24rem] sm:border-r sm:border-t-0">
+    <aside className="absolute inset-x-0 bottom-0 z-20 max-h-[65vh] overflow-y-auto border-t border-white/10 bg-slate-900/97 text-slate-100 shadow-2xl backdrop-blur sm:inset-y-0 sm:right-auto sm:bottom-auto sm:left-0 sm:max-h-none sm:w-[23rem] sm:border-r sm:border-t-0">
       <div className="sticky top-0 flex items-start justify-between gap-3 border-b border-white/10 bg-slate-900/97 px-5 py-4">
         <div>
           <h2 className="text-base font-semibold leading-tight">Route</h2>
-          <p className="text-xs text-slate-400">Wo darf ich unterwegs schlafen?</p>
+          <p className="text-xs text-slate-400">Zeichnen, dann auswerten</p>
         </div>
         <button onClick={onClose} aria-label="Routenpanel schliessen"
                 className="-mr-1 rounded-lg p-2 text-slate-400 hover:bg-white/10 hover:text-slate-100">✕</button>
       </div>
 
       <div className="space-y-5 px-5 py-4">
-        {/* ---- Werkzeuge ---- */}
         <section className="space-y-2">
           <div>
             <span className="mb-1 block text-[11px] uppercase tracking-wide text-slate-500">Unterwegs</span>
@@ -128,7 +105,7 @@ export function RoutePanel({
             >
               {drawing ? 'Zeichnen beenden' : 'Route zeichnen'}
             </button>
-            <button onClick={onUndo} disabled={route.length === 0}
+            <button onClick={onUndo} disabled={waypoints.length === 0}
                     className="min-h-9 rounded-full bg-white/5 px-3 py-1.5 text-sm text-slate-300 ring-1 ring-white/10 hover:bg-white/10 disabled:opacity-40">
               Punkt zurück
             </button>
@@ -152,7 +129,7 @@ export function RoutePanel({
               onChange={(e) => {
                 const file = e.target.files?.[0]
                 if (file) onImportGpx(file)
-                e.target.value = '' // gleiche Datei soll erneut wählbar bleiben
+                e.target.value = ''
               }}
             />
           </div>
@@ -166,14 +143,13 @@ export function RoutePanel({
           {routed?.snapped && routed.snapDistance_m != null && routed.snapDistance_m > SNAP_WARN_M && (
             <p className="rounded-lg bg-amber-500/10 p-2.5 text-xs leading-relaxed text-amber-200/90">
               Ein Wegpunkt wurde {formatKm(routed.snapDistance_m)} auf den nächsten erfassten Weg
-              verschoben. Die Auswertung gilt für die verschobene Strecke, nicht für den
-              angeklickten Ort.
+              verschoben. Die Auswertung gilt für die verschobene Strecke.
             </p>
           )}
           {routed && !routed.snapped && waypointCount >= 2 && (
             <p className="rounded-lg bg-amber-500/10 p-2.5 text-xs leading-relaxed text-amber-200/90">
               Kein Weg-Routing möglich ({routed.fallbackReason}). Die Wegpunkte sind nur gerade
-              verbunden — Länge und Zonenauswertung sind dadurch ungenau.
+              verbunden — Länge und Auswertung sind dadurch ungenau.
             </p>
           )}
           {error && <p className="rounded-lg bg-red-500/10 p-2.5 text-xs text-red-300">{error}</p>}
@@ -185,16 +161,13 @@ export function RoutePanel({
               Wegpunkte ({waypoints.length})
             </h3>
             <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
-              {waypoints.map((wp, i) => {
+              {waypoints.map((_, i) => {
                 const rolle = i === 0 ? 'Start' : i === waypoints.length - 1 ? 'Ziel' : `Zwischenstopp ${i}`
                 const farbe = i === 0 ? 'bg-green-500' : i === waypoints.length - 1 ? 'bg-red-500' : 'bg-slate-200'
                 return (
                   <li key={i} className="flex items-center gap-2 px-2.5 py-2">
                     <span className={`h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-slate-900 ${farbe}`} />
                     <span className="min-w-0 flex-1 text-sm text-slate-200">{rolle}</span>
-                    <span className="shrink-0 text-[11px] text-slate-500">
-                      {wp[1].toFixed(4)}, {wp[0].toFixed(4)}
-                    </span>
                     <button
                       onClick={() => onRemoveWaypoint(i)}
                       aria-label={`${rolle} entfernen`}
@@ -212,206 +185,40 @@ export function RoutePanel({
           </section>
         )}
 
+        {/* ---- Kurzinfo statt voller Auswertung ---- */}
         {route.length < 2 ? (
           <p className="rounded-lg bg-white/5 p-3 text-sm leading-relaxed text-slate-400">
             Zeichne eine Route — die Wegpunkte werden auf reale Wege geroutet — oder
-            importiere eine GPX-Datei aus deinem Tourenplaner. CampBuddy legt dann die
-            Legalitäts-Ebene darüber und zeigt dir, wo unterwegs Übernachten zulässig ist.
+            importiere eine GPX-Datei aus deinem Tourenplaner.
           </p>
         ) : (
           <>
-            <section>
-              <div className="flex items-baseline justify-between gap-2">
-                <h3 className="text-sm font-semibold text-slate-200">Fazit</h3>
-                <span className="text-xs text-slate-500">
-                  {formatKm(analysis.length_m)}
-                  {/*
-                    Nur EINE Gehzeit anzeigen. Die Engine rechnet ohne Höhenmeter
-                    und wäre im Gebirge deutlich zu optimistisch — sobald das
-                    Höhenprofil da ist, gilt die Alpenvereinsformel.
-                  */}
-                  {stats ? ` · ${formatDauer(stats.duration_s)}` : null}
+            <section className="rounded-lg bg-white/5 p-3">
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="text-xs uppercase tracking-wide text-slate-500">Länge</span>
+                <span className="text-base font-semibold text-slate-100">{formatKm(laenge)}</span>
+              </div>
+              <div className="mt-1 flex items-baseline justify-between gap-3">
+                <span className="text-xs uppercase tracking-wide text-slate-500">Gehzeit</span>
+                <span className="text-base font-semibold text-slate-100">
+                  {stats ? formatDauer(stats.duration_s) : hoehenBusy ? '…' : '—'}
                 </span>
               </div>
-              <p className="mt-1 text-sm leading-relaxed text-slate-300">
-                {summarise(analysis, region.legal_framework.baseline_status)}
-              </p>
             </section>
 
-            <section>
-              <h3 className="mb-1.5 text-sm font-semibold text-slate-200">Profil &amp; Aufwand</h3>
-
-              {hoehenBusy && <p className="text-xs text-slate-400">Höhendaten werden geladen …</p>}
-              {hoehenFehler && (
-                <p className="rounded-lg bg-amber-500/10 p-2.5 text-xs text-amber-200/90">
-                  Höhendaten nicht verfügbar ({hoehenFehler}). Gehzeit und Schwierigkeit
-                  lassen sich ohne sie nicht bestimmen.
-                </p>
-              )}
-
-              {profil.length > 1 && (
-                <ElevationProfile profil={profil} etappenGrenzen={etappen.slice(0, -1).map((e) => e.bis_m)} />
-              )}
-
-              {stats && (
-                <>
-                  <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 text-sm">
-                    <Kennzahl label="Aufstieg" wert={`${stats.ascent_m} hm`} />
-                    <Kennzahl label="Abstieg" wert={`${stats.descent_m} hm`} />
-                    <Kennzahl label="Höchster Punkt" wert={`${stats.max_ele} m`} />
-                    <Kennzahl label="Gehzeit" wert={formatDauer(stats.duration_s)} />
-                  </div>
-
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${
-                      { leicht: 'bg-green-500/15 text-green-300 ring-green-500/30',
-                        mittel: 'bg-yellow-500/15 text-yellow-300 ring-yellow-500/30',
-                        schwer: 'bg-orange-500/15 text-orange-300 ring-orange-500/30',
-                        'sehr schwer': 'bg-red-500/15 text-red-300 ring-red-500/30' }[stats.schwierigkeit]
-                    }`}>
-                      {stats.schwierigkeit}
-                    </span>
-                    <span className="text-[11px] text-slate-500">Kondition</span>
-                  </div>
-                  <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
-                    {stats.begruendung} Gehzeit nach der Alpenvereinsformel
-                    (4 km/h eben, 300 hm/h aufwärts, 500 hm/h abwärts), ohne längere Pausen.
-                  </p>
-                </>
-              )}
-            </section>
-
-            {etappen.length > 0 && (
-              <section>
-                <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
-                  Etappenvorschlag ({etappen.length} Tage)
-                </h3>
-                <ul className="space-y-1.5">
-                  {etappen.map((e) => (
-                    <li key={e.nummer} className="rounded-lg bg-white/5 p-2.5">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="text-sm font-medium text-slate-100">Tag {e.nummer}</span>
-                        <span className="text-[11px] text-slate-500">
-                          {formatKm(e.distance_m)} · {e.ascent_m} hm · {formatDauer(e.duration_s)}
-                        </span>
-                      </div>
-                      <p className="mt-0.5 text-xs text-slate-400">
-                        {e.schlafplatz
-                          ? `Übernachtung: ${e.schlafplatz.point.name} (${formatKm(e.schlafplatz.distance)} vom Etappenende)`
-                          : 'Keine erfasste Übernachtung in der Nähe des Etappenendes — hier zählt die Rechtslage der Zone.'}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
-                  Aufgeteilt nach Gehzeit bei {STUNDEN_PRO_TAG} Stunden pro Tag, nicht nach
-                  Kilometern — 12 km im Flachen und 12 km mit 1200 Höhenmetern sind nicht
-                  derselbe Tag.
-                </p>
-              </section>
-            )}
-
-            <section>
-              <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
-                Durchquerte Zonen{analysis.crossed.length > 0 && ` (${analysis.crossed.length})`}
-              </h3>
-              {analysis.crossed.length === 0 ? (
-                <p className="text-xs text-slate-400">
-                  Die Route berührt keine eingezeichnete Fläche.
-                </p>
-              ) : (
-                <ul className="space-y-1.5">
-                  {analysis.crossed.map(({ zone, meters, share }) => (
-                    <li key={zone.id} className="rounded-lg bg-white/5 p-2.5">
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="text-sm text-slate-100">{zone.name}</span>
-                        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${STATUS_CLASS[zone.status]}`}>
-                          {STATUS_LABEL[zone.status]}
-                        </span>
-                      </div>
-                      <p className="mt-0.5 text-[11px] text-slate-500">
-                        {formatKm(meters)} auf der Route · {Math.round(share * 100)} %
-                        {zone.review_status === 'entwurf' && ' · Einstufung ungeprüft'}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-
-            <section>
-              <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
-                Schlafplätze im Umkreis von {NEARBY_RADIUS_M / 1000} km
-              </h3>
-              {analysis.nearby.length === 0 ? (
-                <p className="text-xs text-slate-400">Keine erfassten Punkte in Routennähe.</p>
-              ) : (
-                <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
-                  {analysis.nearby.slice(0, 15).map(({ point, distance }) => (
-                    <li key={point.id} className="flex items-baseline justify-between gap-2 px-2.5 py-2">
-                      <span className="min-w-0 text-sm">
-                        <span className="text-slate-100">{point.name}</span>
-                        <span className="ml-1.5 text-[11px] text-slate-500">{POINT_LABEL[point.type]}</span>
-                      </span>
-                      <span className="shrink-0 text-xs text-slate-400">{formatKm(distance)}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {analysis.nearby.length > 15 && (
-                <p className="mt-1 text-[11px] text-slate-500">
-                  … und {analysis.nearby.length - 15} weitere.
-                </p>
-              )}
-            </section>
-
-            {onSave && (
-              <form onSubmit={save} className="flex flex-wrap gap-2">
-                <input
-                  value={saveName}
-                  onChange={(e) => { setSaveName(e.target.value); setSaveState('idle') }}
-                  placeholder="Route benennen und speichern"
-                  maxLength={120}
-                  className="min-h-9 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-2.5 text-sm"
-                />
-                <button type="submit" disabled={!saveName.trim() || saveState === 'busy'}
-                        className="min-h-9 rounded-lg bg-emerald-500/15 px-3 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25 disabled:opacity-40">
-                  {saveState === 'busy' ? 'Speichere …' : 'Speichern'}
-                </button>
-                {saveState === 'ok' && (
-                  <p className="w-full text-xs text-emerald-300">Route gespeichert.</p>
-                )}
-                {saveState === 'error' && (
-                  <p className="w-full text-xs text-red-300">{saveError}</p>
-                )}
-              </form>
-            )}
-
-            {routed?.snapped && !isImported && (
-              <p className="text-[11px] leading-relaxed text-slate-500">
-                Weg-Routing über die öffentliche OSRM-Instanz der FOSSGIS e.V. auf
-                OpenStreetMap-Daten. Die Gehzeit ist eine Schätzung der Engine und
-                berücksichtigt Höhenmeter nur begrenzt.
-              </p>
-            )}
-
-            <p className="rounded-lg bg-amber-500/10 p-3 text-[12px] leading-relaxed text-amber-200/90">
-              Die Auswertung ist nur so verlässlich wie der Prüfstand der Zonen. Ausserhalb
-              eingezeichneter Flächen gilt allein der allgemeine Grundsatz der Region —
-              das ersetzt keine Prüfung vor Ort.
+            <button
+              onClick={onAuswerten}
+              className="min-h-11 w-full rounded-lg bg-emerald-500/20 px-4 text-sm font-semibold text-emerald-100 ring-1 ring-emerald-500/40 hover:bg-emerald-500/30"
+            >
+              Tour auswerten →
+            </button>
+            <p className="text-[11px] leading-relaxed text-slate-500">
+              Öffnet die vollständige Auswertung: Rechtslage entlang der Route, Höhenprofil,
+              Etappen, Ausrüstung, Verpflegung und Wetter.
             </p>
           </>
         )}
       </div>
     </aside>
-  )
-}
-
-function Kennzahl({ label, wert }: { label: string; wert: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-2 border-b border-white/5 pb-1">
-      <span className="text-xs text-slate-400">{label}</span>
-      <span className="font-medium text-slate-100">{wert}</span>
-    </div>
   )
 }
