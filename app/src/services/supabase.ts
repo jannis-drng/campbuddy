@@ -40,6 +40,11 @@ export interface StoredRoute {
   geometry: { type: 'LineString'; coordinates: [number, number][] }
   /** Die vom Nutzer gesetzten Stützpunkte, damit die Route weiterbearbeitbar bleibt. */
   waypoints: [number, number][] | null
+  /** Opt-in: nur ausdrücklich veröffentlichte Routen sind für andere sichtbar. */
+  is_public: boolean
+  beschreibung: string | null
+  /** Frei wählbarer Anzeigename — niemand muss seine Mailadresse veröffentlichen. */
+  autor: string | null
   created_at: string
 }
 
@@ -55,5 +60,9 @@ export interface StoredTrip {
   elevation: number
   season: string
   shelter: string
+  region: string | null
+  distance_m: number | null
+  ascent_m: number | null
+  duration_s: number | null
   created_at: string
 }

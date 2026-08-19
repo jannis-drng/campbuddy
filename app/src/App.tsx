@@ -11,7 +11,8 @@ import { FilterBar } from './components/FilterBar'
 import { InfoPanel, type Selection } from './components/InfoPanel'
 import { Legend } from './components/Legend'
 import { RegionIntro } from './components/RegionIntro'
-import { TripPlanner } from './components/TripPlanner'
+import { MyToursPanel } from './components/MyToursPanel'
+import { CommunityPanel } from './components/CommunityPanel'
 import { RoutePanel } from './components/RoutePanel'
 import { analyseRoute } from './data/routeAnalysis'
 import type { Position } from './data/geo'
@@ -33,7 +34,7 @@ const INITIAL_FILTERS: MapFilters = {
   showPeaks: true,
 }
 
-type View = 'karte' | 'tour' | 'konto'
+type View = 'karte' | 'community' | 'touren' | 'konto'
 
 export default function App() {
   const [view, setView] = useState<View>('karte')
@@ -160,6 +161,14 @@ export default function App() {
     ? async (name: string, trip: Parameters<typeof saveTrip>[1]) => { await saveTrip(name, trip) }
     : null
 
+  const routeLaden = (geometry: Position[], wps: Position[]) => {
+    setGpxTrack(geometry)
+    setWaypoints(wps)
+    setRouted(null)
+    setView('karte')
+    setRouteOpen(true)
+  }
+
   const clearRoute = () => {
     setWaypoints([]); setGpxTrack(null); setRouted(null); setRouteError(null)
   }
@@ -178,7 +187,8 @@ export default function App() {
         <nav className="ml-auto flex gap-1 rounded-lg bg-white/5 p-1" aria-label="Ansicht">
           {([
             ['karte', 'Karte'],
-            ['tour', 'Tour planen'],
+            ['community', 'Community'],
+            ['touren', 'Deine Touren'],
             ...(isSupabaseConfigured ? [['konto', session ? 'Konto' : 'Anmelden'] as const] : []),
           ] as const).map(([key, label]) => (
             <button
@@ -289,28 +299,35 @@ export default function App() {
           <InfoPanel
             selection={selection}
             onClose={() => setSelection(null)}
-            onOpenPlanner={() => { setSelection(null); setView('tour') }}
+            onOpenPlanner={() => { setSelection(null); setView('touren') }}
           />
         </main>
       </div>
 
-      <main className={view === 'tour' ? 'flex-1 overflow-y-auto' : 'hidden'}>
-        <TripPlanner region={region} onSave={handleSaveTrip} />
+      {/*
+        Eine geladene Route wird als fertige Spur übernommen und nicht neu
+        geroutet — sie folgt bereits realen Wegen.
+      */}
+
+      <main className={view === 'touren' ? 'flex-1 overflow-y-auto' : 'hidden'}>
+        <MyToursPanel
+          region={region}
+          session={session}
+          onSaveTrip={handleSaveTrip}
+          onLoadRoute={routeLaden}
+          onAnmelden={() => setView('konto')}
+        />
       </main>
+
+      {view === 'community' && (
+        <main className="flex-1 overflow-y-auto">
+          <CommunityPanel session={session} onLoadRoute={routeLaden} />
+        </main>
+      )}
 
       {view === 'konto' && (
         <main className="flex-1 overflow-y-auto">
-          <AccountPanel
-            session={session}
-            onLoadRoute={(geometry, wps) => {
-              // Geladene Routen werden als fertige Spur übernommen und nicht neu geroutet.
-              setGpxTrack(geometry)
-              setWaypoints(wps)
-              setRouted(null)
-              setView('karte')
-              setRouteOpen(true)
-            }}
-          />
+          <AccountPanel session={session} onZuTouren={() => setView('touren')} />
         </main>
       )}
     </div>

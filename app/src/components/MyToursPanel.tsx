@@ -1,0 +1,203 @@
+/**
+ * "Deine Touren" — alles Gespeicherte an einer Stelle, plus die Planung
+ * von Ausrüstung und Verpflegung (Abschnitte 4.3, 4.5, 4.6).
+ *
+ * Wichtig: der Generator läuft ohne Konto. Nur das Speichern und die
+ * Favoriten brauchen eine Anmeldung — die Spezifikation verlangt in
+ * Abschnitt 3 ausdrücklich, dass die App ohne Login nutzbar bleibt.
+ */
+import { useEffect, useState } from 'react'
+import type { Session } from '@supabase/supabase-js'
+import type { Position } from '../data/geo'
+import { lineLength } from '../data/geo'
+import type { Region, TripParams } from '../data/types'
+import { isSupabaseConfigured, type StoredRoute, type StoredTrip } from '../services/supabase'
+import {
+  deleteRoute, deleteTrip, listFavoriteRoutes, listRoutes, listTrips, removeFavorite, setRoutePublic,
+} from '../services/account'
+import { TripPlanner } from './TripPlanner'
+
+interface Props {
+  region: Region
+  session: Session | null
+  onSaveTrip: ((name: string, trip: TripParams) => Promise<void>) | null
+  onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
+  onAnmelden: () => void
+}
+
+const formatKm = (m: number) =>
+  m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
+
+export function MyToursPanel({ region, session, onSaveTrip, onLoadRoute, onAnmelden }: Props) {
+  const [routen, setRouten] = useState<StoredRoute[]>([])
+  const [touren, setTouren] = useState<StoredTrip[]>([])
+  const [favoriten, setFavoriten] = useState<StoredRoute[]>([])
+  const [fehler, setFehler] = useState<string | null>(null)
+  const [stand, setStand] = useState(0)
+
+  useEffect(() => {
+    if (!session) { setRouten([]); setTouren([]); setFavoriten([]); return }
+    Promise.all([listRoutes(), listTrips(), listFavoriteRoutes()])
+      .then(([r, t, f]) => { setRouten(r); setTouren(t); setFavoriten(f) })
+      .catch((e: Error) => setFehler(e.message))
+  }, [session, stand])
+
+  const veroeffentlichen = async (r: StoredRoute) => {
+    try {
+      await setRoutePublic(r.id, !r.is_public)
+      setRouten((liste) => liste.map((x) => (x.id === r.id ? { ...x, is_public: !x.is_public } : x)))
+    } catch (e) {
+      setFehler((e as Error).message)
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-3xl space-y-8 px-4 py-6 pb-16">
+      <div>
+        <h2 className="text-lg font-semibold">Deine Touren</h2>
+        <p className="mt-0.5 text-sm text-slate-400">
+          Gespeicherte Routen und Touren — und die Planung von Ausrüstung und Verpflegung.
+        </p>
+      </div>
+
+      {fehler && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{fehler}</p>}
+
+      {!session && isSupabaseConfigured && (
+        <div className="rounded-lg bg-white/5 p-4">
+          <p className="text-sm leading-relaxed text-slate-300">
+            Ohne Anmeldung kannst du hier planen, aber nichts speichern.
+          </p>
+          <button
+            onClick={onAnmelden}
+            className="mt-2 min-h-9 rounded-lg bg-emerald-500/15 px-3 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+          >
+            Anmelden
+          </button>
+        </div>
+      )}
+
+      {session && (
+        <>
+          <Abschnitt titel="Gespeicherte Routen" anzahl={routen.length}
+                     leer="Noch keine. Zeichne auf der Karte eine Route und speichere sie dort.">
+            {routen.map((r) => (
+              <li key={r.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm text-slate-100">{r.name}</p>
+                  <p className="text-[11px] text-slate-500">
+                    {r.region} · {formatKm(lineLength(r.geometry.coordinates as Position[]))} ·{' '}
+                    {new Date(r.created_at).toLocaleDateString('de-DE')}
+                    {r.is_public && ' · veröffentlicht'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}
+                  className="min-h-9 rounded-lg bg-white/5 px-2.5 text-xs text-slate-200 ring-1 ring-white/10 hover:bg-white/10"
+                >
+                  Auf Karte
+                </button>
+                <button
+                  onClick={() => veroeffentlichen(r)}
+                  aria-pressed={r.is_public}
+                  title={r.is_public
+                    ? 'Route ist öffentlich sichtbar — Klick nimmt sie zurück'
+                    : 'Route für alle sichtbar machen'}
+                  className={`min-h-9 rounded-lg px-2.5 text-xs ring-1 ${
+                    r.is_public
+                      ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-500/40'
+                      : 'bg-white/5 text-slate-300 ring-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  {r.is_public ? 'Öffentlich' : 'Teilen'}
+                </button>
+                <button
+                  onClick={async () => { await deleteRoute(r.id); setStand((n) => n + 1) }}
+                  aria-label={`${r.name} löschen`}
+                  className="min-h-9 rounded-lg px-2 text-xs text-slate-500 hover:bg-white/10 hover:text-red-300"
+                >
+                  Löschen
+                </button>
+              </li>
+            ))}
+          </Abschnitt>
+
+          <Abschnitt titel="Favoriten aus der Community" anzahl={favoriten.length}
+                     leer="Noch keine. Im Community-Bereich lassen sich Routen mit ☆ merken.">
+            {favoriten.map((r) => (
+              <li key={r.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm text-slate-100">{r.name}</p>
+                  <p className="text-[11px] text-slate-500">
+                    {r.autor ? `von ${r.autor} · ` : ''}
+                    {formatKm(lineLength(r.geometry.coordinates as Position[]))}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}
+                  className="min-h-9 rounded-lg bg-white/5 px-2.5 text-xs text-slate-200 ring-1 ring-white/10 hover:bg-white/10"
+                >
+                  Auf Karte
+                </button>
+                <button
+                  onClick={async () => { await removeFavorite(r.id); setStand((n) => n + 1) }}
+                  aria-label={`${r.name} aus Favoriten entfernen`}
+                  className="min-h-9 rounded-lg px-2 text-xs text-slate-500 hover:bg-white/10 hover:text-red-300"
+                >
+                  Entfernen
+                </button>
+              </li>
+            ))}
+          </Abschnitt>
+
+          <Abschnitt titel="Gespeicherte Touren" anzahl={touren.length}
+                     leer="Noch keine. Unten die Eckdaten setzen und speichern.">
+            {touren.map((t) => (
+              <li key={t.id} className="flex items-center justify-between gap-3 px-3 py-2.5">
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-slate-100">{t.name}</p>
+                  <p className="text-[11px] text-slate-500">
+                    ab {new Date(t.start_date).toLocaleDateString('de-DE')} · {t.days} Tage ·{' '}
+                    {t.persons} {t.persons === 1 ? 'Person' : 'Personen'} · {t.elevation} m
+                  </p>
+                </div>
+                <button
+                  onClick={async () => { await deleteTrip(t.id); setStand((n) => n + 1) }}
+                  aria-label={`${t.name} löschen`}
+                  className="min-h-9 shrink-0 rounded-lg px-2 text-xs text-slate-500 hover:bg-white/10 hover:text-red-300"
+                >
+                  Löschen
+                </button>
+              </li>
+            ))}
+          </Abschnitt>
+        </>
+      )}
+
+      <div className="border-t border-white/10 pt-2">
+        <TripPlanner region={region} onSave={onSaveTrip} />
+      </div>
+    </div>
+  )
+}
+
+function Abschnitt({
+  titel, anzahl, leer, children,
+}: {
+  titel: string
+  anzahl: number
+  leer: string
+  children: React.ReactNode
+}) {
+  return (
+    <section>
+      <h3 className="mb-2 text-sm font-semibold text-slate-200">
+        {titel} {anzahl > 0 && <span className="text-slate-500">({anzahl})</span>}
+      </h3>
+      {anzahl === 0 ? (
+        <p className="text-sm text-slate-400">{leer}</p>
+      ) : (
+        <ul className="divide-y divide-white/5 rounded-lg border border-white/10">{children}</ul>
+      )}
+    </section>
+  )
+}
