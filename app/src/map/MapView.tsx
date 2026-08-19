@@ -44,11 +44,13 @@ interface Props {
   onZoneClick: (zone: Zone) => void
   onPointClick: (point: Point) => void
   onAddWaypoint: (position: Position) => void
+  onMoveWaypoint: (index: number, position: Position) => void
+  onRemoveWaypoint: (index: number) => void
 }
 
 export function MapView({
   region, zones, points, peaks, activity, basemap, visible, route, waypoints, drawing,
-  onZoneClick, onPointClick, onAddWaypoint,
+  onZoneClick, onPointClick, onAddWaypoint, onMoveWaypoint, onRemoveWaypoint,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MlMap | null>(null)
@@ -58,8 +60,14 @@ export function MapView({
 
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
-  const latest = useRef({ zones, points, peaks, activity, drawing, onZoneClick, onPointClick, onAddWaypoint })
-  latest.current = { zones, points, peaks, activity, drawing, onZoneClick, onPointClick, onAddWaypoint }
+  const latest = useRef({
+    zones, points, peaks, activity, drawing, waypoints,
+    onZoneClick, onPointClick, onAddWaypoint, onMoveWaypoint, onRemoveWaypoint,
+  })
+  latest.current = {
+    zones, points, peaks, activity, drawing, waypoints,
+    onZoneClick, onPointClick, onAddWaypoint, onMoveWaypoint, onRemoveWaypoint,
+  }
 
   useEffect(() => {
     if (!container.current || map.current) return
@@ -104,10 +112,68 @@ export function MapView({
     m.on('idle', setupLayers)
     if (m.isStyleLoaded()) setupLayers()
 
+    /* ---- Wegpunkte verschieben ---- */
+    // Eigene Behandlung statt einer Marker-Bibliothek: die Wegpunkte liegen
+    // als GeoJSON-Layer vor, und Marker-DOM-Elemente wären bei vielen Punkten
+    // langsamer und liessen sich nicht mit denselben Ausdrücken einfärben.
+    let ziehIndex: number | null = null
+
+    const vorschau = (position: Position) => {
+      if (ziehIndex == null) return
+      const kopie = [...latest.current.waypoints]
+      kopie[ziehIndex] = position
+      ;(m.getSource('route') as GeoJSONSource | undefined)
+        ?.setData(routeToGeoJson(routeRef.current.route, kopie))
+    }
+
+    const beginneZiehen = (e: { features?: maplibregl.MapGeoJSONFeature[]; preventDefault: () => void }) => {
+      const index = e.features?.[0]?.properties?.index
+      if (typeof index !== 'number') return
+      // Verhindert, dass die Karte selbst mitzieht.
+      e.preventDefault()
+      ziehIndex = index
+      m.getCanvas().style.cursor = 'grabbing'
+    }
+
+    const beendeZiehen = (lngLat: { lng: number; lat: number }) => {
+      if (ziehIndex == null) return
+      const index = ziehIndex
+      ziehIndex = null
+      m.getCanvas().style.cursor = latest.current.drawing ? 'crosshair' : ''
+      latest.current.onMoveWaypoint(index, [lngLat.lng, lngLat.lat])
+    }
+
+    m.on('mousedown', 'route-waypoints', beginneZiehen)
+    m.on('touchstart', 'route-waypoints', beginneZiehen)
+    m.on('mousemove', (e) => vorschau([e.lngLat.lng, e.lngLat.lat]))
+    m.on('touchmove', (e) => { if (ziehIndex != null) { e.preventDefault(); vorschau([e.lngLat.lng, e.lngLat.lat]) } })
+    m.on('mouseup', (e) => beendeZiehen(e.lngLat))
+    m.on('touchend', (e) => beendeZiehen(e.lngLat))
+
+    // Rechtsklick auf einen Wegpunkt entfernt ihn.
+    m.on('contextmenu', 'route-waypoints', (e) => {
+      const index = e.features?.[0]?.properties?.index
+      if (typeof index === 'number') {
+        e.preventDefault()
+        latest.current.onRemoveWaypoint(index)
+      }
+    })
+
+    m.on('mouseenter', 'route-waypoints', () => {
+      if (ziehIndex == null) m.getCanvas().style.cursor = 'grab'
+    })
+    m.on('mouseleave', 'route-waypoints', () => {
+      if (ziehIndex == null) m.getCanvas().style.cursor = latest.current.drawing ? 'crosshair' : ''
+    })
+
     // Interaktion hängt NICHT an den Layern: das Setzen von Wegpunkten muss
     // auch dann funktionieren, wenn die Legalitäts-Layer noch nicht stehen.
     {
       m.on('click', (e) => {
+        // Ein Klick, der einen Wegpunkt trifft, setzt keinen neuen darauf.
+        if (m.getLayer('route-waypoints') &&
+            m.queryRenderedFeatures(e.point, { layers: ['route-waypoints'] }).length > 0) return
+
         // Im Zeichenmodus hat das Setzen eines Wegpunkts Vorrang.
         if (latest.current.drawing) {
           latest.current.onAddWaypoint([e.lngLat.lng, e.lngLat.lat])
@@ -344,11 +410,32 @@ function addLayers(m: MlMap) {
     source: 'route',
     filter: ['==', ['geometry-type'], 'Point'],
     paint: {
-      'circle-radius': 5,
-      'circle-color': '#f8fafc',
+      // Grosszügig, damit der Griff auch mit dem Finger zu treffen ist.
+      'circle-radius': 8,
+      'circle-color': [
+        'match', ['get', 'rolle'],
+        'start', '#22c55e',
+        'ziel', '#ef4444',
+        '#f8fafc',
+      ],
       'circle-stroke-color': '#0f172a',
       'circle-stroke-width': 2,
     },
+  })
+  m.addLayer({
+    id: 'route-waypoint-labels',
+    type: 'symbol',
+    source: 'route',
+    filter: ['==', ['geometry-type'], 'Point'],
+    layout: {
+      'text-field': ['get', 'beschriftung'],
+      'text-size': 10,
+      'text-font': TEXT_FONT,
+      'text-offset': [0, -1.4],
+      'text-anchor': 'bottom',
+      'text-allow-overlap': true,
+    },
+    paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 2 },
   })
 
   m.addLayer({
@@ -383,9 +470,14 @@ function updateData(m: MlMap, zones: Zone[], points: Point[], activity: Activity
 function routeToGeoJson(route: Position[], waypoints: Position[]): GeoJSON.FeatureCollection {
   // Nur die gesetzten Wegpunkte bekommen einen Griff — eine gerasterte Route
   // hat hunderte Stützpunkte, die niemand als Punkte sehen will.
-  const features: GeoJSON.Feature[] = waypoints.map((p) => ({
+  const features: GeoJSON.Feature[] = waypoints.map((p, i) => ({
     type: 'Feature',
-    properties: {},
+    properties: {
+      index: i,
+      rolle: i === 0 ? 'start' : i === waypoints.length - 1 ? 'ziel' : 'zwischen',
+      // Start und Ziel tragen ihren Namen, Zwischenstopps ihre Nummer.
+      beschriftung: i === 0 ? 'Start' : i === waypoints.length - 1 ? 'Ziel' : String(i),
+    },
     geometry: { type: 'Point', coordinates: p },
   }))
   if (route.length >= 2) {

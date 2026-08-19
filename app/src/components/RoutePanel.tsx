@@ -19,7 +19,9 @@ interface Props {
   /** null = kein Backend oder nicht angemeldet; dann wird nicht zum Speichern eingeladen. */
   onSave: ((name: string) => Promise<void>) | null
   route: Position[]
+  waypoints: Position[]
   waypointCount: number
+  onRemoveWaypoint: (index: number) => void
   routed: RoutedPath | null
   routingBusy: boolean
   profil: ElevationPoint[]
@@ -46,14 +48,8 @@ const POINT_LABEL = { hut: 'Hütte', campsite: 'Campingplatz', vehicle_spot: 'St
 const formatKm = (m: number) =>
   m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
 
-const formatDuration = (seconds: number): string => {
-  const h = Math.floor(seconds / 3600)
-  const m = Math.round((seconds % 3600) / 60)
-  return h > 0 ? `${h} h ${m} min` : `${m} min`
-}
-
 export function RoutePanel({
-  onSave, route, waypointCount, routed, routingBusy, profile, isImported,
+  onSave, route, waypoints, waypointCount, onRemoveWaypoint, routed, routingBusy, profile, isImported,
   profil, stats, etappen, hoehenBusy, hoehenFehler,
   analysis, region, drawing, error,
   onProfileChange, onToggleDrawing, onUndo, onClear, onImportGpx, onClose,
@@ -183,6 +179,39 @@ export function RoutePanel({
           {error && <p className="rounded-lg bg-red-500/10 p-2.5 text-xs text-red-300">{error}</p>}
         </section>
 
+        {waypoints.length > 0 && (
+          <section>
+            <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
+              Wegpunkte ({waypoints.length})
+            </h3>
+            <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
+              {waypoints.map((wp, i) => {
+                const rolle = i === 0 ? 'Start' : i === waypoints.length - 1 ? 'Ziel' : `Zwischenstopp ${i}`
+                const farbe = i === 0 ? 'bg-green-500' : i === waypoints.length - 1 ? 'bg-red-500' : 'bg-slate-200'
+                return (
+                  <li key={i} className="flex items-center gap-2 px-2.5 py-2">
+                    <span className={`h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-slate-900 ${farbe}`} />
+                    <span className="min-w-0 flex-1 text-sm text-slate-200">{rolle}</span>
+                    <span className="shrink-0 text-[11px] text-slate-500">
+                      {wp[1].toFixed(4)}, {wp[0].toFixed(4)}
+                    </span>
+                    <button
+                      onClick={() => onRemoveWaypoint(i)}
+                      aria-label={`${rolle} entfernen`}
+                      className="shrink-0 rounded px-1.5 py-1 text-slate-500 hover:bg-white/10 hover:text-red-300"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+            <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
+              Wegpunkte lassen sich auf der Karte verschieben. Rechtsklick darauf entfernt sie.
+            </p>
+          </section>
+        )}
+
         {route.length < 2 ? (
           <p className="rounded-lg bg-white/5 p-3 text-sm leading-relaxed text-slate-400">
             Zeichne eine Route — die Wegpunkte werden auf reale Wege geroutet — oder
@@ -196,7 +225,12 @@ export function RoutePanel({
                 <h3 className="text-sm font-semibold text-slate-200">Fazit</h3>
                 <span className="text-xs text-slate-500">
                   {formatKm(analysis.length_m)}
-                  {routed?.duration_s != null && !isImported && ` · ${formatDuration(routed.duration_s)}`}
+                  {/*
+                    Nur EINE Gehzeit anzeigen. Die Engine rechnet ohne Höhenmeter
+                    und wäre im Gebirge deutlich zu optimistisch — sobald das
+                    Höhenprofil da ist, gilt die Alpenvereinsformel.
+                  */}
+                  {stats ? ` · ${formatDauer(stats.duration_s)}` : null}
                 </span>
               </div>
               <p className="mt-1 text-sm leading-relaxed text-slate-300">

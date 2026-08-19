@@ -241,12 +241,18 @@ export default function App() {
               setGpxTrack(null)
               setWaypoints((w) => [...w, position])
             }}
+            onMoveWaypoint={(index, position) =>
+              setWaypoints((w) => w.map((p, i) => (i === index ? position : p)))
+            }
+            onRemoveWaypoint={(index) => setWaypoints((w) => w.filter((_, i) => i !== index))}
           />
           {routeOpen ? (
             <RoutePanel
               onSave={handleSaveRoute}
               route={routeGeometry}
+              waypoints={gpxTrack ? [] : waypoints}
               waypointCount={gpxTrack ? 0 : waypoints.length}
+              onRemoveWaypoint={(index) => setWaypoints((w) => w.filter((_, i) => i !== index))}
               routed={routed}
               routingBusy={routingBusy}
               profil={profil}
