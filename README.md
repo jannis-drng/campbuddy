@@ -13,8 +13,15 @@ Vollständige Produktspezifikation: [Freistehen_Spezifikation.md](./Freistehen_S
 
 ## Stand
 
-Umgesetzt ist der `[JETZT]`-Umfang aus Abschnitt 3 der Spezifikation: **eine** Region
-(Wallis, CH-VS), eine Kartenansicht, Zonen + Punkte, Infokarten, Filter, Haftungshinweis.
+**`[JETZT]` (Abschnitt 3) — fertig:** eine Region (Wallis, CH-VS), eine Kartenansicht,
+Zonen + Punkte, Infokarten, Filter, Haftungshinweis.
+
+**`[BALD]` — umgesetzt:** Ausrüstungs- und Verpflegungs-Generator (4.3) und Wetter (4.5)
+in der Ansicht „Tour planen". Aus Startdatum, Dauer, Personenzahl, Schlafhöhe und
+Übernachtungsart entsteht eine Packliste samt Verpflegungsmenge; die Wettervorhersage
+für den Reisezeitraum bestimmt dabei Schlafsack und Kleidung.
+
+**`[BALD]` — offen:** Routenplanung (4.2), Login/Speichern (4.6), weitere Regionen.
 
 | Ebene | Inhalt | Quelle |
 |---|---|---|
@@ -36,7 +43,11 @@ app/src/
                   <REGION>.legal.json = rechtliche Einstufung (manuell gepflegt)
     points/       <REGION>.json       = Hütten/Plätze (importiert)
   map/        SCHICHT 2 — Karte & Routing (austauschbare externe Dienste)
-  affiliate/  SCHICHT 3 — Ausrüstung & Affiliate (vorbereitet, nicht angebunden)
+  services/   SCHICHT 2 — weitere externe Open-Data-Dienste (Wetter via Open-Meteo)
+  affiliate/  SCHICHT 3 — Ausrüstung & Affiliate
+    gearItems.ts   Katalog nach Abschnitt 8.5, affiliate_url überall noch null
+    packlist.ts    Generator: Packliste + Verpflegung aus den Tour-Eckdaten
+    affiliateConfig.ts  zentrale Partner-Konfiguration — hier wird später scharf geschaltet
 ```
 
 Geometrie und Rechtslage sind absichtlich **getrennte Dateien**: die Geometrie lässt sich
@@ -79,9 +90,26 @@ npm run deploy --prefix app
 
 Das baut `app/dist` und pusht den Build auf den Branch `gh-pages`.
 
+## Ausrüstungs-Generator
+
+Die Empfehlungen beruhen auf offen dokumentierten Faustformeln, nicht auf Messwerten.
+Alle Annahmen stehen als Konstanten in `packlist.ts` und werden im UI ausgewiesen:
+Grundumsatz plus Aktivitätszuschlag, Zuschläge für Kälte und Höhe, Energiedichte der
+Trekkingnahrung. Die Temperatur auf Tourhöhe wird mit rund 0,65 °C je 100 Höhenmeter aus
+der Vorhersage umgerechnet.
+
+Liegt der Reisezeitraum jenseits des 16-Tage-Fensters von Open-Meteo, fällt die Liste
+sichtbar auf eine Schätzung aus der Jahreszeit zurück, statt eine Genauigkeit
+vorzutäuschen, die es nicht gibt.
+
+Die Affiliate-Ebene ist eingebunden, aber bewusst nicht scharf: solange in
+`affiliateConfig.ts` keine Partner-ID steht, zeigt das UI „Kauf-Link bald verfügbar"
+statt eines erfundenen Links.
+
 ## Technik
 
-React 19 · TypeScript · Vite · Tailwind 4 · MapLibre GL 5 · OpenFreeMap-Kacheln (OpenStreetMap)
+React 19 · TypeScript · Vite · Tailwind 4 · MapLibre GL 5 · OpenFreeMap-Kacheln
+(OpenStreetMap) · Open-Meteo
 
 Keine API-Keys, keine Kartenlizenzgebühren, kein Backend — laufende Kosten: 0 €.
 

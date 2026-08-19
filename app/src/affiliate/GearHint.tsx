@@ -1,60 +1,65 @@
 /**
- * SCHICHT 3 im UI — vorbereitet, nicht angebunden (Abschnitt 7).
+ * SCHICHT 3 im UI — Brücke von der Zone zur Tourplanung.
  *
- * Zeigt die Ausrüstungs-Ebene bereits sichtbar an, aber ohne Fantasie-Links:
- * solange keine Partner-ID hinterlegt ist, steht dort ehrlich "bald verfügbar".
+ * Zeigt in der Infokarte an, worauf es bei dieser Rechtslage ausrüstungsseitig
+ * ankommt, und führt für die vollständige Liste in den Generator.
  */
-import { useState } from 'react'
 import type { LegalStatus } from '../data/types'
-import { buildAffiliateUrl } from './affiliateConfig'
-import { suggestGear } from './gearItems'
+import { GEAR_ITEMS } from './gearItems'
 
-export function GearHint({ status }: { status: LegalStatus }) {
-  const [open, setOpen] = useState(false)
-  const items = suggestGear(status)
-  if (items.length === 0) return null
+/** Was die jeweilige Rechtslage praktisch für die Ausrüstung bedeutet. */
+const HINT_BY_STATUS: Record<LegalStatus, { text: string; items: string[] } | null> = {
+  forbidden: null,
+  allowed: {
+    text: 'Hier darfst du regulär übernachten — Zelt und Kocher sind unproblematisch.',
+    items: ['leichtzelt', 'schlafsack-3jahres', 'isomatte', 'gaskocher'],
+  },
+  tolerated: {
+    text: 'Geduldet heisst: unauffällig bleiben. Spät aufbauen, früh abbauen, keine Spuren — dafür ist ein Biwaksack besser geeignet als ein auffälliges Zelt.',
+    items: ['biwaksack', 'isomatte', 'gaskocher', 'muellbeutel'],
+  },
+  unknown: {
+    text: 'Solange die Lage ungeklärt ist, plane so, als wärst du auf dich gestellt: unauffällig, autark, ohne Feuer.',
+    items: ['biwaksack', 'gaskocher', 'wasserfilter', 'muellbeutel'],
+  },
+}
+
+export function GearHint({ status, onOpenPlanner }: { status: LegalStatus; onOpenPlanner: () => void }) {
+  const hint = HINT_BY_STATUS[status]
+
+  if (!hint) {
+    return (
+      <section className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-400">
+        Hier ist Übernachten untersagt — deshalb gibt es an dieser Stelle bewusst keine
+        Ausrüstungsempfehlung. Such dir einen Platz ausserhalb der Zone.
+      </section>
+    )
+  }
+
+  const items = hint.items
+    .map((id) => GEAR_ITEMS.find((g) => g.id === id))
+    .filter((g): g is NonNullable<typeof g> => g != null)
 
   return (
-    <section className="rounded-lg border border-white/10 bg-white/5">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left text-sm font-semibold text-slate-200"
-        aria-expanded={open}
-      >
-        Passende Ausrüstung
-        <span className="text-xs font-normal text-slate-500">{open ? 'schliessen' : `${items.length} Vorschläge`}</span>
-      </button>
+    <section className="rounded-lg border border-white/10 bg-white/5 p-3">
+      <h3 className="text-sm font-semibold text-slate-200">Was das für die Ausrüstung heisst</h3>
+      <p className="mt-1 text-xs leading-relaxed text-slate-400">{hint.text}</p>
 
-      {open && (
-        <div className="space-y-3 border-t border-white/10 px-3 py-3">
-          {items.map((item) => {
-            const url = buildAffiliateUrl(item.vendor, item.affiliate_url)
-            return (
-              <div key={item.id} className="text-sm">
-                <div className="flex items-baseline justify-between gap-2">
-                  <span className="font-medium text-slate-100">{item.name}</span>
-                  <span className="shrink-0 text-xs text-slate-500">{item.price_hint}</span>
-                </div>
-                <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{item.rationale}</p>
-                {url ? (
-                  <a href={url} target="_blank" rel="noreferrer noopener sponsored"
-                     className="mt-1 inline-block text-xs text-sky-400 hover:underline">
-                    Zum Produkt ↗
-                  </a>
-                ) : (
-                  <span className="mt-1 inline-block rounded bg-white/5 px-2 py-0.5 text-[11px] text-slate-500">
-                    Kauf-Link bald verfügbar
-                  </span>
-                )}
-              </div>
-            )
-          })}
-          <p className="border-t border-white/10 pt-2 text-[11px] leading-relaxed text-slate-500">
-            Der Ausrüstungs-Generator [BALD] baut auf dieser Ebene auf. Kauf-Links werden künftig
-            Provisionslinks sein — sie werden dann als solche gekennzeichnet.
-          </p>
-        </div>
-      )}
+      <ul className="mt-2.5 space-y-1">
+        {items.map((item) => (
+          <li key={item.id} className="flex items-baseline justify-between gap-2 text-xs">
+            <span className="text-slate-200">{item.name}</span>
+            <span className="shrink-0 text-slate-500">{item.price_hint ?? '—'}</span>
+          </li>
+        ))}
+      </ul>
+
+      <button
+        onClick={onOpenPlanner}
+        className="mt-3 min-h-9 w-full rounded-lg bg-emerald-500/15 px-3 py-2 text-sm font-medium text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+      >
+        Vollständige Packliste erzeugen →
+      </button>
     </section>
   )
 }

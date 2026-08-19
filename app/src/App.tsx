@@ -8,6 +8,7 @@ import { FilterBar } from './components/FilterBar'
 import { InfoPanel, type Selection } from './components/InfoPanel'
 import { Legend } from './components/Legend'
 import { RegionIntro } from './components/RegionIntro'
+import { TripPlanner } from './components/TripPlanner'
 
 const INITIAL_FILTERS: MapFilters = {
   activity: 'all',
@@ -16,7 +17,10 @@ const INITIAL_FILTERS: MapFilters = {
   showVehicleSpots: true,
 }
 
+type View = 'karte' | 'tour'
+
 export default function App() {
+  const [view, setView] = useState<View>('karte')
   const [regionCode, setRegionCode] = useState(DEFAULT_REGION)
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
   const [selection, setSelection] = useState<Selection>(null)
@@ -39,7 +43,22 @@ export default function App() {
           </p>
         </div>
 
-        <label className="ml-auto flex items-center gap-2 text-xs text-slate-400">
+        <nav className="ml-auto flex gap-1 rounded-lg bg-white/5 p-1" aria-label="Ansicht">
+          {([['karte', 'Karte'], ['tour', 'Tour planen']] as const).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setView(key)}
+              aria-current={view === key ? 'page' : undefined}
+              className={`min-h-9 rounded-md px-3 py-1.5 text-sm transition ${
+                view === key ? 'bg-slate-700 text-slate-100' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        <label className="flex items-center gap-2 text-xs text-slate-400">
           <span className="hidden sm:inline">Region</span>
           <select
             value={regionCode}
@@ -54,21 +73,37 @@ export default function App() {
       </header>
 
       <DisclaimerBar />
-      <FilterBar filters={filters} onChange={setFilters} counts={{ zones: allZones.length, points: points.length }} />
 
-      <main className="relative flex-1">
-        <MapView
-          region={region}
-          zones={allZones}
-          points={points}
-          activity={filters.activity}
-          onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
-          onPointClick={(point) => setSelection({ kind: 'point', point })}
-        />
-        <RegionIntro region={region} stats={stats} />
-        <Legend activity={filters.activity} />
-        <InfoPanel selection={selection} onClose={() => setSelection(null)} />
-      </main>
+      {view === 'karte' ? (
+        <>
+          <FilterBar
+            filters={filters}
+            onChange={setFilters}
+            counts={{ zones: allZones.length, points: points.length }}
+          />
+          <main className="relative flex-1">
+            <MapView
+              region={region}
+              zones={allZones}
+              points={points}
+              activity={filters.activity}
+              onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
+              onPointClick={(point) => setSelection({ kind: 'point', point })}
+            />
+            <RegionIntro region={region} stats={stats} />
+            <Legend activity={filters.activity} />
+            <InfoPanel
+              selection={selection}
+              onClose={() => setSelection(null)}
+              onOpenPlanner={() => { setSelection(null); setView('tour') }}
+            />
+          </main>
+        </>
+      ) : (
+        <main className="flex-1 overflow-y-auto">
+          <TripPlanner region={region} />
+        </main>
+      )}
     </div>
   )
 }

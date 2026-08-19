@@ -92,3 +92,23 @@ export interface MapFilters {
   showCampsites: boolean
   showVehicleSpots: boolean
 }
+
+/** Jahreszeit-Einstufung für die Ausrüstungswahl. */
+export type Season = 'sommer' | 'uebergang' | 'winter'
+
+/**
+ * Eckdaten einer geplanten Tour (Schema nach Abschnitt 8.6).
+ *
+ * Noch ohne `id`/`user_id`: gespeichert wird erst mit Login [BALD].
+ * Die Felder sind bewusst schon so benannt wie die spätere Tabelle.
+ */
+export interface TripParams {
+  start_date: string
+  days: number
+  persons: number
+  /** Geplante Schlafhöhe in Metern — bestimmt Temperatur und Ausrüstung. */
+  elevation: number
+  season: Season
+  /** Übernachtungsart — entscheidet, ob Zelt/Biwak überhaupt nötig ist. */
+  shelter: 'zelt' | 'biwak' | 'huette'
+}

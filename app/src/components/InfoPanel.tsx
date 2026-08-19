@@ -13,7 +13,13 @@ export type Selection =
   | { kind: 'point'; point: Point }
   | null
 
-export function InfoPanel({ selection, onClose }: { selection: Selection; onClose: () => void }) {
+interface InfoPanelProps {
+  selection: Selection
+  onClose: () => void
+  onOpenPlanner: () => void
+}
+
+export function InfoPanel({ selection, onClose, onOpenPlanner }: InfoPanelProps) {
   if (!selection) return null
 
   return (
@@ -36,7 +42,9 @@ export function InfoPanel({ selection, onClose }: { selection: Selection; onClos
         </button>
       </div>
 
-      {selection.kind === 'zone' ? <ZoneBody zone={selection.zone} /> : <PointBody point={selection.point} />}
+      {selection.kind === 'zone'
+        ? <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />
+        : <PointBody point={selection.point} />}
     </aside>
   )
 }
@@ -47,7 +55,7 @@ const POINT_LABEL = {
   vehicle_spot: 'Stellplatz Fahrzeug',
 } as const
 
-function ZoneBody({ zone }: { zone: Zone }) {
+function ZoneBody({ zone, onOpenPlanner }: { zone: Zone; onOpenPlanner: () => void }) {
   return (
     <div className="space-y-5 px-5 py-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -78,7 +86,7 @@ function ZoneBody({ zone }: { zone: Zone }) {
 
       <SourceBlock source={zone.source} url={zone.source_url} lastVerified={zone.last_verified} isGeometryOnly />
 
-      <GearHint status={zone.status} />
+      <GearHint status={zone.status} onOpenPlanner={onOpenPlanner} />
 
       <p className="rounded-lg bg-amber-500/10 p-3 text-[12px] leading-relaxed text-amber-200/90">
         Orientierungshilfe, keine Rechtsgarantie. Beschilderung vor Ort und Auskünfte von Gemeinde
