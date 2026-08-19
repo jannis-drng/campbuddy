@@ -14,6 +14,7 @@ import {
 import type { ExpressionSpecification } from '@maplibre/maplibre-gl-style-spec'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { ActivityMode, Point, Region, Zone } from '../data/types'
+import type { Position } from '../data/geo'
 import { effectiveStatus } from '../data/legalData'
 import { ATTRIBUTION, MAP_STYLE_URL, POINT_COLORS, STATUS_COLORS } from './mapConfig'
 
@@ -29,19 +30,29 @@ interface Props {
    * MapLibre muss nach dem Wiedereinblenden nur seine Grösse neu messen.
    */
   visible: boolean
+  /** Gezeichnete oder importierte Route. Leer = keine Route. */
+  route: Position[]
+  /** Im Zeichenmodus setzt ein Kartenklick einen Wegpunkt statt eine Zone zu öffnen. */
+  drawing: boolean
   onZoneClick: (zone: Zone) => void
   onPointClick: (point: Point) => void
+  onAddWaypoint: (position: Position) => void
 }
 
-export function MapView({ region, zones, points, activity, visible, onZoneClick, onPointClick }: Props) {
+export function MapView({
+  region, zones, points, activity, visible, route, drawing,
+  onZoneClick, onPointClick, onAddWaypoint,
+}: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MlMap | null>(null)
   const ready = useRef(false)
+  const routeRef = useRef(route)
+  routeRef.current = route
 
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
-  const latest = useRef({ zones, points, activity, onZoneClick, onPointClick })
-  latest.current = { zones, points, activity, onZoneClick, onPointClick }
+  const latest = useRef({ zones, points, activity, drawing, onZoneClick, onPointClick, onAddWaypoint })
+  latest.current = { zones, points, activity, drawing, onZoneClick, onPointClick, onAddWaypoint }
 
   useEffect(() => {
     if (!container.current || map.current) return
@@ -69,9 +80,15 @@ export function MapView({ region, zones, points, activity, visible, onZoneClick,
       ready.current = true
       addLayers(m)
       updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
+      ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(routeRef.current))
 
-      // Punkte vor Zonen prüfen: der kleinere Treffer gewinnt.
       m.on('click', (e) => {
+        // Im Zeichenmodus hat das Setzen eines Wegpunkts Vorrang.
+        if (latest.current.drawing) {
+          latest.current.onAddWaypoint([e.lngLat.lng, e.lngLat.lat])
+          return
+        }
+        // Sonst: Punkte vor Zonen prüfen, der kleinere Treffer gewinnt.
         const hits = m.queryRenderedFeatures(e.point, { layers: ['points-circle', 'zones-fill'] })
         const hitPoint = hits.find((f) => f.layer.id === 'points-circle')
         if (hitPoint) {
@@ -86,9 +103,15 @@ export function MapView({ region, zones, points, activity, visible, onZoneClick,
         }
       })
 
+      // Im Zeichenmodus bleibt das Fadenkreuz stehen — sonst würde der Cursor
+      // über Zonen fälschlich Anklickbarkeit signalisieren.
       for (const layer of ['points-circle', 'zones-fill']) {
-        m.on('mouseenter', layer, () => { m.getCanvas().style.cursor = 'pointer' })
-        m.on('mouseleave', layer, () => { m.getCanvas().style.cursor = '' })
+        m.on('mouseenter', layer, () => {
+          if (!latest.current.drawing) m.getCanvas().style.cursor = 'pointer'
+        })
+        m.on('mouseleave', layer, () => {
+          if (!latest.current.drawing) m.getCanvas().style.cursor = ''
+        })
       }
     })
 
@@ -100,6 +123,17 @@ export function MapView({ region, zones, points, activity, visible, onZoneClick,
     const m = map.current
     if (m && ready.current) updateData(m, zones, points, activity)
   }, [zones, points, activity])
+
+  useEffect(() => {
+    const m = map.current
+    if (!m || !ready.current) return
+    ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route))
+  }, [route])
+
+  useEffect(() => {
+    const m = map.current
+    if (m) m.getCanvas().style.cursor = drawing ? 'crosshair' : ''
+  }, [drawing])
 
   // Während des Ausblendens hat der Container die Grösse 0; ohne resize bliebe
   // der Canvas danach leer.
@@ -165,6 +199,7 @@ function addLayers(m: MlMap) {
   const empty: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
   m.addSource('zones', { type: 'geojson', data: empty })
   m.addSource('points', { type: 'geojson', data: empty })
+  m.addSource('route', { type: 'geojson', data: empty })
 
   m.addLayer({
     id: 'zones-fill',
@@ -211,6 +246,36 @@ function addLayers(m: MlMap) {
       'circle-stroke-width': 1.5,
     },
   })
+  // Route über die Zonen, aber unter die Punkte: die Punkte sind anklickbar.
+  m.addLayer({
+    id: 'route-casing',
+    type: 'line',
+    source: 'route',
+    filter: ['==', ['geometry-type'], 'LineString'],
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#0f172a', 'line-width': 7, 'line-opacity': 0.5 },
+  })
+  m.addLayer({
+    id: 'route-line',
+    type: 'line',
+    source: 'route',
+    filter: ['==', ['geometry-type'], 'LineString'],
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#f8fafc', 'line-width': 3 },
+  })
+  m.addLayer({
+    id: 'route-waypoints',
+    type: 'circle',
+    source: 'route',
+    filter: ['==', ['geometry-type'], 'Point'],
+    paint: {
+      'circle-radius': 5,
+      'circle-color': '#f8fafc',
+      'circle-stroke-color': '#0f172a',
+      'circle-stroke-width': 2,
+    },
+  })
+
   m.addLayer({
     id: 'points-label',
     type: 'symbol',
@@ -224,4 +289,20 @@ function addLayers(m: MlMap) {
 function updateData(m: MlMap, zones: Zone[], points: Point[], activity: ActivityMode) {
   ;(m.getSource('zones') as GeoJSONSource | undefined)?.setData(zonesToGeoJson(zones, activity))
   ;(m.getSource('points') as GeoJSONSource | undefined)?.setData(pointsToGeoJson(points))
+}
+
+function routeToGeoJson(route: Position[]): GeoJSON.FeatureCollection {
+  const features: GeoJSON.Feature[] = route.map((p) => ({
+    type: 'Feature',
+    properties: {},
+    geometry: { type: 'Point', coordinates: p },
+  }))
+  if (route.length >= 2) {
+    features.push({
+      type: 'Feature',
+      properties: {},
+      geometry: { type: 'LineString', coordinates: route },
+    })
+  }
+  return { type: 'FeatureCollection', features }
 }

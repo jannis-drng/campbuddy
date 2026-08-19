@@ -21,7 +21,13 @@ in der Ansicht „Tour planen". Aus Startdatum, Dauer, Personenzahl, Schlafhöhe
 Übernachtungsart entsteht eine Packliste samt Verpflegungsmenge; die Wettervorhersage
 für den Reisezeitraum bestimmt dabei Schlafsack und Kleidung.
 
-**`[BALD]` — offen:** Routenplanung (4.2), Login/Speichern (4.6), weitere Regionen.
+**`[BALD]` — umgesetzt:** Route + Legalitäts-Ebene (4.2). Route auf der Karte zeichnen
+oder als GPX aus einem beliebigen Tourenplaner importieren; CampBuddy wertet aus, welche
+Zonen sie durchquert, wie viel der Strecke in Verbotsgebieten liegt und welche Hütten und
+Campingplätze in Routennähe liegen. Export als GPX.
+
+**`[BALD]` — offen:** Login/Speichern (4.6), weitere Regionen. Das Einrasten gezeichneter
+Linien auf reale Wege braucht einen Routing-Schlüssel (siehe unten).
 
 | Ebene | Inhalt | Quelle |
 |---|---|---|
@@ -89,6 +95,23 @@ npm run deploy --prefix app
 ```
 
 Das baut `app/dist` und pusht den Build auf den Branch `gh-pages`.
+
+## Route und Legalität
+
+Der eigentliche Mehrwert aus Abschnitt 4.2 ist nicht die Route, sondern die Legalitäts-Ebene
+darauf. Beides funktioniert ohne fremden Dienst:
+
+- **Zeichnen** setzt Wegpunkte per Kartenklick.
+- **GPX-Import** nimmt Routen aus Komoot, AllTrails oder vom Gerät entgegen — statt gegen
+  diese Planer anzutreten (Abschnitt 2), verwertet CampBuddy deren Ergebnis.
+- **Analyse** verdichtet die Route auf 250-Meter-Schritte, damit keine schmale Zone
+  zwischen zwei Stützpunkten durchfällt, und weist Streckenanteile je Zone aus.
+
+Was noch fehlt, ist das **Einrasten auf reale Wege**: dafür braucht es eine Routing-Engine.
+OpenRouteService und GraphHopper bieten kostenlose Kontingente, verlangen aber einen
+API-Schlüssel. Solange in `mapConfig.ts` unter `ROUTING` keiner hinterlegt ist, verbindet
+die App die Wegpunkte mit geraden Linien und sagt das im UI offen. Schlüssel eintragen,
+`enabled: true` — kein Code-Umbau.
 
 ## Ausrüstungs-Generator
 

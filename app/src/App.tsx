@@ -9,6 +9,10 @@ import { InfoPanel, type Selection } from './components/InfoPanel'
 import { Legend } from './components/Legend'
 import { RegionIntro } from './components/RegionIntro'
 import { TripPlanner } from './components/TripPlanner'
+import { RoutePanel } from './components/RoutePanel'
+import { analyseRoute } from './data/routeAnalysis'
+import type { Position } from './data/geo'
+import { parseGpx } from './services/gpx'
 
 const INITIAL_FILTERS: MapFilters = {
   activity: 'all',
@@ -25,12 +29,34 @@ export default function App() {
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
   const [selection, setSelection] = useState<Selection>(null)
 
+  const [routeOpen, setRouteOpen] = useState(false)
+  const [route, setRoute] = useState<Position[]>([])
+  const [drawing, setDrawing] = useState(false)
+  const [routeError, setRouteError] = useState<string | null>(null)
+
   const region = getRegion(regionCode)
   const allZones = useMemo(() => getZones(regionCode), [regionCode])
   const allPoints = useMemo(() => getPoints(regionCode), [regionCode])
   // Zonen werden nie gefiltert — nur umgefärbt (siehe effectiveStatus).
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters])
   const stats = useMemo(() => verificationStats(allZones), [allZones])
+  // Die Analyse läuft über alle Punkte, nicht die gefilterten: eine ausgeblendete
+  // Hütte ist trotzdem eine Schlafmöglichkeit an der Route.
+  const analysis = useMemo(
+    () => analyseRoute(route, allZones, allPoints),
+    [route, allZones, allPoints],
+  )
+
+  const importGpx = async (file: File) => {
+    try {
+      const { points } = parseGpx(await file.text())
+      setRoute(points)
+      setDrawing(false)
+      setRouteError(null)
+    } catch (e) {
+      setRouteError(`GPX konnte nicht gelesen werden: ${(e as Error).message}`)
+    }
+  }
 
   return (
     <div className="flex h-dvh flex-col bg-slate-950 text-slate-100">
@@ -92,10 +118,36 @@ export default function App() {
             points={points}
             activity={filters.activity}
             visible={view === 'karte'}
+            route={route}
+            drawing={drawing}
             onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
             onPointClick={(point) => setSelection({ kind: 'point', point })}
+            onAddWaypoint={(position) => setRoute((r) => [...r, position])}
           />
-          <RegionIntro region={region} stats={stats} />
+          {routeOpen ? (
+            <RoutePanel
+              route={route}
+              analysis={analysis}
+              region={region}
+              drawing={drawing}
+              error={routeError}
+              onToggleDrawing={() => setDrawing((d) => !d)}
+              onUndo={() => setRoute((r) => r.slice(0, -1))}
+              onClear={() => { setRoute([]); setRouteError(null) }}
+              onImportGpx={importGpx}
+              onClose={() => { setRouteOpen(false); setDrawing(false) }}
+            />
+          ) : (
+            <>
+              <RegionIntro region={region} stats={stats} />
+              <button
+                onClick={() => setRouteOpen(true)}
+                className="absolute bottom-3 left-3 z-10 min-h-9 rounded-lg border border-white/10 bg-slate-900/90 px-3 py-2 text-sm text-slate-200 shadow-lg backdrop-blur hover:bg-slate-800"
+              >
+                🥾 Route planen
+              </button>
+            </>
+          )}
           <Legend activity={filters.activity} />
           <InfoPanel
             selection={selection}

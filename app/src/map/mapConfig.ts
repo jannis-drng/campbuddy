@@ -45,9 +45,23 @@ export const POINT_COLORS = {
   vehicle_spot: '#fb923c',
 } as const
 
-/** [SPÄTER] Routing-Engine — Struktur steht, Anbindung folgt (Abschnitt 4.2). */
+/**
+ * Routing-Engine (Abschnitt 4.2, Abschnitt 6).
+ *
+ * Zonen und Punkte kommen ohne fremden Dienst aus; nur das Einrasten einer
+ * gezeichneten Linie auf reale Wege braucht eine Engine. Beide vorgesehenen
+ * Anbieter verlangen einen kostenlosen API-Schlüssel — solange keiner
+ * hinterlegt ist, bleibt das Zeichnen bei geraden Verbindungen zwischen den
+ * Wegpunkten, und die App sagt das im UI auch offen.
+ *
+ * Zum Aktivieren: Schlüssel eintragen, `enabled` auf true. Kein Code-Umbau.
+ */
 export const ROUTING = {
   enabled: false,
-  provider: 'openrouteservice' as const,
-  endpoint: 'https://api.openrouteservice.org/v2/directions',
-}
+  provider: 'openrouteservice' as 'openrouteservice' | 'graphhopper',
+  apiKey: '',
+  endpoints: {
+    openrouteservice: 'https://api.openrouteservice.org/v2/directions/foot-hiking/geojson',
+    graphhopper: 'https://graphhopper.com/api/1/route',
+  },
+} as const
