@@ -78,13 +78,29 @@ export function MapView({
     )
     m.addControl(new ScaleControl({ unit: 'metric' }), 'bottom-left')
 
-    m.on('load', () => {
-      ready.current = true
+    /**
+     * Eigene Layer einrichten. Bewusst mehrfach angestossen und idempotent:
+     * sich allein auf das 'load'-Ereignis zu verlassen ist fragil — bleibt es
+     * aus, hätte die Karte weder Zonen noch Klick-Ziele. Der Wächter über
+     * getSource('zones') sorgt dafür, dass mehrfaches Aufrufen nichts kostet.
+     */
+    const setupLayers = () => {
+      if (!m.style || m.getSource('zones')) return
       addLayers(m)
       updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
       ;(m.getSource('route') as GeoJSONSource | undefined)
         ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
+      ready.current = true
+    }
 
+    m.on('style.load', setupLayers)
+    m.on('load', setupLayers)
+    m.on('idle', setupLayers)
+    if (m.isStyleLoaded()) setupLayers()
+
+    // Interaktion hängt NICHT an den Layern: das Setzen von Wegpunkten muss
+    // auch dann funktionieren, wenn die Legalitäts-Layer noch nicht stehen.
+    {
       m.on('click', (e) => {
         // Im Zeichenmodus hat das Setzen eines Wegpunkts Vorrang.
         if (latest.current.drawing) {
@@ -92,7 +108,10 @@ export function MapView({
           return
         }
         // Sonst: Punkte vor Zonen prüfen, der kleinere Treffer gewinnt.
-        const hits = m.queryRenderedFeatures(e.point, { layers: ['points-circle', 'zones-fill'] })
+        // queryRenderedFeatures wirft, wenn ein genannter Layer fehlt.
+        const layers = ['points-circle', 'zones-fill'].filter((id) => m.getLayer(id))
+        if (layers.length === 0) return
+        const hits = m.queryRenderedFeatures(e.point, { layers })
         const hitPoint = hits.find((f) => f.layer.id === 'points-circle')
         if (hitPoint) {
           const p = latest.current.points.find((x) => x.id === hitPoint.properties?.id)
@@ -116,7 +135,7 @@ export function MapView({
           if (!latest.current.drawing) m.getCanvas().style.cursor = ''
         })
       }
-    })
+    }
 
     return () => { m.remove(); map.current = null; ready.current = false }
   }, [region])
