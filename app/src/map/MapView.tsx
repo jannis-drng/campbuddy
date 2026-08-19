@@ -23,11 +23,17 @@ interface Props {
   points: Point[]
   /** Steuert nur die Einfärbung — es werden nie Zonen ausgeblendet. */
   activity: ActivityMode
+  /**
+   * Ob die Karte gerade sichtbar ist. Sie bleibt beim Ansichtswechsel bewusst
+   * montiert: ein Neuaufbau würde Kartenposition und geladene Kacheln verwerfen.
+   * MapLibre muss nach dem Wiedereinblenden nur seine Grösse neu messen.
+   */
+  visible: boolean
   onZoneClick: (zone: Zone) => void
   onPointClick: (point: Point) => void
 }
 
-export function MapView({ region, zones, points, activity, onZoneClick, onPointClick }: Props) {
+export function MapView({ region, zones, points, activity, visible, onZoneClick, onPointClick }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MlMap | null>(null)
   const ready = useRef(false)
@@ -94,6 +100,16 @@ export function MapView({ region, zones, points, activity, onZoneClick, onPointC
     const m = map.current
     if (m && ready.current) updateData(m, zones, points, activity)
   }, [zones, points, activity])
+
+  // Während des Ausblendens hat der Container die Grösse 0; ohne resize bliebe
+  // der Canvas danach leer.
+  useEffect(() => {
+    if (!visible) return
+    const m = map.current
+    if (!m) return
+    const id = requestAnimationFrame(() => m.resize())
+    return () => cancelAnimationFrame(id)
+  }, [visible])
 
   // h-full/w-full statt absolute inset-0: MapLibre setzt auf dem Container selbst
   // `.maplibregl-map { position: relative }` und würde ein `absolute` überschreiben,

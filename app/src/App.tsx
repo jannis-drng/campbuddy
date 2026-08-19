@@ -74,36 +74,40 @@ export default function App() {
 
       <DisclaimerBar />
 
-      {view === 'karte' ? (
-        <>
-          <FilterBar
-            filters={filters}
-            onChange={setFilters}
-            counts={{ zones: allZones.length, points: points.length }}
+      {/*
+        Beide Ansichten bleiben montiert und werden nur ein-/ausgeblendet.
+        Würde die Karte beim Wechsel abgebaut, ginge bei jeder Rückkehr die
+        Kartenposition verloren und alle Kacheln müssten neu geladen werden.
+      */}
+      <div className={view === 'karte' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
+        <FilterBar
+          filters={filters}
+          onChange={setFilters}
+          counts={{ zones: allZones.length, points: points.length }}
+        />
+        <main className="relative flex-1">
+          <MapView
+            region={region}
+            zones={allZones}
+            points={points}
+            activity={filters.activity}
+            visible={view === 'karte'}
+            onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
+            onPointClick={(point) => setSelection({ kind: 'point', point })}
           />
-          <main className="relative flex-1">
-            <MapView
-              region={region}
-              zones={allZones}
-              points={points}
-              activity={filters.activity}
-              onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
-              onPointClick={(point) => setSelection({ kind: 'point', point })}
-            />
-            <RegionIntro region={region} stats={stats} />
-            <Legend activity={filters.activity} />
-            <InfoPanel
-              selection={selection}
-              onClose={() => setSelection(null)}
-              onOpenPlanner={() => { setSelection(null); setView('tour') }}
-            />
-          </main>
-        </>
-      ) : (
-        <main className="flex-1 overflow-y-auto">
-          <TripPlanner region={region} />
+          <RegionIntro region={region} stats={stats} />
+          <Legend activity={filters.activity} />
+          <InfoPanel
+            selection={selection}
+            onClose={() => setSelection(null)}
+            onOpenPlanner={() => { setSelection(null); setView('tour') }}
+          />
         </main>
-      )}
+      </div>
+
+      <main className={view === 'tour' ? 'flex-1 overflow-y-auto' : 'hidden'}>
+        <TripPlanner region={region} />
+      </main>
     </div>
   )
 }
