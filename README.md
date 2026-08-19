@@ -26,7 +26,9 @@ oder als GPX aus einem beliebigen Tourenplaner importieren; CampBuddy wertet aus
 Zonen sie durchquert, wie viel der Strecke in Verbotsgebieten liegt und welche Hütten und
 Campingplätze in Routennähe liegen. Export als GPX.
 
-**`[BALD]` — offen:** Login/Speichern (4.6), weitere Regionen.
+**`[BALD]` — umgesetzt:** Konto und Speichern (4.6) über Supabase, siehe unten.
+
+**`[BALD]` — offen:** weitere Regionen (braucht Rechtsrecherche, nicht Code).
 
 | Ebene | Inhalt | Quelle |
 |---|---|---|
@@ -123,6 +125,38 @@ Die Instanz wird von der OSM-Community auf Spendenbasis betrieben. Anfragen sind
 entprellt. Für dauerhaft hohe Last einen OpenRouteService-Schlüssel in `mapConfig.ts` unter
 `ROUTING.apiKey` eintragen — die Routing-Schicht schaltet dann automatisch um, ohne
 Code-Änderung.
+
+## Konto und gespeicherte Touren
+
+Optional. **Ohne Konto funktioniert alles** — Karte, Routenplanung, Ausrüstungsgenerator.
+Ein Login wird nur gebraucht, um Routen und Touren zu speichern (Abschnitt 3: „Kein Login
+nötig zum Ansehen"). Ist kein Backend konfiguriert, blendet die App den Konto-Bereich
+komplett aus, statt Fehler zu zeigen.
+
+Anmeldung per **Magic Link**: es gibt kein Passwort, das erfasst, übertragen oder
+gespeichert werden könnte.
+
+### Einrichten
+
+1. Im Supabase-Projekt unter *SQL Editor* die Datei
+   [`supabase/migrations/0001_init.sql`](./supabase/migrations/0001_init.sql) ausführen.
+   Sie legt `profiles`, `routes` und `trips` nach Abschnitt 8 an — inklusive Row Level
+   Security und Policies.
+2. `app/.env.example` nach `app/.env.local` kopieren und beide Werte eintragen.
+3. `npm run deploy --prefix app`.
+
+### Zu den Schlüsseln
+
+Supabase vergibt zwei Sorten, und der Unterschied ist sicherheitsrelevant:
+
+- **`sb_publishable_…`** gehört ins Frontend. Er landet im Browser-Bundle und ist damit
+  öffentlich — genau so ist er gedacht. Der Schutz kommt aus Row Level Security: jede
+  Policy prüft `auth.uid()`, niemand sieht fremde Zeilen.
+- **`sb_secret_…`** umgeht RLS und gibt Vollzugriff. Er darf **niemals** in dieses Repo,
+  in `.env.local`, in ein Build-Artefakt oder in eine Chat-Nachricht. Die App braucht ihn
+  nicht und verwendet ihn nicht.
+
+`.env.local` ist über `*.local` von Git ausgeschlossen.
 
 ## Ausrüstungs-Generator
 

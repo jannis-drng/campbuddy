@@ -14,6 +14,9 @@ import { analyseRoute } from './data/routeAnalysis'
 import type { Position } from './data/geo'
 import { parseGpx } from './services/gpx'
 import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/routing'
+import { AccountPanel } from './components/AccountPanel'
+import { isSupabaseConfigured } from './services/supabase'
+import { saveRoute, saveTrip, useSession } from './services/account'
 
 const INITIAL_FILTERS: MapFilters = {
   activity: 'all',
@@ -22,10 +25,11 @@ const INITIAL_FILTERS: MapFilters = {
   showVehicleSpots: true,
 }
 
-type View = 'karte' | 'tour'
+type View = 'karte' | 'tour' | 'konto'
 
 export default function App() {
   const [view, setView] = useState<View>('karte')
+  const { session } = useSession()
   const [regionCode, setRegionCode] = useState(DEFAULT_REGION)
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
   const [selection, setSelection] = useState<Selection>(null)
@@ -91,6 +95,17 @@ export default function App() {
     }
   }
 
+  // Nur angemeldet wird zum Speichern eingeladen — sonst wäre der Knopf eine Sackgasse.
+  const handleSaveRoute = session
+    ? async (name: string) => {
+        await saveRoute(name, regionCode, routeGeometry, gpxTrack ? [] : waypoints)
+      }
+    : null
+
+  const handleSaveTrip = session
+    ? async (name: string, trip: Parameters<typeof saveTrip>[1]) => { await saveTrip(name, trip) }
+    : null
+
   const clearRoute = () => {
     setWaypoints([]); setGpxTrack(null); setRouted(null); setRouteError(null)
   }
@@ -107,7 +122,11 @@ export default function App() {
         </div>
 
         <nav className="ml-auto flex gap-1 rounded-lg bg-white/5 p-1" aria-label="Ansicht">
-          {([['karte', 'Karte'], ['tour', 'Tour planen']] as const).map(([key, label]) => (
+          {([
+            ['karte', 'Karte'],
+            ['tour', 'Tour planen'],
+            ...(isSupabaseConfigured ? [['konto', session ? 'Konto' : 'Anmelden'] as const] : []),
+          ] as const).map(([key, label]) => (
             <button
               key={key}
               onClick={() => setView(key)}
@@ -169,6 +188,7 @@ export default function App() {
           />
           {routeOpen ? (
             <RoutePanel
+              onSave={handleSaveRoute}
               route={routeGeometry}
               waypointCount={gpxTrack ? 0 : waypoints.length}
               routed={routed}
@@ -207,8 +227,24 @@ export default function App() {
       </div>
 
       <main className={view === 'tour' ? 'flex-1 overflow-y-auto' : 'hidden'}>
-        <TripPlanner region={region} />
+        <TripPlanner region={region} onSave={handleSaveTrip} />
       </main>
+
+      {view === 'konto' && (
+        <main className="flex-1 overflow-y-auto">
+          <AccountPanel
+            session={session}
+            onLoadRoute={(geometry, wps) => {
+              // Geladene Routen werden als fertige Spur übernommen und nicht neu geroutet.
+              setGpxTrack(geometry)
+              setWaypoints(wps)
+              setRouted(null)
+              setView('karte')
+              setRouteOpen(true)
+            }}
+          />
+        </main>
+      )}
     </div>
   )
 }

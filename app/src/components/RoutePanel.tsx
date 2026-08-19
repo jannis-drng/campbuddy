@@ -4,7 +4,7 @@
  * Der Teil, der CampBuddy von Routenplanern unterscheidet: nicht die Route
  * selbst, sondern die Antwort auf "wo darf ich entlang dieser Route schlafen".
  */
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import type { Position } from '../data/geo'
 import type { Region } from '../data/types'
 import { NEARBY_RADIUS_M, summarise, type RouteAnalysis } from '../data/routeAnalysis'
@@ -13,6 +13,8 @@ import { toGpx } from '../services/gpx'
 import { STATUS_CLASS, STATUS_LABEL } from './ui'
 
 interface Props {
+  /** null = kein Backend oder nicht angemeldet; dann wird nicht zum Speichern eingeladen. */
+  onSave: ((name: string) => Promise<void>) | null
   route: Position[]
   waypointCount: number
   routed: RoutedPath | null
@@ -43,11 +45,26 @@ const formatDuration = (seconds: number): string => {
 }
 
 export function RoutePanel({
-  route, waypointCount, routed, routingBusy, profile, isImported,
+  onSave, route, waypointCount, routed, routingBusy, profile, isImported,
   analysis, region, drawing, error,
   onProfileChange, onToggleDrawing, onUndo, onClear, onImportGpx, onClose,
 }: Props) {
   const fileInput = useRef<HTMLInputElement>(null)
+  const [saveName, setSaveName] = useState('')
+  const [saveState, setSaveState] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!onSave || !saveName.trim()) return
+    setSaveState('busy'); setSaveError(null)
+    try {
+      await onSave(saveName.trim())
+      setSaveState('ok'); setSaveName('')
+    } catch (err) {
+      setSaveState('error'); setSaveError((err as Error).message)
+    }
+  }
 
   const downloadGpx = () => {
     const blob = new Blob([toGpx(route)], { type: 'application/gpx+xml' })
@@ -231,6 +248,28 @@ export function RoutePanel({
                 </p>
               )}
             </section>
+
+            {onSave && (
+              <form onSubmit={save} className="flex flex-wrap gap-2">
+                <input
+                  value={saveName}
+                  onChange={(e) => { setSaveName(e.target.value); setSaveState('idle') }}
+                  placeholder="Route benennen und speichern"
+                  maxLength={120}
+                  className="min-h-9 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-2.5 text-sm"
+                />
+                <button type="submit" disabled={!saveName.trim() || saveState === 'busy'}
+                        className="min-h-9 rounded-lg bg-emerald-500/15 px-3 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25 disabled:opacity-40">
+                  {saveState === 'busy' ? 'Speichere …' : 'Speichern'}
+                </button>
+                {saveState === 'ok' && (
+                  <p className="w-full text-xs text-emerald-300">Route gespeichert.</p>
+                )}
+                {saveState === 'error' && (
+                  <p className="w-full text-xs text-red-300">{saveError}</p>
+                )}
+              </form>
+            )}
 
             {routed?.snapped && !isImported && (
               <p className="text-[11px] leading-relaxed text-slate-500">

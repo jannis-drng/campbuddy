@@ -12,6 +12,7 @@
     "deploy": "node scripts/deploy-pages.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
     "maplibre-gl": "^5.24.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"

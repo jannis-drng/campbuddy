@@ -45,7 +45,13 @@ function seasonForDate(d: Date): Season {
   return 'uebergang'
 }
 
-export function TripPlanner({ region }: { region: Region }) {
+export function TripPlanner({
+  region, onSave,
+}: {
+  region: Region
+  /** null = kein Backend oder nicht angemeldet. */
+  onSave: ((name: string, trip: TripParams) => Promise<void>) | null
+}) {
   const [trip, setTrip] = useState<TripParams>(defaultTrip)
   // Die Jahreszeit folgt dem Startdatum, bis sie einmal von Hand gesetzt wurde.
   // Sonst stünde bei einem Dezember-Termin weiter "Sommer" und die
@@ -98,6 +104,22 @@ export function TripPlanner({ region }: { region: Region }) {
       setTrip((t) => ({ ...t, season: derivedSeason }))
     }
   }, [derivedSeason, seasonTouched, trip.season])
+
+  const [saveName, setSaveName] = useState('')
+  const [saveState, setSaveState] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!onSave || !saveName.trim()) return
+    setSaveState('busy'); setSaveError(null)
+    try {
+      await onSave(saveName.trim(), trip)
+      setSaveState('ok'); setSaveName('')
+    } catch (err) {
+      setSaveState('error'); setSaveError((err as Error).message)
+    }
+  }
 
   const set = <K extends keyof TripParams>(key: K, value: TripParams[K]) =>
     setTrip((t) => ({ ...t, [key]: value }))
@@ -252,6 +274,24 @@ export function TripPlanner({ region }: { region: Region }) {
           </p>
         </div>
       </section>
+
+      {onSave && (
+        <form onSubmit={save} className="flex flex-wrap gap-2">
+          <input
+            value={saveName}
+            onChange={(e) => { setSaveName(e.target.value); setSaveState('idle') }}
+            placeholder="Tour benennen und speichern"
+            maxLength={120}
+            className="min-h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
+          />
+          <button type="submit" disabled={!saveName.trim() || saveState === 'busy'}
+                  className="min-h-10 rounded-lg bg-emerald-500/15 px-4 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25 disabled:opacity-40">
+            {saveState === 'busy' ? 'Speichere …' : 'Speichern'}
+          </button>
+          {saveState === 'ok' && <p className="w-full text-xs text-emerald-300">Tour gespeichert.</p>}
+          {saveState === 'error' && <p className="w-full text-xs text-red-300">{saveError}</p>}
+        </form>
+      )}
 
       <p className="rounded-lg bg-amber-500/10 p-3 text-[12px] leading-relaxed text-amber-200/90">
         Die Packliste ersetzt keine eigene Tourenplanung. Prüfe Wetterbericht, Lawinenlage und
