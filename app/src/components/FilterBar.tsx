@@ -7,9 +7,10 @@
  * - „Ebenen" sind unabhängige Schalter (Chips mit Farbpunkt). Das ist
  *   unbedenklich: eine ausgeblendete Hütte behauptet nichts über die Rechtslage.
  */
-import { Flame, Home, Mountain, Tent, Truck } from 'lucide-react'
+import { Droplet, Eye, Flame, Home, Mountain, Star, Tent, Truck } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import type { ActivityMode, MapFilters } from '../data/types'
-import { POINT_COLORS } from '../map/mapConfig'
+import { SYMBOL_FARBEN } from '../map/symbole'
 import { Chip, Label, Segmente } from '../ui'
 
 interface Props {
@@ -25,11 +26,14 @@ const AKTIVITAETEN = [
   { wert: 'fire' as ActivityMode, label: 'Feuer', icon: Flame },
 ]
 
-const EBENEN: { key: keyof MapFilters; label: string; farbe?: string }[] = [
-  { key: 'showHuts', label: 'Hütten', farbe: POINT_COLORS.hut },
-  { key: 'showCampsites', label: 'Campingplätze', farbe: POINT_COLORS.campsite },
-  { key: 'showVehicleSpots', label: 'Stellplätze', farbe: POINT_COLORS.vehicle_spot },
-  { key: 'showPeaks', label: 'Gipfel' },
+const EBENEN: { key: keyof MapFilters; label: string; farbe?: string; icon?: LucideIcon }[] = [
+  { key: 'showHuts', label: 'Hütten', farbe: SYMBOL_FARBEN.hut },
+  { key: 'showCampsites', label: 'Campingplätze', farbe: SYMBOL_FARBEN.campsite },
+  { key: 'showVehicleSpots', label: 'Stellplätze', farbe: SYMBOL_FARBEN.vehicle_spot },
+  { key: 'showWater', label: 'Wasser', farbe: SYMBOL_FARBEN.drinking_water, icon: Droplet },
+  { key: 'showViewpoints', label: 'Aussicht', farbe: SYMBOL_FARBEN.viewpoint, icon: Eye },
+  { key: 'showEigene', label: 'Eigene', farbe: SYMBOL_FARBEN.eigen, icon: Star },
+  { key: 'showPeaks', label: 'Gipfel', icon: Mountain },
 ]
 
 export function FilterBar({ filters, onChange, counts }: Props) {
@@ -57,9 +61,7 @@ export function FilterBar({ filters, onChange, counts }: Props) {
               farbe={e.farbe}
               onClick={() => onChange({ ...filters, [e.key]: !filters[e.key] })}
             >
-              {e.label === 'Gipfel'
-                ? <><Mountain size={13} strokeWidth={2} aria-hidden />{e.label}</>
-                : e.label}
+              {e.icon ? <><e.icon size={13} strokeWidth={2} aria-hidden />{e.label}</> : e.label}
             </Chip>
           ))}
         </div>

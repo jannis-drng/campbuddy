@@ -5,12 +5,21 @@
  *  - Punkte: Berghütten, Biwakhütten, Campingplätze  ->  src/data/points/<region>.json
  *  - Gipfel: benannte Gipfel mit Höhenangabe            ->  src/data/peaks/<region>.json
  *  - Zonen:  Schutzgebiete (Rohgeometrie)            ->  src/data/zones/<region>.osm.json
+ *  - Natur:  Seen, Quellen, Trinkwasser, Wasserfälle, Aussichtspunkte
+ *                                                    ->  src/data/nature/<region>.json
  *
  * WICHTIG: Das liefert nur GEOMETRIE + Sachdaten aus OSM.
  * Die RECHTLICHE Bewertung (erlaubt/verboten/geduldet) ist NICHT in OSM enthalten
  * und muss in src/data/zones/<region>.legal.json manuell gepflegt werden.
  *
- * Aufruf:  npm run import:osm
+ * Aufruf:  npm run import:osm            — alles
+ *          npm run import:osm -- natur    — nur eine Gruppe (punkte|gipfel|zonen|natur)
+ *
+ * Die einzelne Gruppe ist kein Komfort, sondern eine Schutzmassnahme: ein
+ * vollständiger Lauf schreibt zones/<region>.osm.json neu, und ändert sich
+ * dabei eine OSM-ID, verliert die zugehörige rechtliche Einstufung in
+ * <region>.legal.json ihren Anker. Wer nur Wasserstellen nachladen will,
+ * soll die Rechtspflege nicht anfassen müssen.
  */
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -247,10 +256,89 @@ function mergeRings(segments) {
 
 const samePoint = (a, b) => a[0] === b[0] && a[1] === b[1]
 
+/* ---------------- Natur: Wasser & Aussicht ---------------- */
+
+/**
+ * Was Komoot „Highlights" nennt, ist hier bewusst enger gefasst: nur, was
+ * unterwegs eine Entscheidung beeinflusst. Trinkwasser bestimmt, wie viel man
+ * schleppt; ein See, wo man pausiert; ein Aussichtspunkt, wo man das Zelt
+ * hinstellt. Meinungen („schöner Weg") gehören nicht in die importierte
+ * Schicht — die kommen von Nutzern (siehe eigene Punkte).
+ */
+const NATURE_QUERIES = [
+  ['lake', 'way["natural"="water"]["name"]', 'relation["natural"="water"]["name"]'],
+  ['spring', 'node["natural"="spring"]'],
+  ['drinking_water', 'node["amenity"="drinking_water"]', 'node["man_made"="water_well"]["drinking_water"="yes"]'],
+  ['waterfall', 'node["waterway"="waterfall"]'],
+  ['viewpoint', 'node["tourism"="viewpoint"]'],
+]
+
+/** Fallback-Namen: eine unbenannte Quelle ist trotzdem eine Quelle. */
+const NATURE_FALLBACK = {
+  lake: 'See',
+  spring: 'Quelle',
+  drinking_water: 'Trinkwasser',
+  waterfall: 'Wasserfall',
+  viewpoint: 'Aussichtspunkt',
+}
+
+async function importNature() {
+  const features = []
+
+  for (const [type, ...selektoren] of NATURE_QUERIES) {
+    const q = `
+      [out:json][timeout:180];
+      area["ISO3166-2"="${REGION}"]->.a;
+      (
+        ${selektoren.map((sel) => `${sel}(area.a);`).join('\n        ')}
+      );
+      out center tags;`
+    const data = await overpass(q)
+
+    for (const el of data.elements) {
+      const lat = el.lat ?? el.center?.lat
+      const lng = el.lon ?? el.center?.lon
+      if (lat == null || lng == null) continue
+      const t = el.tags ?? {}
+      // Trinkwasser, das ausdrücklich als nicht trinkbar getaggt ist, wäre
+      // eine gefährliche Auskunft — lieber gar nicht zeigen.
+      if (type === 'drinking_water' && t.drinking_water === 'no') continue
+      features.push({
+        id: `osm-${el.type}-${el.id}`,
+        region: REGION,
+        type,
+        name: t.name ?? t['name:de'] ?? NATURE_FALLBACK[type],
+        benannt: Boolean(t.name ?? t['name:de']),
+        lat: round(lat),
+        lng: round(lng),
+        elevation: t.ele ? Math.round(Number(t.ele)) || null : null,
+        source_url: `https://www.openstreetmap.org/${el.type}/${el.id}`,
+      })
+    }
+    console.log(`   ${type}: ${features.filter((f) => f.type === type).length}`)
+  }
+
+  features.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name, 'de'))
+
+  const out = resolve(ROOT, 'src/data/nature', `${REGION}.json`)
+  mkdirSync(dirname(out), { recursive: true })
+  writeFileSync(out, JSON.stringify(features) + '\n')
+  const kb = Math.round(JSON.stringify(features).length / 1024)
+  console.log(`Natur: ${features.length} Objekte, ${kb} KB -> ${out}`)
+}
+
 /* ---------------- main ---------------- */
 
-console.log(`Import für Region ${REGION} …`)
-await importPoints()
-await importPeaks()
-await importProtectedAreas()
+const GRUPPEN = {
+  punkte: importPoints,
+  gipfel: importPeaks,
+  zonen: importProtectedAreas,
+  natur: importNature,
+}
+
+const gewaehlt = process.argv.slice(2).filter((a) => a in GRUPPEN)
+const laufen = gewaehlt.length ? gewaehlt : Object.keys(GRUPPEN)
+
+console.log(`Import für Region ${REGION}: ${laufen.join(', ')} …`)
+for (const name of laufen) await GRUPPEN[name]()
 console.log('Fertig. Rechtliche Bewertung der Zonen: src/data/zones/*.legal.json pflegen.')

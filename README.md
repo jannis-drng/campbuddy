@@ -35,6 +35,8 @@ Campingplätze in Routennähe liegen. Export als GPX.
 | Zonen | 10 Schutzgebietsflächen | Geometrie aus OpenStreetMap, rechtliche Einstufung selbst gepflegt |
 | Punkte | 148 (79 Hütten, 48 Campingplätze, 21 Stellplätze) | OpenStreetMap |
 | Gipfel | 1291 benannte Gipfel mit Höhe | OpenStreetMap |
+| Natur | 1830 Objekte: 297 Gewässer, 957 Trinkwasserstellen, 37 Quellen, 106 Wasserfälle, 433 Aussichtspunkte | OpenStreetMap |
+| Eigene Punkte | selbst markierte Orte und Fotos | Nutzer, privat bis ausdrücklich veröffentlicht |
 
 ## Hintergrundkarten
 
@@ -101,6 +103,11 @@ npm run import:osm --prefix app
 ```
 
 Andere Region: `REGION=DE-BY npm run import:osm --prefix app`, dann Eintrag in `regions.ts`.
+
+Einzelne Gruppen: `npm run import:osm --prefix app -- natur` (auch `punkte`, `gipfel`,
+`zonen`). Das ist kein Komfort, sondern eine Schutzmassnahme — ein vollständiger Lauf
+schreibt `zones/<region>.osm.json` neu, und ändert sich dabei eine OSM-ID, verliert die
+zugehörige rechtliche Einstufung in `<region>.legal.json` ihren Anker.
 
 ## Deployment
 
@@ -214,6 +221,70 @@ MapLibre und die Gipfeldaten wartet.
 Die Fotos liegen als WebP in zwei Auflösungen unter `app/src/assets/landing/`; das
 Vorschaubild für geteilte Links ist `app/public/og.jpg`.
 
+## Karte bedienen
+
+### Route zeichnen
+
+Drei Gesten, dem Vorbild Komoot nachgebaut — nicht aus Bequemlichkeit, sondern weil
+diese Bedienung eingeübt ist und niemand für eine Legalitätskarte eine neue lernen will:
+
+| Geste | Wirkung |
+|---|---|
+| In die Karte tippen | hängt hinten einen Wegpunkt an |
+| Wegpunkt ziehen | verschiebt ihn |
+| **Linie ziehen** | zieht an dieser Stelle einen neuen Wegpunkt heraus und fügt ihn an der richtigen Position der Reihenfolge ein |
+| Rechtsklick auf einen Wegpunkt | entfernt ihn |
+| Esc | beendet Zeichnen bzw. Markieren |
+
+Das Aufziehen der Linie ist der eigentliche Unterschied: ohne es muss man eine Route
+löschen und neu setzen, nur um einen Umweg einzubauen. Welcher Platz in der Reihenfolge
+gemeint ist, leitet `MapView` daraus ab, zwischen welchen zwei Wegpunkten der angefasste
+Punkt auf der gerouteten Spur liegt (`naechsterIndex` in `data/geo.ts`).
+
+„Route planen" schaltet das Zeichnen sofort ein — der frühere zweite Klick auf
+„Route zeichnen" war ein Schritt, den niemand freiwillig macht.
+
+Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur Infokarte: „Route über
+diese Hütte" ist beim Planen das, was man will.
+
+### Symbole statt Farbpunkte
+
+`map/symbole.ts` zeichnet alle Kartensymbole auf ein Canvas und legt sie als Bild in den
+Style. Zwei Formen mit einer Bedeutung dahinter:
+
+- **Nadel** für Orte, an denen man etwas *tut* — Hütte, Campingplatz, Stellplatz, eigene
+  Markierung. Die Spitze zeigt auf die Stelle.
+- **Plakette** (Kreis) für Dinge, die *da sind* — See, Quelle, Trinkwasser, Wasserfall,
+  Aussichtspunkt.
+
+Grün, Gelb und Rot bleiben dabei der Rechtslage vorbehalten; die Symbole tragen eigene Töne.
+
+Trinkwasser, Quellen, Wasserfälle und Aussichtspunkte erscheinen erst ab Zoom 12,5 —
+über eine ganze Region gestreut wären allein 957 Brunnen keine Karte mehr, sondern ein
+Raster. Benannte Gewässer kommen früher, weil sie der Orientierung dienen.
+
+> Zoom gehört an `minzoom` des Layers, nicht in dessen `filter`: `['zoom']` in einem
+> Filter wird bei GeoJSON-Quellen beim Kachelbau ausgewertet und nicht beim Zeichnen.
+
+### Eigene Punkte und Fotos
+
+Braucht ein Konto und **Migration `0007_eigene_punkte.sql`**. Im Routenpanel schaltet
+„Punkt oder Foto markieren" den Modus ein; ein Kartenklick öffnet den Dialog mit Gattung
+(Aussicht, Schlafplatz, Wasser, Foto, Sonstiges), Name, Notiz, Foto und dem Schalter
+„für andere sichtbar".
+
+- **Privat ist Standard.** Veröffentlichen ist opt-in, wie bei den Routen.
+- **Fotos** landen in einem privaten Storage-Bucket (`punkt-fotos`) und werden nur über
+  signierte, ablaufende Adressen ausgeliefert. Wer ein Foto sehen darf, entscheidet eine
+  Policy: die Eigentümerin immer, alle anderen nur bei einem veröffentlichten Punkt.
+- **Vor dem Hochladen wird verkleinert** (max. 1600 px, WebP). Nebeneffekt, der hier
+  ausdrücklich erwünscht ist: das Neuzeichnen auf ein Canvas verwirft sämtliche
+  EXIF-Daten, also auch GPS-Ort und Aufnahmezeit. Der Ort des Punktes ist der, den man
+  gesetzt hat — nicht einer, den die Kamera unbemerkt mitliefert.
+
+Diese Ebene ist bewusst von den Rechtsdaten getrennt: eine Nutzermarkierung ist eine
+Meinung, keine Auskunft. Die Infokarte sagt das auch so.
+
 ## Aufbau der App
 
 | Bereich | Inhalt |
@@ -317,6 +388,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0004_seed_points.sql`](./supabase/migrations/0004_seed_points.sql) | die 148 Punkte |
 | [`0005_community.sql`](./supabase/migrations/0005_community.sql) | Veröffentlichen von Routen und Favoriten |
 | [`0006_konto.sql`](./supabase/migrations/0006_konto.sql) | Anzeigename, Abo-Platzhalter, Konto löschen |
+| [`0007_eigene_punkte.sql`](./supabase/migrations/0007_eigene_punkte.sql) | Selbst markierte Punkte und der private Fotospeicher |
 
 Dann `app/.env.example` nach `app/.env.local` kopieren, beide Werte eintragen und
 `npm run deploy --prefix app`.

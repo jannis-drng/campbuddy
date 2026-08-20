@@ -4,6 +4,16 @@
  * Kapselt MapLibre vollständig: der Rest der App kennt keine Karten-API,
  * sondern nur Zonen, Punkte und Klick-Callbacks. Das ist die Trennung,
  * die einen späteren Wechsel der Kartenbibliothek billig hält.
+ *
+ * Zum Zeichnen der Route: das Vorbild ist bewusst Komoot, weil dessen
+ * Bedienung sich durchgesetzt hat und niemand hier etwas Neues lernen will.
+ * Drei Gesten, mehr braucht es nicht —
+ *   1. Klick in die Karte hängt hinten einen Wegpunkt an,
+ *   2. einen Wegpunkt anfassen und ziehen verschiebt ihn,
+ *   3. die *Linie* anfassen und ziehen zieht einen neuen Wegpunkt heraus
+ *      und fügt ihn an der richtigen Stelle in der Reihenfolge ein.
+ * Punkt 3 ist der eigentliche Unterschied: ohne ihn muss man eine Route
+ * löschen und neu setzen, nur weil man einen Umweg einbauen will.
  */
 import { useEffect, useRef } from 'react'
 import {
@@ -14,18 +24,21 @@ import type maplibregl from 'maplibre-gl'
 // aus der Style-Spec, die MapLibre selbst verwendet.
 import type { ExpressionSpecification } from '@maplibre/maplibre-gl-style-spec'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { ActivityMode, Peak, Point, Region, Zone } from '../data/types'
-import type { Position } from '../data/geo'
+import type {
+  ActivityMode, EigenerPunkt, NatureFeature, Peak, Point, Region, Zone,
+} from '../data/types'
+import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
 import { effectiveStatus } from '../data/legalData'
-import {
-  ATTRIBUTION, BASEMAPS, POINT_COLORS, STATUS_COLORS, TEXT_FONT, type BasemapKey,
-} from './mapConfig'
+import { ATTRIBUTION, BASEMAPS, STATUS_COLORS, TEXT_FONT, type BasemapKey } from './mapConfig'
+import { symboleAnlegen } from './symbole'
 
 interface Props {
   region: Region
   zones: Zone[]
   points: Point[]
   peaks: Peak[]
+  nature: NatureFeature[]
+  eigene: EigenerPunkt[]
   /** Steuert nur die Einfärbung — es werden nie Zonen ausgeblendet. */
   activity: ActivityMode
   basemap: BasemapKey
@@ -41,16 +54,24 @@ interface Props {
   waypoints: Position[]
   /** Im Zeichenmodus setzt ein Kartenklick einen Wegpunkt statt eine Zone zu öffnen. */
   drawing: boolean
+  /** Im Markiermodus setzt ein Kartenklick einen eigenen Punkt. */
+  markieren: boolean
   onZoneClick: (zone: Zone) => void
   onPointClick: (point: Point) => void
+  onNatureClick: (feature: NatureFeature) => void
+  onEigenClick: (punkt: EigenerPunkt) => void
   onAddWaypoint: (position: Position) => void
+  onInsertWaypoint: (index: number, position: Position) => void
   onMoveWaypoint: (index: number, position: Position) => void
   onRemoveWaypoint: (index: number) => void
+  onMarkieren: (position: Position) => void
 }
 
 export function MapView({
-  region, zones, points, peaks, activity, basemap, visible, route, waypoints, drawing,
-  onZoneClick, onPointClick, onAddWaypoint, onMoveWaypoint, onRemoveWaypoint,
+  region, zones, points, peaks, nature, eigene, activity, basemap, visible,
+  route, waypoints, drawing, markieren,
+  onZoneClick, onPointClick, onNatureClick, onEigenClick,
+  onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MlMap | null>(null)
@@ -61,12 +82,14 @@ export function MapView({
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
   const latest = useRef({
-    zones, points, peaks, activity, drawing, waypoints,
-    onZoneClick, onPointClick, onAddWaypoint, onMoveWaypoint, onRemoveWaypoint,
+    zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
+    onZoneClick, onPointClick, onNatureClick, onEigenClick,
+    onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   })
   latest.current = {
-    zones, points, peaks, activity, drawing, waypoints,
-    onZoneClick, onPointClick, onAddWaypoint, onMoveWaypoint, onRemoveWaypoint,
+    zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
+    onZoneClick, onPointClick, onNatureClick, onEigenClick,
+    onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   }
 
   useEffect(() => {
@@ -99,9 +122,12 @@ export function MapView({
      */
     const setupLayers = () => {
       if (!m.style || m.getSource('zones')) return
+      symboleAnlegen(m)
       addLayers(m)
       updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
       ;(m.getSource('peaks') as GeoJSONSource | undefined)?.setData(peaksToGeoJson(latest.current.peaks))
+      ;(m.getSource('natur') as GeoJSONSource | undefined)?.setData(natureToGeoJson(latest.current.nature))
+      ;(m.getSource('eigene') as GeoJSONSource | undefined)?.setData(eigeneToGeoJson(latest.current.eigene))
       ;(m.getSource('route') as GeoJSONSource | undefined)
         ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
       ready.current = true
@@ -112,41 +138,121 @@ export function MapView({
     m.on('idle', setupLayers)
     if (m.isStyleLoaded()) setupLayers()
 
-    /* ---- Wegpunkte verschieben ---- */
+    /* ------------------------------------------------------------------
+       Ziehen: entweder ein bestehender Wegpunkt oder ein neuer, der aus
+       der Linie herausgezogen wird. Beides läuft über dieselbe Mechanik,
+       weil es sich für die Hand gleich anfühlen soll.
+       ------------------------------------------------------------------ */
     // Eigene Behandlung statt einer Marker-Bibliothek: die Wegpunkte liegen
     // als GeoJSON-Layer vor, und Marker-DOM-Elemente wären bei vielen Punkten
     // langsamer und liessen sich nicht mit denselben Ausdrücken einfärben.
-    let ziehIndex: number | null = null
+    type Ziehen =
+      | { art: 'verschieben'; index: number }
+      | { art: 'einfuegen'; index: number }
+    let zieht: Ziehen | null = null
+    /** Merkt, ob wirklich gezogen wurde — ein Klick ohne Bewegung ist kein Ziehen. */
+    let bewegt = false
 
-    const vorschau = (position: Position) => {
-      if (ziehIndex == null) return
-      const kopie = [...latest.current.waypoints]
-      kopie[ziehIndex] = position
-      ;(m.getSource('route') as GeoJSONSource | undefined)
-        ?.setData(routeToGeoJson(routeRef.current.route, kopie))
+    const setzeCursor = (wert: string) => { m.getCanvas().style.cursor = wert }
+    const ruheCursor = () =>
+      latest.current.markieren ? 'crosshair' : latest.current.drawing ? 'crosshair' : ''
+
+    const geist = (position: Position | null) => {
+      ;(m.getSource('route-griff') as GeoJSONSource | undefined)?.setData({
+        type: 'FeatureCollection',
+        features: position
+          ? [{ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: position } }]
+          : [],
+      })
     }
 
-    const beginneZiehen = (e: { features?: maplibregl.MapGeoJSONFeature[]; preventDefault: () => void }) => {
+    const vorschau = (position: Position) => {
+      if (!zieht) return
+      const wp = [...latest.current.waypoints]
+      if (zieht.art === 'verschieben') wp[zieht.index] = position
+      else wp.splice(zieht.index, 0, position)
+      ;(m.getSource('route') as GeoJSONSource | undefined)
+        ?.setData(routeToGeoJson(routeRef.current.route, wp))
+      geist(position)
+    }
+
+    const beginneVerschieben = (
+      e: { features?: maplibregl.MapGeoJSONFeature[]; preventDefault: () => void },
+    ) => {
       const index = e.features?.[0]?.properties?.index
       if (typeof index !== 'number') return
       // Verhindert, dass die Karte selbst mitzieht.
       e.preventDefault()
-      ziehIndex = index
-      m.getCanvas().style.cursor = 'grabbing'
+      zieht = { art: 'verschieben', index }
+      bewegt = false
+      setzeCursor('grabbing')
+    }
+
+    /**
+     * Aus der Linie einen neuen Wegpunkt herausziehen.
+     *
+     * Die Einfügestelle lässt sich nicht direkt ablesen: die gezeichnete Spur
+     * folgt echten Wegen und hat hunderte Stützpunkte, die gesetzten Wegpunkte
+     * sind nur eine Handvoll. Also wird geschaut, zwischen welchen zwei
+     * Wegpunkten der angefasste Punkt auf der Spur liegt.
+     */
+    const einfuegeIndex = (position: Position): number => {
+      const { route: spur, waypoints: wp } = routeRef.current
+      if (wp.length < 2) return wp.length
+      if (spur.length < 2) return wp.length
+      const griff = naechsterIndex(position, spur)
+      const marken = wp.map((p) => naechsterIndex(p, spur))
+      for (let i = 1; i < marken.length; i++) {
+        if (griff <= marken[i]) return i
+      }
+      return wp.length
+    }
+
+    const beginneEinfuegen = (e: { lngLat: maplibregl.LngLat; preventDefault: () => void }) => {
+      const { route: spur } = routeRef.current
+      if (spur.length < 2) return
+      const treffer = naechsterPunktAufLinie([e.lngLat.lng, e.lngLat.lat], spur)
+      if (!treffer) return
+      e.preventDefault()
+      zieht = { art: 'einfuegen', index: einfuegeIndex(treffer.position) }
+      bewegt = false
+      setzeCursor('grabbing')
+      vorschau(treffer.position)
     }
 
     const beendeZiehen = (lngLat: { lng: number; lat: number }) => {
-      if (ziehIndex == null) return
-      const index = ziehIndex
-      ziehIndex = null
-      m.getCanvas().style.cursor = latest.current.drawing ? 'crosshair' : ''
-      latest.current.onMoveWaypoint(index, [lngLat.lng, lngLat.lat])
+      if (!zieht) return
+      const aktion = zieht
+      zieht = null
+      geist(null)
+      setzeCursor(ruheCursor())
+      const position: Position = [lngLat.lng, lngLat.lat]
+      if (!bewegt) {
+        // Angefasst, aber nicht bewegt: die Route unverändert lassen und den
+        // Vorschau-Zustand zurücknehmen.
+        ;(m.getSource('route') as GeoJSONSource | undefined)
+          ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
+        return
+      }
+      if (aktion.art === 'verschieben') latest.current.onMoveWaypoint(aktion.index, position)
+      else latest.current.onInsertWaypoint(aktion.index, position)
     }
 
-    m.on('mousedown', 'route-waypoints', beginneZiehen)
-    m.on('touchstart', 'route-waypoints', beginneZiehen)
-    m.on('mousemove', (e) => vorschau([e.lngLat.lng, e.lngLat.lat]))
-    m.on('touchmove', (e) => { if (ziehIndex != null) { e.preventDefault(); vorschau([e.lngLat.lng, e.lngLat.lat]) } })
+    m.on('mousedown', 'route-waypoints', beginneVerschieben)
+    m.on('touchstart', 'route-waypoints', beginneVerschieben)
+    m.on('mousedown', 'route-griff', beginneEinfuegen)
+    m.on('mousedown', 'route-treffer', beginneEinfuegen)
+    m.on('touchstart', 'route-treffer', beginneEinfuegen)
+
+    m.on('mousemove', (e) => {
+      if (zieht) { bewegt = true; vorschau([e.lngLat.lng, e.lngLat.lat]) }
+    })
+    m.on('touchmove', (e) => {
+      if (!zieht) return
+      e.preventDefault()
+      bewegt = true
+      vorschau([e.lngLat.lng, e.lngLat.lat])
+    })
     m.on('mouseup', (e) => beendeZiehen(e.lngLat))
     m.on('touchend', (e) => beendeZiehen(e.lngLat))
 
@@ -159,11 +265,23 @@ export function MapView({
       }
     })
 
-    m.on('mouseenter', 'route-waypoints', () => {
-      if (ziehIndex == null) m.getCanvas().style.cursor = 'grab'
+    m.on('mouseenter', 'route-waypoints', () => { if (!zieht) setzeCursor('grab') })
+    m.on('mouseleave', 'route-waypoints', () => { if (!zieht) setzeCursor(ruheCursor()) })
+
+    // Der Griff auf der Linie: er folgt dem Zeiger, damit sichtbar ist, wo
+    // beim Ziehen der neue Wegpunkt entsteht. Ohne diese Rückmeldung wirkt
+    // das Aufziehen wie ein Zufallstreffer.
+    m.on('mousemove', 'route-treffer', (e) => {
+      if (zieht) return
+      const treffer = naechsterPunktAufLinie([e.lngLat.lng, e.lngLat.lat], routeRef.current.route)
+      if (!treffer) return
+      geist(treffer.position)
+      setzeCursor('grab')
     })
-    m.on('mouseleave', 'route-waypoints', () => {
-      if (ziehIndex == null) m.getCanvas().style.cursor = latest.current.drawing ? 'crosshair' : ''
+    m.on('mouseleave', 'route-treffer', () => {
+      if (zieht) return
+      geist(null)
+      setzeCursor(ruheCursor())
     })
 
     // Interaktion hängt NICHT an den Layern: das Setzen von Wegpunkten muss
@@ -174,21 +292,44 @@ export function MapView({
         if (m.getLayer('route-waypoints') &&
             m.queryRenderedFeatures(e.point, { layers: ['route-waypoints'] }).length > 0) return
 
-        // Im Zeichenmodus hat das Setzen eines Wegpunkts Vorrang.
+        const position: Position = [e.lngLat.lng, e.lngLat.lat]
+
+        // Markieren hat Vorrang vor allem: wer den Modus eingeschaltet hat,
+        // will genau eine Sache tun.
+        if (latest.current.markieren) { latest.current.onMarkieren(position); return }
+
+        // queryRenderedFeatures wirft, wenn ein genannter Layer fehlt.
+        const layers = ['eigene-icon', 'points-icon', 'natur-icon', 'natur-see', 'zones-fill']
+          .filter((id) => m.getLayer(id))
+        const hits = layers.length ? m.queryRenderedFeatures(e.point, { layers }) : []
+
+        // Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur
+        // Infokarte: „Route über diese Hütte" ist beim Planen das, was man will.
         if (latest.current.drawing) {
-          latest.current.onAddWaypoint([e.lngLat.lng, e.lngLat.lat])
+          const ort = hits.find((f) => f.layer.id.startsWith('points-') || f.layer.id.startsWith('natur-'))
+          const koordinaten = ort?.geometry.type === 'Point'
+            ? (ort.geometry.coordinates as Position)
+            : position
+          latest.current.onAddWaypoint(koordinaten)
           return
         }
-        // Sonst: Punkte vor Zonen prüfen, der kleinere Treffer gewinnt.
-        // queryRenderedFeatures wirft, wenn ein genannter Layer fehlt.
-        const layers = ['points-circle', 'zones-fill'].filter((id) => m.getLayer(id))
-        if (layers.length === 0) return
-        const hits = m.queryRenderedFeatures(e.point, { layers })
-        const hitPoint = hits.find((f) => f.layer.id === 'points-circle')
+
+        // Sonst: der kleinere Treffer gewinnt — eigene Punkte, dann Orte,
+        // dann Natur, zuletzt die grossflächigen Zonen.
+        const eigen = hits.find((f) => f.layer.id === 'eigene-icon')
+        if (eigen) {
+          const p = latest.current.eigene.find((x) => x.id === eigen.properties?.id)
+          if (p) { latest.current.onEigenClick(p); return }
+        }
+        const hitPoint = hits.find((f) => f.layer.id === 'points-icon')
         if (hitPoint) {
           const p = latest.current.points.find((x) => x.id === hitPoint.properties?.id)
-          if (p) latest.current.onPointClick(p)
-          return
+          if (p) { latest.current.onPointClick(p); return }
+        }
+        const hitNatur = hits.find((f) => f.layer.id.startsWith('natur-'))
+        if (hitNatur) {
+          const n = latest.current.nature.find((x) => x.id === hitNatur.properties?.id)
+          if (n) { latest.current.onNatureClick(n); return }
         }
         const hitZone = hits.find((f) => f.layer.id === 'zones-fill')
         if (hitZone) {
@@ -199,12 +340,12 @@ export function MapView({
 
       // Im Zeichenmodus bleibt das Fadenkreuz stehen — sonst würde der Cursor
       // über Zonen fälschlich Anklickbarkeit signalisieren.
-      for (const layer of ['points-circle', 'zones-fill']) {
+      for (const layer of ['points-icon', 'natur-icon', 'natur-see', 'eigene-icon', 'zones-fill']) {
         m.on('mouseenter', layer, () => {
-          if (!latest.current.drawing) m.getCanvas().style.cursor = 'pointer'
+          if (!latest.current.drawing && !latest.current.markieren) setzeCursor('pointer')
         })
         m.on('mouseleave', layer, () => {
-          if (!latest.current.drawing) m.getCanvas().style.cursor = ''
+          if (!latest.current.drawing && !latest.current.markieren) setzeCursor('')
         })
       }
     }
@@ -227,18 +368,30 @@ export function MapView({
   useEffect(() => {
     const m = map.current
     if (!m || !ready.current) return
+    ;(m.getSource('natur') as GeoJSONSource | undefined)?.setData(natureToGeoJson(nature))
+  }, [nature])
+
+  useEffect(() => {
+    const m = map.current
+    if (!m || !ready.current) return
+    ;(m.getSource('eigene') as GeoJSONSource | undefined)?.setData(eigeneToGeoJson(eigene))
+  }, [eigene])
+
+  useEffect(() => {
+    const m = map.current
+    if (!m || !ready.current) return
     ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route, waypoints))
   }, [route, waypoints])
 
   useEffect(() => {
     const m = map.current
     if (!m) return
-    m.getCanvas().style.cursor = drawing ? 'crosshair' : ''
+    m.getCanvas().style.cursor = drawing || markieren ? 'crosshair' : ''
     // Im Zeichenmodus den Doppelklick-Zoom abschalten: sonst setzt ein
     // Doppelklick zwei Wegpunkte und zoomt dabei auch noch.
-    if (drawing) m.doubleClickZoom.disable()
+    if (drawing || markieren) m.doubleClickZoom.disable()
     else m.doubleClickZoom.enable()
-  }, [drawing])
+  }, [drawing, markieren])
 
   // Hintergrundkarte wechseln. setStyle verwirft alle Quellen und Layer —
   // setupLayers hängt an 'style.load' und baut sie deshalb selbst wieder auf.
@@ -265,6 +418,8 @@ export function MapView({
   // wodurch inset-0 wirkungslos wäre und der Container auf 0 Höhe kollabiert.
   return <div ref={container} className="h-full w-full" aria-label={`Legalitätskarte ${region.name}`} />
 }
+
+/* ------------------------------------------------------------- GeoJSON-Bau */
 
 function zonesToGeoJson(zones: Zone[], activity: ActivityMode): GeoJSON.FeatureCollection {
   return {
@@ -294,6 +449,64 @@ function pointsToGeoJson(points: Point[]): GeoJSON.FeatureCollection {
   }
 }
 
+function natureToGeoJson(features: NatureFeature[]): GeoJSON.FeatureCollection {
+  return {
+    type: 'FeatureCollection',
+    features: features.map((n) => ({
+      type: 'Feature',
+      properties: { id: n.id, name: n.name, type: n.type, benannt: n.benannt },
+      geometry: { type: 'Point', coordinates: [n.lng, n.lat] },
+    })),
+  }
+}
+
+function eigeneToGeoJson(punkte: EigenerPunkt[]): GeoJSON.FeatureCollection {
+  return {
+    type: 'FeatureCollection',
+    features: punkte.map((p) => ({
+      type: 'Feature',
+      properties: { id: p.id, name: p.name, typ: p.typ, hatFoto: Boolean(p.foto_pfad) },
+      geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
+    })),
+  }
+}
+
+function peaksToGeoJson(peaks: Peak[]): GeoJSON.FeatureCollection {
+  return {
+    type: 'FeatureCollection',
+    features: peaks.map((p) => ({
+      type: 'Feature',
+      properties: { name: p.name, elevation: p.elevation },
+      geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
+    })),
+  }
+}
+
+function routeToGeoJson(route: Position[], waypoints: Position[]): GeoJSON.FeatureCollection {
+  // Nur die gesetzten Wegpunkte bekommen einen Griff — eine gerasterte Route
+  // hat hunderte Stützpunkte, die niemand als Punkte sehen will.
+  const features: GeoJSON.Feature[] = waypoints.map((p, i) => ({
+    type: 'Feature',
+    properties: {
+      index: i,
+      rolle: i === 0 ? 'start' : i === waypoints.length - 1 ? 'ziel' : 'zwischen',
+      // Start und Ziel tragen ihren Namen, Zwischenstopps ihre Nummer.
+      beschriftung: i === 0 ? 'Start' : i === waypoints.length - 1 ? 'Ziel' : String(i),
+    },
+    geometry: { type: 'Point', coordinates: p },
+  }))
+  if (route.length >= 2) {
+    features.push({
+      type: 'Feature',
+      properties: {},
+      geometry: { type: 'LineString', coordinates: route },
+    })
+  }
+  return { type: 'FeatureCollection', features }
+}
+
+/* ---------------------------------------------------------------- Ausdrücke */
+
 const statusColor: ExpressionSpecification = [
   'match', ['get', 'status'],
   'allowed', STATUS_COLORS.allowed,
@@ -302,19 +515,31 @@ const statusColor: ExpressionSpecification = [
   STATUS_COLORS.unknown,
 ]
 
-const pointColor: ExpressionSpecification = [
-  'match', ['get', 'type'],
-  'hut', POINT_COLORS.hut,
-  'campsite', POINT_COLORS.campsite,
-  'vehicle_spot', POINT_COLORS.vehicle_spot,
-  '#64748b',
+/** Punktarten auf ihr Symbolbild abbilden. */
+const punktSymbol: ExpressionSpecification = ['concat', 'cb-', ['get', 'type']]
+
+/**
+ * Eigene Punkte leihen sich das passende Symbol der jeweiligen Gattung —
+ * ein selbst markierter Aussichtspunkt sieht aus wie ein Aussichtspunkt.
+ * Dass er von einem selbst stammt, sagt der Ring darunter.
+ */
+const eigenSymbol: ExpressionSpecification = [
+  'match', ['get', 'typ'],
+  'viewpoint', 'cb-viewpoint',
+  'campspot', 'cb-campsite',
+  'water', 'cb-drinking_water',
+  'foto', 'cb-foto',
+  'cb-eigen',
 ]
 
 function addLayers(m: MlMap) {
   const empty: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
   m.addSource('zones', { type: 'geojson', data: empty })
   m.addSource('points', { type: 'geojson', data: empty })
+  m.addSource('natur', { type: 'geojson', data: empty })
+  m.addSource('eigene', { type: 'geojson', data: empty })
   m.addSource('route', { type: 'geojson', data: empty })
+  m.addSource('route-griff', { type: 'geojson', data: empty })
   m.addSource('peaks', { type: 'geojson', data: empty })
 
   m.addLayer({
@@ -393,18 +618,86 @@ function addLayers(m: MlMap) {
     })
   }
 
+  /**
+   * Natur zuerst, darüber die Schlafplätze: läuft eine Hütte und ein Brunnen
+   * ineinander, soll die Hütte gewinnen — sie ist die Entscheidung, der
+   * Brunnen nur die Fussnote.
+   *
+   * Erst ab Zoom 12: über eine ganze Region gestreut wären 957 Brunnen
+   * keine Karte mehr, sondern ein Raster. Benannte Seen erscheinen früher,
+   * weil sie Orientierungspunkte sind.
+   */
+  // Zwei Layer statt eines mit Zoom-Filter: `['zoom']` in einem `filter` wird
+  // bei GeoJSON-Quellen beim Kachelbau ausgewertet und nicht beim Zeichnen —
+  // das Ergebnis war eine Ebene, die je nach Kachel da war oder eben nicht.
+  // `minzoom` am Layer ist dafür der verlässliche Weg.
+  const naturLayout = (groesse: ExpressionSpecification): maplibregl.SymbolLayerSpecification['layout'] => ({
+    'icon-image': punktSymbol,
+    'icon-size': groesse,
+    'icon-allow-overlap': false,
+    'icon-padding': 2,
+    // Nur echte Namen beschriften: „Quelle" hundertfach nebeneinander
+    // ist Rauschen, kein Hinweis.
+    'text-field': ['case', ['get', 'benannt'], ['get', 'name'], ''],
+    'text-size': 10.5,
+    'text-font': TEXT_FONT,
+    'text-offset': [0, 0.95],
+    'text-anchor': 'top',
+    'text-optional': true,
+    'text-max-width': 9,
+  })
+  const naturPaint = {
+    'text-color': '#123244',
+    'text-halo-color': 'rgba(255,255,255,0.92)',
+    'text-halo-width': 1.4,
+  }
+
+  // Gewässer früher: sie sind Orientierungspunkte, nicht Kleinkram.
   m.addLayer({
-    id: 'points-circle',
-    type: 'circle',
+    id: 'natur-see',
+    type: 'symbol',
+    source: 'natur',
+    minzoom: 9.5,
+    filter: ['==', ['get', 'type'], 'lake'],
+    layout: naturLayout(['interpolate', ['linear'], ['zoom'], 9.5, 0.6, 15, 0.95]),
+    paint: naturPaint,
+  })
+  m.addLayer({
+    id: 'natur-icon',
+    type: 'symbol',
+    source: 'natur',
+    minzoom: 12.5,
+    filter: ['!=', ['get', 'type'], 'lake'],
+    layout: naturLayout(['interpolate', ['linear'], ['zoom'], 12.5, 0.7, 16, 0.95]),
+    paint: naturPaint,
+  })
+
+  m.addLayer({
+    id: 'points-icon',
+    type: 'symbol',
     source: 'points',
+    layout: {
+      'icon-image': punktSymbol,
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 7, 0.55, 11, 0.75, 15, 1],
+      'icon-anchor': 'bottom',
+      // Schlafplätze dürfen sich überlagern: eine verschwindende Hütte wäre
+      // eine fehlende Übernachtungsmöglichkeit.
+      'icon-allow-overlap': true,
+      'text-field': ['get', 'name'],
+      'text-size': 11,
+      'text-font': TEXT_FONT,
+      'text-offset': [0, 0.35],
+      'text-anchor': 'top',
+      'text-optional': true,
+      'text-max-width': 9,
+    },
     paint: {
-      // Touch-freundlich: Trefferfläche wächst mit dem Zoom.
-      'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 4, 11, 7, 15, 11],
-      'circle-color': pointColor,
-      'circle-stroke-color': '#ffffff',
-      'circle-stroke-width': 1.5,
+      'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5,
+      // Beschriftung erst beim Hineinzoomen, das Symbol immer.
+      'text-opacity': ['interpolate', ['linear'], ['zoom'], 10, 0, 10.5, 1],
     },
   })
+
   // Route über die Zonen, aber unter die Punkte: die Punkte sind anklickbar.
   m.addLayer({
     id: 'route-casing',
@@ -420,7 +713,33 @@ function addLayers(m: MlMap) {
     source: 'route',
     filter: ['==', ['geometry-type'], 'LineString'],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': '#f8fafc', 'line-width': 3 },
+    paint: {
+      'line-color': '#f8fafc',
+      'line-width': 3,
+    },
+  })
+  // Unsichtbarer, breiter Layer nur zum Anfassen: die sichtbare Linie ist
+  // 3 px breit, mit dem Finger trifft man sie nie. So lässt sie sich greifen,
+  // ohne dass sie fett aussieht.
+  m.addLayer({
+    id: 'route-treffer',
+    type: 'line',
+    source: 'route',
+    filter: ['==', ['geometry-type'], 'LineString'],
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#000000', 'line-opacity': 0, 'line-width': 22 },
+  })
+  m.addLayer({
+    id: 'route-griff',
+    type: 'circle',
+    source: 'route-griff',
+    paint: {
+      'circle-radius': 7,
+      'circle-color': '#f8fafc',
+      'circle-stroke-color': '#0f172a',
+      'circle-stroke-width': 2.5,
+      'circle-opacity': 0.95,
+    },
   })
   m.addLayer({
     id: 'route-waypoints',
@@ -456,14 +775,38 @@ function addLayers(m: MlMap) {
     paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 2 },
   })
 
+  // Eigene Punkte ganz oben: sie sind selbst gesetzt und sollen nie von
+  // importierten Daten verdeckt werden.
   m.addLayer({
-    id: 'points-label',
+    id: 'eigene-ring',
+    type: 'circle',
+    source: 'eigene',
+    paint: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 8, 14, 13],
+      'circle-color': '#5AAFD4',
+      'circle-opacity': 0.28,
+      'circle-stroke-color': '#5AAFD4',
+      'circle-stroke-width': 1.5,
+      'circle-stroke-opacity': 0.7,
+      'circle-translate': [0, -6],
+    },
+  })
+  m.addLayer({
+    id: 'eigene-icon',
     type: 'symbol',
-    source: 'points',
-    minzoom: 10.5,
+    source: 'eigene',
     layout: {
-      'text-field': ['get', 'name'], 'text-size': 11, 'text-font': TEXT_FONT,
-      'text-offset': [0, 1.1], 'text-anchor': 'top',
+      'icon-image': eigenSymbol,
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 8, 0.6, 14, 0.95],
+      'icon-anchor': 'bottom',
+      'icon-allow-overlap': true,
+      'text-field': ['get', 'name'],
+      'text-size': 11,
+      'text-font': TEXT_FONT,
+      'text-offset': [0, 0.35],
+      'text-anchor': 'top',
+      'text-optional': true,
+      'text-max-width': 9,
     },
     paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 },
   })
@@ -501,41 +844,7 @@ function gipfelSymbolAnlegen(m: MlMap) {
   m.addImage('gipfel', { width: c.width, height: c.height, data: new Uint8Array(bild.data) }, { pixelRatio: dpr })
 }
 
-function peaksToGeoJson(peaks: Peak[]): GeoJSON.FeatureCollection {
-  return {
-    type: 'FeatureCollection',
-    features: peaks.map((p) => ({
-      type: 'Feature',
-      properties: { name: p.name, elevation: p.elevation },
-      geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
-    })),
-  }
-}
-
 function updateData(m: MlMap, zones: Zone[], points: Point[], activity: ActivityMode) {
   ;(m.getSource('zones') as GeoJSONSource | undefined)?.setData(zonesToGeoJson(zones, activity))
   ;(m.getSource('points') as GeoJSONSource | undefined)?.setData(pointsToGeoJson(points))
-}
-
-function routeToGeoJson(route: Position[], waypoints: Position[]): GeoJSON.FeatureCollection {
-  // Nur die gesetzten Wegpunkte bekommen einen Griff — eine gerasterte Route
-  // hat hunderte Stützpunkte, die niemand als Punkte sehen will.
-  const features: GeoJSON.Feature[] = waypoints.map((p, i) => ({
-    type: 'Feature',
-    properties: {
-      index: i,
-      rolle: i === 0 ? 'start' : i === waypoints.length - 1 ? 'ziel' : 'zwischen',
-      // Start und Ziel tragen ihren Namen, Zwischenstopps ihre Nummer.
-      beschriftung: i === 0 ? 'Start' : i === waypoints.length - 1 ? 'Ziel' : String(i),
-    },
-    geometry: { type: 'Point', coordinates: p },
-  }))
-  if (route.length >= 2) {
-    features.push({
-      type: 'Feature',
-      properties: {},
-      geometry: { type: 'LineString', coordinates: route },
-    })
-  }
-  return { type: 'FeatureCollection', features }
 }

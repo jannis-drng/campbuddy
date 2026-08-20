@@ -62,6 +62,28 @@ export interface Point {
   last_verified: string | null
 }
 
+/**
+ * Natur-Objekte aus OpenStreetMap: Wasser und Aussicht.
+ *
+ * Bewusst getrennt von `Point`: `Point` sind Orte zum Übernachten und tragen
+ * deshalb eine rechtliche Relevanz und ein Prüfdatum. Ein Brunnen hat beides
+ * nicht — er ist Orientierung, keine Aussage über die Rechtslage.
+ */
+export type NatureType = 'lake' | 'spring' | 'drinking_water' | 'waterfall' | 'viewpoint'
+
+export interface NatureFeature {
+  id: string
+  region: RegionCode
+  type: NatureType
+  name: string
+  /** false = der Name ist nur die Gattung („Quelle"), nicht aus OSM. */
+  benannt: boolean
+  lat: number
+  lng: number
+  elevation: number | null
+  source_url: string
+}
+
 /** Benannter Gipfel mit Höhe — Orientierung und später Etappenbenennung. */
 export interface Peak {
   id: string
@@ -71,6 +93,34 @@ export interface Peak {
   lng: number
   elevation: number
   source_url: string
+}
+
+/**
+ * Ein selbst markierter Punkt.
+ *
+ * Der bewusste Unterschied zu `Point` und `NatureFeature`: das hier ist eine
+ * *Meinung* („schöner Aussichtspunkt"), keine Auskunft. Deshalb steht sie nie
+ * in derselben Ebene wie die Rechtsdaten, trägt kein Prüfdatum und ist
+ * standardmässig privat — Veröffentlichen ist ausdrücklich opt-in, wie bei
+ * den Routen.
+ */
+export type EigenerPunktTyp = 'viewpoint' | 'campspot' | 'water' | 'foto' | 'sonstiges'
+
+export interface EigenerPunkt {
+  id: string
+  user_id?: string
+  region: RegionCode
+  typ: EigenerPunktTyp
+  name: string
+  notiz: string | null
+  lat: number
+  lng: number
+  /** Pfad im Storage-Bucket, nicht die fertige URL — die ist zeitlich begrenzt. */
+  foto_pfad: string | null
+  /** Bezug zu einer Route, wenn der Punkt beim Planen entstanden ist. */
+  route_id: string | null
+  ist_oeffentlich: boolean
+  created_at?: string
 }
 
 export type RegionCode = string
@@ -103,6 +153,11 @@ export interface MapFilters {
   showCampsites: boolean
   showVehicleSpots: boolean
   showPeaks: boolean
+  /** Trinkwasser, Quellen, Wasserfälle und Seen. */
+  showWater: boolean
+  showViewpoints: boolean
+  /** Selbst markierte Punkte und Fotos entlang der Route. */
+  showEigene: boolean
 }
 
 /** Jahreszeit-Einstufung für die Ausrüstungswahl. */

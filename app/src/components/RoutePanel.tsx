@@ -12,8 +12,8 @@
  */
 import { useRef } from 'react'
 import {
-  ArrowRight, Bike, Car, Download, Flag, Footprints, MapPin, Pencil, PencilOff,
-  Trash2, TriangleAlert, Undo2, Upload, X,
+  ArrowRight, Bike, Camera, Car, Download, Flag, Footprints, MapPin, MousePointerClick,
+  Pencil, PencilOff, Trash2, TriangleAlert, Undo2, Upload, X,
 } from 'lucide-react'
 import { lineLength, type Position } from '../data/geo'
 import { formatDauer, type HikingStats } from '../data/hiking'
@@ -41,6 +41,9 @@ interface Props {
   onImportGpx: (file: File) => void
   onAuswerten: () => void
   onClose: () => void
+  /** Markiermodus für eigene Punkte und Fotos — null, wenn kein Konto da ist. */
+  markieren: boolean
+  onToggleMarkieren: (() => void) | null
 }
 
 const formatKm = (m: number) =>
@@ -50,9 +53,9 @@ const PROFILE_ICONS = { foot: Footprints, bike: Bike, car: Car } as const
 
 export function RoutePanel({
   route, waypoints, waypointCount, routed, routingBusy, profile, isImported,
-  stats, hoehenBusy, drawing, error,
+  stats, hoehenBusy, drawing, error, markieren,
   onProfileChange, onToggleDrawing, onUndo, onClear, onRemoveWaypoint,
-  onImportGpx, onAuswerten, onClose,
+  onImportGpx, onAuswerten, onClose, onToggleMarkieren,
 }: Props) {
   const fileInput = useRef<HTMLInputElement>(null)
 
@@ -120,6 +123,18 @@ export function RoutePanel({
                         variante="sekundaer" onClick={onClear} disabled={route.length === 0} />
           </div>
 
+          {onToggleMarkieren && (
+            <Button
+              variante={markieren ? 'primaer' : 'sekundaer'}
+              icon={Camera}
+              onClick={onToggleMarkieren}
+              aria-pressed={markieren}
+              breit
+            >
+              {markieren ? 'Markieren beenden' : 'Punkt oder Foto markieren'}
+            </Button>
+          )}
+
           <div className="flex gap-1.5">
             <Button variante="geist" groesse="klein" icon={Upload}
                     onClick={() => fileInput.current?.click()} className="flex-1">
@@ -142,9 +157,18 @@ export function RoutePanel({
 
         {/* ---- Zustände ---- */}
         {drawing && (
-          <Hinweis ton="info" icon={MapPin}>
-            Klick in die Karte setzt einen Wegpunkt. Dazwischen wird auf reale Wege geroutet.
+          <Hinweis ton="info" icon={MousePointerClick}>
+            <strong className="font-semibold">Tippen</strong> hängt hinten einen Wegpunkt an ·{' '}
+            <strong className="font-semibold">Punkt ziehen</strong> verschiebt ihn ·{' '}
+            <strong className="font-semibold">Linie ziehen</strong> baut an dieser Stelle einen
+            Umweg ein. Dazwischen wird auf reale Wege geroutet.
             {profile === 'foot' && ' Wanderwege werden gegenüber Strassen bevorzugt.'}
+          </Hinweis>
+        )}
+        {markieren && (
+          <Hinweis ton="info" icon={Camera}>
+            Tippe die Stelle in der Karte an, die du markieren willst — Aussicht, Schlafplatz,
+            Wasserstelle oder Foto.
           </Hinweis>
         )}
         {routingBusy && (
@@ -206,7 +230,8 @@ export function RoutePanel({
               })}
             </ul>
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Wegpunkte lassen sich auf der Karte verschieben. Rechtsklick darauf entfernt sie.
+              Wegpunkte lassen sich auf der Karte verschieben, Rechtsklick entfernt sie. Um einen
+              Umweg einzubauen, die Linie an der gewünschten Stelle anfassen und ziehen.
             </p>
           </section>
         )}

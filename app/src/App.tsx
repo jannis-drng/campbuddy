@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import {
-  fetchRemotePoints, fetchRemoteZones, filterPoints, getPeaks, getPoints, getRegion, getZones,
-  verificationStats,
+  fetchRemotePoints, fetchRemoteZones, filterNature, filterPoints, getNature, getPeaks, getPoints,
+  getRegion, getZones, verificationStats,
 } from './data/legalData'
-import type { MapFilters, Point, Zone } from './data/types'
+import type { EigenerPunkt, MapFilters, Point, Zone } from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
@@ -22,6 +22,8 @@ import { loadElevationProfile, type ElevationPoint } from './services/elevation'
 import { analyseProfil, planeEtappen } from './data/hiking'
 import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/routing'
 import { AccountPanel } from './components/AccountPanel'
+import { PunktDialog } from './components/PunktDialog'
+import { ladeEigenePunkte, punktLoeschen } from './services/eigenePunkte'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
@@ -35,6 +37,9 @@ const INITIAL_FILTERS: MapFilters = {
   showCampsites: true,
   showVehicleSpots: true,
   showPeaks: true,
+  showWater: true,
+  showViewpoints: true,
+  showEigene: true,
 }
 
 type View = 'karte' | 'community' | 'touren' | 'konto'
@@ -54,6 +59,12 @@ export default function App() {
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
   const [selection, setSelection] = useState<Selection>(null)
 
+  // Selbst markierte Punkte: eigene und veröffentlichte, aus dem Backend.
+  const [eigenePunkte, setEigenePunkte] = useState<EigenerPunkt[]>([])
+  const [markieren, setMarkieren] = useState(false)
+  const [dialogPosition, setDialogPosition] = useState<Position | null>(null)
+  const [dialogPunkt, setDialogPunkt] = useState<EigenerPunkt | null>(null)
+
   const [routeOpen, setRouteOpen] = useState(false)
   const [auswertungOffen, setAuswertungOffen] = useState(false)
   const [drawing, setDrawing] = useState(false)
@@ -70,11 +81,25 @@ export default function App() {
   const [hoehenBusy, setHoehenBusy] = useState(false)
   const [hoehenFehler, setHoehenFehler] = useState<string | null>(null)
 
+  // Escape beendet den aktiven Modus — die übliche Fluchttaste, und ohne sie
+  // klebt man im Zeichenmodus fest, sobald das Panel zugeschoben ist.
+  useEffect(() => {
+    if (!drawing && !markieren) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setDrawing(false)
+      setMarkieren(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [drawing, markieren])
+
   const region = getRegion(regionCode)
   // Gebündelte Fassung als Startanzeige …
   const bundledZones = useMemo(() => getZones(regionCode), [regionCode])
   const bundledPoints = useMemo(() => getPoints(regionCode), [regionCode])
   const allPeaks = useMemo(() => getPeaks(regionCode), [regionCode])
+  const allNature = useMemo(() => getNature(regionCode), [regionCode])
   // … die durch die Datenbankfassung ersetzt wird, sobald sie da ist.
   const [remoteZones, setRemoteZones] = useState<Zone[] | null>(null)
   const [remotePoints, setRemotePoints] = useState<Point[] | null>(null)
@@ -89,11 +114,26 @@ export default function App() {
     return () => { aktuell = false }
   }, [regionCode])
 
+  // Neu laden, wenn die Region wechselt oder sich die Anmeldung ändert: nach
+  // dem Anmelden kommen die eigenen, privaten Punkte dazu.
+  useEffect(() => {
+    let aktuell = true
+    ladeEigenePunkte(regionCode)
+      .then((p) => { if (aktuell) setEigenePunkte(p) })
+      .catch(() => {})
+    return () => { aktuell = false }
+  }, [regionCode, session?.user.id])
+
   const allZones = remoteZones ?? bundledZones
   const allPoints = remotePoints ?? bundledPoints
   const datenquelle = remoteZones ? 'datenbank' : 'gebündelt'
   // Zonen werden nie gefiltert — nur umgefärbt (siehe effectiveStatus).
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters])
+  const nature = useMemo(() => filterNature(allNature, filters), [allNature, filters])
+  const sichtbareEigene = useMemo(
+    () => (filters.showEigene ? eigenePunkte : []),
+    [eigenePunkte, filters.showEigene],
+  )
   const stats = useMemo(() => verificationStats(allZones), [allZones])
   // Die Analyse läuft über alle Punkte, nicht die gefilterten: eine ausgeblendete
   // Hütte ist trotzdem eine Schlafmöglichkeit an der Route.
@@ -185,6 +225,47 @@ export default function App() {
     setWaypoints([]); setGpxTrack(null); setRouted(null); setRouteError(null)
   }
 
+  /**
+   * Route öffnen heisst zeichnen.
+   *
+   * Vorher musste man das Panel öffnen *und* dann noch „Route zeichnen"
+   * drücken — ein Schritt, den niemand freiwillig macht und der auf jede
+   * Rückfrage „warum passiert nichts, wenn ich klicke?" hinauslief. Wer das
+   * Panel öffnet, will zeichnen; abschalten lässt es sich weiterhin.
+   */
+  const routeOeffnen = () => {
+    setRouteOpen(true)
+    setDrawing(true)
+    setMarkieren(false)
+  }
+
+  // Zeichnen und Markieren schliessen einander aus: beide belegen den
+  // Kartenklick, und ein Klick mit zwei Bedeutungen ist keiner.
+  const markierenUmschalten = () => {
+    setMarkieren((m) => {
+      if (!m) setDrawing(false)
+      return !m
+    })
+  }
+
+  const punktGespeichert = (punkt: EigenerPunkt) => {
+    setEigenePunkte((liste) => {
+      const ohne = liste.filter((p) => p.id !== punkt.id)
+      return [punkt, ...ohne]
+    })
+    setSelection({ kind: 'eigen', punkt })
+  }
+
+  const punktEntfernen = async (punkt: EigenerPunkt) => {
+    try {
+      await punktLoeschen(punkt)
+      setEigenePunkte((liste) => liste.filter((p) => p.id !== punkt.id))
+      setSelection(null)
+    } catch (e) {
+      setRouteError((e as Error).message)
+    }
+  }
+
   return (
     <div className="flex h-dvh flex-col bg-flaeche-1 text-ink-100">
       <header className="flex h-14 shrink-0 items-center gap-4 border-b border-kante bg-flaeche-2 px-4">
@@ -251,20 +332,37 @@ export default function App() {
             zones={allZones}
             points={points}
             peaks={filters.showPeaks ? allPeaks : []}
+            nature={nature}
+            eigene={sichtbareEigene}
             activity={filters.activity}
             basemap={basemap}
             visible={view === 'karte'}
             route={routeGeometry}
             waypoints={gpxTrack ? [] : waypoints}
             drawing={drawing}
+            markieren={markieren}
             onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
             onPointClick={(point) => setSelection({ kind: 'point', point })}
+            onNatureClick={(feature) => setSelection({ kind: 'natur', feature })}
+            onEigenClick={(punkt) => setSelection({ kind: 'eigen', punkt })}
+            onMarkieren={(position) => {
+              setDialogPunkt(null)
+              setDialogPosition(position)
+              setMarkieren(false)
+            }}
             onAddWaypoint={(position) => {
               // Ein neuer Klick beginnt eine gezeichnete Route; eine importierte
               // Spur würde sonst stillschweigend mit Wegpunkten vermischt.
               setGpxTrack(null)
               setWaypoints((w) => [...w, position])
             }}
+            onInsertWaypoint={(index, position) =>
+              setWaypoints((w) => {
+                const kopie = [...w]
+                kopie.splice(index, 0, position)
+                return kopie
+              })
+            }
             onMoveWaypoint={(index, position) =>
               setWaypoints((w) => w.map((p, i) => (i === index ? position : p)))
             }
@@ -289,8 +387,10 @@ export default function App() {
               onUndo={() => setWaypoints((w) => w.slice(0, -1))}
               onClear={clearRoute}
               onImportGpx={importGpx}
-              onAuswerten={() => { setDrawing(false); setAuswertungOffen(true) }}
-              onClose={() => { setRouteOpen(false); setDrawing(false) }}
+              onAuswerten={() => { setDrawing(false); setMarkieren(false); setAuswertungOffen(true) }}
+              onClose={() => { setRouteOpen(false); setDrawing(false); setMarkieren(false) }}
+              markieren={markieren}
+              onToggleMarkieren={session ? markierenUmschalten : null}
             />
           ) : (
             <>
@@ -301,7 +401,7 @@ export default function App() {
                 variante="primaer"
                 groesse="gross"
                 icon={Route}
-                onClick={() => setRouteOpen(true)}
+                onClick={routeOeffnen}
                 className="absolute bottom-4 left-4 z-10 shadow-[var(--shadow-3)]"
               >
                 Route planen
@@ -314,6 +414,9 @@ export default function App() {
             selection={selection}
             onClose={() => setSelection(null)}
             onOpenPlanner={() => { setSelection(null); setView('touren') }}
+            nutzerId={session?.user.id}
+            onPunktBearbeiten={(punkt) => { setDialogPosition(null); setDialogPunkt(punkt) }}
+            onPunktLoeschen={(punkt) => void punktEntfernen(punkt)}
           />
         </main>
       </div>
@@ -378,6 +481,15 @@ export default function App() {
           )
         })}
       </nav>
+
+      <PunktDialog
+        offen={dialogPosition != null || dialogPunkt != null}
+        region={regionCode}
+        position={dialogPosition}
+        punkt={dialogPunkt}
+        onClose={() => { setDialogPosition(null); setDialogPunkt(null) }}
+        onGespeichert={punktGespeichert}
+      />
 
       <TourDetailModal
         offen={auswertungOffen}

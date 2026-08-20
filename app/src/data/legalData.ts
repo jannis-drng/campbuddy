@@ -7,7 +7,8 @@
  * die UI bleibt unverändert, weil sie nur diese Signaturen kennt.
  */
 import type {
-  ActivityMode, LegalStatus, MapFilters, Peak, Permission, Point, RegionCode, ReviewStatus, Zone,
+  ActivityMode, LegalStatus, MapFilters, NatureFeature, Peak, Permission, Point, RegionCode,
+  ReviewStatus, Zone,
 } from './types'
 import { REGIONS } from './regions'
 import { getSupabase } from '../services/supabase'
@@ -16,6 +17,7 @@ import osmZonesVS from './zones/CH-VS.osm.json'
 import legalVS from './zones/CH-VS.legal.json'
 import pointsVS from './points/CH-VS.json'
 import peaksVS from './peaks/CH-VS.json'
+import natureVS from './nature/CH-VS.json'
 
 interface LegalEntry {
   status: LegalStatus
@@ -48,6 +50,10 @@ const POINT_SOURCES: Record<RegionCode, Point[]> = {
 
 const PEAK_SOURCES: Record<RegionCode, Peak[]> = {
   'CH-VS': peaksVS as unknown as Peak[],
+}
+
+const NATURE_SOURCES: Record<RegionCode, NatureFeature[]> = {
+  'CH-VS': natureVS as unknown as NatureFeature[],
 }
 
 /**
@@ -87,6 +93,20 @@ export function getPoints(region: RegionCode): Point[] {
 
 export function getPeaks(region: RegionCode): Peak[] {
   return PEAK_SOURCES[region] ?? []
+}
+
+export function getNature(region: RegionCode): NatureFeature[] {
+  return NATURE_SOURCES[region] ?? []
+}
+
+/**
+ * Wasser und Aussicht getrennt schaltbar: wer im Sommer Trinkwasser sucht,
+ * will alle 957 Brunnen sehen; wer einen Schlafplatz sucht, will sie nicht.
+ */
+export function filterNature(features: NatureFeature[], f: MapFilters): NatureFeature[] {
+  return features.filter((n) =>
+    (n.type === 'viewpoint' ? f.showViewpoints : f.showWater),
+  )
 }
 
 export function getRegion(region: RegionCode) {

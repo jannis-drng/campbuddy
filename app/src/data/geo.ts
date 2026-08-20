@@ -106,6 +106,53 @@ function distanceToSegment(p: Position, a: Position, b: Position): number {
 }
 
 /**
+ * Nächstgelegener Punkt auf einer Linie — die Grundlage dafür, dass sich eine
+ * Route wie bei Komoot an einer beliebigen Stelle anfassen und aufziehen lässt.
+ *
+ * Zurück kommt neben der Position auch das Segment: daraus leitet die Karte
+ * ab, zwischen welche zwei Wegpunkte ein neuer gehört.
+ */
+export function naechsterPunktAufLinie(
+  point: Position, line: Position[],
+): { position: Position; segment: number; distance_m: number } | null {
+  if (line.length < 2) return null
+  let best = { position: line[0], segment: 0, distance_m: Infinity }
+  for (let i = 1; i < line.length; i++) {
+    const kandidat = projiziereAufSegment(point, line[i - 1], line[i])
+    const d = distanceMeters(point, kandidat)
+    if (d < best.distance_m) best = { position: kandidat, segment: i - 1, distance_m: d }
+  }
+  return best
+}
+
+function projiziereAufSegment(p: Position, a: Position, b: Position): Position {
+  const latScale = Math.cos(toRad((a[1] + b[1]) / 2))
+  const px = (p[0] - a[0]) * latScale
+  const py = p[1] - a[1]
+  const bx = (b[0] - a[0]) * latScale
+  const by = b[1] - a[1]
+  const lenSq = bx * bx + by * by
+  const t = lenSq === 0 ? 0 : Math.max(0, Math.min(1, (px * bx + py * by) / lenSq))
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]
+}
+
+/**
+ * Index des Linienpunkts, der einer Position am nächsten liegt.
+ *
+ * Gebraucht, um gesetzte Wegpunkte auf der gerouteten Spur wiederzufinden:
+ * die Spur folgt echten Wegen und trifft die gesetzten Punkte nicht exakt.
+ */
+export function naechsterIndex(point: Position, line: Position[]): number {
+  let best = 0
+  let min = Infinity
+  for (let i = 0; i < line.length; i++) {
+    const d = distanceMeters(point, line[i])
+    if (d < min) { min = d; best = i }
+  }
+  return best
+}
+
+/**
  * Verteilt `count` Stützpunkte gleichmässig über die Streckenlänge.
  *
  * Für das Höhenprofil: die Rohgeometrie hat je nach Routing hunderte bis

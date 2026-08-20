@@ -5,17 +5,39 @@
  * gilt, dann unter welchen Bedingungen, dann woher die Angabe stammt und wie
  * gut sie belegt ist. Die Quelle steht unten, aber sie steht immer da.
  */
-import { Building2, ExternalLink, Flame, MapPin, Mountain, Phone, Tent, Truck, Users, X } from 'lucide-react'
+import {
+  Building2, Camera, Droplet, Eye, ExternalLink, Flame, Globe, Lock, MapPin, Mountain, Phone,
+  Pencil, Star, Tent, Trash2, Truck, Users, Waves, X,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { Point, Zone } from '../data/types'
-import { Button, IconButton, Label } from '../ui'
+import type { EigenerPunkt, NatureFeature, Point, Zone } from '../data/types'
+import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
 import { PermissionRow, ReviewBadge, StatusBadge } from './ui'
 import { GearHint } from '../affiliate/GearHint'
+import { PunktFoto } from './PunktFoto'
 
 export type Selection =
   | { kind: 'zone'; zone: Zone }
   | { kind: 'point'; point: Point }
+  | { kind: 'natur'; feature: NatureFeature }
+  | { kind: 'eigen'; punkt: EigenerPunkt }
   | null
+
+const NATUR_ART: Record<NatureFeature['type'], { label: string; icon: LucideIcon }> = {
+  lake: { label: 'Gewässer', icon: Waves },
+  spring: { label: 'Quelle', icon: Droplet },
+  drinking_water: { label: 'Trinkwasser', icon: Droplet },
+  waterfall: { label: 'Wasserfall', icon: Waves },
+  viewpoint: { label: 'Aussichtspunkt', icon: Eye },
+}
+
+const EIGEN_ART: Record<EigenerPunkt['typ'], { label: string; icon: LucideIcon }> = {
+  viewpoint: { label: 'Aussichtspunkt', icon: Eye },
+  campspot: { label: 'Schlafplatz', icon: Tent },
+  water: { label: 'Wasserstelle', icon: Droplet },
+  foto: { label: 'Foto', icon: Camera },
+  sonstiges: { label: 'Markierung', icon: Star },
+}
 
 const PUNKT_ART: Record<Point['type'], { label: string; icon: LucideIcon }> = {
   hut: { label: 'Berghütte', icon: Building2 },
@@ -27,14 +49,43 @@ interface InfoPanelProps {
   selection: Selection
   onClose: () => void
   onOpenPlanner: () => void
+  /** Wer gerade angemeldet ist — entscheidet, ob eine Markierung bearbeitbar ist. */
+  nutzerId?: string | null
+  onPunktBearbeiten?: (punkt: EigenerPunkt) => void
+  onPunktLoeschen?: (punkt: EigenerPunkt) => void
 }
 
-export function InfoPanel({ selection, onClose, onOpenPlanner }: InfoPanelProps) {
+function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: LucideIcon; titel: string } {
+  switch (selection.kind) {
+    case 'zone':
+      return { art: 'Zone', icon: MapPin, titel: selection.zone.name }
+    case 'point':
+      return {
+        art: PUNKT_ART[selection.point.type].label,
+        icon: PUNKT_ART[selection.point.type].icon,
+        titel: selection.point.name,
+      }
+    case 'natur':
+      return {
+        art: NATUR_ART[selection.feature.type].label,
+        icon: NATUR_ART[selection.feature.type].icon,
+        titel: selection.feature.name,
+      }
+    case 'eigen':
+      return {
+        art: `Eigene Markierung · ${EIGEN_ART[selection.punkt.typ].label}`,
+        icon: EIGEN_ART[selection.punkt.typ].icon,
+        titel: selection.punkt.name,
+      }
+  }
+}
+
+export function InfoPanel({
+  selection, onClose, onOpenPlanner, nutzerId, onPunktBearbeiten, onPunktLoeschen,
+}: InfoPanelProps) {
   if (!selection) return null
 
-  const kopf = selection.kind === 'zone'
-    ? { art: 'Zone', icon: MapPin, titel: selection.zone.name }
-    : { art: PUNKT_ART[selection.point.type].label, icon: PUNKT_ART[selection.point.type].icon, titel: selection.point.name }
+  const kopf = kopfDaten(selection)
   const KopfIcon = kopf.icon
 
   return (
@@ -56,9 +107,17 @@ export function InfoPanel({ selection, onClose, onOpenPlanner }: InfoPanelProps)
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {selection.kind === 'zone'
-          ? <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />
-          : <PointBody point={selection.point} />}
+        {selection.kind === 'zone' && <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />}
+        {selection.kind === 'point' && <PointBody point={selection.point} />}
+        {selection.kind === 'natur' && <NaturBody feature={selection.feature} />}
+        {selection.kind === 'eigen' && (
+          <EigenBody
+            punkt={selection.punkt}
+            darfBearbeiten={Boolean(nutzerId) && selection.punkt.user_id === nutzerId}
+            onBearbeiten={onPunktBearbeiten}
+            onLoeschen={onPunktLoeschen}
+          />
+        )}
       </div>
     </aside>
   )
@@ -155,6 +214,108 @@ function PointBody({ point }: { point: Point }) {
       </p>
 
       <QuellenBlock source={point.source} url={point.source_url} lastVerified={point.last_verified} />
+    </div>
+  )
+}
+
+/**
+ * Natur-Objekte aus OpenStreetMap.
+ *
+ * Kurz gehalten — und mit einem Satz, der wichtiger ist als alles andere auf
+ * dieser Karte: eine Trinkwasser-Markierung in OSM ist die Angabe eines
+ * Mappers, keine Laboranalyse. Wer danach seine Flasche füllt, soll das
+ * wissen.
+ */
+function NaturBody({ feature }: { feature: NatureFeature }) {
+  const trinkbar = feature.type === 'drinking_water' || feature.type === 'spring'
+  return (
+    <div className="space-y-5 px-5 py-4">
+      {!feature.benannt && (
+        <p className="text-klein leading-relaxed text-ink-400">
+          In OpenStreetMap ohne Namen erfasst — angezeigt wird die Gattung.
+        </p>
+      )}
+
+      {feature.elevation != null && (
+        <div className="flex items-center justify-between gap-3 border-b border-kante py-2.5">
+          <span className="flex items-center gap-2 text-fliess text-ink-400">
+            <Mountain size={15} strokeWidth={1.75} className="text-ink-500" aria-hidden />
+            Höhe
+          </span>
+          <span className="text-fliess font-medium text-ink-100">{feature.elevation} m</span>
+        </div>
+      )}
+
+      {trinkbar && (
+        <Hinweis ton="warnung" icon={Droplet}>
+          <strong className="font-semibold">Keine Trinkwasserprüfung.</strong> Die Markierung
+          stammt aus OpenStreetMap und sagt nur, dass dort jemand eine Wasserstelle eingetragen
+          hat. Ob sie fliesst, gefasst oder trinkbar ist, entscheidet sich vor Ort.
+        </Hinweis>
+      )}
+
+      <p className="font-mono text-mikro normal-case tracking-normal text-ink-500">
+        {feature.lat.toFixed(5)}, {feature.lng.toFixed(5)}
+      </p>
+
+      <QuellenBlock source="OpenStreetMap" url={feature.source_url} lastVerified={null} />
+    </div>
+  )
+}
+
+/**
+ * Eine selbst gesetzte Markierung.
+ *
+ * Der erste sichtbare Hinweis sagt, was sie ist: eine persönliche Notiz. Das
+ * ist keine Förmlichkeit — die ganze Karte lebt davon, dass geprüfte Auskunft
+ * und private Meinung nie gleich aussehen.
+ */
+function EigenBody({
+  punkt, darfBearbeiten, onBearbeiten, onLoeschen,
+}: {
+  punkt: EigenerPunkt
+  darfBearbeiten: boolean
+  onBearbeiten?: (p: EigenerPunkt) => void
+  onLoeschen?: (p: EigenerPunkt) => void
+}) {
+  return (
+    <div className="space-y-5 px-5 py-4">
+      {punkt.foto_pfad && <PunktFoto pfad={punkt.foto_pfad} alt={punkt.name} />}
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge ton="akzent" icon={EIGEN_ART[punkt.typ].icon}>{EIGEN_ART[punkt.typ].label}</Badge>
+        <Badge icon={punkt.ist_oeffentlich ? Globe : Lock}>
+          {punkt.ist_oeffentlich ? 'Öffentlich' : 'Privat'}
+        </Badge>
+      </div>
+
+      {punkt.notiz && (
+        <section>
+          <Label className="mb-1.5">Notiz</Label>
+          <p className="whitespace-pre-line text-klein leading-relaxed text-ink-300">{punkt.notiz}</p>
+        </section>
+      )}
+
+      <p className="font-mono text-mikro normal-case tracking-normal text-ink-500">
+        {punkt.lat.toFixed(5)}, {punkt.lng.toFixed(5)}
+      </p>
+
+      {darfBearbeiten && (
+        <div className="flex gap-2">
+          <Button variante="sekundaer" icon={Pencil} onClick={() => onBearbeiten?.(punkt)} className="flex-1">
+            Bearbeiten
+          </Button>
+          <Button variante="gefahr" icon={Trash2} onClick={() => onLoeschen?.(punkt)}>
+            Löschen
+          </Button>
+        </div>
+      )}
+
+      <p className="rounded-mittel border border-kante bg-flaeche-1 px-3 py-2.5 text-mikro
+                    normal-case leading-relaxed tracking-normal text-ink-400">
+        Eigene Markierung — keine geprüfte Angabe und keine Aussage über die Rechtslage.
+        Was an dieser Stelle rechtlich gilt, steht in der Zone darunter.
+      </p>
     </div>
   )
 }
