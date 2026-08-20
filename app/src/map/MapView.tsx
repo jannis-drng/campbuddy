@@ -232,7 +232,12 @@ export function MapView({
 
   useEffect(() => {
     const m = map.current
-    if (m) m.getCanvas().style.cursor = drawing ? 'crosshair' : ''
+    if (!m) return
+    m.getCanvas().style.cursor = drawing ? 'crosshair' : ''
+    // Im Zeichenmodus den Doppelklick-Zoom abschalten: sonst setzt ein
+    // Doppelklick zwei Wegpunkte und zoomt dabei auch noch.
+    if (drawing) m.doubleClickZoom.disable()
+    else m.doubleClickZoom.enable()
   }, [drawing])
 
   // Hintergrundkarte wechseln. setStyle verwirft alle Quellen und Layer —

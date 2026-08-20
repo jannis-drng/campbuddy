@@ -121,6 +121,15 @@ export const POINT_COLORS = {
  * Schlüssel eintragen — die Routing-Schicht schaltet dann automatisch um.
  */
 export const ROUTING = {
+  /**
+   * Valhalla ist der Hauptanbieter, weil sein Fussgänger-Modell echte
+   * Wanderwege kennt: `walkway_factor` bevorzugt Fusswege, und
+   * `max_hiking_difficulty` erlaubt Steige bis zur gewählten SAC-Stufe.
+   * OSRMs Fuss-Profil gewichtet nur nach Distanz und nimmt im Gebirge
+   * deshalb oft die kürzere Talstrasse statt des Steigs.
+   */
+  valhallaBase: 'https://valhalla1.openstreetmap.de',
+  /** Rückfallebene, wenn Valhalla nicht antwortet. */
   osrmBase: 'https://routing.openstreetmap.de',
   provider: 'openrouteservice' as 'openrouteservice' | 'graphhopper',
   apiKey: '',

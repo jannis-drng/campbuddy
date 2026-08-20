@@ -144,6 +144,7 @@ export function RoutePanel({
         {drawing && (
           <Hinweis ton="info" icon={MapPin}>
             Klick in die Karte setzt einen Wegpunkt. Dazwischen wird auf reale Wege geroutet.
+            {profile === 'foot' && ' Wanderwege werden gegenüber Strassen bevorzugt.'}
           </Hinweis>
         )}
         {routingBusy && (
@@ -240,6 +241,10 @@ export function RoutePanel({
           </Button>
           <p className="text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
             Rechtslage entlang der Route, Höhenprofil, Etappen, Ausrüstung, Verpflegung und Wetter.
+            {routed?.anbieter === 'osrm' && profile === 'foot' && (
+              <> Der bevorzugte Wanderweg-Router war nicht erreichbar; diese Route folgt
+              der kürzesten Strecke und nutzt eher Strassen.</>
+            )}
           </p>
         </div>
       )}

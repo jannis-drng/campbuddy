@@ -147,20 +147,30 @@ Etappen werden nach Gehzeit geteilt, nicht nach Kilometern — 12 km im Flachen 
 mit 1200 Höhenmetern sind nicht derselbe Tag. Zu jedem Etappenende sucht die App die
 nächste erfasste Übernachtungsmöglichkeit.
 
-Das Routing läuft über die öffentliche OSRM-Instanz der FOSSGIS e.V. — dieselbe, die
-openstreetmap.org verwendet. **Kein API-Schlüssel, keine Registrierung, 0 €.**
+Das Routing läuft über zwei Dienste der FOSSGIS e.V., beide **ohne API-Schlüssel**:
 
-Zwei Sicherungen, weil die Legalitäts-Auswertung auf der gerouteten Linie beruht:
+**Valhalla** ist der Hauptanbieter, weil nur sein Fussgänger-Modell echte Wanderwege kennt:
 
-- OSRM zieht jede Koordinate auf den nächsten Weg. Liegt ein Wegpunkt weiter als 2 km von
-  jedem erfassten Weg entfernt, fällt die App auf gerade Verbindungen zurück, statt eine
-  Route für einen ganz anderen Ort auszuwerten. Zwischen 250 m und 2 km wird gewarnt.
-- Fällt der Dienst aus, verbindet die App die Wegpunkte gerade und weist das im UI aus.
+| Einstellung | Wirkung |
+|---|---|
+| `walkway_factor: 2.0` | Fusswege werden doppelt so attraktiv bewertet wie ihre Länge nahelegt |
+| `max_hiking_difficulty: 4` | Bergwege bis SAC T4. Höher wäre unverantwortlich — T5/T6 verlangen Kletterei |
+| `use_hills: 1.0` | keine Steigungsvermeidung; wer in den Alpen plant, will nicht um jeden Höhenmeter herumgeführt werden |
+| `driveway_factor: 5.0` | Zufahrten werden zurückgedrängt |
 
-Die Instanz wird von der OSM-Community auf Spendenbasis betrieben. Anfragen sind deshalb
-entprellt. Für dauerhaft hohe Last einen OpenRouteService-Schlüssel in `mapConfig.ts` unter
-`ROUTING.apiKey` eintragen — die Routing-Schicht schaltet dann automatisch um, ohne
-Code-Änderung.
+**OSRM** ist die Rückfallebene. Sein Fuss-Profil gewichtet ausschliesslich nach Distanz und
+nimmt im Gebirge deshalb oft die kürzere Talstrasse statt des Steigs. Springt die App darauf
+zurück, sagt sie das im Routenpanel.
+
+Gemessen auf Zermatt → Gornergrat, 24 Stichproben gegen die OSM-Wegtypen: Valhalla läuft auf
+27 `path`-Segmenten, OSRM auf 13 und stützt sich stattdessen auf `track`. Im besiedelten
+Gebiet nehmen sich beide wenig — dort gibt es Gehwege statt Steige.
+
+Der Versatz der Wegpunkte auf das Wegenetz wird selbst berechnet statt vom Anbieter
+übernommen: so funktioniert die Prüfung für beide Dienste identisch.
+
+Beide Instanzen laufen auf Spendenbasis. Anfragen sind deshalb entprellt.
+
 
 ## Aufbau der App
 
