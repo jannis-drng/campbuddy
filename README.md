@@ -187,6 +187,33 @@ Der Versatz der Wegpunkte auf das Wegenetz wird selbst berechnet statt vom Anbie
 Beide Instanzen laufen auf Spendenbasis. Anfragen sind deshalb entprellt.
 
 
+## Startseite
+
+Neue Besucher landen auf einer Startseite, die die Rechtsfrage erklärt, bevor sie die Karte
+sehen (`app/src/landing/`). Wer die Karte kennt, bekommt sie sofort:
+
+| Fall | Was passiert |
+|---|---|
+| Erster Besuch | Startseite |
+| Wiederkehrend (Cookie `campbuddy_kennt_start`) | direkt die Karte |
+| Angemeldet | direkt die Karte |
+| `#/start` aufgerufen | immer die Startseite — zum Verlinken und Vorführen |
+| `#/karte` oder Rückkehr von einem Anmeldelink | direkt die Karte |
+
+Die Weiche liegt in `app/src/Root.tsx`, die App selbst weiss nichts davon. Das Cookie ist
+ein einzelnes technisches Zeichen ohne Personenbezug — keine Kennung, keine Auswertung.
+Zum erneuten Ansehen: `startseiteVergessen()` in `app/src/services/besuch.ts` oder
+schlicht `#/start` aufrufen.
+
+Alle Zahlen der Startseite stammen aus `app/src/landing/zahlen.ts`, das direkt aus den
+Datendateien liest — auch die unbequeme, dass **keine Fläche amtlich geprüft** ist. Sie
+kann deshalb nicht behaupten, was die Karte nicht hält. Die Anwendung wird per
+`lazy()` erst beim Wechsel zur Karte nachgeladen, damit die Startseite nicht auf
+MapLibre und die Gipfeldaten wartet.
+
+Die Fotos liegen als WebP in zwei Auflösungen unter `app/src/assets/landing/`; das
+Vorschaubild für geteilte Links ist `app/public/og.jpg`.
+
 ## Aufbau der App
 
 | Bereich | Inhalt |
