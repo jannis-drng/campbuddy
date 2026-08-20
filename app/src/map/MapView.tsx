@@ -341,9 +341,19 @@ function addLayers(m: MlMap) {
     type: 'symbol',
     source: 'zones',
     minzoom: 8,
-    layout: { 'text-field': ['get', 'name'], 'text-size': 12, 'text-font': TEXT_FONT },
-    paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 },
+    layout: {
+      'text-field': ['get', 'name'], 'text-size': 11.5, 'text-font': TEXT_FONT,
+      'text-letter-spacing': 0.02, 'text-max-width': 8,
+    },
+    paint: {
+      'text-color': '#101A1C', 'text-halo-color': 'rgba(255,255,255,0.9)', 'text-halo-width': 1.5,
+    },
   })
+
+  // Das Gipfelsymbol wird gezeichnet, nicht getippt: ein ▲ als Textglyphe
+  // hinge davon ab, dass der Schriftserver dieses Zeichen ausliefert — und
+  // auf einer reinen Rasterkarte gibt es ohnehin keine eigenen Glyphen.
+  gipfelSymbolAnlegen(m)
 
   // Gipfel in drei Stufen: hohe früh, niedrige erst beim Hineinzoomen. Alle
   // 1291 gleichzeitig wären eine unlesbare Punktwolke.
@@ -360,17 +370,20 @@ function addLayers(m: MlMap) {
       minzoom,
       filter,
       layout: {
-        'text-field': ['concat', '▲ ', ['get', 'name'], '\n', ['to-string', ['get', 'elevation']], ' m'],
-        'text-size': 11,
+        'icon-image': 'gipfel',
+        'icon-size': 1,
+        'icon-anchor': 'bottom',
+        'text-field': ['concat', ['get', 'name'], '\n', ['to-string', ['get', 'elevation']], ' m'],
+        'text-size': 10.5,
         'text-font': TEXT_FONT,
         'text-anchor': 'top',
-        'text-offset': [0, 0.2],
-        'text-allow-overlap': false,
+        'text-offset': [0, 0.35],
+        'text-optional': true,
       },
       paint: {
-        'text-color': '#7c2d12',
-        'text-halo-color': '#ffffff',
-        'text-halo-width': 1.5,
+        'text-color': '#3F2A1B',
+        'text-halo-color': 'rgba(255,255,255,0.92)',
+        'text-halo-width': 1.4,
       },
     })
   }
@@ -449,6 +462,38 @@ function addLayers(m: MlMap) {
     },
     paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 },
   })
+}
+
+/**
+ * Kleines Gipfeldreieck als Bild in den Style legen.
+ * Nach einem Kartenwechsel sind Bilder mit dem Style verworfen — deshalb
+ * idempotent und aus setupLayers heraus aufgerufen.
+ */
+function gipfelSymbolAnlegen(m: MlMap) {
+  if (m.hasImage('gipfel')) return
+
+  const kante = 14
+  const dpr = 2
+  const c = document.createElement('canvas')
+  c.width = kante * dpr
+  c.height = kante * dpr
+  const g = c.getContext('2d')
+  if (!g) return
+
+  g.scale(dpr, dpr)
+  g.beginPath()
+  g.moveTo(kante / 2, 2)
+  g.lineTo(kante - 1.5, kante - 2.5)
+  g.lineTo(1.5, kante - 2.5)
+  g.closePath()
+  g.fillStyle = 'rgba(255,255,255,0.85)'
+  g.fill()
+  g.lineWidth = 1.6
+  g.strokeStyle = '#5C3A22'
+  g.stroke()
+
+  const bild = g.getImageData(0, 0, c.width, c.height)
+  m.addImage('gipfel', { width: c.width, height: c.height, data: new Uint8Array(bild.data) }, { pixelRatio: dpr })
 }
 
 function peaksToGeoJson(peaks: Peak[]): GeoJSON.FeatureCollection {

@@ -1,22 +1,167 @@
 @import "tailwindcss";
 
-html, body, #root {
-  height: 100%;
+/* ===========================================================================
+   CampBuddy — Design-Tokens
+   ===========================================================================
+
+   Eine Entscheidung vorweg, die alles andere prägt: Grün, Gelb und Rot sind in
+   diesem Produkt keine Dekoration, sondern die Kernaussage — erlaubt, geduldet,
+   verboten. Deshalb darf die Markenfarbe keiner dieser Töne sein, sonst
+   konkurriert sie mit der Information, für die es die App überhaupt gibt.
+
+   Der Akzent ist darum ein kaltes Gletscherblau: alpin, klar von der
+   Rechtslage-Skala unterscheidbar, und ruhig genug, um nicht zu schreien.
+   =========================================================================== */
+
+@theme {
+  /* --- Neutrale: Anthrazit mit leichtem Kaltgrün-Stich ---------------------
+     Bewusst nicht Tailwinds `slate` (deutlich blaustichig) — die Töne hier
+     liegen näher an nassem Fels und Nadelwald. */
+  --color-ink-950: #070A0B;
+  --color-ink-900: #0C1113;
+  --color-ink-850: #11181A;
+  --color-ink-800: #172023;
+  --color-ink-750: #1D282B;
+  --color-ink-700: #253337;
+  --color-ink-600: #4A6167;
+  --color-ink-500: #748E94;
+  --color-ink-400: #8AA1A6;
+  --color-ink-300: #94ABB0;
+  --color-ink-200: #BECDD0;
+  --color-ink-100: #DEE7E8;
+  --color-ink-50:  #F2F6F7;
+
+  /* --- Akzent: Gletscherblau --------------------------------------------- */
+  --color-gletscher-200: #BEE2F2;
+  --color-gletscher-300: #8CCAE6;
+  --color-gletscher-400: #5AAFD4;
+  --color-gletscher-500: #3691BC;
+  --color-gletscher-600: #24749B;
+  --color-gletscher-700: #1B5876;
+
+  /* --- Rechtslage: reserviert, nur für Datensemantik ---------------------- */
+  --color-erlaubt-400: #4ADE80;
+  --color-erlaubt-500: #22C55E;
+  --color-geduldet-400: #FACC15;
+  --color-geduldet-500: #EAB308;
+  --color-verboten-400: #F87171;
+  --color-verboten-500: #EF4444;
+  --color-ungeklaert-400: #94A3B8;
+  --color-ungeklaert-500: #64748B;
+
+  /* --- Punktarten auf der Karte ------------------------------------------ */
+  --color-huette: #56B4E9;
+  --color-zeltplatz: #A78BFA;
+  --color-stellplatz: #FB923C;
+
+  /* --- Typografie ---------------------------------------------------------
+     Inter für die Oberfläche. Entscheidend für dieses Produkt: Ziffern laufen
+     tabellarisch (siehe body unten) — die App zeigt fast nur Zahlen, und
+     springende Ziffernbreiten in Distanz- und Höhenangaben wirken unruhig. */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Sechs Stufen mit echtem Kontrast statt zehn Zufallsgrössen. */
+  --text-display: 2rem;
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.025em;
+  --text-titel: 1.25rem;
+  --text-titel--line-height: 1.3;
+  --text-titel--letter-spacing: -0.015em;
+  --text-ueberschrift: 1rem;
+  --text-ueberschrift--line-height: 1.4;
+  --text-ueberschrift--letter-spacing: -0.01em;
+  --text-fliess: 0.875rem;
+  --text-fliess--line-height: 1.6;
+  --text-klein: 0.8125rem;
+  --text-klein--line-height: 1.5;
+  --text-mikro: 0.6875rem;
+  --text-mikro--line-height: 1.45;
+  --text-mikro--letter-spacing: 0.06em;
+
+  /* --- Radien: vier Stufen, nach Flächengrösse ---------------------------- */
+  --radius-klein: 0.375rem;
+  --radius-mittel: 0.625rem;
+  --radius-gross: 0.875rem;
+  --radius-riesig: 1.25rem;
+
+  /* --- Elevation: mehrschichtig und flach, kein harter Schlagschatten ----- */
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.28);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.24), 0 2px 6px rgb(0 0 0 / 0.20);
+  --shadow-3: 0 1px 2px rgb(0 0 0 / 0.22), 0 4px 12px rgb(0 0 0 / 0.26), 0 12px 28px rgb(0 0 0 / 0.22);
+  --shadow-4: 0 2px 4px rgb(0 0 0 / 0.24), 0 12px 32px rgb(0 0 0 / 0.38), 0 32px 64px rgb(0 0 0 / 0.32);
+
+  --ease-heraus: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --- Flächen und Kanten -------------------------------------------------
+     Vorher wurde derselbe Gedanke „erhöhte Fläche" auf vier Arten geschrieben
+     (bg-white/5, bg-white/10, border-white/10, ring-white/10). Jetzt gibt es
+     drei benannte Ebenen und zwei Kantenstärken. */
+  --color-flaeche-1: #0C1113;
+  --color-flaeche-2: #131B1E;
+  --color-flaeche-3: #1A2427;
+  --color-kante: #233034;
+  --color-kante-stark: #32444A;
 }
+
+html, body, #root { height: 100%; }
 
 body {
   margin: 0;
-  background: #020617;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* Karte statt Seite scrollen lassen — wichtig für die spätere PWA. */
+  background: var(--color-flaeche-1);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  /* Tabellarische Ziffern: Zahlenkolonnen sollen nicht zappeln. */
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overscroll-behavior: none;
 }
 
-/* MapLibre-Bedienelemente an das dunkle Chrome angleichen. */
-.maplibregl-ctrl-group {
-  border-radius: 0.5rem;
-  overflow: hidden;
+/* Fokus sichtbar und schön — nie wegdrücken, nur besser machen. */
+:focus-visible {
+  outline: 2px solid var(--color-gletscher-400);
+  outline-offset: 2px;
+  border-radius: var(--radius-klein);
 }
+
+/* Überschriften laufen proportional; Zahlenkolonnen bleiben tabellarisch. */
+h1, h2, h3 { font-variant-numeric: normal; }
+
+::selection { background: var(--color-gletscher-600); color: #fff; }
+
+/* Dezente, ruhige Scrollbalken in Panels. */
+* { scrollbar-width: thin; scrollbar-color: var(--color-ink-700) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-700);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-600); background-clip: content-box; }
+
+/* MapLibre an das Chrome angleichen. */
+.maplibregl-ctrl-group {
+  border-radius: var(--radius-mittel) !important;
+  overflow: hidden;
+  background: var(--color-flaeche-3) !important;
+  border: 1px solid var(--color-kante);
+  box-shadow: var(--shadow-2) !important;
+}
+.maplibregl-ctrl-group button + button { border-top: 1px solid var(--color-kante) !important; }
+.maplibregl-ctrl-group button { background: transparent !important; }
+.maplibregl-ctrl-group button:hover { background: var(--color-ink-750) !important; }
+.maplibregl-ctrl-group button span { filter: invert(1) opacity(0.75); }
 .maplibregl-ctrl-attrib {
-  font-size: 11px;
+  font-size: 10px;
+  background: color-mix(in srgb, var(--color-flaeche-1) 82%, transparent) !important;
+  border-radius: var(--radius-klein) !important;
+}
+.maplibregl-ctrl-attrib a { color: var(--color-ink-400) !important; }
+.maplibregl-ctrl-scale {
+  background: color-mix(in srgb, var(--color-flaeche-1) 82%, transparent) !important;
+  border-color: var(--color-kante) !important;
+  color: var(--color-ink-300) !important;
+  border-radius: var(--radius-klein);
+  font-size: 10px;
 }

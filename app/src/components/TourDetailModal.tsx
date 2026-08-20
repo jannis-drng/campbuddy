@@ -14,7 +14,9 @@ import { formatDauer, STUNDEN_PRO_TAG, type Etappe, type HikingStats } from '../
 import type { ElevationPoint } from '../services/elevation'
 import { ElevationProfile } from './ElevationProfile'
 import { TripPlanner } from './TripPlanner'
-import { STATUS_CLASS, STATUS_LABEL } from './ui'
+import { X } from 'lucide-react'
+import { Button, Eingabe, IconButton, Stufen } from '../ui'
+import { StatusBadge } from './ui'
 
 interface Props {
   offen: boolean
@@ -34,11 +36,13 @@ interface Props {
 const formatKm = (m: number) =>
   m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
 
-const SCHWIERIGKEIT_CLASS = {
-  leicht: 'bg-green-500/15 text-green-300 ring-green-500/30',
-  mittel: 'bg-yellow-500/15 text-yellow-300 ring-yellow-500/30',
-  schwer: 'bg-orange-500/15 text-orange-300 ring-orange-500/30',
-  'sehr schwer': 'bg-red-500/15 text-red-300 ring-red-500/30',
+/**
+ * Rang der Schwierigkeit als Stufenzahl statt als Ampelfarbe: Grün, Gelb und
+ * Rot gehören in dieser App der Rechtslage. Ein oranges „schwer" sähe aus wie
+ * ein Hinweis auf eine Grauzone.
+ */
+const SCHWIERIGKEIT_STUFE = {
+  leicht: 1, mittel: 2, schwer: 3, 'sehr schwer': 4,
 } as const
 
 export function TourDetailModal({
@@ -90,50 +94,42 @@ export function TourDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/70 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-flaeche-1/70 p-0 backdrop-blur-sm sm:items-center sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label="Tour-Auswertung"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-slate-900 shadow-2xl sm:rounded-2xl">
-        <header className="flex items-start justify-between gap-3 border-b border-white/10 px-5 py-4">
+      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl border border-kante bg-flaeche-2 shadow-[var(--shadow-4)] sm:rounded-riesig">
+        <header className="flex items-start justify-between gap-3 border-b border-kante px-5 py-4">
           <div>
-            <h2 className="text-lg font-semibold text-slate-100">Deine Tour</h2>
-            <p className="text-sm text-slate-400">
+            <h2 className="text-titel font-semibold text-ink-50">Deine Tour</h2>
+            <p className="text-fliess text-ink-400">
               {formatKm(analysis.length_m)}
               {stats && ` · ${formatDauer(stats.duration_s)}`}
               {etappen.length > 0 && ` · ${etappen.length} Tage`}
             </p>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Auswertung schliessen"
-            className="-mr-1 rounded-lg p-2 text-slate-400 hover:bg-white/10 hover:text-slate-100"
-          >
-            ✕
-          </button>
+          <IconButton icon={X} label="Auswertung schliessen" onClick={onClose} className="-mr-1.5 -mt-1" />
         </header>
 
         <div className="space-y-7 overflow-y-auto px-5 py-5">
           {/* ---- Legalität zuerst: das ist der Kern der App ---- */}
           <section>
-            <h3 className="mb-1.5 text-sm font-semibold text-slate-200">Wo darfst du schlafen?</h3>
-            <p className="text-sm leading-relaxed text-slate-300">
+            <h3 className="mb-1.5 text-fliess font-semibold text-ink-200">Wo darfst du schlafen?</h3>
+            <p className="text-fliess leading-relaxed text-ink-300">
               {summarise(analysis, region.legal_framework.baseline_status)}
             </p>
 
             {analysis.crossed.length > 0 && (
               <ul className="mt-2.5 space-y-1.5">
                 {analysis.crossed.map(({ zone, meters, share }) => (
-                  <li key={zone.id} className="rounded-lg bg-white/5 p-2.5">
+                  <li key={zone.id} className="rounded-mittel bg-flaeche-1 p-2.5">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-sm text-slate-100">{zone.name}</span>
-                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${STATUS_CLASS[zone.status]}`}>
-                        {STATUS_LABEL[zone.status]}
-                      </span>
+                      <span className="text-fliess text-ink-50">{zone.name}</span>
+                      <StatusBadge status={zone.status} />
                     </div>
-                    <p className="mt-0.5 text-[11px] text-slate-500">
+                    <p className="mt-0.5 text-mikro text-ink-500">
                       {formatKm(meters)} · {Math.round(share * 100)} %
                       {zone.review_status === 'entwurf' && ' · Einstufung ungeprüft'}
                     </p>
@@ -145,10 +141,10 @@ export function TourDetailModal({
 
           {/* ---- Profil und Aufwand ---- */}
           <section>
-            <h3 className="mb-1.5 text-sm font-semibold text-slate-200">Profil &amp; Aufwand</h3>
-            {hoehenBusy && <p className="text-xs text-slate-400">Höhendaten werden geladen …</p>}
+            <h3 className="mb-1.5 text-fliess font-semibold text-ink-200">Profil &amp; Aufwand</h3>
+            {hoehenBusy && <p className="text-klein text-ink-400">Höhendaten werden geladen …</p>}
             {hoehenFehler && (
-              <p className="rounded-lg bg-amber-500/10 p-2.5 text-xs text-amber-200/90">
+              <p className="rounded-mittel bg-geduldet-500/10 p-2.5 text-klein text-geduldet-200/90">
                 Höhendaten nicht verfügbar ({hoehenFehler}). Gehzeit und Schwierigkeit lassen
                 sich ohne sie nicht bestimmen.
               </p>
@@ -164,13 +160,12 @@ export function TourDetailModal({
                   <Kennzahl label="Höchster Punkt" wert={`${stats.max_ele} m`} />
                   <Kennzahl label="Gehzeit" wert={formatDauer(stats.duration_s)} />
                 </div>
-                <div className="mt-2.5 flex items-center gap-2">
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${SCHWIERIGKEIT_CLASS[stats.schwierigkeit]}`}>
-                    {stats.schwierigkeit}
-                  </span>
-                  <span className="text-[11px] text-slate-500">Kondition</span>
+                <div className="mt-3 flex items-center gap-2.5">
+                  <Stufen stufe={SCHWIERIGKEIT_STUFE[stats.schwierigkeit]} von={4}
+                          label={stats.schwierigkeit} />
+                  <span className="text-mikro text-ink-500">Kondition</span>
                 </div>
-                <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
+                <p className="mt-1.5 text-mikro leading-relaxed text-ink-500">
                   {stats.begruendung} Gehzeit nach der Alpenvereinsformel (4 km/h eben,
                   300 hm/h aufwärts, 500 hm/h abwärts), ohne längere Pausen.
                 </p>
@@ -181,19 +176,19 @@ export function TourDetailModal({
           {/* ---- Etappen ---- */}
           {etappen.length > 0 && (
             <section>
-              <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
+              <h3 className="mb-1.5 text-fliess font-semibold text-ink-200">
                 Etappen ({etappen.length} Tage)
               </h3>
               <ul className="space-y-1.5">
                 {etappen.map((e) => (
-                  <li key={e.nummer} className="rounded-lg bg-white/5 p-2.5">
+                  <li key={e.nummer} className="rounded-mittel bg-flaeche-1 p-2.5">
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="text-sm font-medium text-slate-100">Tag {e.nummer}</span>
-                      <span className="text-[11px] text-slate-500">
+                      <span className="text-fliess font-medium text-ink-50">Tag {e.nummer}</span>
+                      <span className="text-mikro text-ink-500">
                         {formatKm(e.distance_m)} · {e.ascent_m} hm · {formatDauer(e.duration_s)}
                       </span>
                     </div>
-                    <p className="mt-0.5 text-xs text-slate-400">
+                    <p className="mt-0.5 text-klein text-ink-400">
                       {e.schlafplatz
                         ? `Übernachtung: ${e.schlafplatz.point.name} (${formatKm(e.schlafplatz.distance)} entfernt)`
                         : 'Keine erfasste Übernachtung in der Nähe — hier zählt die Rechtslage der Zone.'}
@@ -206,17 +201,17 @@ export function TourDetailModal({
 
           {/* ---- Schlafplätze ---- */}
           <section>
-            <h3 className="mb-1.5 text-sm font-semibold text-slate-200">
+            <h3 className="mb-1.5 text-fliess font-semibold text-ink-200">
               Schlafplätze im Umkreis von {NEARBY_RADIUS_M / 1000} km
             </h3>
             {analysis.nearby.length === 0 ? (
-              <p className="text-xs text-slate-400">Keine erfassten Punkte in Routennähe.</p>
+              <p className="text-klein text-ink-400">Keine erfassten Punkte in Routennähe.</p>
             ) : (
-              <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
+              <ul className="divide-y divide-kante rounded-mittel border border-kante">
                 {analysis.nearby.slice(0, 12).map(({ point, distance }) => (
                   <li key={point.id} className="flex items-baseline justify-between gap-2 px-2.5 py-2">
-                    <span className="min-w-0 text-sm text-slate-100">{point.name}</span>
-                    <span className="shrink-0 text-xs text-slate-400">{formatKm(distance)}</span>
+                    <span className="min-w-0 text-fliess text-ink-50">{point.name}</span>
+                    <span className="shrink-0 text-klein text-ink-400">{formatKm(distance)}</span>
                   </li>
                 ))}
               </ul>
@@ -224,11 +219,11 @@ export function TourDetailModal({
           </section>
 
           {/* ---- Ausrüstung, Verpflegung, Wetter ---- */}
-          <section className="border-t border-white/10 pt-5">
-            <h3 className="mb-1 text-sm font-semibold text-slate-200">
+          <section className="border-t border-kante pt-5">
+            <h3 className="mb-1 text-fliess font-semibold text-ink-200">
               Ausrüstung, Verpflegung &amp; Wetter
             </h3>
-            <p className="mb-3 text-[11px] leading-relaxed text-slate-500">
+            <p className="mb-3 text-mikro leading-relaxed text-ink-500">
               Dauer und Schlafhöhe sind aus deiner Route übernommen und lassen sich anpassen.
             </p>
             <TripPlanner region={region} onSave={onSaveTrip} initial={vorbelegung} />
@@ -236,31 +231,31 @@ export function TourDetailModal({
 
           {/* ---- Route speichern ---- */}
           {onSaveRoute && (
-            <section className="border-t border-white/10 pt-5">
-              <h3 className="mb-2 text-sm font-semibold text-slate-200">Route speichern</h3>
+            <section className="border-t border-kante pt-5">
+              <h3 className="mb-2 text-fliess font-semibold text-ink-200">Route speichern</h3>
               <form onSubmit={speichern} className="flex flex-wrap gap-2">
-                <input
+                <Eingabe
                   value={name}
                   onChange={(e) => { setName(e.target.value); setSpeicherStand('idle') }}
                   placeholder="Name der Route"
                   maxLength={120}
-                  className="min-h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
+                  className="min-w-0 flex-1"
                 />
-                <button type="submit" disabled={!name.trim() || speicherStand === 'busy'}
-                        className="min-h-10 rounded-lg bg-emerald-500/15 px-4 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25 disabled:opacity-40">
+                <Button type="submit" variante="primaer" groesse="gross"
+                        disabled={!name.trim() || speicherStand === 'busy'}>
                   {speicherStand === 'busy' ? 'Speichere …' : 'Speichern'}
-                </button>
+                </Button>
                 {speicherStand === 'ok' && (
-                  <p className="w-full text-xs text-emerald-300">
+                  <p className="w-full text-klein text-gletscher-300">
                     Gespeichert. Unter „Deine Touren" kannst du sie veröffentlichen.
                   </p>
                 )}
-                {speicherStand === 'error' && <p className="w-full text-xs text-red-300">{speicherFehler}</p>}
+                {speicherStand === 'error' && <p className="w-full text-klein text-verboten-300">{speicherFehler}</p>}
               </form>
             </section>
           )}
 
-          <p className="rounded-lg bg-amber-500/10 p-3 text-[12px] leading-relaxed text-amber-200/90">
+          <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
             Orientierungshilfe, keine Rechtsgarantie. Die Auswertung ist nur so verlässlich wie
             der Prüfstand der Zonen; ausserhalb eingezeichneter Flächen gilt allein der
             allgemeine Grundsatz der Region. Prüfe die Lage vor Ort.
@@ -274,8 +269,8 @@ export function TourDetailModal({
 function Kennzahl({ label, wert }: { label: string; wert: string }) {
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="font-semibold text-slate-100">{wert}</p>
+      <p className="text-mikro uppercase text-ink-500">{label}</p>
+      <p className="font-semibold text-ink-50">{wert}</p>
     </div>
   )
 }

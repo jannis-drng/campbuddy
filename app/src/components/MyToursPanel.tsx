@@ -10,6 +10,8 @@ import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import { lineLength } from '../data/geo'
 import { isSupabaseConfigured, type StoredRoute, type StoredTrip } from '../services/supabase'
+import { Map as MapIcon } from 'lucide-react'
+import { Button, Liste, Seite } from '../ui'
 import {
   deleteRoute, deleteTrip, ladeProfil, listFavoriteRoutes, listRoutes, listTrips, removeFavorite,
   setRoutePublic,
@@ -58,32 +60,30 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 px-4 py-6 pb-16">
-      <div>
-        <h2 className="text-lg font-semibold">Deine Touren</h2>
-        <p className="mt-0.5 text-sm text-slate-400">
-          Gespeicherte Routen, Touren und Favoriten. Geplant wird auf der Karte.
-        </p>
-      </div>
+    <Seite
+      titel="Deine Touren"
+      beschreibung="Gespeicherte Routen, Touren und Favoriten. Geplant wird auf der Karte."
+      aktion={<Button variante="primaer" icon={MapIcon} onClick={onZurKarte}>Zur Karte</Button>}
+    >
 
-      {fehler && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{fehler}</p>}
+      {fehler && <p className="rounded-mittel bg-verboten-500/10 p-3 text-fliess text-verboten-300">{fehler}</p>}
 
       {!session && isSupabaseConfigured && (
-        <div className="rounded-lg bg-white/5 p-4">
-          <p className="text-sm leading-relaxed text-slate-300">
+        <div className="rounded-mittel bg-flaeche-1 p-4">
+          <p className="text-fliess leading-relaxed text-ink-300">
             Zum Speichern von Routen und Touren ist eine Anmeldung nötig. Karte,
             Routenplanung und Auswertung funktionieren ohne.
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             <button
               onClick={onAnmelden}
-              className="min-h-9 rounded-lg bg-emerald-500/15 px-3 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+              className="min-h-9 rounded-mittel bg-gletscher-500/15 px-3 text-fliess text-gletscher-200 ring-1 ring-gletscher-500/30 hover:bg-gletscher-500/25"
             >
               Anmelden
             </button>
             <button
               onClick={onZurKarte}
-              className="min-h-9 rounded-lg bg-white/5 px-3 text-sm text-slate-300 ring-1 ring-white/10 hover:bg-white/10"
+              className="min-h-9 rounded-mittel bg-flaeche-1 px-3 text-fliess text-ink-300 ring-1 ring-kante hover:bg-flaeche-3"
             >
               Zur Karte
             </button>
@@ -98,29 +98,24 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
             {routen.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm text-slate-100">{r.name}</p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="truncate text-fliess text-ink-50">{r.name}</p>
+                  <p className="text-mikro text-ink-500">
                     {r.region} · {formatKm(lineLength(r.geometry.coordinates as Position[]))} ·{' '}
                     {new Date(r.created_at).toLocaleDateString('de-DE')}
                     {r.is_public && ' · veröffentlicht'}
                   </p>
                 </div>
-                <button
-                  onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}
-                  className="min-h-9 rounded-lg bg-white/5 px-2.5 text-xs text-slate-200 ring-1 ring-white/10 hover:bg-white/10"
-                >
-                  Auf Karte
-                </button>
+                <Button variante="sekundaer" groesse="klein" onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}>Auf Karte</Button>
                 <button
                   onClick={() => veroeffentlichen(r)}
                   aria-pressed={r.is_public}
                   title={r.is_public
                     ? 'Route ist öffentlich sichtbar — Klick nimmt sie zurück'
                     : 'Route für alle sichtbar machen'}
-                  className={`min-h-9 rounded-lg px-2.5 text-xs ring-1 ${
+                  className={`min-h-9 rounded-mittel px-2.5 text-klein ring-1 ${
                     r.is_public
-                      ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-500/40'
-                      : 'bg-white/5 text-slate-300 ring-white/10 hover:bg-white/10'
+                      ? 'bg-gletscher-500/20 text-gletscher-200 ring-gletscher-500/40'
+                      : 'bg-flaeche-1 text-ink-300 ring-kante hover:bg-flaeche-3'
                   }`}
                 >
                   {r.is_public ? 'Öffentlich' : 'Teilen'}
@@ -128,7 +123,7 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                 <button
                   onClick={async () => { await deleteRoute(r.id); setStand((n) => n + 1) }}
                   aria-label={`${r.name} löschen`}
-                  className="min-h-9 rounded-lg px-2 text-xs text-slate-500 hover:bg-white/10 hover:text-red-300"
+                  className="min-h-9 rounded-mittel px-2 text-klein text-ink-500 hover:bg-flaeche-3 hover:text-verboten-300"
                 >
                   Löschen
                 </button>
@@ -137,7 +132,7 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
           </Abschnitt>
 
           {routen.some((r) => r.is_public) && !anzeigename && (
-            <p className="rounded-lg bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-200/90">
+            <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
               Du hast Routen veröffentlicht, aber keinen Anzeigenamen gesetzt — sie erscheinen
               ohne Urheberangabe. Im Kontobereich lässt sich einer eintragen.
             </p>
@@ -148,22 +143,17 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
             {favoriten.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm text-slate-100">{r.name}</p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="truncate text-fliess text-ink-50">{r.name}</p>
+                  <p className="text-mikro text-ink-500">
                     {r.autor ? `von ${r.autor} · ` : ''}
                     {formatKm(lineLength(r.geometry.coordinates as Position[]))}
                   </p>
                 </div>
-                <button
-                  onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}
-                  className="min-h-9 rounded-lg bg-white/5 px-2.5 text-xs text-slate-200 ring-1 ring-white/10 hover:bg-white/10"
-                >
-                  Auf Karte
-                </button>
+                <Button variante="sekundaer" groesse="klein" onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}>Auf Karte</Button>
                 <button
                   onClick={async () => { await removeFavorite(r.id); setStand((n) => n + 1) }}
                   aria-label={`${r.name} aus Favoriten entfernen`}
-                  className="min-h-9 rounded-lg px-2 text-xs text-slate-500 hover:bg-white/10 hover:text-red-300"
+                  className="min-h-9 rounded-mittel px-2 text-klein text-ink-500 hover:bg-flaeche-3 hover:text-verboten-300"
                 >
                   Entfernen
                 </button>
@@ -176,8 +166,8 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
             {touren.map((t) => (
               <li key={t.id} className="flex items-center justify-between gap-3 px-3 py-2.5">
                 <div className="min-w-0">
-                  <p className="truncate text-sm text-slate-100">{t.name}</p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="truncate text-fliess text-ink-50">{t.name}</p>
+                  <p className="text-mikro text-ink-500">
                     ab {new Date(t.start_date).toLocaleDateString('de-DE')} · {t.days} Tage ·{' '}
                     {t.persons} {t.persons === 1 ? 'Person' : 'Personen'} · {t.elevation} m
                   </p>
@@ -185,7 +175,7 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                 <button
                   onClick={async () => { await deleteTrip(t.id); setStand((n) => n + 1) }}
                   aria-label={`${t.name} löschen`}
-                  className="min-h-9 shrink-0 rounded-lg px-2 text-xs text-slate-500 hover:bg-white/10 hover:text-red-300"
+                  className="min-h-9 shrink-0 rounded-mittel px-2 text-klein text-ink-500 hover:bg-flaeche-3 hover:text-verboten-300"
                 >
                   Löschen
                 </button>
@@ -196,15 +186,15 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
       )}
 
       {session && (
-        <p className="border-t border-white/10 pt-5 text-xs leading-relaxed text-slate-500">
+        <p className="border-t border-kante pt-5 text-klein leading-relaxed text-ink-500">
           Neue Touren entstehen auf der Karte: Route zeichnen, „Tour auswerten" öffnen und
           dort speichern. Die Auswertung enthält auch Ausrüstung, Verpflegung und Wetter.{' '}
-          <button onClick={onZurKarte} className="text-sky-400 underline underline-offset-2 hover:text-sky-300">
+          <button onClick={onZurKarte} className="text-gletscher-400 underline underline-offset-2 hover:text-gletscher-300">
             Zur Karte
           </button>
         </p>
       )}
-    </div>
+    </Seite>
   )
 }
 
@@ -218,13 +208,17 @@ function Abschnitt({
 }) {
   return (
     <section>
-      <h3 className="mb-2 text-sm font-semibold text-slate-200">
-        {titel} {anzahl > 0 && <span className="text-slate-500">({anzahl})</span>}
-      </h3>
+      <h2 className="mb-2.5 flex items-baseline gap-2 text-ueberschrift font-semibold text-ink-50">
+        {titel}
+        {anzahl > 0 && <span className="text-klein font-normal text-ink-500">{anzahl}</span>}
+      </h2>
       {anzahl === 0 ? (
-        <p className="text-sm text-slate-400">{leer}</p>
+        <p className="rounded-gross border border-dashed border-kante px-4 py-5 text-klein
+                      leading-relaxed text-ink-400">
+          {leer}
+        </p>
       ) : (
-        <ul className="divide-y divide-white/5 rounded-lg border border-white/10">{children}</ul>
+        <Liste>{children}</Liste>
       )}
     </section>
   )

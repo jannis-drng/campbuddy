@@ -1,52 +1,76 @@
-/** Kleine, geteilte Darstellungs-Bausteine. Keine Logik, keine Datenkenntnis. */
+/**
+ * Darstellungs-Bausteine für die Rechtslage.
+ *
+ * Diese vier Farben sind die Kernaussage der App und deshalb streng reserviert:
+ * kein Knopf, keine Marke, kein Zierrat verwendet Grün, Gelb oder Rot.
+ */
+import { Ban, Check, CircleHelp, FileWarning, MapPinCheck, ShieldCheck, TriangleAlert } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import type { LegalStatus, Permission, ReviewStatus } from '../data/types'
+import { Badge } from '../ui'
 
 export const STATUS_LABEL: Record<LegalStatus, string> = {
   allowed: 'Erlaubt',
-  tolerated: 'Geduldet / Grauzone',
+  tolerated: 'Geduldet',
   forbidden: 'Verboten',
   unknown: 'Ungeklärt',
 }
 
+/** Für Stellen, die noch direkt Klassen brauchen (z.B. Kartenlegende). */
 export const STATUS_CLASS: Record<LegalStatus, string> = {
-  allowed: 'bg-green-500/15 text-green-300 ring-green-500/30',
-  tolerated: 'bg-yellow-500/15 text-yellow-300 ring-yellow-500/30',
-  forbidden: 'bg-red-500/15 text-red-300 ring-red-500/30',
-  unknown: 'bg-slate-500/15 text-slate-300 ring-slate-500/30',
+  allowed: 'bg-erlaubt-500/12 text-erlaubt-400 ring-erlaubt-500/25',
+  tolerated: 'bg-geduldet-500/12 text-geduldet-400 ring-geduldet-500/25',
+  forbidden: 'bg-verboten-500/12 text-verboten-400 ring-verboten-500/25',
+  unknown: 'bg-ungeklaert-500/12 text-ungeklaert-400 ring-ungeklaert-500/25',
 }
 
-export const PERMISSION_LABEL: Record<Permission, string> = {
-  yes: 'erlaubt',
-  no: 'verboten',
-  conditional: 'bedingt',
-  unknown: 'ungeklärt',
-}
+const STATUS_TON = {
+  allowed: 'erlaubt', tolerated: 'geduldet', forbidden: 'verboten', unknown: 'ungeklaert',
+} as const
 
-const PERMISSION_ICON: Record<Permission, string> = {
-  yes: '✓', no: '✕', conditional: '!', unknown: '?',
-}
-
-const PERMISSION_CLASS: Record<Permission, string> = {
-  yes: 'text-green-400',
-  no: 'text-red-400',
-  conditional: 'text-yellow-400',
-  unknown: 'text-slate-400',
+const STATUS_ICON: Record<LegalStatus, LucideIcon> = {
+  allowed: ShieldCheck,
+  tolerated: TriangleAlert,
+  forbidden: Ban,
+  unknown: CircleHelp,
 }
 
 export function StatusBadge({ status }: { status: LegalStatus }) {
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${STATUS_CLASS[status]}`}>
+    <Badge ton={STATUS_TON[status]} icon={STATUS_ICON[status]}>
       {STATUS_LABEL[status]}
-    </span>
+    </Badge>
   )
 }
 
-export function PermissionRow({ label, value }: { label: string; value: Permission }) {
+export const PERMISSION_LABEL: Record<Permission, string> = {
+  yes: 'erlaubt', no: 'verboten', conditional: 'bedingt', unknown: 'ungeklärt',
+}
+
+const PERMISSION_ICON: Record<Permission, LucideIcon> = {
+  yes: Check, no: Ban, conditional: TriangleAlert, unknown: CircleHelp,
+}
+
+const PERMISSION_FARBE: Record<Permission, string> = {
+  yes: 'text-erlaubt-400',
+  no: 'text-verboten-400',
+  conditional: 'text-geduldet-400',
+  unknown: 'text-ungeklaert-400',
+}
+
+/** Eine Zeile „Zelt / Biwak — bedingt" in der Infokarte. */
+export function PermissionRow({
+  label, value, icon: Icon,
+}: { label: string; value: Permission; icon?: LucideIcon }) {
+  const Zeichen = PERMISSION_ICON[value]
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-white/5 py-2 text-sm last:border-0">
-      <span className="text-slate-300">{label}</span>
-      <span className={`flex items-center gap-1.5 font-medium ${PERMISSION_CLASS[value]}`}>
-        <span aria-hidden className="w-4 text-center">{PERMISSION_ICON[value]}</span>
+    <div className="flex items-center justify-between gap-3 border-b border-kante py-2.5 last:border-0">
+      <span className="flex items-center gap-2 text-fliess text-ink-300">
+        {Icon && <Icon size={15} strokeWidth={1.75} className="text-ink-500" aria-hidden />}
+        {label}
+      </span>
+      <span className={`flex items-center gap-1.5 text-fliess font-medium ${PERMISSION_FARBE[value]}`}>
+        <Zeichen size={14} strokeWidth={2.5} aria-hidden />
         {PERMISSION_LABEL[value]}
       </span>
     </div>
@@ -57,17 +81,21 @@ export function PermissionRow({ label, value }: { label: string; value: Permissi
  * Der wichtigste Vertrauensbaustein: zeigt schonungslos, wie gut eine Angabe
  * belegt ist. Ein Entwurf darf nie aussehen wie eine geprüfte Auskunft.
  */
-export function ReviewBadge({ status, lastVerified }: { status: ReviewStatus; lastVerified: string | null }) {
-  const map = {
-    entwurf: { text: 'Entwurf — nicht amtlich geprüft', cls: 'bg-amber-500/15 text-amber-300 ring-amber-500/30' },
-    quelle: { text: 'Mit Quelle belegt', cls: 'bg-sky-500/15 text-sky-300 ring-sky-500/30' },
-    'vor-ort': { text: 'Vor Ort verifiziert', cls: 'bg-emerald-500/15 text-emerald-300 ring-emerald-500/30' },
-  }[status]
+export function ReviewBadge({
+  status, lastVerified,
+}: { status: ReviewStatus; lastVerified: string | null }) {
+  const karte = {
+    entwurf: { text: 'Entwurf, ungeprüft', ton: 'warnung', icon: FileWarning },
+    quelle: { text: 'Mit Quelle belegt', ton: 'akzent', icon: ShieldCheck },
+    'vor-ort': { text: 'Vor Ort verifiziert', ton: 'erlaubt', icon: MapPinCheck },
+  }[status] as { text: string; ton: 'warnung' | 'akzent' | 'erlaubt'; icon: LucideIcon }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded px-2 py-1 text-[11px] font-medium ring-1 ${map.cls}`}>
-      {map.text}
-      {lastVerified ? <span className="opacity-70">· Stand {lastVerified}</span> : <span className="opacity-70">· kein Prüfdatum</span>}
-    </span>
+    <Badge ton={karte.ton} icon={karte.icon}>
+      {karte.text}
+      <span className="font-normal normal-case tracking-normal opacity-70">
+        · {lastVerified ?? 'kein Prüfdatum'}
+      </span>
+    </Badge>
   )
 }

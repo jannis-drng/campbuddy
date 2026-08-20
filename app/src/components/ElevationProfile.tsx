@@ -60,7 +60,7 @@ export function ElevationProfile({ profil, etappenGrenzen = [] }: Props) {
         ))}
       </svg>
 
-      <figcaption className="mt-1 flex justify-between text-[10px] text-slate-500">
+      <figcaption className="mt-1 flex justify-between text-mikro text-ink-500">
         <span>0 km</span>
         <span>{Math.round(minEle)}–{Math.round(maxEle)} m</span>
         <span>{(gesamt / 1000).toFixed(1).replace('.', ',')} km</span>

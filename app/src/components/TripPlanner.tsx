@@ -8,6 +8,8 @@
  * keine Partner-ID konfiguriert ist, steht am Produkt "Kauf-Link bald verfügbar".
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { ExternalLink } from 'lucide-react'
+import { Eingabe, Button } from '../ui'
 import type { Region, Season, TripParams } from '../data/types'
 import { buildPacklist, formatWeight } from '../affiliate/packlist'
 import { buildAffiliateUrl } from '../affiliate/affiliateConfig'
@@ -152,28 +154,28 @@ export function TripPlanner({
             type="date"
             value={trip.start_date}
             onChange={(e) => set('start_date', e.target.value)}
-            className="w-full min-h-10 rounded-lg border border-white/10 bg-slate-800 px-2.5 text-sm"
+            className=""
           />
         </Field>
         <Field label="Tage">
           <input
             type="number" min={1} max={30} value={trip.days}
             onChange={(e) => set('days', clamp(Number(e.target.value), 1, 30))}
-            className="w-full min-h-10 rounded-lg border border-white/10 bg-slate-800 px-2.5 text-sm"
+            className=""
           />
         </Field>
         <Field label="Personen">
           <input
             type="number" min={1} max={12} value={trip.persons}
             onChange={(e) => set('persons', clamp(Number(e.target.value), 1, 12))}
-            className="w-full min-h-10 rounded-lg border border-white/10 bg-slate-800 px-2.5 text-sm"
+            className=""
           />
         </Field>
         <Field label="Schlafhöhe (m)">
           <input
             type="number" min={200} max={4000} step={100} value={trip.elevation}
             onChange={(e) => set('elevation', clamp(Number(e.target.value), 200, 4000))}
-            className="w-full min-h-10 rounded-lg border border-white/10 bg-slate-800 px-2.5 text-sm"
+            className=""
           />
         </Field>
       </section>
@@ -190,7 +192,7 @@ export function TripPlanner({
 
       {/* ---- Wetter ---- */}
       <section>
-        <h3 className="mb-2 text-sm font-semibold text-slate-200">Wetter</h3>
+        <h3 className="mb-2 text-fliess font-semibold text-ink-200">Wetter</h3>
         <WeatherPanel
           forecast={forecast}
           loading={loading}
@@ -202,12 +204,12 @@ export function TripPlanner({
       </section>
 
       {/* ---- Grundlage der Empfehlung ---- */}
-      <section className="rounded-lg bg-white/5 p-3 text-sm">
-        <p className="text-slate-300">
+      <section className="rounded-mittel bg-flaeche-1 p-3 text-fliess">
+        <p className="text-ink-300">
           Die Liste rechnet mit einer kältesten Nacht von{' '}
-          <strong className="text-slate-100">{packlist.basedOnNightTemp} °C</strong> auf {trip.elevation} m.
+          <strong className="text-ink-50">{packlist.basedOnNightTemp} °C</strong> auf {trip.elevation} m.
         </p>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-klein text-ink-500">
           {packlist.fromForecast
             ? partial
               ? 'Aus der Vorhersage für den Teil des Zeitraums abgeleitet, der noch im 16-Tage-Fenster liegt.'
@@ -219,8 +221,8 @@ export function TripPlanner({
       {/* ---- Packliste ---- */}
       <section>
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-sm font-semibold text-slate-200">Packliste</h3>
-          <span className="text-xs text-slate-500">
+          <h3 className="text-fliess font-semibold text-ink-200">Packliste</h3>
+          <span className="text-klein text-ink-500">
             Ausrüstung gesamt ca. {formatWeight(packlist.totalWeight_g)} für {trip.persons}{' '}
             {trip.persons === 1 ? 'Person' : 'Personen'}
           </span>
@@ -229,35 +231,35 @@ export function TripPlanner({
         <div className="space-y-4">
           {packlist.categories.map(({ category, entries }) => (
             <div key={category}>
-              <h4 className="mb-1 text-[11px] uppercase tracking-wide text-slate-500">{category}</h4>
-              <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
+              <h4 className="mb-1 text-mikro uppercase text-ink-500">{category}</h4>
+              <ul className="divide-y divide-kante rounded-mittel border border-kante">
                 {entries.map(({ item, quantity, weight_g }) => {
                   const url = buildAffiliateUrl(item.vendor, item.affiliate_url)
                   return (
                     <li key={item.id} className="p-3">
                       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                        <span className="font-medium text-slate-100">
-                          {quantity > 1 && <span className="text-slate-400">{quantity}× </span>}
+                        <span className="font-medium text-ink-50">
+                          {quantity > 1 && <span className="text-ink-400">{quantity}× </span>}
                           {item.name}
                           {item.essential && (
-                            <span className="ml-2 rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] text-amber-300">
+                            <span className="ml-2 rounded bg-geduldet-500/15 px-1.5 py-0.5 text-mikro text-geduldet-300">
                               wichtig
                             </span>
                           )}
                         </span>
-                        <span className="shrink-0 text-xs text-slate-500">
+                        <span className="shrink-0 text-klein text-ink-500">
                           {weight_g != null && `${formatWeight(weight_g)} · `}
                           {item.price_hint ?? '—'}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-400">{item.rationale}</p>
+                      <p className="mt-1 text-klein leading-relaxed text-ink-400">{item.rationale}</p>
                       {url ? (
                         <a href={url} target="_blank" rel="noreferrer noopener sponsored"
-                           className="mt-1.5 inline-block text-xs text-sky-400 hover:underline">
-                          Zum Produkt ↗
+                           className="mt-1.5 inline-block text-klein text-gletscher-400 hover:underline">
+                          Zum Produkt <ExternalLink size={11} strokeWidth={2.5} className="inline" aria-hidden />
                         </a>
                       ) : item.vendor ? (
-                        <span className="mt-1.5 inline-block rounded bg-white/5 px-2 py-0.5 text-[11px] text-slate-500">
+                        <span className="mt-1.5 inline-block rounded bg-flaeche-1 px-2 py-0.5 text-mikro text-ink-500">
                           Kauf-Link bald verfügbar
                         </span>
                       ) : null}
@@ -272,14 +274,14 @@ export function TripPlanner({
 
       {/* ---- Verpflegung ---- */}
       <section>
-        <h3 className="mb-2 text-sm font-semibold text-slate-200">Verpflegung</h3>
-        <div className="rounded-lg border border-white/10 p-3">
+        <h3 className="mb-2 text-fliess font-semibold text-ink-200">Verpflegung</h3>
+        <div className="rounded-mittel border border-kante p-3">
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Stat label="Pro Person und Tag" value={`${packlist.food.kcalPerPersonPerDay} kcal`} />
             <Stat label="Gesamt" value={`${packlist.food.totalKcal.toLocaleString('de-DE')} kcal`} />
             <Stat label="Gewicht Verpflegung" value={formatWeight(packlist.food.weight_g)} />
           </div>
-          <p className="mt-2.5 border-t border-white/10 pt-2 text-[11px] leading-relaxed text-slate-500">
+          <p className="mt-2.5 border-t border-kante pt-2 text-mikro leading-relaxed text-ink-500">
             Annahmen: {packlist.food.assumptions.join(' · ')}. Grobe Richtwerte, kein Ernährungsplan —
             wie viel du wirklich brauchst, hängt von Tempo, Gewicht und Körperbau ab.
           </p>
@@ -288,23 +290,23 @@ export function TripPlanner({
 
       {onSave && (
         <form onSubmit={save} className="flex flex-wrap gap-2">
-          <input
+          <Eingabe
             value={saveName}
             onChange={(e) => { setSaveName(e.target.value); setSaveState('idle') }}
             placeholder="Tour benennen und speichern"
             maxLength={120}
-            className="min-h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
+            className="min-w-0 flex-1"
           />
-          <button type="submit" disabled={!saveName.trim() || saveState === 'busy'}
-                  className="min-h-10 rounded-lg bg-emerald-500/15 px-4 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25 disabled:opacity-40">
+          <Button type="submit" variante="primaer" groesse="gross"
+                  disabled={!saveName.trim() || saveState === 'busy'}>
             {saveState === 'busy' ? 'Speichere …' : 'Speichern'}
-          </button>
-          {saveState === 'ok' && <p className="w-full text-xs text-emerald-300">Tour gespeichert.</p>}
-          {saveState === 'error' && <p className="w-full text-xs text-red-300">{saveError}</p>}
+          </Button>
+          {saveState === 'ok' && <p className="w-full text-klein text-gletscher-300">Tour gespeichert.</p>}
+          {saveState === 'error' && <p className="w-full text-klein text-verboten-300">{saveError}</p>}
         </form>
       )}
 
-      <p className="rounded-lg bg-amber-500/10 p-3 text-[12px] leading-relaxed text-amber-200/90">
+      <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
         Die Packliste ersetzt keine eigene Tourenplanung. Prüfe Wetterbericht, Lawinenlage und
         Kondition unabhängig — und ob Übernachten an deinem Ziel überhaupt zulässig ist.
       </p>
@@ -320,7 +322,7 @@ const clamp = (n: number, min: number, max: number) =>
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] uppercase tracking-wide text-slate-500">{label}</span>
+      <span className="mb-1 block text-mikro uppercase text-ink-500">{label}</span>
       {children}
     </label>
   )
@@ -336,7 +338,7 @@ function Choice<T extends string>({
 }) {
   return (
     <div>
-      <span className="mb-1 block text-[11px] uppercase tracking-wide text-slate-500">{label}</span>
+      <span className="mb-1 block text-mikro uppercase text-ink-500">{label}</span>
       <div className="flex flex-wrap gap-1.5">
         {options.map((o) => (
           <button
@@ -344,10 +346,10 @@ function Choice<T extends string>({
             onClick={() => onChange(o.key)}
             aria-pressed={value === o.key}
             title={o.hint}
-            className={`min-h-9 rounded-full px-3 py-1.5 text-sm transition ${
+            className={`min-h-9 rounded-full px-3 py-1.5 text-fliess transition ${
               value === o.key
-                ? 'bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-500/40'
-                : 'bg-white/5 text-slate-400 ring-1 ring-white/10 hover:bg-white/10'
+                ? 'bg-gletscher-500/20 text-gletscher-200 ring-1 ring-gletscher-500/40'
+                : 'bg-flaeche-1 text-ink-400 ring-1 ring-kante hover:bg-flaeche-3'
             }`}
           >
             {o.label}
@@ -361,8 +363,8 @@ function Choice<T extends string>({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="text-base font-semibold text-slate-100">{value}</p>
+      <p className="text-mikro uppercase text-ink-500">{label}</p>
+      <p className="text-ueberschrift font-semibold text-ink-50">{value}</p>
     </div>
   )
 }

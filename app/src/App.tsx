@@ -26,6 +26,8 @@ import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
 import { linkErgebnisAuslesen, saveRoute, saveTrip, useSession, type LinkErgebnis } from './services/account'
+import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
+import { Auswahl, Button, Segmente } from './ui'
 
 const INITIAL_FILTERS: MapFilters = {
   activity: 'all',
@@ -184,47 +186,49 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-dvh flex-col bg-slate-950 text-slate-100">
-      <header className="flex items-center gap-3 border-b border-white/10 bg-slate-900 px-4 py-3">
-        <span aria-hidden className="text-xl">⛺</span>
-        <div className="min-w-0">
-          <h1 className="truncate text-base font-semibold leading-tight">CampBuddy</h1>
-          <p className="truncate text-xs text-slate-400">
-            Wo darf ich draussen übernachten?
-          </p>
-        </div>
+    <div className="flex h-dvh flex-col bg-flaeche-1 text-ink-100">
+      <header className="flex h-14 shrink-0 items-center gap-4 border-b border-kante bg-flaeche-2 px-4">
+        {/* Wortmarke: das Zelt-Dreieck als Form, nicht als Emoji. */}
+        <a href="./" className="flex min-w-0 items-center gap-2.5" aria-label="CampBuddy, Startseite">
+          <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden>
+            <path d="M12 3.5 3 20h18L12 3.5Z" fill="none"
+                  stroke="var(--color-gletscher-400)" strokeWidth="1.75" strokeLinejoin="round" />
+            <path d="M12 10.5 17 20H7l5-9.5Z" fill="var(--color-gletscher-400)" opacity="0.28" />
+          </svg>
+          <span className="hidden text-ueberschrift font-semibold tracking-tight text-ink-50 sm:block">
+            CampBuddy
+          </span>
+        </a>
 
-        <nav className="ml-auto flex gap-1 rounded-lg bg-white/5 p-1" aria-label="Ansicht">
-          {([
-            ['karte', 'Karte'],
-            ['community', 'Community'],
-            ['touren', 'Deine Touren'],
-            ...(isSupabaseConfigured ? [['konto', session ? 'Konto' : 'Anmelden'] as const] : []),
-          ] as const).map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => setView(key)}
-              aria-current={view === key ? 'page' : undefined}
-              className={`min-h-9 rounded-md px-3 py-1.5 text-sm transition ${
-                view === key ? 'bg-slate-700 text-slate-100' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+        {/* Ab Tablet in der Kopfzeile; auf dem Telefon liegt die Navigation
+            unten in Daumenreichweite (siehe Tableiste am Seitenende). */}
+        <nav className="mx-auto hidden sm:block" aria-label="Ansicht">
+          <Segmente
+            ariaLabel="Ansicht wählen"
+            wert={view}
+            onWaehlen={setView}
+            optionen={[
+              { wert: 'karte' as View, label: 'Karte', icon: Map },
+              { wert: 'community' as View, label: 'Community', icon: Compass },
+              { wert: 'touren' as View, label: 'Deine Touren', icon: Bookmark },
+              ...(isSupabaseConfigured
+                ? [{ wert: 'konto' as View, label: session ? 'Konto' : 'Anmelden', icon: session ? UserRound : LogIn }]
+                : []),
+            ]}
+          />
         </nav>
 
-        <label className="flex items-center gap-2 text-xs text-slate-400">
-          <span className="hidden sm:inline">Region</span>
-          <select
+        <label className="ml-auto flex shrink-0 items-center gap-2 sm:ml-0">
+          <span className="sr-only">Region</span>
+          <Auswahl
             value={regionCode}
             onChange={(e) => { setRegionCode(e.target.value); setSelection(null) }}
-            className="min-h-9 rounded-lg border border-white/10 bg-slate-800 px-2.5 py-1.5 text-sm text-slate-100"
+            className="w-auto"
           >
             {Object.values(REGIONS).map((r) => (
-              <option key={r.code} value={r.code}>{r.name} ({r.country})</option>
+              <option key={r.code} value={r.code}>{r.name}</option>
             ))}
-          </select>
+          </Auswahl>
         </label>
       </header>
 
@@ -291,12 +295,17 @@ export default function App() {
           ) : (
             <>
               <RegionIntro region={region} stats={stats} quelle={datenquelle} />
-              <button
+              {/* Die eine primäre Aktion der Kartenansicht — deshalb gefüllt
+                  und als einziges Element hier in Akzentfarbe. */}
+              <Button
+                variante="primaer"
+                groesse="gross"
+                icon={Route}
                 onClick={() => setRouteOpen(true)}
-                className="absolute bottom-3 left-3 z-10 min-h-9 rounded-lg border border-white/10 bg-slate-900/90 px-3 py-2 text-sm text-slate-200 shadow-lg backdrop-blur hover:bg-slate-800"
+                className="absolute bottom-4 left-4 z-10 shadow-[var(--shadow-3)]"
               >
-                🥾 Route planen
-              </button>
+                Route planen
+              </Button>
             </>
           )}
           <BasemapSwitcher region={regionCode} value={basemap} onChange={setBasemap} />
@@ -339,6 +348,36 @@ export default function App() {
           />
         </main>
       )}
+
+      {/* Mobile Navigation: unten, Daumenreichweite, immer sichtbar. */}
+      <nav
+        aria-label="Ansicht"
+        className="flex shrink-0 border-t border-kante bg-flaeche-2 sm:hidden"
+      >
+        {([
+          ['karte', 'Karte', Map],
+          ['community', 'Community', Compass],
+          ['touren', 'Touren', Bookmark],
+          ...(isSupabaseConfigured
+            ? [['konto', session ? 'Konto' : 'Anmelden', session ? UserRound : LogIn] as const]
+            : []),
+        ] as const).map(([key, label, Icon]) => {
+          const aktiv = view === key
+          return (
+            <button
+              key={key}
+              onClick={() => setView(key)}
+              aria-current={aktiv ? 'page' : undefined}
+              className={`flex flex-1 flex-col items-center gap-1 py-2 text-mikro font-medium
+                          normal-case tracking-normal transition-colors duration-[160ms]
+                          ${aktiv ? 'text-gletscher-300' : 'text-ink-400 hover:text-ink-200'}`}
+            >
+              <Icon size={19} strokeWidth={aktiv ? 2.25 : 1.75} aria-hidden />
+              {label}
+            </button>
+          )
+        })}
+      </nav>
 
       <TourDetailModal
         offen={auswertungOffen}

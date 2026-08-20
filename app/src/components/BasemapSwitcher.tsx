@@ -1,4 +1,7 @@
-/** Wahl der Hintergrundkarte. Sitzt auf der Karte, nicht in der Kopfzeile — es ist eine Karteneinstellung. */
+/**
+ * Wahl der Hintergrundkarte. Sitzt auf der Karte, nicht in der Kopfzeile —
+ * es ist eine Karteneinstellung, keine Navigation.
+ */
 import { basemapsFor, type BasemapKey } from '../map/mapConfig'
 
 interface Props {
@@ -8,20 +11,30 @@ interface Props {
 }
 
 export function BasemapSwitcher({ region, value, onChange }: Props) {
-  const options = basemapsFor(region)
-  if (options.length < 2) return null
+  const optionen = basemapsFor(region)
+  if (optionen.length < 2) return null
 
   return (
-    <div className="absolute right-3 top-28 z-10 flex flex-col gap-1 rounded-lg border border-white/10 bg-slate-900/85 p-1 shadow-lg backdrop-blur">
-      {options.map((b) => (
+    <div
+      role="group"
+      aria-label="Hintergrundkarte"
+      // Auf dem Telefon unten rechts: oben teilt sich der Platz mit der
+      // Rechtslage-Pille, und 375 px reichen nicht für beides.
+      className="absolute bottom-20 right-3 z-10 flex overflow-hidden rounded-mittel border
+                 border-kante bg-flaeche-2/92 shadow-[var(--shadow-2)] backdrop-blur-md
+                 sm:bottom-auto sm:top-3"
+    >
+      {optionen.map((b, i) => (
         <button
           key={b.key}
           onClick={() => onChange(b.key)}
           aria-pressed={value === b.key}
           title={b.hint}
-          className={`min-h-9 rounded-md px-2.5 py-1.5 text-xs transition ${
-            value === b.key ? 'bg-emerald-500/25 text-emerald-100' : 'text-slate-300 hover:bg-white/10'
-          }`}
+          className={`h-9 px-3 text-klein font-medium transition-colors duration-[160ms]
+                      ${i > 0 ? 'border-l border-kante' : ''}
+                      ${value === b.key
+                        ? 'bg-gletscher-500/18 text-gletscher-200'
+                        : 'text-ink-400 hover:bg-flaeche-3 hover:text-ink-100'}`}
         >
           {b.label}
         </button>

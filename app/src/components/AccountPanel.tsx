@@ -11,6 +11,8 @@
  */
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { LogOut, Mail, Trash2, X } from 'lucide-react'
+import { Button, Eingabe, Feld, Hinweis, Segmente } from '../ui'
 import { isSupabaseConfigured } from '../services/supabase'
 import {
   kontoLoeschen, ladeProfil, passwortAendern, passwortZuruecksetzen, signInWithEmail,
@@ -43,7 +45,7 @@ export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnis
   if (!isSupabaseConfigured) {
     return (
       <Rahmen titel="Konto">
-        <p className="rounded-lg bg-white/5 p-3 text-sm leading-relaxed text-slate-400">
+        <p className="rounded-mittel bg-flaeche-1 p-3 text-fliess leading-relaxed text-ink-400">
           Für dieses Projekt ist kein Backend hinterlegt, deshalb gibt es hier nichts
           anzumelden. Karte, Routenplanung und Auswertung funktionieren vollständig ohne Konto.
         </p>
@@ -53,17 +55,19 @@ export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnis
 
   const meldung = linkErgebnis && (
     <div
-      className={`rounded-lg p-3 text-sm leading-relaxed ${
+      className={`rounded-mittel p-3 text-fliess leading-relaxed ${
         linkErgebnis.art === 'fehler'
-          ? 'bg-amber-500/10 text-amber-200'
-          : 'bg-emerald-500/10 text-emerald-200'
+          ? 'bg-geduldet-500/10 text-geduldet-200'
+          : 'bg-gletscher-500/10 text-gletscher-200'
       }`}
       role="status"
     >
       <div className="flex items-start justify-between gap-3">
         <p>{linkErgebnis.meldung}</p>
         <button onClick={onLinkErgebnisGelesen} aria-label="Hinweis schliessen"
-                className="-mr-1 -mt-1 shrink-0 rounded p-1 opacity-60 hover:opacity-100">✕</button>
+                className="-mr-1 -mt-1 shrink-0 rounded-klein p-1 opacity-60 transition-opacity duration-[160ms] hover:opacity-100">
+          <X size={14} strokeWidth={2.5} aria-hidden />
+        </button>
       </div>
     </div>
   )
@@ -137,85 +141,80 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
   return (
     <Rahmen titel={modus === 'anmelden' ? 'Anmelden' : 'Konto anlegen'}>
       {meldung}
-      <div className="flex gap-1 rounded-lg bg-white/5 p-1">
-        {([['anmelden', 'Anmelden'], ['registrieren', 'Registrieren']] as const).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => { setModus(key); setFehler(null); setHinweis(null) }}
-            aria-pressed={modus === key}
-            className={`min-h-9 flex-1 rounded-md px-3 text-sm transition ${
-              modus === key ? 'bg-slate-700 text-slate-100' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <Segmente
+        ariaLabel="Anmelden oder registrieren"
+        wert={modus}
+        onWaehlen={(m) => { setModus(m); setFehler(null); setHinweis(null) }}
+        className="w-full [&>button]:flex-1"
+        optionen={[
+          { wert: 'anmelden' as const, label: 'Anmelden' },
+          { wert: 'registrieren' as const, label: 'Registrieren' },
+        ]}
+      />
 
       {anbieter.length > 0 && (
         <>
           <div className="space-y-2">
             {anbieter.map((a) => (
-              <button
+              <Button
                 key={a}
+                variante="sekundaer"
+                groesse="gross"
+                breit
                 onClick={() => signInWithProvider(a).catch((e: Error) => setFehler(e.message))}
-                className="min-h-11 w-full rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-medium text-slate-100 hover:bg-white/10"
               >
                 Weiter mit {ANBIETER_NAMEN[a] ?? a}
-              </button>
+              </Button>
             ))}
           </div>
-          <div className="flex items-center gap-3 text-[11px] uppercase tracking-wide text-slate-600">
-            <span className="h-px flex-1 bg-white/10" />oder<span className="h-px flex-1 bg-white/10" />
+          <div className="flex items-center gap-3 text-mikro uppercase text-ink-600">
+            <span className="h-px flex-1 bg-flaeche-3" />oder<span className="h-px flex-1 bg-flaeche-3" />
           </div>
         </>
       )}
 
       <form onSubmit={absenden} className="space-y-3">
         <Feld label="E-Mail">
-          <input
-            type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email" placeholder="du@beispiel.de"
-            className="min-h-11 w-full rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
-          />
+          <Eingabe
+              type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email" placeholder="du@beispiel.de"
+            />
         </Feld>
         <Feld label="Passwort">
-          <input
-            type="password" required value={passwort} onChange={(e) => setPasswort(e.target.value)}
-            autoComplete={modus === 'registrieren' ? 'new-password' : 'current-password'}
-            minLength={modus === 'registrieren' ? MIN_PASSWORT : undefined}
-            className="min-h-11 w-full rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
-          />
+          <Eingabe
+              type="password" required value={passwort} onChange={(e) => setPasswort(e.target.value)}
+              autoComplete={modus === 'registrieren' ? 'new-password' : 'current-password'}
+              minLength={modus === 'registrieren' ? MIN_PASSWORT : undefined}
+            />
           {modus === 'registrieren' && (
-            <p className={`mt-1 text-[11px] ${zuKurz ? 'text-amber-300' : 'text-slate-500'}`}>
+            <p className={`mt-1 text-mikro ${zuKurz ? 'text-geduldet-300' : 'text-ink-500'}`}>
               Mindestens {MIN_PASSWORT} Zeichen.
             </p>
           )}
         </Feld>
 
-        <button type="submit" disabled={busy || zuKurz}
-                className="min-h-11 w-full rounded-lg bg-emerald-500/20 px-4 text-sm font-semibold text-emerald-100 ring-1 ring-emerald-500/40 hover:bg-emerald-500/30 disabled:opacity-50">
+        <Button type="submit" variante="primaer" groesse="gross" breit disabled={busy || zuKurz}>
           {busy ? 'Moment …' : modus === 'registrieren' ? 'Konto anlegen' : 'Anmelden'}
-        </button>
+        </Button>
       </form>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-klein">
         <button onClick={magicLink} disabled={busy}
-                className="text-sky-400 underline underline-offset-2 hover:text-sky-300 disabled:opacity-50">
+                className="text-gletscher-400 underline underline-offset-2 hover:text-gletscher-300 disabled:opacity-50">
           Stattdessen Link per E-Mail
         </button>
         {modus === 'anmelden' && (
           <button onClick={zuruecksetzen} disabled={busy}
-                  className="text-slate-400 underline underline-offset-2 hover:text-slate-200 disabled:opacity-50">
+                  className="text-ink-400 underline underline-offset-2 hover:text-ink-200 disabled:opacity-50">
             Passwort vergessen
           </button>
         )}
       </div>
 
-      {hinweis && <p className="rounded-lg bg-emerald-500/10 p-3 text-sm text-emerald-200">{hinweis}</p>}
-      {fehler && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{fehler}</p>}
+      {hinweis && <Hinweis ton="erfolg" icon={Mail}>{hinweis}</Hinweis>}
+      {fehler && <Hinweis ton="fehler">{fehler}</Hinweis>}
 
-      <p className="text-xs leading-relaxed text-slate-500">
+      <p className="text-klein leading-relaxed text-ink-500">
         Ein Konto brauchst du nur zum Speichern, Teilen und Merken von Touren. Karte,
         Routenplanung und Auswertung funktionieren ohne. Gespeichert wird nur, was du selbst
         anlegst — kein Tracking, keine Weitergabe. Die Daten liegen in der EU-Region deines
@@ -273,52 +272,49 @@ function AngemeldeteAnsicht({
   return (
     <Rahmen titel="Konto">
       {meldung}
-      <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-white/5 p-4">
+      <section className="flex flex-wrap items-center justify-between gap-3 rounded-mittel bg-flaeche-1 p-4">
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-slate-100">{session.user.email}</p>
-          <p className="text-[11px] text-slate-500">
+          <p className="truncate text-fliess font-medium text-ink-50">{session.user.email}</p>
+          <p className="text-mikro text-ink-500">
             Angemeldet über {session.user.app_metadata?.provider === 'email'
               ? 'E-Mail'
               : ANBIETER_NAMEN[session.user.app_metadata?.provider ?? ''] ?? session.user.app_metadata?.provider}
           </p>
         </div>
-        <button onClick={signOut}
-                className="min-h-9 rounded-lg bg-white/5 px-3 text-sm text-slate-300 ring-1 ring-white/10 hover:bg-white/10">
-          Abmelden
-        </button>
+        <Button variante="sekundaer" icon={LogOut} onClick={signOut}>Abmelden</Button>
       </section>
 
       {/* ---- Anzeigename ---- */}
       <section>
-        <h3 className="mb-1 text-sm font-semibold text-slate-200">Anzeigename</h3>
-        <p className="mb-2 text-xs leading-relaxed text-slate-500">
+        <h3 className="mb-1 text-fliess font-semibold text-ink-200">Anzeigename</h3>
+        <p className="mb-2 text-klein leading-relaxed text-ink-500">
           Steht an Routen, die du veröffentlichst. Ohne ihn erscheinen geteilte Routen ohne
           Urheberangabe — deine E-Mail-Adresse wird nie veröffentlicht.
         </p>
         <form onSubmit={nameSpeichern} className="flex flex-wrap gap-2">
-          <input
+          <Eingabe
             value={name} onChange={(e) => { setName(e.target.value); setNameStand('idle') }}
             maxLength={40} placeholder="z.B. Jannis"
-            className="min-h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
+            className="min-w-0 flex-1"
           />
           <button type="submit" disabled={nameStand === 'busy'}
-                  className="min-h-10 rounded-lg bg-white/5 px-4 text-sm text-slate-200 ring-1 ring-white/10 hover:bg-white/10 disabled:opacity-50">
+                  className="min-h-10 rounded-mittel bg-flaeche-1 px-4 text-fliess text-ink-200 ring-1 ring-kante hover:bg-flaeche-3 disabled:opacity-50">
             {nameStand === 'busy' ? 'Speichere …' : 'Speichern'}
           </button>
-          {nameStand === 'ok' && <p className="w-full text-xs text-emerald-300">Gespeichert.</p>}
+          {nameStand === 'ok' && <p className="w-full text-klein text-gletscher-300">Gespeichert.</p>}
         </form>
       </section>
 
       {/* ---- Abo (Platzhalter) ---- */}
       <section>
-        <h3 className="mb-1 text-sm font-semibold text-slate-200">Abo</h3>
-        <div className="rounded-lg border border-white/10 p-4">
+        <h3 className="mb-1 text-fliess font-semibold text-ink-200">Abo</h3>
+        <div className="rounded-mittel border border-kante p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-slate-100">
+              <p className="text-fliess font-medium text-ink-50">
                 {bezahlt ? 'CampBuddy Plus' : 'Kostenlos'}
               </p>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-mikro text-ink-500">
                 {bezahlt
                   ? profil?.abo_bis
                     ? `Läuft bis ${new Date(profil.abo_bis).toLocaleDateString('de-DE')}`
@@ -329,12 +325,12 @@ function AngemeldeteAnsicht({
             <button
               disabled
               title="Noch nicht verfügbar"
-              className="min-h-9 cursor-not-allowed rounded-lg bg-white/5 px-3 text-sm text-slate-500 ring-1 ring-white/10"
+              className="min-h-9 cursor-not-allowed rounded-mittel bg-flaeche-1 px-3 text-fliess text-ink-500 ring-1 ring-kante"
             >
               Bald verfügbar
             </button>
           </div>
-          <p className="mt-3 border-t border-white/10 pt-2.5 text-[11px] leading-relaxed text-slate-500">
+          <p className="mt-3 border-t border-kante pt-2.5 text-mikro leading-relaxed text-ink-500">
             Geplant für später (Abschnitt 5 der Spezifikation): weitere Regionen, Offline-Karten
             und unbegrenzt gespeicherte Touren. Die Grundkarte für die Basis-Region bleibt
             kostenlos. Es ist noch nichts buchbar und nichts abgerechnet.
@@ -344,55 +340,55 @@ function AngemeldeteAnsicht({
 
       {/* ---- Sicherheit ---- */}
       <section>
-        <h3 className="mb-1 text-sm font-semibold text-slate-200">Passwort ändern</h3>
+        <h3 className="mb-1 text-fliess font-semibold text-ink-200">Passwort ändern</h3>
         <form onSubmit={passwortSetzen} className="flex flex-wrap gap-2">
-          <input
+          <Eingabe
             type="password" value={neuesPasswort} autoComplete="new-password"
             onChange={(e) => { setNeuesPasswort(e.target.value); setPwStand('idle') }}
             placeholder={`Neues Passwort (min. ${MIN_PASSWORT} Zeichen)`}
-            className="min-h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
+            className="min-w-0 flex-1"
           />
           <button type="submit" disabled={neuesPasswort.length < MIN_PASSWORT || pwStand === 'busy'}
-                  className="min-h-10 rounded-lg bg-white/5 px-4 text-sm text-slate-200 ring-1 ring-white/10 hover:bg-white/10 disabled:opacity-40">
+                  className="min-h-10 rounded-mittel bg-flaeche-1 px-4 text-fliess text-ink-200 ring-1 ring-kante hover:bg-flaeche-3 disabled:opacity-40">
             {pwStand === 'busy' ? 'Setze …' : 'Ändern'}
           </button>
-          {pwStand === 'ok' && <p className="w-full text-xs text-emerald-300">Passwort geändert.</p>}
+          {pwStand === 'ok' && <p className="w-full text-klein text-gletscher-300">Passwort geändert.</p>}
         </form>
       </section>
 
       <section>
         <button onClick={onZuTouren}
-                className="min-h-10 rounded-lg bg-emerald-500/15 px-4 text-sm text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25">
+                className="min-h-10 rounded-mittel bg-gletscher-500/15 px-4 text-fliess text-gletscher-200 ring-1 ring-gletscher-500/30 hover:bg-gletscher-500/25">
           Zu deinen Touren
         </button>
       </section>
 
       {/* ---- Konto löschen ---- */}
-      <section className="rounded-lg border border-red-500/25 bg-red-500/5 p-4">
-        <h3 className="text-sm font-semibold text-red-200">Konto löschen</h3>
-        <p className="mt-1 text-xs leading-relaxed text-slate-400">
+      <section className="rounded-mittel border border-verboten-500/25 bg-verboten-500/5 p-4">
+        <h3 className="text-fliess font-semibold text-verboten-200">Konto löschen</h3>
+        <p className="mt-1 text-klein leading-relaxed text-ink-400">
           Löscht dein Konto und alles daran: Profil, gespeicherte Routen und Touren, Favoriten.
           Veröffentlichte Routen verschwinden mit. Das lässt sich nicht rückgängig machen.
         </p>
         <div className="mt-2.5 flex flex-wrap gap-2">
-          <input
+          <Eingabe
             value={loeschBestaetigung}
             onChange={(e) => setLoeschBestaetigung(e.target.value)}
             placeholder="LÖSCHEN eintippen"
             aria-label="Löschung bestätigen"
-            className="min-h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-800 px-3 text-sm"
+            className="min-w-0 flex-1"
           />
-          <button
+          <Button
+            variante="gefahr" groesse="gross" icon={Trash2}
             onClick={loeschen}
             disabled={loeschBestaetigung.trim().toUpperCase() !== 'LÖSCHEN'}
-            className="min-h-10 rounded-lg bg-red-500/20 px-4 text-sm font-medium text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/30 disabled:opacity-40"
           >
             Endgültig löschen
-          </button>
+          </Button>
         </div>
       </section>
 
-      {fehler && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{fehler}</p>}
+      {fehler && <Hinweis ton="fehler">{fehler}</Hinweis>}
     </Rahmen>
   )
 }
@@ -401,18 +397,9 @@ function AngemeldeteAnsicht({
 
 function Rahmen({ titel, children }: { titel: string; children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-md space-y-5 px-4 py-6 pb-16">
-      <h2 className="text-lg font-semibold">{titel}</h2>
+    <div className="mx-auto w-full max-w-md space-y-5 px-4 py-8 pb-20 sm:px-6">
+      <h1 className="text-display font-semibold text-ink-50">{titel}</h1>
       {children}
     </div>
-  )
-}
-
-function Feld({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-[11px] uppercase tracking-wide text-slate-500">{label}</span>
-      {children}
-    </label>
   )
 }
