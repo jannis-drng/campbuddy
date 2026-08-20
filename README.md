@@ -149,14 +149,29 @@ nächste erfasste Übernachtungsmöglichkeit.
 
 Das Routing läuft über zwei Dienste der FOSSGIS e.V., beide **ohne API-Schlüssel**:
 
-**Valhalla** ist der Hauptanbieter, weil nur sein Fussgänger-Modell echte Wanderwege kennt:
+**Valhalla** ist der Hauptanbieter, weil nur sein Fussgänger-Modell echte Bergwege zulässt.
 
 | Einstellung | Wirkung |
 |---|---|
-| `walkway_factor: 2.0` | Fusswege werden doppelt so attraktiv bewertet wie ihre Länge nahelegt |
-| `max_hiking_difficulty: 4` | Bergwege bis SAC T4. Höher wäre unverantwortlich — T5/T6 verlangen Kletterei |
-| `use_hills: 1.0` | keine Steigungsvermeidung; wer in den Alpen plant, will nicht um jeden Höhenmeter herumgeführt werden |
-| `driveway_factor: 5.0` | Zufahrten werden zurückgedrängt |
+| `max_hiking_difficulty: 4` | erlaubt Steige bis SAC T4. **Der entscheidende Wert.** Voreinstellung ist 1 und schliesst alles ab T3 aus |
+| `walking_speed: 4.0` | realistischer als die voreingestellten 5,1 km/h |
+
+Gemessen an vier in OSM als Bergweg getaggten Steigen im Wallis, jeweils zwischen den
+Endpunkten des Steigs geroutet (Faktor 1,00 = der Router folgt ihm exakt):
+
+| Konfiguration | mittlerer Umweg |
+|---|---|
+| Valhalla-Voreinstellung | ×9,11 — in einem Fall ×30 |
+| mit `max_hiking_difficulty: 4` | **×1,01** |
+
+Zwei Optionen fehlen bewusst, beide nach Messung verworfen:
+
+- **`use_hills: 1.0`** klingt richtig fürs Gebirge („Steigungen nicht meiden"), verschlechterte
+  das Ergebnis aber auf ×1,26 — ein Steig wurde damit doppelt so weit umfahren wie nötig.
+- **`walkway_factor`** wirkt auf `highway=footway`, nicht auf `highway=path`, und blieb in
+  allen Messungen wirkungslos.
+
+Höher als T4 wird nicht gesetzt: T5 und T6 verlangen Kletterei.
 
 **OSRM** ist die Rückfallebene. Sein Fuss-Profil gewichtet ausschliesslich nach Distanz und
 nimmt im Gebirge deshalb oft die kürzere Talstrasse statt des Steigs. Springt die App darauf

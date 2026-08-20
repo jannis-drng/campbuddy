@@ -4,10 +4,10 @@
  * Zwei Anbieter, beide von der FOSSGIS e.V. für die OSM-Community betrieben,
  * beide ohne API-Schlüssel:
  *
- *  - **Valhalla** ist der Hauptanbieter. Sein Fussgänger-Modell kennt echte
- *    Wanderwege: `walkway_factor` bevorzugt Fusswege gegenüber Fahrbahnen,
- *    `max_hiking_difficulty` erlaubt Steige bis zur gewählten SAC-Stufe, und
- *    `use_hills` verhindert, dass Steigungen pauschal gemieden werden.
+ *  - **Valhalla** ist der Hauptanbieter, weil sein Fussgänger-Modell über
+ *    `max_hiking_difficulty` echte Bergwege zulässt. Ohne diesen Wert meidet
+ *    es Steige ab SAC T3 vollständig — siehe die Messung bei den Kosten-
+ *    Einstellungen weiter unten.
  *  - **OSRM** ist die Rückfallebene. Sein Fuss-Profil gewichtet ausschliesslich
  *    nach Distanz und nimmt im Gebirge deshalb oft die kürzere Talstrasse
  *    statt des Steigs — brauchbar, aber nicht das, was ein Wanderer will.
@@ -66,25 +66,31 @@ const OSRM_PROFILE: Record<RoutingProfile, string> = {
 /**
  * Kosten-Einstellungen je Fortbewegungsart.
  *
- * Für Fussgänger ist das der Kern dieser Datei:
- *  - `walkway_factor: 2` heißt, Fusswege werden doppelt so attraktiv bewertet
- *    wie ihre Länge nahelegt — die App soll Steige nehmen, nicht Asphalt.
- *  - `max_hiking_difficulty: 4` lässt Bergwege bis SAC T4 zu (alpine Steige).
- *    Höher wäre unverantwortlich: T5/T6 verlangen Kletterei.
- *  - `use_hills: 1` schaltet die Steigungsvermeidung ab. Wer in den Alpen
- *    plant, will nicht um jeden Höhenmeter herumgeführt werden.
- *  - `driveway_factor`/`alley_factor` drücken Zufahrten und Gassen zurück.
+ * `max_hiking_difficulty` ist der entscheidende Wert und der Grund, warum
+ * kleine Bergwege überhaupt benutzt werden. Valhallas Voreinstellung ist 1
+ * und schliesst damit alles ab T3 aus — gemessen an vier getaggten Steigen im
+ * Wallis führte das zu einem mittleren Umweg vom **9,1-fachen** der
+ * Steiglänge, in einem Fall zum 30-fachen. Mit 4 (SAC T4) folgt der Router
+ * ihnen praktisch exakt (Faktor 1,01).
+ *
+ * Höher als T4 wird bewusst nicht gesetzt: T5 und T6 verlangen Kletterei.
+ *
+ * `use_hills` fehlt hier absichtlich. Der Wert 1.0 („Steigungen nicht meiden")
+ * klingt nach der richtigen Wahl fürs Gebirge, verschlechterte im Test aber
+ * das Ergebnis — ein Steig wurde damit doppelt so weit umfahren wie nötig.
+ * Die Voreinstellung ist besser.
+ *
+ * `walkway_factor` fehlt ebenfalls: es wirkt auf `highway=footway`, nicht auf
+ * `highway=path`, und blieb in allen Messungen wirkungslos.
  */
 const VALHALLA_OPTIONEN: Record<RoutingProfile, Record<string, number>> = {
   foot: {
-    walkway_factor: 2.0,
     max_hiking_difficulty: 4,
-    use_hills: 1.0,
-    driveway_factor: 5.0,
-    alley_factor: 2.0,
+    // Realistischer als die Voreinstellung von 5,1 km/h — betrifft nur die
+    // vom Dienst gemeldete Dauer, angezeigt wird ohnehin die Alpenvereinsformel.
     walking_speed: 4.0,
   },
-  bike: { use_hills: 0.5, use_roads: 0.3 },
+  bike: { use_roads: 0.3 },
   car: {},
 }
 
