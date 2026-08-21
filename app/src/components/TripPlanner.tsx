@@ -41,6 +41,25 @@ function defaultTrip(): TripParams {
   }
 }
 
+/**
+ * Vorbelegung über die Eckdaten legen — aber nur, wo tatsächlich ein Wert steht.
+ *
+ * `{ ...vorgabe, ...teil }` wirkt harmlos, überschreibt aber auch dann, wenn
+ * ein Schlüssel mit dem Wert `undefined` dabei ist. Eine Route ohne Höhenprofil
+ * hat so schon die Schlafhöhe geleert; das Feld stand danach leer da und die
+ * Tour liess sich nicht mehr speichern.
+ */
+function mitVorbelegung(basis: TripParams, teil: Partial<TripParams> | undefined): TripParams {
+  if (!teil) return basis
+  const zusammen = { ...basis }
+  for (const [schluessel, wert] of Object.entries(teil)) {
+    if (wert === undefined || wert === null) continue
+    if (typeof wert === 'number' && !Number.isFinite(wert)) continue
+    ;(zusammen as Record<string, unknown>)[schluessel] = wert
+  }
+  return zusammen
+}
+
 /** Grobe Zuordnung Monat → Jahreszeit für die Alpen. */
 function seasonForDate(d: Date): Season {
   const m = d.getMonth() + 1
@@ -62,7 +81,7 @@ export function TripPlanner({
    */
   initial?: Partial<TripParams>
 }) {
-  const [trip, setTrip] = useState<TripParams>(() => ({ ...defaultTrip(), ...initial }))
+  const [trip, setTrip] = useState<TripParams>(() => mitVorbelegung(defaultTrip(), initial))
 
   // Ändert sich die Route, sollen Dauer und Höhe der Packliste folgen — es sei
   // denn, der Nutzer hat den Wert inzwischen selbst gesetzt.
@@ -71,7 +90,7 @@ export function TripPlanner({
   useEffect(() => {
     if (!initial || initialSchluessel === letzteVorbelegung.current) return
     letzteVorbelegung.current = initialSchluessel
-    setTrip((t) => ({ ...t, ...initial }))
+    setTrip((t) => mitVorbelegung(t, initial))
   }, [initial, initialSchluessel])
   // Die Jahreszeit folgt dem Startdatum, bis sie einmal von Hand gesetzt wurde.
   // Sonst stünde bei einem Dezember-Termin weiter "Sommer" und die
@@ -174,7 +193,12 @@ export function TripPlanner({
         <Field label="Schlafhöhe (m)">
           <input
             type="number" min={200} max={4000} step={100} value={trip.elevation}
-            onChange={(e) => set('elevation', clamp(Number(e.target.value), 200, 4000))}
+            onChange={(e) => {
+              // Ein leeres Feld ergibt NaN. Ungeprüft übernommen stünde später
+              // „NaN m" in der Packliste und beim Speichern nichts in der Höhe.
+              const zahl = Number(e.target.value)
+              set('elevation', Number.isFinite(zahl) ? clamp(zahl, 200, 4000) : 200)
+            }}
             className=""
           />
         </Field>

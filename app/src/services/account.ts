@@ -207,6 +207,20 @@ export async function listTrips(): Promise<StoredTrip[]> {
   return (data ?? []) as StoredTrip[]
 }
 
+/**
+ * Zahlenfeld auf den Bereich bringen, den die Tabelle zulässt.
+ *
+ * Der Client soll die Prüfung der Datenbank nicht ersetzen, aber ihr auch
+ * nichts vorlegen, was sie zwangsläufig ablehnt. Fehlt ein Wert, gewinnt der
+ * Ersatzwert — eine Tour ohne Höhenprofil ist ein normaler Fall und darf nicht
+ * am Speichern scheitern.
+ */
+function zahlImBereich(wert: unknown, min: number, max: number, ersatz: number): number {
+  const zahl = typeof wert === 'number' ? wert : Number(wert)
+  if (!Number.isFinite(zahl)) return ersatz
+  return Math.min(max, Math.max(min, Math.round(zahl)))
+}
+
 export async function saveTrip(name: string, trip: TripParams, routeId?: string): Promise<StoredTrip> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
@@ -214,13 +228,35 @@ export async function saveTrip(name: string, trip: TripParams, routeId?: string)
   const user_id = userData.user?.id
   if (!user_id) throw new Error('Nicht angemeldet')
 
-  const { data, error } = await sb
-    .from('trips')
-    .insert({ user_id, route_id: routeId ?? null, name, ...trip })
-    .select()
-    .single()
-  if (error) throw new Error(error.message)
+  // Grenzen wie in Migration 0001. Sie stehen hier ein zweites Mal, damit ein
+  // fehlender Wert eine sinnvolle Tour ergibt statt einer rohen Postgres-Meldung.
+  const zeile = {
+    user_id,
+    route_id: routeId ?? null,
+    name,
+    ...trip,
+    days: zahlImBereich(trip.days, 1, 60, 1),
+    persons: zahlImBereich(trip.persons, 1, 20, 1),
+    elevation: zahlImBereich(trip.elevation, 0, 5000, 2400),
+  }
+
+  const { data, error } = await sb.from('trips').insert(zeile).select().single()
+  if (error) throw new Error(uebersetzeSpeicherfehler(error.message))
   return data as StoredTrip
+}
+
+/** Datenbankmeldungen sind für Entwickler geschrieben, nicht für Wanderer. */
+function uebersetzeSpeicherfehler(meldung: string): string {
+  if (/null value in column|violates not-null/i.test(meldung)) {
+    return 'Ein Feld der Tour war leer. Ergänze Dauer, Personen und Schlafhöhe und versuche es noch einmal.'
+  }
+  if (/violates check constraint/i.test(meldung)) {
+    return 'Ein Wert liegt ausserhalb des zulässigen Bereichs — prüfe Dauer, Personenzahl und Schlafhöhe.'
+  }
+  if (/row-level security/i.test(meldung)) {
+    return 'Dafür fehlt die Berechtigung — bist du noch angemeldet?'
+  }
+  return meldung
 }
 
 export async function deleteTrip(id: string): Promise<void> {

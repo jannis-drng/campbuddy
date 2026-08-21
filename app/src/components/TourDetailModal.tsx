@@ -75,7 +75,13 @@ export function TourDetailModal({
         })
       : [stats?.max_ele ?? 0]
     const hoehe = Math.round(Math.max(...schlafhoehen, 0) / 100) * 100
-    return { days: tage, elevation: hoehe > 0 ? hoehe : undefined }
+    // Der Schlüssel darf nicht mit dem Wert `undefined` gesetzt werden: beim
+    // Zusammenführen im Planer überschriebe er sonst dessen Vorgabewert mit
+    // „nichts". Genau das führte dazu, dass eine Tour ohne Höhenprofil mit
+    // leerer Schlafhöhe gespeichert wurde — und die Datenbank sie ablehnte.
+    const vorgabe: Partial<TripParams> = { days: tage }
+    if (hoehe > 0) vorgabe.elevation = hoehe
+    return vorgabe
   }, [etappen, profil, stats])
 
   if (!offen) return null
