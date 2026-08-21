@@ -7,9 +7,14 @@
  * liest sich wie „hier gilt nichts".
  *
  * Der Umriss ist keine Erfindung: OSM-Relation 2698607 (`natural=mountain_range`,
- * Wikidata Q1286), über `npm run import:osm -- alpen` geholt und von 58 713 auf
- * 864 Punkte vereinfacht. Bei den Zoomstufen, auf denen er als Rand dient,
- * sieht man die 500 m Toleranz nicht.
+ * Wikidata Q1286), über `npm run import:osm -- alpen` geholt.
+ *
+ * Gemeint ist aber der *Alpenraum*, nicht der Gebirgskamm — die Städte, aus denen
+ * man losfährt, gehören aufs Blatt. Der Rohumriss wächst deshalb beim Import um
+ * 1,1° nach aussen (rund 120 km Nord-Süd, 85 km Ost-West), sodass München,
+ * Mailand, Lyon, Wien, Zürich, Turin, Ljubljana und Venedig darin liegen. Das
+ * Ergebnis ist ein Kartenrahmen, keine Gebietsgrenze — und wird auch nirgends
+ * als solche ausgegeben.
  */
 import { REGIONS } from '../data/regions'
 import alpen from './alpen.json'
@@ -27,12 +32,12 @@ const daten = alpen as unknown as AlpenDatei
 export const ALPEN_QUELLE = { name: daten.quelle, url: daten.source_url, lizenz: daten.lizenz }
 
 /**
- * Wie weit über den Alpenbogen hinaus man schauen darf, in Grad.
+ * Wie weit über den Rahmen hinaus sich die Karte schieben lässt, in Grad.
  *
- * Genug, dass die ganzen Alpen mit etwas Luft ringsum auf den Schirm passen —
- * und nicht mehr, weil jeder weitere Grad nur zusätzliches Schwarz ist. Bei
- * dieser Grösse lässt sich am Rechner bis etwa Zoom 5,9 herauszoomen; auf dem
- * Telefon, wo weniger Breite in den Rahmen muss, entsprechend weiter.
+ * Genug, dass der ganze Alpenraum mit einem dunklen Rand ringsum auf den Schirm
+ * passt — und nicht mehr, weil jeder weitere Grad nur zusätzliches Schwarz ist.
+ * Am Rechner lässt sich damit bis etwa Zoom 5,7 herauszoomen; auf dem Telefon,
+ * wo weniger Breite in den Rahmen muss, entsprechend weiter.
  */
 const PUFFER_LNG = 2
 const PUFFER_LAT = 1.3
@@ -41,13 +46,15 @@ const PUFFER_LAT = 1.3
 export const MIN_ZOOM = 5
 
 /**
- * Alle abgedeckten Flächen: der Alpenbogen und jede erfasste Region.
+ * Alle abgedeckten Flächen: der Alpenraum und zusätzlich jede erfasste Region.
  *
- * Die Regionen kommen dazu, weil sie nicht restlos im Umriss liegen. Das
- * Wallis reicht bis an den Genfersee, und dort liegt unter anderem das
- * Réserve Naturelle des Grangettes — eine Verbotszone. Sie auf schwarzem Grund
- * ohne Karte darunter zu zeigen, wäre der schlechteste denkbare Kompromiss:
- * ausgerechnet die strengste Auskunft ohne Zusammenhang.
+ * Seit der Umriss gewachsen ist, liegt das Wallis restlos darin — die Rechtecke
+ * stanzen also derzeit nichts Sichtbares aus. Sie bleiben trotzdem drin: sie
+ * sind die Zusicherung, dass keine erfasste Fläche je auf schwarzem Grund ohne
+ * Karte darunter landet. Vor dem Wachsen traf das ausgerechnet das Réserve
+ * Naturelle des Grangettes am Genfersee — eine Verbotszone. Die strengste
+ * Auskunft ohne Zusammenhang zu zeigen wäre der schlechteste denkbare Fall,
+ * und eine künftige Region kann wieder über den Rand ragen.
  */
 function abgedeckteRechtecke(): [number, number, number, number][] {
   return Object.values(REGIONS).map((r) => r.bounds)

@@ -247,31 +247,40 @@ Punkt auf der gerouteten Spur liegt (`naechsterIndex` in `data/geo.ts`).
 Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur Infokarte: „Route über
 diese Hütte" ist beim Planen das, was man will.
 
-### Ausschnitt: die Karte endet an den Alpen
+### Ausschnitt: die Karte endet am Alpenraum
 
-Ausserhalb des Alpenbogens liegt keine Weltkarte, sondern dieselbe dunkle Fläche wie
-unter der Oberfläche. Der Grund ist nicht Deko: über alles jenseits der Alpen hat dieses
+Ausserhalb liegt keine Weltkarte, sondern dieselbe dunkle Fläche wie unter der
+Oberfläche. Der Grund ist nicht Deko: über alles jenseits des Alpenraums hat dieses
 Projekt nichts zu sagen, und eine leere Weltkarte liest sich wie „hier gilt nichts".
 
-Der Umriss ist keine Erfindung — OSM-Relation
+Der Umriss stammt aus OSM-Relation
 [2698607](https://www.openstreetmap.org/relation/2698607) (`natural=mountain_range`,
-Wikidata Q1286), geholt über `npm run import:osm -- alpen` und von 58 713 auf 864 Punkte
-vereinfacht (Ramer-Douglas-Peucker, 0,005° ≈ 500 m). Ergebnis: 16 KB in
-`app/src/map/alpen.json`.
+Wikidata Q1286), geholt über `npm run import:osm -- alpen`.
 
-Gezeichnet wird er als **Maske**: ein Rechteck über die halbe Welt, aus dem der
-Alpenbogen ausgestanzt ist (in GeoJSON ist der erste Ring die Aussenkante, jeder weitere
+Gemeint ist aber der **Alpenraum**, nicht der Gebirgskamm — die Städte, aus denen man
+losfährt, gehören aufs Blatt. Der Rohumriss wächst deshalb beim Import um 1,1° nach
+aussen (~120 km Nord-Süd, ~85 km Ost-West). Drin liegen damit München, Mailand, Lyon,
+Wien, Zürich, Turin, Ljubljana, Salzburg, Genf und Venedig; das Skript prüft das bei
+jedem Lauf und schreibt die Liste in die Ausgabe.
+
+> Das Wachsen läuft über ein Raster, nicht über verschobene Eckpunkte: der Alpenbogen
+> ist voller einspringender Täler, und ein Eckpunkt-Versatz erzeugt dort Schlaufen. Also
+> Fläche in ein 0,02°-Raster füllen, exakte euklidische Distanztransformation
+> (Felzenszwalb/Huttenlocher), Schwelle bei 1,1°, Kante per Moore-Nachbarschaft ablaufen.
+> Anschliessend Ramer-Douglas-Peucker: 58 713 → 823 Punkte, 16 KB.
+
+Gezeichnet wird der Umriss als **Maske**: ein Rechteck über die halbe Welt, aus dem der
+Alpenraum ausgestanzt ist (in GeoJSON ist der erste Ring die Aussenkante, jeder weitere
 ein Loch). Ein Layer, keine zweite Ebene.
 
-Ausgestanzt werden ausserdem die `bounds` **jeder erfassten Region**. Das Wallis reicht
-bis an den Genfersee, und dort liegt das Réserve Naturelle des Grangettes — eine
-Verbotszone knapp ausserhalb des OSM-Umrisses. Ausgerechnet die strengste Auskunft ohne
-Karte darunter zu zeigen, wäre der schlechteste denkbare Kompromiss.
+Mit ausgestanzt werden die `bounds` **jeder erfassten Region**. Seit der Umriss gewachsen
+ist, liegt das Wallis restlos darin, die Rechtecke stanzen also nichts Sichtbares aus —
+sie bleiben als Zusicherung, dass keine erfasste Fläche je auf schwarzem Grund ohne Karte
+darunter landet. Vor dem Wachsen traf das ausgerechnet das Réserve Naturelle des
+Grangettes, eine Verbotszone.
 
-`maxBounds` umschliesst dasselbe plus 2° Länge und 1,3° Breite Puffer; herausgezoomt wird
-bis `MIN_ZOOM` beziehungsweise bis der Rahmen ins Fenster passt — am Rechner etwa
-Zoom 5,9, also der ganze Alpenbogen auf einem Schirm. Alles davon steht in
-`app/src/map/alpenRahmen.ts`.
+`maxBounds` umschliesst dasselbe plus 2° Länge und 1,3° Breite Puffer; weiter heraus als
+`MIN_ZOOM` (5) geht es nicht. Alles davon steht in `app/src/map/alpenRahmen.ts`.
 
 ### Symbole statt Farbpunkte
 
