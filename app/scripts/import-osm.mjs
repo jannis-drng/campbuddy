@@ -7,6 +7,7 @@
  *  - Zonen:  Schutzgebiete (Rohgeometrie)            ->  src/data/zones/<region>.osm.json
  *  - Natur:  Seen, Quellen, Trinkwasser, Wasserfälle, Aussichtspunkte
  *                                                    ->  src/data/nature/<region>.json
+ *  - Alpen:  Umriss des Alpenbogens (Kartenrahmen)   ->  src/map/alpen.json
  *
  * WICHTIG: Das liefert nur GEOMETRIE + Sachdaten aus OSM.
  * Die RECHTLICHE Bewertung (erlaubt/verboten/geduldet) ist NICHT in OSM enthalten
@@ -327,6 +328,119 @@ async function importNature() {
   console.log(`Natur: ${features.length} Objekte, ${kb} KB -> ${out}`)
 }
 
+/* ---------------- Alpen: Umriss für den Kartenrahmen ---------------- */
+
+/**
+ * Der Alpenbogen als Fläche — nicht als Datenschicht, sondern als Rahmen.
+ *
+ * Die Karte endet an diesem Umriss; ausserhalb liegt Dunkelheit statt einer
+ * Weltkarte, über die diese App nichts zu sagen hat. Deshalb landet die Datei
+ * auch unter `src/map/` und nicht bei den Legalitäts-Daten: sie behauptet
+ * nichts über Recht, sie beschreibt nur, wo das Blatt aufhört.
+ *
+ * OSM-Relation 2698607, `natural=mountain_range`, Wikidata Q1286.
+ */
+const ALPEN_RELATION = 2698607
+
+/**
+ * Wie grob der Umriss sein darf, in Grad.
+ *
+ * Roh sind es 58 000 Punkte — für eine Linie, die bei Zoom 5 bis 9 als
+ * Kartenrand dient, ist das absurd genau und würde das Bundle unnötig
+ * aufblähen. Rund 500 m Toleranz sieht man auf dieser Zoomstufe nicht.
+ */
+const ALPEN_TOLERANZ = 0.005
+
+async function importAlpen() {
+  const data = await overpass(`
+    [out:json][timeout:300];
+    relation(${ALPEN_RELATION});
+    out geom;`)
+
+  const rel = data.elements.find((e) => e.type === 'relation')
+  if (!rel) throw new Error('Alpen-Relation nicht gefunden')
+
+  const segmente = (rel.members ?? [])
+    .filter((m) => m.role === 'outer' && m.geometry)
+    .map((m) => m.geometry.map((p) => [p.lon, p.lat]))
+
+  const rohPunkte = segmente.reduce((s, r) => s + r.length, 0)
+  const ringe = mergeRings(segmente)
+    .filter((r) => r.length > 3)
+    .map(closeRing)
+    .map((r) => vereinfacheRing(r, ALPEN_TOLERANZ))
+    // Winzige Nebenringe tragen nichts zum Rahmen bei und kosten nur Bytes.
+    .filter((r) => r.length >= 6 && ringFlaeche(r) > 0.01)
+    .sort((a, b) => ringFlaeche(b) - ringFlaeche(a))
+
+  if (ringe.length === 0) throw new Error('Kein brauchbarer Ring aus der Relation')
+
+  const gerundet = ringe.map((r) => r.map(([x, y]) => [round(x), round(y)]))
+  const alle = gerundet.flat()
+  const bbox = [
+    Math.min(...alle.map((p) => p[0])), Math.min(...alle.map((p) => p[1])),
+    Math.max(...alle.map((p) => p[0])), Math.max(...alle.map((p) => p[1])),
+  ].map(round)
+
+  const inhalt = {
+    quelle: 'OpenStreetMap',
+    source_url: `https://www.openstreetmap.org/relation/${ALPEN_RELATION}`,
+    lizenz: 'ODbL',
+    bbox,
+    geometry: { type: 'MultiPolygon', coordinates: gerundet.map((r) => [r]) },
+  }
+
+  const out = resolve(ROOT, 'src/map', 'alpen.json')
+  mkdirSync(dirname(out), { recursive: true })
+  writeFileSync(out, JSON.stringify(inhalt) + '\n')
+  const kb = Math.round(JSON.stringify(inhalt).length / 1024)
+  const punkte = gerundet.reduce((s, r) => s + r.length, 0)
+  console.log(`Alpen: ${ringe.length} Ring(e), ${rohPunkte} -> ${punkte} Punkte, ${kb} KB -> ${out}`)
+  console.log(`   Umschliessend: ${bbox.join(', ')}`)
+}
+
+/** Ramer-Douglas-Peucker, iterativ statt rekursiv — 58 000 Punkte sprengen den Stack. */
+function vereinfacheRing(punkte, toleranz) {
+  if (punkte.length < 4) return punkte
+  const behalten = new Uint8Array(punkte.length)
+  behalten[0] = 1
+  behalten[punkte.length - 1] = 1
+
+  const stapel = [[0, punkte.length - 1]]
+  while (stapel.length) {
+    const [start, ende] = stapel.pop()
+    let maxAbstand = 0
+    let index = -1
+    for (let i = start + 1; i < ende; i++) {
+      const d = abstandZurGeraden(punkte[i], punkte[start], punkte[ende])
+      if (d > maxAbstand) { maxAbstand = d; index = i }
+    }
+    if (maxAbstand > toleranz && index > 0) {
+      behalten[index] = 1
+      stapel.push([start, index], [index, ende])
+    }
+  }
+  return punkte.filter((_, i) => behalten[i])
+}
+
+function abstandZurGeraden(p, a, b) {
+  const dx = b[0] - a[0]
+  const dy = b[1] - a[1]
+  const laengeQ = dx * dx + dy * dy
+  if (laengeQ === 0) return Math.hypot(p[0] - a[0], p[1] - a[1])
+  const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / laengeQ))
+  return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy))
+}
+
+/** Flächeninhalt in Quadratgrad — reicht, um Krümel von Hauptringen zu trennen. */
+function ringFlaeche(ring) {
+  let summe = 0
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    summe += (ring[j][0] + ring[i][0]) * (ring[j][1] - ring[i][1])
+  }
+  return Math.abs(summe / 2)
+}
+
 /* ---------------- main ---------------- */
 
 const GRUPPEN = {
@@ -334,6 +448,7 @@ const GRUPPEN = {
   gipfel: importPeaks,
   zonen: importProtectedAreas,
   natur: importNature,
+  alpen: importAlpen,
 }
 
 const gewaehlt = process.argv.slice(2).filter((a) => a in GRUPPEN)

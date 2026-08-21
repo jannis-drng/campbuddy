@@ -247,17 +247,31 @@ Punkt auf der gerouteten Spur liegt (`naechsterIndex` in `data/geo.ts`).
 Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur Infokarte: „Route über
 diese Hütte" ist beim Planen das, was man will.
 
-### Ausschnitt
+### Ausschnitt: die Karte endet an den Alpen
 
-Die Karte lässt sich nicht aus den Alpen herausschieben. `region.bounds` — bisher
-ungenutzt — begrenzt jetzt den Ausschnitt: gepolstert um 2,2° Länge und 1,4° Breite
-(`kartenGrenzen` in `map/mapConfig.ts`) ergibt das für das Wallis die West- und
-Zentralalpen von Chamonix bis ins Tirol. Weiter herausgezoomt wird nicht als bis
-`MIN_ZOOM`, und `renderWorldCopies` ist aus.
+Ausserhalb des Alpenbogens liegt keine Weltkarte, sondern dieselbe dunkle Fläche wie
+unter der Oberfläche. Der Grund ist nicht Deko: über alles jenseits der Alpen hat dieses
+Projekt nichts zu sagen, und eine leere Weltkarte liest sich wie „hier gilt nichts".
 
-Der Grund ist nicht Bequemlichkeit: ausserhalb der erfassten Region weiss diese Karte
-nichts, und eine leere Weltkarte liest sich wie „hier gilt nichts". Eine neue Region
-einzutragen genügt weiterhin — der Bewegungsbereich kommt aus ihren `bounds`.
+Der Umriss ist keine Erfindung — OSM-Relation
+[2698607](https://www.openstreetmap.org/relation/2698607) (`natural=mountain_range`,
+Wikidata Q1286), geholt über `npm run import:osm -- alpen` und von 58 713 auf 864 Punkte
+vereinfacht (Ramer-Douglas-Peucker, 0,005° ≈ 500 m). Ergebnis: 16 KB in
+`app/src/map/alpen.json`.
+
+Gezeichnet wird er als **Maske**: ein Rechteck über die halbe Welt, aus dem der
+Alpenbogen ausgestanzt ist (in GeoJSON ist der erste Ring die Aussenkante, jeder weitere
+ein Loch). Ein Layer, keine zweite Ebene.
+
+Ausgestanzt werden ausserdem die `bounds` **jeder erfassten Region**. Das Wallis reicht
+bis an den Genfersee, und dort liegt das Réserve Naturelle des Grangettes — eine
+Verbotszone knapp ausserhalb des OSM-Umrisses. Ausgerechnet die strengste Auskunft ohne
+Karte darunter zu zeigen, wäre der schlechteste denkbare Kompromiss.
+
+`maxBounds` umschliesst dasselbe plus 2° Länge und 1,3° Breite Puffer; herausgezoomt wird
+bis `MIN_ZOOM` beziehungsweise bis der Rahmen ins Fenster passt — am Rechner etwa
+Zoom 5,9, also der ganze Alpenbogen auf einem Schirm. Alles davon steht in
+`app/src/map/alpenRahmen.ts`.
 
 ### Symbole statt Farbpunkte
 
