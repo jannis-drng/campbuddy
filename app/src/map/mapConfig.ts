@@ -90,6 +90,45 @@ export function basemapsFor(region: string): Basemap[] {
   return Object.values(BASEMAPS).filter((b) => !b.regions || b.regions.includes(region))
 }
 
+/* --------------------------------------------------- Kartenausschnitt */
+
+/**
+ * Wie weit über die Region hinaus man schauen darf, in Grad.
+ *
+ * Eine Legalitätskarte, die sich bis Neuseeland schieben lässt, ist ein
+ * Versprechen, das sie nicht hält: ausserhalb der erfassten Region weiss sie
+ * nichts, und eine leere Weltkarte sieht aus wie „hier gilt nichts". Der
+ * Ausschnitt bleibt deshalb im Gebirge.
+ *
+ * Nicht bis auf die Regionsgrenze zugeschnürt, sondern grosszügig gepolstert:
+ * eine Tour endet gern knapp hinter der Kantons- oder Landesgrenze, und der
+ * Blick auf die Nachbartäler gehört zur Orientierung. Bei rund 46° Breite sind
+ * das etwa 170 km nach Osten und Westen, 155 km nach Norden und Süden — für das
+ * Wallis also die West- und Zentralalpen von Chamonix bis ins Tirol.
+ */
+const SPIELRAUM_LNG = 2.2
+const SPIELRAUM_LAT = 1.4
+
+/** So weit darf herausgezoomt werden — etwa der ganze Alpenbogen. */
+export const MIN_ZOOM = 6
+
+/**
+ * Der Bereich, in dem sich die Karte bewegen darf.
+ *
+ * Bewusst aus `region.bounds` abgeleitet statt als fester Alpen-Kasten
+ * hinterlegt: eine neue Region einzutragen soll weiterhin genügen, ohne dass
+ * jemand daran denken muss, hier eine zweite Zahl nachzuziehen.
+ */
+export function kartenGrenzen(
+  bounds: [number, number, number, number],
+): [[number, number], [number, number]] {
+  const [west, sued, ost, nord] = bounds
+  return [
+    [west - SPIELRAUM_LNG, Math.max(-85, sued - SPIELRAUM_LAT)],
+    [ost + SPIELRAUM_LNG, Math.min(85, nord + SPIELRAUM_LAT)],
+  ]
+}
+
 export const ATTRIBUTION =
   '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende'
 

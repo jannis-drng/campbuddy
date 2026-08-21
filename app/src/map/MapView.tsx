@@ -29,7 +29,9 @@ import type {
 } from '../data/types'
 import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
 import { effectiveStatus } from '../data/legalData'
-import { ATTRIBUTION, BASEMAPS, STATUS_COLORS, TEXT_FONT, type BasemapKey } from './mapConfig'
+import {
+  ATTRIBUTION, BASEMAPS, MIN_ZOOM, kartenGrenzen, STATUS_COLORS, TEXT_FONT, type BasemapKey,
+} from './mapConfig'
 import { symboleAnlegen } from './symbole'
 
 interface Props {
@@ -100,7 +102,15 @@ export function MapView({
       style: BASEMAPS[basemap].style,
       center: region.center,
       zoom: region.zoom,
+      // Der Ausschnitt bleibt im Gebirge (siehe kartenGrenzen): ausserhalb der
+      // erfassten Region hätte die Karte nichts zu sagen, und eine leere
+      // Weltkarte liest sich wie „hier gilt nichts".
+      maxBounds: kartenGrenzen(region.bounds),
+      minZoom: MIN_ZOOM,
       maxZoom: 17,
+      // Ohne das wiederholt sich die Welt seitlich ins Unendliche — bei einem
+      // fest umrissenen Gebiet ist jede Kopie davon eine Attrappe.
+      renderWorldCopies: false,
       attributionControl: false,
     })
     map.current = m

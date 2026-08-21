@@ -247,6 +247,18 @@ Punkt auf der gerouteten Spur liegt (`naechsterIndex` in `data/geo.ts`).
 Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur Infokarte: „Route über
 diese Hütte" ist beim Planen das, was man will.
 
+### Ausschnitt
+
+Die Karte lässt sich nicht aus den Alpen herausschieben. `region.bounds` — bisher
+ungenutzt — begrenzt jetzt den Ausschnitt: gepolstert um 2,2° Länge und 1,4° Breite
+(`kartenGrenzen` in `map/mapConfig.ts`) ergibt das für das Wallis die West- und
+Zentralalpen von Chamonix bis ins Tirol. Weiter herausgezoomt wird nicht als bis
+`MIN_ZOOM`, und `renderWorldCopies` ist aus.
+
+Der Grund ist nicht Bequemlichkeit: ausserhalb der erfassten Region weiss diese Karte
+nichts, und eine leere Weltkarte liest sich wie „hier gilt nichts". Eine neue Region
+einzutragen genügt weiterhin — der Bewegungsbereich kommt aus ihren `bounds`.
+
 ### Symbole statt Farbpunkte
 
 `map/symbole.ts` zeichnet alle Kartensymbole auf ein Canvas und legt sie als Bild in den

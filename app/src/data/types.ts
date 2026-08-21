@@ -131,6 +131,14 @@ export interface Region {
   country: string
   center: [number, number]
   zoom: number
+  /**
+   * Umschliessendes Rechteck [West, Süd, Ost, Nord].
+   *
+   * Begrenzt den Kartenausschnitt: gepolstert um einen festen Spielraum ergibt
+   * es den Bereich, in dem sich die Karte bewegen lässt (siehe
+   * `kartenGrenzen` in map/mapConfig.ts). Wer eine Region einträgt, legt damit
+   * zugleich fest, wohin man scrollen kann.
+   */
   bounds: [number, number, number, number]
   /** Der allgemeine Rechtsrahmen der Region — wird im UI als Kontext gezeigt. */
   legal_framework: {
