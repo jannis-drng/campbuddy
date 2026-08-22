@@ -28,6 +28,7 @@ import type {
   ActivityMode, EigenerPunkt, NatureFeature, Peak, Point, Region, Zone,
 } from '../data/types'
 import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
+import type { Ausschnitt } from '../data/legalData'
 import { effectiveStatus } from '../data/legalData'
 import { ATTRIBUTION, BASEMAPS, STATUS_COLORS, TEXT_FONT, type BasemapKey } from './mapConfig'
 import { alpenGrenzen, MIN_ZOOM } from './alpenRahmen'
@@ -63,6 +64,12 @@ interface Props {
   onEigenClick: (punkt: EigenerPunkt) => void
   /** Klick auf freie Fläche — dort gilt nur der allgemeine Rahmen der Region. */
   onLeerClick: () => void
+  /**
+   * Meldet den sichtbaren Ausschnitt nach jeder Bewegung. Gipfel und
+   * Natur-Objekte werden danach nachgeladen: landesweit wären es Zehntausende,
+   * sichtbar ist immer nur ein Ausschnitt davon.
+   */
+  onAusschnitt: (a: Ausschnitt) => void
   onAddWaypoint: (position: Position) => void
   onInsertWaypoint: (index: number, position: Position) => void
   onMoveWaypoint: (index: number, position: Position) => void
@@ -73,7 +80,7 @@ interface Props {
 export function MapView({
   region, zones, points, peaks, nature, eigene, activity, basemap, visible,
   route, waypoints, drawing, markieren,
-  onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick,
+  onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
@@ -86,12 +93,12 @@ export function MapView({
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
   const latest = useRef({
     zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
-    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick,
+    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   })
   latest.current = {
     zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
-    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick,
+    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   }
 
@@ -150,6 +157,25 @@ export function MapView({
     m.on('load', setupLayers)
     m.on('idle', setupLayers)
     if (m.isStyleLoaded()) setupLayers()
+
+    /**
+     * Sichtbaren Ausschnitt melden — entprellt, weil `moveend` beim
+     * Schwenken mit der Maus in schneller Folge feuert und jede Meldung
+     * eine Abfrage nach sich zieht.
+     */
+    let ausschnittTimer: ReturnType<typeof setTimeout> | undefined
+    const meldeAusschnitt = () => {
+      clearTimeout(ausschnittTimer)
+      ausschnittTimer = setTimeout(() => {
+        const b = m.getBounds()
+        latest.current.onAusschnitt({
+          west: b.getWest(), sued: b.getSouth(), ost: b.getEast(), nord: b.getNorth(),
+        })
+      }, 350)
+    }
+    m.on('moveend', meldeAusschnitt)
+    m.on('load', meldeAusschnitt)
+    meldeAusschnitt()
 
     /* ------------------------------------------------------------------
        Ziehen: entweder ein bestehender Wegpunkt oder ein neuer, der aus
@@ -372,7 +398,10 @@ export function MapView({
       }
     }
 
-    return () => { m.remove(); map.current = null; ready.current = false }
+    return () => {
+      clearTimeout(ausschnittTimer)
+      m.remove(); map.current = null; ready.current = false
+    }
   }, [region])
 
   // Filter-/Datenwechsel: nur die Quellen aktualisieren, die Karte bleibt stehen.

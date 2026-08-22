@@ -35,6 +35,7 @@ Campingplätze in Routennähe liegen. Export als GPX.
 | Zonen | 382 Schutzgebietsflächen — 345 regelbasiert eingestuft, 37 ungeklärt, **0 geprüft** | Geometrie aus OpenStreetMap, Einstufung abgeleitet (siehe unten) |
 | Punkte | 955 (318 Hütten, 438 Campingplätze, 199 Stellplätze) | OpenStreetMap |
 | Gipfel | 7274 benannte Gipfel mit Höhe | OpenStreetMap |
+| Natur | Seen, Quellen, Trinkwasser, Wasserfälle, Aussichtspunkte | OpenStreetMap |
 | Natur | 1830 Objekte: 297 Gewässer, 957 Trinkwasserstellen, 37 Quellen, 106 Wasserfälle, 433 Aussichtspunkte | OpenStreetMap |
 | Eigene Punkte | selbst markierte Orte und Fotos | Nutzer, privat bis ausdrücklich veröffentlicht |
 
@@ -202,8 +203,16 @@ jeden Besucher belasten, auch den, der nur die Startseite ansieht.
 
 | | wo | wie viel |
 |---|---|---|
-| Gebündelt (Sofortanzeige, ohne Netz) | `app/src/data/` | Wallis: 10 Zonen, 148 Punkte |
-| Vollständig | Supabase, Tabellen `zones` / `points` | Schweiz: 382 Zonen, 955 Punkte |
+| Gebündelt (Sofortanzeige, ohne Netz) | `app/src/data/` | Wallis: 10 Zonen, 148 Punkte, 1291 Gipfel |
+| Vollständig | Supabase: `zones`, `points`, `peaks`, `nature` | Schweiz: 382 Zonen, 955 Punkte, 7274 Gipfel, Wasser & Aussicht |
+
+**Zonen und Punkte** kommen regionsweit (382 bzw. 955 Zeilen — überschaubar).
+**Gipfel und Natur-Objekte** kommen dagegen immer nur für den **sichtbaren Ausschnitt**:
+landesweit sind das zusammen Zehntausende Zeilen und mehrere Megabyte, für Ebenen, die
+ohnehin erst ab Zoom 9,5 beziehungsweise 12,5 gezeichnet werden. Wer die Schweiz als
+Ganzes ansieht, braucht keinen einzigen Brunnen. `MapView` meldet den Ausschnitt nach
+jeder Bewegung (entprellt), `fetchRemotePeaks`/`fetchRemoteNature` holen dazu passend
+nach — und nur für Ebenen, die eingeschaltet sind.
 
 Die App zeigt zuerst die gebündelte Fassung und ersetzt sie, sobald die Datenbank
 antwortet; die Infokarte weist aus, welche gerade gilt. Fehlt das Backend oder liefert es
@@ -238,6 +247,11 @@ REGION=CH npm run import:osm --prefix app -- recht     # Einstufung ableiten
 REGION=CH node app/scripts/seed-sql.mjs                # Seed-Migrationen erzeugen
 ```
 
+Der Natur-Import läuft **kachelweise** (3×3 über das Land). Landesweit ist allein
+Trinkwasser fünfstellig, und die öffentliche Overpass-Instanz bricht solche Antworten mit
+einem Verbindungsabbruch ab — neun kleine Abfragen kommen durch, wo eine grosse scheitert,
+und belasten einen Gemeinschaftsserver auch weniger.
+
 Regionen in `BUNDLE_REGIONEN` (derzeit nur `CH-VS`) landen unter `app/src/data/`, alle
 anderen unter `app/import/<REGION>/` — ausserhalb von `src/`, damit nichts versehentlich
 ins Bundle wandert. `seed-sql.mjs` schreibt die SQL-Dateien nach `supabase/migrations/`
@@ -245,7 +259,12 @@ und daneben `app/src/data/bestand.json`: 193 Bytes mit den Kennzahlen, aus denen
 Startseite ihre Zahlen nimmt, statt megabyteweise Daten zu laden, nur um sie zu zählen.
 
 Die Seed-Dateien sind gestückelt (der SQL-Editor mag keine Megabyte-Einfügungen) und
-mehrfach ausführbar — jede Zeile ist ein Upsert.
+mehrfach ausführbar — jede Zeile ist ein Upsert. Geschrieben wird **ein `insert` pro Datei
+mit vielen Wertetupeln**: die Einfüge- und `on conflict`-Klausel ist länger als die
+Nutzdaten einer Zeile, und siebentausend Wiederholungen davon wären ein Mehrfaches der
+eigentlichen Daten — und ein Vielfaches an Dateien, die jemand von Hand kopieren muss.
+
+Reihenfolge: `0010_orientierung.sql` (legt `peaks` und `nature` an) vor den Seeds 0011/0012.
 
 ## Startseite
 

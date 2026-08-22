@@ -30,7 +30,19 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
 const REGION = process.env.REGION ?? 'CH-VS'
-const ENDPOINT = 'https://overpass-api.de/api/interpreter'
+/**
+ * Overpass-Server, in dieser Reihenfolge.
+ *
+ * Der Hauptserver ist ein Gemeinschaftsangebot und unter Last knausrig — bei
+ * landesweiten Abfragen bricht er die Verbindung ab, statt einen Fehler zu
+ * schicken. Die Spiegel sind unabhängig betrieben und bringen dieselben Daten;
+ * fällt einer aus, wird der nächste genommen, statt aufzugeben.
+ */
+const ENDPOINTS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter',
+]
 
 /**
  * Welche Regionen ins Bundle gebacken werden.
@@ -60,22 +72,28 @@ const round = (n) => Math.round(n * 1e5) / 1e5
  * Laufzeitfehler statt mit Daten. Deshalb mehrere Anläufe mit wachsender
  * Pause, bevor der Import aufgibt.
  */
-async function overpass(query, versuche = 4) {
-  for (let versuch = 1; ; versuch++) {
-    try {
-      return await overpassEinmal(query)
-    } catch (e) {
-      const letzterVersuch = versuch >= versuche
-      if (letzterVersuch) throw e
-      const pause = versuch * 20
-      console.log(`   Overpass-Fehler (Versuch ${versuch}/${versuche}), warte ${pause}s …`)
-      await new Promise((r) => setTimeout(r, pause * 1000))
+async function overpass(query, runden = 3) {
+  let letzterFehler
+  for (let runde = 1; runde <= runden; runde++) {
+    for (const endpoint of ENDPOINTS) {
+      try {
+        return await overpassEinmal(query, endpoint)
+      } catch (e) {
+        letzterFehler = e
+        const name = new URL(endpoint).host
+        console.log(`\n   ${name}: ${e.message} — nächster Server …`)
+      }
     }
+    // Alle Server durch: einmal Luft holen, bevor es von vorn losgeht.
+    const pause = runde * 30
+    console.log(`   Alle Server abgelehnt (Runde ${runde}/${runden}), warte ${pause}s …`)
+    await new Promise((r) => setTimeout(r, pause * 1000))
   }
+  throw letzterFehler
 }
 
-async function overpassEinmal(query) {
-  const res = await fetch(ENDPOINT, {
+async function overpassEinmal(query, endpoint) {
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -353,43 +371,100 @@ const NATURE_FALLBACK = {
   viewpoint: 'Aussichtspunkt',
 }
 
+/**
+ * Umschliessende Rechtecke der Regionen, für die kachelweise importiert wird.
+ *
+ * Spiegelt `bounds` aus src/data/regions.ts. Die Dopplung ist unschön, aber das
+ * Skript ist reines Node und liest kein TypeScript; ein grober Kasten, der sich
+ * nur mit einer neuen Region ändert, ist der billigere Preis als ein Übersetzer
+ * nur für diesen Zweck. Fehlt ein Eintrag, läuft der Import in einem Stück.
+ */
+const REGION_BBOX = {
+  CH: [5.96, 45.82, 10.49, 47.81],
+}
+
+/** In wie viele Spalten und Zeilen ein Gebiet zerlegt wird. */
+const KACHELN = 3
+
+/**
+ * Ein Gebiet in Kacheln zerlegen.
+ *
+ * Landesweit ist allein Trinkwasser fünfstellig; die öffentliche
+ * Overpass-Instanz bricht solche Antworten mit einem Verbindungsabbruch ab.
+ * Neun kleine Abfragen kommen durch, wo eine grosse scheitert — und sie
+ * belasten einen Gemeinschaftsserver auch weniger.
+ */
+function kacheln(region) {
+  const box = REGION_BBOX[region]
+  if (!box) return [null]
+  const [west, sued, ost, nord] = box
+  const dx = (ost - west) / KACHELN
+  const dy = (nord - sued) / KACHELN
+  const liste = []
+  for (let i = 0; i < KACHELN; i++) {
+    for (let j = 0; j < KACHELN; j++) {
+      liste.push([sued + j * dy, west + i * dx, sued + (j + 1) * dy, west + (i + 1) * dx])
+    }
+  }
+  return liste
+}
+
 async function importNature() {
-  const features = []
+  const gefunden = new Map()
+  const felder = kacheln(REGION)
 
   for (const [type, ...selektoren] of NATURE_QUERIES) {
-    const q = `
-      [out:json][timeout:180];
-      ${GEBIET}
-      (
-        ${selektoren.map((sel) => `${sel}(area.a);`).join('\n        ')}
-      );
-      out center tags;`
-    const data = await overpass(q)
+    let vorher = gefunden.size
+    for (const [index, kachel] of felder.entries()) {
+      // Der Gebietsfilter bleibt: die Kachel schneidet nur zu, sie ersetzt
+      // nicht die Landesgrenze.
+      const box = kachel ? `(${kachel.join(',')})` : ''
+      const q = `
+        [out:json][timeout:180];
+        ${GEBIET}
+        (
+          ${selektoren.map((sel) => `${sel}(area.a)${box};`).join('\n          ')}
+        );
+        out center tags;`
+      const data = await overpass(q)
 
-    for (const el of data.elements) {
-      const lat = el.lat ?? el.center?.lat
-      const lng = el.lon ?? el.center?.lon
-      if (lat == null || lng == null) continue
-      const t = el.tags ?? {}
-      // Trinkwasser, das ausdrücklich als nicht trinkbar getaggt ist, wäre
-      // eine gefährliche Auskunft — lieber gar nicht zeigen.
-      if (type === 'drinking_water' && t.drinking_water === 'no') continue
-      features.push({
-        id: `osm-${el.type}-${el.id}`,
-        region: REGION,
-        type,
-        name: t.name ?? t['name:de'] ?? NATURE_FALLBACK[type],
-        benannt: Boolean(t.name ?? t['name:de']),
-        lat: round(lat),
-        lng: round(lng),
-        elevation: t.ele ? Math.round(Number(t.ele)) || null : null,
-        source_url: `https://www.openstreetmap.org/${el.type}/${el.id}`,
-      })
+      for (const el of data.elements) {
+        const lat = el.lat ?? el.center?.lat
+        const lng = el.lon ?? el.center?.lon
+        if (lat == null || lng == null) continue
+        const t = el.tags ?? {}
+        // Trinkwasser, das ausdrücklich als nicht trinkbar getaggt ist, wäre
+        // eine gefährliche Auskunft — lieber gar nicht zeigen.
+        if (type === 'drinking_water' && t.drinking_water === 'no') continue
+        const id = `osm-${el.type}-${el.id}`
+        // Kacheln überschneiden sich an den Rändern nicht, Relationen können
+        // aber in zwei Antworten auftauchen.
+        if (gefunden.has(id)) continue
+        gefunden.set(id, {
+          id,
+          region: REGION,
+          type,
+          name: t.name ?? t['name:de'] ?? NATURE_FALLBACK[type],
+          benannt: Boolean(t.name ?? t['name:de']),
+          lat: round(lat),
+          lng: round(lng),
+          elevation: t.ele ? Math.round(Number(t.ele)) || null : null,
+          source_url: `https://www.openstreetmap.org/${el.type}/${el.id}`,
+        })
+      }
+      if (felder.length > 1) {
+        process.stdout.write(`\r   ${type}: Kachel ${index + 1}/${felder.length}, ${gefunden.size - vorher} gefunden   `)
+        // Der Gemeinschaftsserver soll Luft holen können.
+        await new Promise((r) => setTimeout(r, 1500))
+      }
     }
-    console.log(`   ${type}: ${features.filter((f) => f.type === type).length}`)
+    if (felder.length > 1) process.stdout.write('\n')
+    console.log(`   ${type}: ${gefunden.size - vorher}`)
+    vorher = gefunden.size
   }
 
-  features.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name, 'de'))
+  const features = [...gefunden.values()]
+    .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name, 'de'))
 
   const out = resolve(AUSGABE, 'nature', `${REGION}.json`)
   mkdirSync(dirname(out), { recursive: true })

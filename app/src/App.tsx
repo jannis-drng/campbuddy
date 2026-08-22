@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import {
-  fetchRemotePoints, fetchRemoteZones, filterNature, filterPoints, getNature, getPeaks, getPoints,
-  getRegion, getZones, verificationStats,
+  fetchRemoteNature, fetchRemotePeaks, fetchRemotePoints, fetchRemoteZones, filterNature,
+  filterPoints, getNature, getPeaks, getPoints, getRegion, getZones, verificationStats,
+  type Ausschnitt,
 } from './data/legalData'
-import type { EigenerPunkt, MapFilters, Point, Zone } from './data/types'
+import type { EigenerPunkt, MapFilters, NatureFeature, Peak, Point, Zone } from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
@@ -99,11 +100,16 @@ export default function App() {
   // Gebündelte Fassung als Startanzeige …
   const bundledZones = useMemo(() => getZones(regionCode), [regionCode])
   const bundledPoints = useMemo(() => getPoints(regionCode), [regionCode])
-  const allPeaks = useMemo(() => getPeaks(regionCode), [regionCode])
-  const allNature = useMemo(() => getNature(regionCode), [regionCode])
+  const bundledPeaks = useMemo(() => getPeaks(regionCode), [regionCode])
+  const bundledNature = useMemo(() => getNature(regionCode), [regionCode])
   // … die durch die Datenbankfassung ersetzt wird, sobald sie da ist.
   const [remoteZones, setRemoteZones] = useState<Zone[] | null>(null)
   const [remotePoints, setRemotePoints] = useState<Point[] | null>(null)
+  // Gipfel und Natur hängen am Ausschnitt, nicht an der Region: landesweit
+  // wären es Zehntausende, sichtbar ist immer nur ein Bruchteil davon.
+  const [ausschnitt, setAusschnitt] = useState<Ausschnitt | null>(null)
+  const [remotePeaks, setRemotePeaks] = useState<Peak[] | null>(null)
+  const [remoteNature, setRemoteNature] = useState<NatureFeature[] | null>(null)
 
   useEffect(() => {
     let aktuell = true
@@ -125,11 +131,32 @@ export default function App() {
     return () => { aktuell = false }
   }, [regionCode, session?.user.id])
 
+  // Nachladen, sobald sich Ausschnitt oder Region ändern — und nur für Ebenen,
+  // die überhaupt eingeschaltet sind. Wer kein Wasser sehen will, soll auch
+  // keins herunterladen.
+  useEffect(() => {
+    if (!ausschnitt) return
+    let aktuell = true
+    if (filters.showPeaks) {
+      fetchRemotePeaks(regionCode, ausschnitt)
+        .then((p) => { if (aktuell && p) setRemotePeaks(p) })
+        .catch(() => {})
+    }
+    if (filters.showWater || filters.showViewpoints) {
+      fetchRemoteNature(regionCode, ausschnitt)
+        .then((n) => { if (aktuell && n) setRemoteNature(n) })
+        .catch(() => {})
+    }
+    return () => { aktuell = false }
+  }, [regionCode, ausschnitt, filters.showPeaks, filters.showWater, filters.showViewpoints])
+
   const allZones = remoteZones ?? bundledZones
   const allPoints = remotePoints ?? bundledPoints
   const datenquelle = remoteZones ? 'datenbank' : 'gebündelt'
   // Zonen werden nie gefiltert — nur umgefärbt (siehe effectiveStatus).
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters])
+  const allPeaks = remotePeaks ?? bundledPeaks
+  const allNature = remoteNature ?? bundledNature
   const nature = useMemo(() => filterNature(allNature, filters), [allNature, filters])
   const sichtbareEigene = useMemo(
     () => (filters.showEigene ? eigenePunkte : []),
@@ -356,6 +383,7 @@ export default function App() {
             onNatureClick={(feature) => setSelection({ kind: 'natur', feature })}
             onEigenClick={(punkt) => setSelection({ kind: 'eigen', punkt })}
             onLeerClick={() => setSelection({ kind: 'region', region, stats, quelle: datenquelle })}
+            onAusschnitt={setAusschnitt}
             onMarkieren={(position) => {
               setDialogPunkt(null)
               setDialogPosition(position)

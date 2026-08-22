@@ -173,6 +173,67 @@ export function verificationStats(zones: Zone[]) {
 /* ---------------- Daten aus dem Backend ---------------- */
 
 /**
+ * Der sichtbare Kartenausschnitt.
+ *
+ * Gipfel und Natur-Objekte werden nicht regionsweit geladen, sondern immer nur
+ * für das, was gerade auf dem Schirm ist. Landesweit sind das zusammen
+ * Zehntausende Zeilen und mehrere Megabyte — für Ebenen, die ohnehin erst ab
+ * Zoom 9,5 beziehungsweise 12,5 gezeichnet werden. Wer die Schweiz als Ganzes
+ * ansieht, braucht keinen einzigen Brunnen.
+ */
+export interface Ausschnitt {
+  west: number
+  sued: number
+  ost: number
+  nord: number
+}
+
+/**
+ * Obergrenzen pro Abfrage.
+ *
+ * Nicht nur wegen der Datenmenge: PostgREST liefert ohnehin höchstens 1000
+ * Zeilen, und eine stillschweigend abgeschnittene Antwort wäre schlimmer als
+ * eine bewusst begrenzte. Bei den Zoomstufen, auf denen diese Ebenen sichtbar
+ * sind, reicht das mit Abstand.
+ */
+const GRENZE_GIPFEL = 600
+const GRENZE_NATUR = 900
+
+/** Gipfel im Ausschnitt, die höchsten zuerst — bei Gedränge zählt Prominenz. */
+export async function fetchRemotePeaks(
+  region: RegionCode, a: Ausschnitt,
+): Promise<Peak[] | null> {
+  const sb = getSupabase()
+  if (!sb) return null
+  const { data, error } = await sb
+    .from('peaks')
+    .select('id, region, name, lat, lng, elevation, source_url')
+    .eq('region', region)
+    .gte('lng', a.west).lte('lng', a.ost)
+    .gte('lat', a.sued).lte('lat', a.nord)
+    .order('elevation', { ascending: false })
+    .limit(GRENZE_GIPFEL)
+  if (error || !data || data.length === 0) return null
+  return data as Peak[]
+}
+
+export async function fetchRemoteNature(
+  region: RegionCode, a: Ausschnitt,
+): Promise<NatureFeature[] | null> {
+  const sb = getSupabase()
+  if (!sb) return null
+  const { data, error } = await sb
+    .from('nature')
+    .select('id, region, type, name, benannt, lat, lng, elevation, source_url')
+    .eq('region', region)
+    .gte('lng', a.west).lte('lng', a.ost)
+    .gte('lat', a.sued).lte('lat', a.nord)
+    .limit(GRENZE_NATUR)
+  if (error || !data || data.length === 0) return null
+  return data as NatureFeature[]
+}
+
+/**
  * Holt Zonen und Punkte aus Supabase, falls konfiguriert.
  *
  * Warum beides — gebündelt UND aus der Datenbank? Die gebündelten Dateien sind

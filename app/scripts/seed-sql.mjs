@@ -26,15 +26,26 @@ const REGION = process.env.REGION ?? 'CH'
 const QUELLE = resolve(ROOT, 'import', REGION)
 const ZIEL = resolve(REPO, 'supabase/migrations')
 /** Zeilen pro Datei — bei Zonen zählt die Geometrie, deshalb klein gehalten. */
-const STUECK = { zones: 100, points: 400 }
+const STUECK = { zones: 200, points: 2000, peaks: 4000, nature: 4000 }
 
 /** Einfache Anführungszeichen verdoppeln; das ist die einzige nötige Maskierung. */
 const q = (wert) => (wert == null ? 'null' : `'${String(wert).replace(/'/g, "''")}'`)
 
-function schreibe(name, kopf, zeilen, proDatei) {
+/**
+ * Schreibt die Seed-Dateien.
+ *
+ * Ein `insert` pro Datei mit vielen Wertetupeln, nicht eines pro Zeile: die
+ * Einfüge- und `on conflict`-Klausel ist länger als die Nutzdaten einer Zeile,
+ * und siebentausend Wiederholungen davon sind ein Mehrfaches der eigentlichen
+ * Daten. Weniger Bytes heisst hier vor allem: weniger Dateien, die jemand von
+ * Hand in den SQL-Editor kopieren muss.
+ */
+function schreibe(name, kopf, spalten, tupel, aktualisieren, proDatei) {
   mkdirSync(ZIEL, { recursive: true })
   const teile = []
-  for (let i = 0; i < zeilen.length; i += proDatei) teile.push(zeilen.slice(i, i + proDatei))
+  for (let i = 0; i < tupel.length; i += proDatei) teile.push(tupel.slice(i, i + proDatei))
+
+  const setzen = aktualisieren.map((sp) => `${sp} = excluded.${sp}`).join(', ')
 
   teile.forEach((teil, index) => {
     const nummer = teile.length > 1 ? `_${index + 1}von${teile.length}` : ''
@@ -44,7 +55,9 @@ function schreibe(name, kopf, zeilen, proDatei) {
       teile.length > 1 ? `-- Teil ${index + 1} von ${teile.length}.` : '',
       '',
       'begin;',
-      ...teil,
+      `insert into ${spalten.tabelle} (${spalten.liste}) values`,
+      teil.map((t) => `  (${t})`).join(',\n'),
+      `on conflict (id) do update set ${setzen}, updated_at = now();`,
       'commit;',
       '',
     ].join('\n')
@@ -78,13 +91,7 @@ function zonen() {
       e.last_verified ? q(e.last_verified) : 'null',
       `${q(JSON.stringify(f.geometry))}::jsonb`,
     ].join(', ')
-    return `insert into public.zones (${spalten}) values (${werte})\n` +
-      'on conflict (id) do update set region = excluded.region, name = excluded.name, ' +
-      'status = excluded.status, tent_allowed = excluded.tent_allowed, ' +
-      'vehicle_allowed = excluded.vehicle_allowed, fire_allowed = excluded.fire_allowed, ' +
-      'conditions = excluded.conditions, notes = excluded.notes, source = excluded.source, ' +
-      'source_url = excluded.source_url, review_status = excluded.review_status, ' +
-      'last_verified = excluded.last_verified, geometry = excluded.geometry, updated_at = now();'
+    return werte
   })
 
   const abgeleitet = geo.features.filter((f) => legal[f.id]).length
@@ -100,7 +107,11 @@ function zonen() {
     '-- KEINE dieser Einstufungen ist geprüft: alle tragen review_status \'entwurf\'\n' +
     '-- und kein Prüfdatum. Abgeleitet wird nur, wo OSM ein eindeutiges Signal\n' +
     '-- liefert, und der Fehler geht immer in die sichere Richtung (verboten).',
-    zeilen, STUECK.zones,
+    { tabelle: 'public.zones', liste: spalten },
+    zeilen,
+    ['region', 'name', 'status', 'tent_allowed', 'vehicle_allowed', 'fire_allowed',
+      'conditions', 'notes', 'source', 'source_url', 'review_status', 'last_verified', 'geometry'],
+    STUECK.zones,
   )
 }
 
@@ -117,11 +128,7 @@ function punkte() {
       `${q(JSON.stringify(p.info))}::jsonb`,
       q(p.source), q(p.source_url), p.last_verified ? q(p.last_verified) : 'null',
     ].join(', ')
-    return `insert into public.points (${spalten}) values (${werte})\n` +
-      'on conflict (id) do update set region = excluded.region, type = excluded.type, ' +
-      'name = excluded.name, lat = excluded.lat, lng = excluded.lng, ' +
-      'elevation = excluded.elevation, info = excluded.info, source = excluded.source, ' +
-      'source_url = excluded.source_url, updated_at = now();'
+    return werte
   })
 
   const jeArt = punkte.reduce((m, p) => ({ ...m, [p.type]: (m[p.type] ?? 0) + 1 }), {})
@@ -133,7 +140,74 @@ function punkte() {
     `-- ${punkte.length} Punkte aus OpenStreetMap (ODbL): ` +
     Object.entries(jeArt).map(([k, v]) => `${v} ${k}`).join(', ') + '.\n' +
     '-- Kein Prüfdatum: keiner dieser Punkte ist selbst nachgesehen.',
-    zeilen, STUECK.points,
+    { tabelle: 'public.points', liste: spalten },
+    zeilen,
+    ['region', 'type', 'name', 'lat', 'lng', 'elevation', 'info', 'source', 'source_url'],
+    STUECK.points,
+  )
+}
+
+/* --------------------------------------------------------------- Gipfel */
+
+function gipfel() {
+  const liste = JSON.parse(readFileSync(resolve(QUELLE, 'peaks', `${REGION}.json`), 'utf8'))
+  const spalten = 'id, region, name, lat, lng, elevation, source_url'
+
+  const zeilen = liste.map((g) => {
+    const werte = [q(g.id), q(REGION), q(g.name), g.lat, g.lng, g.elevation, q(g.source_url)].join(', ')
+    return werte
+  })
+
+  schreibe(
+    `0011_seed_peaks_${REGION.toLowerCase()}`,
+    `-- CampBuddy — Gipfel für die Region ${REGION}.\n` +
+    '-- Ausführen: Supabase-Projekt -> SQL Editor -> Inhalt einfügen -> Run.\n' +
+    '-- Setzt Migration 0010 voraus.\n' +
+    '--\n' +
+    `-- ${liste.length} benannte Gipfel mit Höhe aus OpenStreetMap (ODbL).\n` +
+    '-- Reine Orientierung, keine Rechtsaussage.',
+    { tabelle: 'public.peaks', liste: spalten },
+    zeilen,
+    ['region', 'name', 'lat', 'lng', 'elevation', 'source_url'],
+    STUECK.peaks,
+  )
+}
+
+/* ---------------------------------------------------------------- Natur */
+
+function natur() {
+  const pfad = resolve(QUELLE, 'nature', `${REGION}.json`)
+  if (!existsSync(pfad)) {
+    console.log(`   (übersprungen: ${pfad} fehlt)`)
+    return
+  }
+  const liste = JSON.parse(readFileSync(pfad, 'utf8'))
+  const spalten = 'id, region, type, name, benannt, lat, lng, elevation, source_url'
+
+  const zeilen = liste.map((n) => {
+    const werte = [
+      q(n.id), q(REGION), q(n.type), q(n.name), n.benannt ? 'true' : 'false',
+      n.lat, n.lng, n.elevation == null ? 'null' : n.elevation, q(n.source_url),
+    ].join(', ')
+    return werte
+  })
+
+  const jeArt = liste.reduce((m, n) => ({ ...m, [n.type]: (m[n.type] ?? 0) + 1 }), {})
+  schreibe(
+    `0012_seed_nature_${REGION.toLowerCase()}`,
+    `-- CampBuddy — Wasser und Aussicht für die Region ${REGION}.\n` +
+    '-- Ausführen: Supabase-Projekt -> SQL Editor -> Inhalt einfügen -> Run.\n' +
+    '-- Setzt Migration 0010 voraus.\n' +
+    '--\n' +
+    `-- ${liste.length} Objekte aus OpenStreetMap (ODbL): ` +
+    Object.entries(jeArt).map(([k, v]) => `${v} ${k}`).join(', ') + '.\n' +
+    '--\n' +
+    '-- Eine Trinkwasser-Markierung in OSM ist die Angabe einer Mapperin, keine\n' +
+    '-- Laboranalyse. Die Infokarte sagt das auch so.',
+    { tabelle: 'public.nature', liste: spalten },
+    zeilen,
+    ['region', 'type', 'name', 'benannt', 'lat', 'lng', 'elevation', 'source_url'],
+    STUECK.nature,
   )
 }
 
@@ -154,10 +228,12 @@ function bestand() {
   const legal = existsSync(legalPfad) ? JSON.parse(readFileSync(legalPfad, 'utf8')).zones ?? {} : {}
   const punkteListe = JSON.parse(readFileSync(resolve(QUELLE, 'points', `${REGION}.json`), 'utf8'))
 
-  const gipfelPfad = resolve(QUELLE, 'peaks', `${REGION}.json`)
-  const gipfel = existsSync(gipfelPfad)
-    ? JSON.parse(readFileSync(gipfelPfad, 'utf8')).length
-    : null
+  const zaehle = (unterordner) => {
+    const pfad = resolve(QUELLE, unterordner, `${REGION}.json`)
+    return existsSync(pfad) ? JSON.parse(readFileSync(pfad, 'utf8')).length : null
+  }
+  const gipfel = zaehle('peaks')
+  const naturZahl = zaehle('nature')
 
   const eintraege = Object.values(legal)
   const inhalt = {
@@ -173,6 +249,7 @@ function bestand() {
     campingplaetze: punkteListe.filter((p) => p.type === 'campsite').length,
     stellplaetze: punkteListe.filter((p) => p.type === 'vehicle_spot').length,
     gipfel,
+    natur: naturZahl,
   }
 
   const datei = resolve(ROOT, 'src/data', 'bestand.json')
@@ -182,7 +259,7 @@ function bestand() {
 
 /* ----------------------------------------------------------------- main */
 
-const GRUPPEN = { zonen, punkte, bestand }
+const GRUPPEN = { zonen, punkte, gipfel, natur, bestand }
 const gewaehlt = process.argv.slice(2).filter((a) => a in GRUPPEN)
 const laufen = gewaehlt.length ? gewaehlt : Object.keys(GRUPPEN)
 
