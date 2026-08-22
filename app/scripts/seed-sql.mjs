@@ -68,10 +68,34 @@ function schreibe(name, kopf, spalten, tupel, aktualisieren, proDatei) {
 
 /* ---------------------------------------------------------------- Zonen */
 
+/**
+ * Zonen aus beiden Quellen: OpenStreetMap und die amtlichen BAFU-Inventare.
+ *
+ * Sie liegen in getrennten Dateien und behalten getrennte Herkunft — eine
+ * OSM-Fläche mit abgeleiteter Einstufung und ein eidgenössisches Jagdbanngebiet
+ * sind nicht dasselbe, auch wenn beide in derselben Tabelle landen. Der
+ * Unterschied steht in `source`, `review_status` und `last_verified`.
+ */
+function zonenQuellen() {
+  const lade = (name) => {
+    const pfad = resolve(QUELLE, 'zones', name)
+    return existsSync(pfad) ? JSON.parse(readFileSync(pfad, 'utf8')) : null
+  }
+  const osm = lade(`${REGION}.osm.json`)
+  const bafu = lade(`${REGION}.bafu.json`)
+  const osmRecht = lade(`${REGION}.legal.json`)?.zones ?? {}
+  const bafuRecht = lade(`${REGION}.bafu.legal.json`)?.zones ?? {}
+  return {
+    features: [...(osm?.features ?? []), ...(bafu?.features ?? [])],
+    legal: { ...osmRecht, ...bafuRecht },
+    ausBafu: bafu?.features?.length ?? 0,
+  }
+}
+
 function zonen() {
-  const geo = JSON.parse(readFileSync(resolve(QUELLE, 'zones', `${REGION}.osm.json`), 'utf8'))
-  const legalPfad = resolve(QUELLE, 'zones', `${REGION}.legal.json`)
-  const legal = existsSync(legalPfad) ? JSON.parse(readFileSync(legalPfad, 'utf8')).zones ?? {} : {}
+  const quellen = zonenQuellen()
+  const geo = { features: quellen.features }
+  const legal = quellen.legal
 
   const spalten = 'id, region, name, status, tent_allowed, vehicle_allowed, fire_allowed, ' +
     'conditions, notes, source, source_url, review_status, last_verified, geometry'
@@ -95,18 +119,22 @@ function zonen() {
   })
 
   const abgeleitet = geo.features.filter((f) => legal[f.id]).length
+  const belegt = Object.values(legal).filter((e) => e.review_status !== 'entwurf').length
   schreibe(
     `0008_seed_zones_${REGION.toLowerCase()}`,
     `-- CampBuddy — Zonen für die Region ${REGION}.\n` +
     '-- Ausführen: Supabase-Projekt -> SQL Editor -> Inhalt einfügen -> Run.\n' +
     '--\n' +
-    `-- ${geo.features.length} Flächen, Geometrie aus OpenStreetMap (ODbL), auf ~40 m vereinfacht.\n` +
-    `-- ${abgeleitet} davon mit regelbasiert abgeleiteter Einstufung, ` +
-    `${geo.features.length - abgeleitet} ausdrücklich 'unknown'.\n` +
+    `-- ${geo.features.length} Flächen, auf ~40 m vereinfacht.\n` +
+    `-- Davon ${quellen.ausBafu} aus den amtlichen BAFU-Inventaren (Jagdbanngebiete,\n` +
+    '-- Wildruhezonen; opendata.swiss, Quellenangabe Pflicht) — diese tragen\n' +
+    `-- review_status 'quelle' mit Prüfdatum: ${belegt} Stück.\n` +
+    `-- Der Rest stammt aus OpenStreetMap (ODbL) mit regelbasiert abgeleiteter\n` +
+    `-- Einstufung, review_status 'entwurf' ohne Prüfdatum.\n` +
     '--\n' +
-    '-- KEINE dieser Einstufungen ist geprüft: alle tragen review_status \'entwurf\'\n' +
-    '-- und kein Prüfdatum. Abgeleitet wird nur, wo OSM ein eindeutiges Signal\n' +
-    '-- liefert, und der Fehler geht immer in die sichere Richtung (verboten).',
+    `-- ${geo.features.length - abgeleitet} Flächen sind ausdrücklich 'unknown'.\n` +
+    '-- „Geprüft" heisst hier: gegen eine benannte amtliche Quelle abgeglichen —\n' +
+    '-- nicht vor Ort nachgesehen.',
     { tabelle: 'public.zones', liste: spalten },
     zeilen,
     ['region', 'name', 'status', 'tent_allowed', 'vehicle_allowed', 'fire_allowed',
@@ -223,9 +251,9 @@ function natur() {
  * eine Zeile Wahrheit statt megabyteweise Daten, nur um sie zu zählen.
  */
 function bestand() {
-  const geo = JSON.parse(readFileSync(resolve(QUELLE, 'zones', `${REGION}.osm.json`), 'utf8'))
-  const legalPfad = resolve(QUELLE, 'zones', `${REGION}.legal.json`)
-  const legal = existsSync(legalPfad) ? JSON.parse(readFileSync(legalPfad, 'utf8')).zones ?? {} : {}
+  const quellen = zonenQuellen()
+  const geo = { features: quellen.features }
+  const legal = quellen.legal
   const punkteListe = JSON.parse(readFileSync(resolve(QUELLE, 'points', `${REGION}.json`), 'utf8'))
 
   const zaehle = (unterordner) => {
@@ -243,7 +271,11 @@ function bestand() {
     zonen_abgeleitet: eintraege.length,
     zonen_ungeklaert: geo.features.length - eintraege.length,
     // Die unbequeme Zahl gehört genauso dazu wie die schmeichelhaften.
-    zonen_geprueft: eintraege.filter((e) => e.review_status !== 'entwurf').length,
+    // „Belegt" heisst: gegen eine benannte amtliche Quelle abgeglichen.
+    // „Vor Ort" wäre die nächste Stufe und steht weiterhin auf null.
+    zonen_belegt: eintraege.filter((e) => e.review_status === 'quelle').length,
+    zonen_geprueft: eintraege.filter((e) => e.review_status === 'vor-ort').length,
+    zonen_amtlich: quellen.ausBafu,
     punkte: punkteListe.length,
     huetten: punkteListe.filter((p) => p.type === 'hut').length,
     campingplaetze: punkteListe.filter((p) => p.type === 'campsite').length,

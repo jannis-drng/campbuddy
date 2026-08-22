@@ -594,6 +594,194 @@ async function importNature() {
   }
 }
 
+/* ---------------- BAFU: die amtlichen Inventare ---------------- */
+
+/**
+ * Wildruhezonen und eidgenössische Jagdbanngebiete vom Bund.
+ *
+ * Das ist der Unterschied zwischen Abschrift und Quelle. In OpenStreetMap
+ * finden sich für die ganze Schweiz vier Wildruhezonen und kein einziges
+ * benanntes Jagdbanngebiet — beim BAFU liegen beide Inventare vollständig,
+ * mit Schutzzeit, Bestimmung, Rechtsgrundlage und Beschlussjahr.
+ *
+ * Diese Zonen sind deshalb die ersten in diesem Projekt, die nicht 'entwurf'
+ * sind: sie tragen `review_status: 'quelle'`, weil hinter jeder eine benannte
+ * amtliche Quelle steht. Geprüft im Sinne von „selbst vor Ort nachgesehen"
+ * sind sie damit immer noch nicht.
+ *
+ * Lizenz: opendata.swiss „Open use. Must provide the source." — freie Nutzung
+ * mit Quellenangabe. Die steht an jeder einzelnen Zone.
+ */
+const BAFU_BASIS = 'https://api3.geo.admin.ch/rest/services/all/MapServer/identify'
+const BAFU_QUELLE = 'https://opendata.swiss/de/terms-of-use'
+/** Die Schnittstelle gibt höchstens 50 Objekte pro Aufruf heraus. */
+const BAFU_SEITE = 50
+
+async function bafuSeiten(layer, kachel) {
+  const [sued, west, nord, ost] = kachel
+  const gefunden = []
+  for (let offset = 0; ; offset += BAFU_SEITE) {
+    const url = `${BAFU_BASIS}?geometry=${west},${sued},${ost},${nord}`
+      + '&geometryType=esriGeometryEnvelope'
+      + `&imageDisplay=100,100,96&mapExtent=${west},${sued},${ost},${nord}&tolerance=0`
+      + `&layers=all:${layer}&returnGeometry=true&sr=4326&geometryFormat=geojson`
+      + `&limit=${BAFU_SEITE}&offset=${offset}`
+    const res = await fetch(url, { headers: { 'User-Agent': 'CampBuddy-Import/0.1' } })
+    if (!res.ok) throw new Error(`geo.admin.ch ${res.status}`)
+    const seite = (await res.json()).results ?? []
+    gefunden.push(...seite)
+    if (seite.length < BAFU_SEITE) return gefunden
+    // Ein Bundesdienst, kein Selbstbedienungsladen.
+    await new Promise((r) => setTimeout(r, 400))
+  }
+}
+
+/**
+ * Geometrie eines BAFU-Objekts auf Ringe herunterbrechen und vereinfachen.
+ *
+ * Auf `type` allein ist kein Verlass: im Bestand stecken vereinzelt Objekte,
+ * deren Verschachtelung nicht zum angegebenen Typ passt. Deshalb wird die
+ * Tiefe gemessen statt geglaubt — und alles, was keine Fläche ist, sauber
+ * ausgelassen statt den Lauf abzubrechen.
+ */
+function bafuGeometrie(geometry) {
+  if (!geometry?.coordinates) return null
+
+  const tiefe = (a) => (Array.isArray(a) ? 1 + tiefe(a[0]) : 0)
+  const t = tiefe(geometry.coordinates)
+  let ringe
+  if (t === 4) ringe = geometry.coordinates.flat()        // MultiPolygon
+  else if (t === 3) ringe = geometry.coordinates          // Polygon
+  else return null                                        // Punkt, Linie, Unfug
+
+  const vereinfacht = ringe
+    .filter((r) => Array.isArray(r) && r.length > 3 && Array.isArray(r[0]))
+    .map((r) => vereinfacheRing(
+      r.filter((pt) => Array.isArray(pt) && pt.length >= 2)
+        .map(([x, y]) => [round(x), round(y)]),
+      ZONEN_TOLERANZ,
+    ))
+    .filter((r) => r.length > 3)
+
+  if (vereinfacht.length === 0) return null
+  return vereinfacht.length === 1
+    ? { type: 'Polygon', coordinates: vereinfacht }
+    : { type: 'MultiPolygon', coordinates: vereinfacht.map((r) => [r]) }
+}
+
+async function importBafu() {
+  const zonen = []
+  const recht = {}
+  const heute = new Date().toISOString().slice(0, 10)
+
+  /* ---- Eidgenössische Jagdbanngebiete ---- */
+  const jagd = []
+  for (const kachel of kacheln(REGION)) {
+    jagd.push(...await bafuSeiten('ch.bafu.bundesinventare-jagdbanngebiete', kachel))
+  }
+  const jagdEindeutig = new Map(jagd.map((f) => [f.featureId ?? f.id, f]))
+  let wildschaden = 0
+
+  for (const f of jagdEindeutig.values()) {
+    const p = f.properties ?? {}
+    // Ein Wildschadenperimeter regelt, wer für Wildschäden aufkommt — er sagt
+    // nichts über Zutritt oder Übernachten. Ihn als Verbotszone zu zeigen wäre
+    // schlicht falsch.
+    if (/wildschaden/i.test(p.typ_de ?? '')) { wildschaden++; continue }
+    const geometry = bafuGeometrie(f.geometry)
+    if (!geometry) continue
+
+    const integral = /integral/i.test(p.typ_de ?? '')
+    const id = `bafu-jagdbann-${p.objektnummer ?? f.featureId}`
+    zonen.push({
+      type: 'Feature',
+      id,
+      properties: {
+        name: `Jagdbanngebiet ${p.gebietsname ?? p.objektnummer}`,
+        source: 'BAFU — Bundesinventar der eidgenössischen Jagdbanngebiete',
+        source_url: p.refobjblatt ?? 'https://www.bafu.admin.ch/jagdbanngebiete',
+      },
+      geometry,
+    })
+    recht[id] = {
+      status: 'forbidden',
+      tent_allowed: 'no',
+      vehicle_allowed: 'no',
+      fire_allowed: 'no',
+      conditions: `Eidgenössisches Jagdbanngebiet (${p.typ_de}), Objekt Nr. ${p.objektnummer}`
+        + `${p.flaeche_ha ? `, ${Math.round(p.flaeche_ha)} ha` : ''}. `
+        + (integral
+          ? 'Integrale Schutzbestimmungen — der Schutz gilt uneingeschränkt.'
+          : 'Partielle Schutzbestimmungen — welche im Einzelnen gelten, steht im Objektblatt.')
+        + ' Diese Gebiete schützen Wild vor Störung (VEJ, SR 922.31); Übernachten im Gelände ist damit unvereinbar.',
+      notes: 'Amtliches Bundesinventar. Nicht selbst vor Ort geprüft; die genauen Bestimmungen stehen im verlinkten Objektblatt.',
+      review_status: 'quelle',
+      last_verified: heute,
+    }
+  }
+  console.log(`   Jagdbanngebiete: ${zonen.length} übernommen, ${wildschaden} Wildschadenperimeter ausgelassen`)
+
+  /* ---- Wildruhezonen ---- */
+  const wrz = []
+  for (const kachel of kacheln(REGION)) {
+    wrz.push(...await bafuSeiten('ch.bafu.wrz-wildruhezonen_portal', kachel))
+  }
+  const wrzEindeutig = new Map(wrz.map((f) => [f.featureId ?? f.id, f]))
+  const vorher = zonen.length
+
+  for (const f of wrzEindeutig.values()) {
+    const p = f.properties ?? {}
+    const geometry = bafuGeometrie(f.geometry)
+    if (!geometry) continue
+
+    const id = `bafu-wrz-${f.featureId ?? f.id}`
+    const verbindlich = /rechtsverbindlich/i.test(p.schutzs_de ?? '')
+    const zutrittsverbot = /zutritt/i.test(p.best_de ?? '')
+    const zeit = (p.schutzzeit ?? '').trim()
+
+    zonen.push({
+      type: 'Feature',
+      id,
+      properties: {
+        name: p.wrz_name ?? 'Wildruhezone',
+        source: 'BAFU / Kantone — Wildruhezonen',
+        source_url: 'https://www.wildruhezonen.ch/',
+      },
+      geometry,
+    })
+    recht[id] = {
+      // Nur rechtsverbindliche Zonen mit Zutrittsverbot sind ein Verbot. Der
+      // Rest ist eine dringende Bitte — und wird auch so benannt, statt zur
+      // Sicherheit alles zu verbieten. Wer ständig zu Unrecht gewarnt wird,
+      // hört irgendwann auf hinzusehen.
+      status: verbindlich && zutrittsverbot ? 'forbidden' : 'tolerated',
+      tent_allowed: verbindlich && zutrittsverbot ? 'no' : 'conditional',
+      vehicle_allowed: 'no',
+      fire_allowed: 'no',
+      conditions: [
+        p.best_de ? `Bestimmung: ${p.best_de}.` : null,
+        p.schutzs_de ? `Status: ${p.schutzs_de}.` : null,
+        zeit && zeit !== '-' ? `Schutzzeit: ${zeit}.` : 'Ganzjährig.',
+        p.grundlage ? `Grundlage: ${p.grundlage}` : null,
+        p.beschlussjahr ? `(${p.beschlussjahr}).` : null,
+      ].filter(Boolean).join(' '),
+      notes: 'Wildruhezonen schützen Wild in der Zeit, in der Störung tödlich sein kann. '
+        + 'Ausserhalb der Schutzzeit gelten die Bestimmungen oft nicht — die Zeit steht oben.',
+      review_status: 'quelle',
+      last_verified: heute,
+    }
+  }
+  console.log(`   Wildruhezonen: ${zonen.length - vorher}`)
+
+  const ausZonen = resolve(AUSGABE, 'zones', `${REGION}.bafu.json`)
+  const ausRecht = resolve(AUSGABE, 'zones', `${REGION}.bafu.legal.json`)
+  mkdirSync(dirname(ausZonen), { recursive: true })
+  writeFileSync(ausZonen, JSON.stringify({ type: 'FeatureCollection', features: zonen }) + '\n')
+  writeFileSync(ausRecht, JSON.stringify({ lizenz: BAFU_QUELLE, zones: recht }, null, 2) + '\n')
+  const kb = Math.round(JSON.stringify(zonen).length / 1024)
+  console.log(`BAFU: ${zonen.length} Zonen, ${kb} KB -> ${ausZonen}`)
+}
+
 /* ---------------- Kantone: wer hier zuständig ist ---------------- */
 
 /**
@@ -864,6 +1052,7 @@ const GRUPPEN = {
   zonen: importProtectedAreas,
   natur: importNature,
   kantone: importKantone,
+  bafu: importBafu,
   recht: importRecht,
   alpen: importAlpen,
 }

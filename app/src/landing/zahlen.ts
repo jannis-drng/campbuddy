@@ -24,7 +24,9 @@ interface Bestand {
   zonen: number
   zonen_abgeleitet: number
   zonen_ungeklaert: number
+  zonen_belegt: number
   zonen_geprueft: number
+  zonen_amtlich: number
   punkte: number
   huetten: number
   campingplaetze: number
@@ -37,9 +39,13 @@ const bestand = bestandRoh as Bestand
 export const STAND = bestand.stand
 
 export const zonenGesamt = bestand.zonen
-/** Alles ohne Prüfdatum — heute ist das jede einzelne Fläche. */
-export const zonenEntwurf = bestand.zonen - bestand.zonen_geprueft
-export const zonenBelegt = bestand.zonen_geprueft
+/** Mit einer benannten amtlichen Quelle belegt (BAFU-Inventare). */
+export const zonenBelegt = bestand.zonen_belegt
+/** Selbst vor Ort nachgesehen — die härteste Stufe, und weiterhin bei null. */
+export const zonenVorOrt = bestand.zonen_geprueft
+/** Ohne jeden Beleg: aus OSM-Merkmalen abgeleitet. */
+export const zonenEntwurf = bestand.zonen - bestand.zonen_belegt - bestand.zonen_geprueft
+export const zonenAmtlich = bestand.zonen_amtlich
 /** Flächen, für die es überhaupt eine Einstufung gibt (der Rest bleibt „ungeklärt"). */
 export const zonenEingestuft = bestand.zonen_abgeleitet
 export const zonenUngeklaert = bestand.zonen_ungeklaert

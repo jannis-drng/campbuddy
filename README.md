@@ -32,7 +32,7 @@ Campingplätze in Routennähe liegen. Export als GPX.
 
 | Ebene | Inhalt (Schweiz) | Quelle |
 |---|---|---|
-| Zonen | 622 Schutzgebietsflächen — 562 regelbasiert eingestuft, 60 ungeklärt, **0 geprüft** | Geometrie aus OpenStreetMap, Einstufung abgeleitet (siehe unten) |
+| Zonen | **1836** Flächen — 1172 mit amtlicher Quelle belegt, 562 abgeleitet, 102 ungeklärt, 0 vor Ort geprüft | BAFU-Bundesinventare + OpenStreetMap |
 | Kantone | 26 Flächen für die Zuständigkeit ausserhalb der Schutzgebiete | OpenStreetMap; Rechtspflege offen |
 | Punkte | 955 (318 Hütten, 438 Campingplätze, 199 Stellplätze) | OpenStreetMap |
 | Gipfel | 7274 benannte Gipfel mit Höhe | OpenStreetMap |
@@ -275,17 +275,43 @@ Einen Kanton eintragen — nur mit Quelle und Prüfdatum:
 } } }
 ```
 
+### Amtliche Inventare vom Bund
+
+Die zweite Datenquelle neben OpenStreetMap — und die einzige mit Rechtsverbindlichkeit.
+Geholt über die Schnittstelle von geo.admin.ch (`npm run import:osm -- bafu`), Lizenz
+[opendata.swiss „Open use. Must provide the source."](https://opendata.swiss/de/terms-of-use);
+die Quellenangabe steht an jeder einzelnen Zone.
+
+| Inventar | Flächen | zum Vergleich in OSM |
+|---|---|---|
+| Eidgenössische Jagdbanngebiete | **85** | 0 |
+| Wildruhezonen | **1129** | 4 |
+
+Diese Zonen sind die ersten im Projekt mit `review_status: 'quelle'` statt `entwurf` —
+hinter jeder steht eine benannte amtliche Quelle mit Prüfdatum. „Vor Ort nachgesehen" sind
+sie damit weiterhin nicht; das bleibt eine eigene, höhere Stufe und steht auf null.
+
+Drei Entscheidungen dabei:
+
+- **Wildschadenperimeter werden ausgelassen** (29 Stück). Sie regeln, wer für Wildschäden
+  aufkommt, und sagen nichts über Zutritt. Als Verbotsfläche wären sie schlicht falsch.
+- **Nicht alles wird „verboten".** Von den 1129 Wildruhezonen tragen 593 ein
+  rechtsverbindliches Zutrittsverbot; die übrigen 536 haben eine schwächere Bestimmung und
+  erscheinen als „geduldet, bedingt". Wer ständig zu Unrecht gewarnt wird, hört auf
+  hinzusehen — und übersieht dann das echte Verbot.
+- **Die Schutzzeit steht dabei.** Wildruhezonen gelten oft nur im Winterhalbjahr
+  („Schutzzeit: 10.01. – 31.07."); die Bedingung nennt sie wörtlich, dazu Bestimmung,
+  Rechtsgrundlage und Beschlussjahr.
+
 ### Was die Karte NICHT zeigt
 
 Ehrlichkeit über die Grenzen gehört hier zur Funktion:
 
-- **Eidgenössische Jagdbanngebiete** (42 nach VEJ Anhang 1) sind in OSM **nicht als solche
-  benannt**. Ein Teil steckt vermutlich in den 102 Flächen mit `protect_class=4`, die als
-  verboten eingestuft werden — sicher ist das nicht. Der verbindliche Datensatz liegt beim
-  BAFU.
-- **Wildruhezonen**: in ganz OSM finden sich für die Schweiz genau **vier**. Tatsächlich
-  gibt es mehrere hundert, geführt von BAFU und Kantonen.
-- **Kantonale und kommunale Regeln**: siehe oben, noch keine einzige recherchiert.
+- **Kantonale und kommunale Regeln**: noch keine einzige recherchiert (siehe oben).
+- **Alles, was nur in OSM steht**, hängt davon ab, ob es jemand gemappt hat — 102 Flächen
+  sind ausdrücklich ungeklärt, und was gar nicht erfasst ist, fehlt ohne Hinweis.
+- **Vor Ort geprüft ist keine einzige Fläche.** Beschilderung und Auskunft der Gemeinde
+  gehen dieser Karte immer vor.
 
 Eine Fläche, die hier fehlt, ist deshalb **kein Freibrief**. Die Karte weist das an jeder
 Fläche und im Haftungshinweis aus.
@@ -294,6 +320,7 @@ Fläche und im Haftungshinweis aus.
 
 ```bash
 REGION=CH npm run import:osm --prefix app -- zonen punkte gipfel natur kantone
+REGION=CH npm run import:osm --prefix app -- bafu       # amtliche Bundesinventare
 REGION=CH npm run import:osm --prefix app -- recht     # Einstufung ableiten
 REGION=CH node app/scripts/seed-sql.mjs                # Seed-Migrationen erzeugen
 ```

@@ -1,13 +1,17 @@
 -- CampBuddy — Zonen für die Region CH.
 -- Ausführen: Supabase-Projekt -> SQL Editor -> Inhalt einfügen -> Run.
 --
--- 622 Flächen, Geometrie aus OpenStreetMap (ODbL), auf ~40 m vereinfacht.
--- 562 davon mit regelbasiert abgeleiteter Einstufung, 60 ausdrücklich 'unknown'.
+-- 1836 Flächen, auf ~40 m vereinfacht.
+-- Davon 1214 aus den amtlichen BAFU-Inventaren (Jagdbanngebiete,
+-- Wildruhezonen; opendata.swiss, Quellenangabe Pflicht) — diese tragen
+-- review_status 'quelle' mit Prüfdatum: 1172 Stück.
+-- Der Rest stammt aus OpenStreetMap (ODbL) mit regelbasiert abgeleiteter
+-- Einstufung, review_status 'entwurf' ohne Prüfdatum.
 --
--- KEINE dieser Einstufungen ist geprüft: alle tragen review_status 'entwurf'
--- und kein Prüfdatum. Abgeleitet wird nur, wo OSM ein eindeutiges Signal
--- liefert, und der Fehler geht immer in die sichere Richtung (verboten).
--- Teil 1 von 4.
+-- 60 Flächen sind ausdrücklich 'unknown'.
+-- „Geprüft" heisst hier: gegen eine benannte amtliche Quelle abgeglichen —
+-- nicht vor Ort nachgesehen.
+-- Teil 1 von 10.
 
 begin;
 insert into public.zones (id, region, name, status, tent_allowed, vehicle_allowed, fire_allowed, conditions, notes, source, source_url, review_status, last_verified, geometry) values

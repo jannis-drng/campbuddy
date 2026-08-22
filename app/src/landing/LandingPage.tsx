@@ -23,8 +23,8 @@ import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
 import { Einblenden } from './Einblenden'
 import { KartenSchema, Zeltmarke } from './Grafiken'
 import {
-  beispielZone, gipfelGesamt, punkteGesamt, punkteJeArt, zonenBelegt, zonenEingestuft,
-  zonenGesamt, zonenUngeklaert,
+  beispielZone, gipfelGesamt, punkteGesamt, punkteJeArt, zonenBelegt,
+  zonenGesamt, zonenUngeklaert, zonenVorOrt,
 } from './zahlen'
 
 import heroBild from '../assets/landing/hero-biwak.webp'
@@ -273,10 +273,10 @@ function Kennzahlen() {
       hinweis: 'Bundesrecht, Kanton und Wildruhezonen, direkt verlinkt',
     },
     {
-      wert: String(zonenBelegt),
-      label: 'amtlich geprüfte Flächen',
-      hinweis: `${zonenEingestuft} regelbasiert eingestuft, ${zonenUngeklaert} ungeklärt, keine geprüft`,
-      ton: 'warnung',
+      wert: zonenBelegt.toLocaleString('de-CH'),
+      label: 'mit amtlicher Quelle',
+      hinweis: `BAFU-Inventare. ${zonenVorOrt} davon selbst vor Ort nachgesehen`,
+      ton: zonenBelegt > 0 ? undefined : 'warnung',
     },
   ]
 
@@ -678,13 +678,13 @@ function Pruefstand() {
           <div className="mt-6 flex gap-2.5 rounded-mittel border border-geduldet-500/20 bg-geduldet-500/[0.07] px-4 py-3.5">
             <FileWarning size={16} strokeWidth={2} className="mt-px shrink-0 text-geduldet-400" aria-hidden />
             <p className="text-klein leading-relaxed text-geduldet-400/90">
-              Ehrlicher Stand heute: von {zonenGesamt} erfassten Flächen sind{' '}
-              <strong className="font-semibold">{zonenEingestuft} regelbasiert eingestuft</strong> und{' '}
-              {zonenUngeklaert} ausdrücklich ungeklärt —{' '}
-              <strong className="font-semibold">keine einzige ist amtlich geprüft</strong>.
-              Abgeleitet wird nur, wo OpenStreetMap ein eindeutiges Signal liefert, und der
-              Fehler geht immer in die sichere Richtung. Die Karte weist das an jeder Fläche
-              aus, statt es zu verstecken.
+              Ehrlicher Stand heute: von {zonenGesamt.toLocaleString('de-CH')} erfassten Flächen sind{' '}
+              <strong className="font-semibold">{zonenBelegt.toLocaleString('de-CH')} mit einer
+              amtlichen Quelle belegt</strong> — den Bundesinventaren für Jagdbanngebiete und
+              Wildruhezonen. Der Rest ist aus OpenStreetMap-Merkmalen abgeleitet, und{' '}
+              {zonenUngeklaert} sind ausdrücklich ungeklärt.{' '}
+              <strong className="font-semibold">Selbst vor Ort nachgesehen: {zonenVorOrt}.</strong>{' '}
+              Die Karte weist das an jeder Fläche aus, statt es zu verstecken.
             </p>
           </div>
         </Einblenden>
