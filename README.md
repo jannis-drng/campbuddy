@@ -36,7 +36,7 @@ Campingplätze in Routennähe liegen. Export als GPX.
 | Kantone | 26 Flächen für die Zuständigkeit ausserhalb der Schutzgebiete | OpenStreetMap; Rechtspflege offen |
 | Punkte | 955 (318 Hütten, 438 Campingplätze, 199 Stellplätze) | OpenStreetMap |
 | Gipfel | 7274 benannte Gipfel mit Höhe | OpenStreetMap |
-| Natur | Seen, Quellen, Trinkwasser, Wasserfälle, Aussichtspunkte | OpenStreetMap |
+| Natur | 23 753: 15 009 Trinkwasser, 4351 Aussichtspunkte, 2339 Seen, 1489 Wasserfälle, 565 Quellen | OpenStreetMap |
 | Natur | 1830 Objekte: 297 Gewässer, 957 Trinkwasserstellen, 37 Quellen, 106 Wasserfälle, 433 Aussichtspunkte | OpenStreetMap |
 | Eigene Punkte | selbst markierte Orte und Fotos | Nutzer, privat bis ausdrücklich veröffentlicht |
 
@@ -205,7 +205,7 @@ jeden Besucher belasten, auch den, der nur die Startseite ansieht.
 | | wo | wie viel |
 |---|---|---|
 | Gebündelt (Sofortanzeige, ohne Netz) | `app/src/data/` | Wallis: 10 Zonen, 148 Punkte, 1291 Gipfel |
-| Vollständig | Supabase: `zones`, `points`, `peaks`, `nature` | Schweiz: 382 Zonen, 955 Punkte, 7274 Gipfel, Wasser & Aussicht |
+| Vollständig | Supabase: `zones`, `points`, `peaks`, `nature` | Schweiz: 622 Zonen, 955 Punkte, 7274 Gipfel, 23 753 Natur-Objekte |
 
 **Zonen und Punkte** kommen regionsweit (382 bzw. 955 Zeilen — überschaubar).
 **Gipfel und Natur-Objekte** kommen dagegen immer nur für den **sichtbaren Ausschnitt**:
