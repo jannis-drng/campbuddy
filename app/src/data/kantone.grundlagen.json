@@ -1,0 +1,376 @@
+{
+  "hinweis": "Rechtsgrundlagen, auf denen die Wildruhezonen im jeweiligen Kanton beruhen. Abgeleitet aus dem BAFU-Datensatz — KEINE Aussage darüber, ob und wo im Kanton gezeltet werden darf. Das ist der Ausgangspunkt der Recherche, nicht ihr Ergebnis.",
+  "quelle": "BAFU / Kantone — Wildruhezonen (opendata.swiss)",
+  "stand": "2026-08-22",
+  "kantone": {
+    "CH-AR": {
+      "name": "Appenzell Ausserrhoden",
+      "grundlagen": [
+        {
+          "text": "Schutzverordnung",
+          "zonen": 12
+        }
+      ]
+    },
+    "CH-BE": {
+      "name": "Bern",
+      "grundlagen": [
+        {
+          "text": "Kommunaler Schutzbeschluss, Baureglement der Gemeinde",
+          "zonen": 67
+        },
+        {
+          "text": "BSG 922.63 - Verordnung über den Wildtierschutz (WTSchV)",
+          "zonen": 49
+        },
+        {
+          "text": "Kommunales Baureglement",
+          "zonen": 13
+        },
+        {
+          "text": "Regierungsratsbeschluss (RRB)",
+          "zonen": 6
+        },
+        {
+          "text": "Kommunaler Landschaftsrichtplan",
+          "zonen": 5
+        },
+        {
+          "text": "Kommunaler Schutzbeschluss, Zonenplan Landschaft Vorschriften",
+          "zonen": 4
+        },
+        {
+          "text": "UEO Schneesportgebiet St. Stephan-Zweisimmen",
+          "zonen": 2
+        },
+        {
+          "text": "Überbauungsordnung Nr. 3 Axalp",
+          "zonen": 2
+        },
+        {
+          "text": "Abmachung Tourismus, Gemeinde Grindelwald, Ji und WH",
+          "zonen": 1
+        },
+        {
+          "text": "Empfehlung Jagdinspektorat Kanton Bern",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-BL": {
+      "name": "Basel-Landschaft",
+      "grundlagen": [
+        {
+          "text": "Waldentwicklungsplan Homburger-Eital",
+          "zonen": 27
+        },
+        {
+          "text": "Waldentwicklungsplan Schauenburg-Hard-Birseck",
+          "zonen": 21
+        },
+        {
+          "text": "Waldentwicklungsplan Eggflue",
+          "zonen": 20
+        },
+        {
+          "text": "Waldentwicklungsplan Sissach-Farnsberg",
+          "zonen": 19
+        },
+        {
+          "text": "Waldentwicklungsplan Diegtertal",
+          "zonen": 17
+        },
+        {
+          "text": "Waldentwicklungsplan Leimental",
+          "zonen": 14
+        },
+        {
+          "text": "Waldentwicklungsplan Oberes Laufental",
+          "zonen": 12
+        },
+        {
+          "text": "Waldentwicklungsplan Waldenburgertal",
+          "zonen": 12
+        },
+        {
+          "text": "Waldentwicklungsplan Liestal u. Umgebung",
+          "zonen": 11
+        }
+      ]
+    },
+    "CH-FR": {
+      "name": "Freiburg",
+      "grundlagen": [
+        {
+          "text": "RSF 922.31 - Ordonnance du 11 novembre 2013 concernant la zone de tranquillité de la Berra",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-GL": {
+      "name": "Glarus",
+      "grundlagen": [
+        {
+          "text": "Kantonale Verordnung über die Wildruhezonen",
+          "zonen": 32
+        }
+      ]
+    },
+    "CH-GR": {
+      "name": "Graubünden",
+      "grundlagen": [
+        {
+          "text": "Gemeindebeschluss",
+          "zonen": 164
+        },
+        {
+          "text": "Nutzungsplanung",
+          "zonen": 43
+        },
+        {
+          "text": "Regierungs- und Gemeindebeschluss",
+          "zonen": 15
+        },
+        {
+          "text": "Gemeinde- und Regierungsbeschluss",
+          "zonen": 11
+        },
+        {
+          "text": "Gemeindebeschluss (Volksentscheid)",
+          "zonen": 9
+        },
+        {
+          "text": "Regierungsbeschluss",
+          "zonen": 6
+        },
+        {
+          "text": "Biotophegeprojekt, Bundesfeierspende",
+          "zonen": 3
+        },
+        {
+          "text": "Gemeindeversammlung",
+          "zonen": 3
+        },
+        {
+          "text": "Bergführer und Wildhüter",
+          "zonen": 3
+        },
+        {
+          "text": "Regierungsbeschluss und Gemeindebeschluss",
+          "zonen": 2
+        },
+        {
+          "text": "Regierungsbeschluss, Gemeindebeschluss",
+          "zonen": 2
+        },
+        {
+          "text": "Gemeindebschluss",
+          "zonen": 2
+        },
+        {
+          "text": "Gemeindebeschluss, Regierungsbeschluss",
+          "zonen": 2
+        },
+        {
+          "text": "Gemeindevorstand, Wildhut, Forst, Bergführer, Tourismus",
+          "zonen": 2
+        },
+        {
+          "text": "Abmachung Verkehrsverein, Forstkreis und Wildhut",
+          "zonen": 1
+        },
+        {
+          "text": "Gemeinde",
+          "zonen": 1
+        },
+        {
+          "text": "Gemeindebeschlüsse",
+          "zonen": 1
+        },
+        {
+          "text": "Regierungsbeschluss, Gemeindebschluss",
+          "zonen": 1
+        },
+        {
+          "text": "Gemeindebeschluss und Regierungsbeschluss",
+          "zonen": 1
+        },
+        {
+          "text": "Gemeindevorstand",
+          "zonen": 1
+        },
+        {
+          "text": "Geimeindebeschluss",
+          "zonen": 1
+        },
+        {
+          "text": "Gemeinderversammlung, Gemeinderat",
+          "zonen": 1
+        },
+        {
+          "text": "Landeskarte der Schweiz mit Skirouten 259 S",
+          "zonen": 1
+        },
+        {
+          "text": "Verordnung über den Schutz des Schweizerischen Nationalparks (Nationalparkordnung)",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-LU": {
+      "name": "Luzern",
+      "grundlagen": [
+        {
+          "text": "Waldentwicklungsplan Kanton Luzern",
+          "zonen": 30
+        },
+        {
+          "text": "Bau- und Zonenreglement Flühli",
+          "zonen": 17
+        },
+        {
+          "text": "Bau- und Zonenreglement Marbach",
+          "zonen": 11
+        },
+        {
+          "text": "Bau- und Zonenreglement Hasle",
+          "zonen": 6
+        },
+        {
+          "text": "Bau- und Zonenbestimmungen Weggis",
+          "zonen": 2
+        }
+      ]
+    },
+    "CH-NW": {
+      "name": "Nidwalden",
+      "grundlagen": [
+        {
+          "text": "Verordnung über die Wildruhegebiete NG 841.15",
+          "zonen": 17
+        }
+      ]
+    },
+    "CH-OW": {
+      "name": "Obwalden",
+      "grundlagen": [
+        {
+          "text": "RRB Nr. 283, 21.01.2014, KRB 20.03.2014",
+          "zonen": 34
+        },
+        {
+          "text": "Verordnung über die Wildruhegebiete NG 841.15",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-SG": {
+      "name": "St. Gallen",
+      "grundlagen": [
+        {
+          "text": "Schutzverordnung",
+          "zonen": 69
+        }
+      ]
+    },
+    "CH-SO": {
+      "name": "Solothurn",
+      "grundlagen": [
+        {
+          "text": "RRB 2021/1041",
+          "zonen": 1
+        },
+        {
+          "text": "Waldentwicklungsplan Homburger-Eital",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-SZ": {
+      "name": "Schwyz",
+      "grundlagen": [
+        {
+          "text": "Empfehlung Amt für Natur, Jagd und Fischerei Kt. SZ",
+          "zonen": 10
+        },
+        {
+          "text": "Schutzverordnung Gemeinde Unteriberg vom 04.03.1997",
+          "zonen": 1
+        },
+        {
+          "text": "Schutzverordnung vom 18.12.2008",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-TI": {
+      "name": "Tessin",
+      "grundlagen": [
+        {
+          "text": "Decreto delle zone di tranquillità per la fauna selvatica",
+          "zonen": 37
+        }
+      ]
+    },
+    "CH-UR": {
+      "name": "Uri",
+      "grundlagen": [
+        {
+          "text": "Regierungsratsbeschluss",
+          "zonen": 27
+        },
+        {
+          "text": "Gemeindebeschluss",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-VD": {
+      "name": "Waadt",
+      "grundlagen": [
+        {
+          "text": "Directives sur les zones de tranquillité de la faune (DirZTF)",
+          "zonen": 40
+        }
+      ]
+    },
+    "CH-VS": {
+      "name": "Wallis",
+      "grundlagen": [
+        {
+          "text": "Conservation de la faune.Erhaltung wildlebender Tierarten.  Art. 37 LCChP/KJSG",
+          "zonen": 120
+        },
+        {
+          "text": "Conservation de la faune/Erhaltung wildlebender Tierarten. Art. 37 LCChP/KJSG",
+          "zonen": 18
+        },
+        {
+          "text": "Art. 37 LCChP/Art. 37 KJSG",
+          "zonen": 10
+        },
+        {
+          "text": "Verfügung DWFL 16.11.2015",
+          "zonen": 6
+        },
+        {
+          "text": "Art. 4 bis OChP et Art. 37 LCChP/ Art. 4 bis JSV und Art. 37 KJSG",
+          "zonen": 3
+        },
+        {
+          "text": "Kompensationsmassnahme ZBAG",
+          "zonen": 1
+        }
+      ]
+    },
+    "CH-ZG": {
+      "name": "Zug",
+      "grundlagen": [
+        {
+          "text": "Empfehlung Amt für Wald und Wild ZG",
+          "zonen": 16
+        }
+      ]
+    }
+  }
+}

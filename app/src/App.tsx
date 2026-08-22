@@ -24,7 +24,7 @@ import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/rout
 import { AccountPanel } from './components/AccountPanel'
 import { PunktDialog } from './components/PunktDialog'
 import { ladeEigenePunkte, punktLoeschen } from './services/eigenePunkte'
-import { kantonAn, kantonRecht } from './data/kantone'
+import { kantonAn, kantonGrundlagen, kantonRecht } from './data/kantone'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
@@ -389,7 +389,9 @@ export default function App() {
               const kanton = kantonAn(position)
               setSelection({
                 kind: 'region', region, stats, quelle: datenquelle,
-                kanton, kantonRecht: kantonRecht(kanton),
+                kanton,
+                kantonRecht: kantonRecht(kanton),
+                kantonGrundlagen: kantonGrundlagen(kanton),
               })
             }}
             onAusschnitt={setAusschnitt}

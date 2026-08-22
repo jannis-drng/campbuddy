@@ -866,6 +866,107 @@ async function importKantone() {
   }
 }
 
+/* ---------------- Kantonale Rechtsgrundlagen ---------------- */
+
+/**
+ * Welche kantonalen und kommunalen Erlasse in welchem Kanton auftauchen.
+ *
+ * Kantonale Campingregeln gibt es nirgends maschinenlesbar — das Bundesgeoportal
+ * führt dazu keine einzige Ebene. Was es gibt, steckt in den BAFU-Daten selbst:
+ * jede Wildruhezone nennt die Rechtsgrundlage, auf der sie beruht. Das sind
+ * echte kantonale Verordnungen, Regierungsratsbeschlüsse, Waldentwicklungspläne
+ * und Gemeindebeschlüsse — 68 verschiedene über die Schweiz.
+ *
+ * Daraus wird hier pro Kanton eine Liste. Das ist ausdrücklich **nicht** die
+ * Antwort auf „darf ich hier zelten": es ist der Hinweis, welches kantonale
+ * Recht den Wildschutz regelt — und damit der Faden, an dem die Recherche
+ * anfängt. Die Oberfläche benennt das genau so.
+ */
+async function importKantonsrecht() {
+  const kantonePfad = resolve(ROOT, 'src/data/kantone', `${REGION}.json`)
+  const bafuPfad = resolve(AUSGABE, 'zones', `${REGION}.bafu.json`)
+  const rechtPfad = resolve(AUSGABE, 'zones', `${REGION}.bafu.legal.json`)
+  for (const pfad of [kantonePfad, bafuPfad, rechtPfad]) {
+    if (!existsSync(pfad)) throw new Error(`${pfad} fehlt — erst 'kantone' und 'bafu' importieren.`)
+  }
+
+  const kantone = JSON.parse(readFileSync(kantonePfad, 'utf8')).features
+  const zonen = JSON.parse(readFileSync(bafuPfad, 'utf8')).features
+  const recht = JSON.parse(readFileSync(rechtPfad, 'utf8')).zones
+
+  /** Schwerpunkt des ersten Rings — für die Zuordnung genau genug. */
+  const mitte = (g) => {
+    const ring = g.type === 'Polygon' ? g.coordinates[0] : g.coordinates[0][0]
+    return [
+      ring.reduce((s, p) => s + p[0], 0) / ring.length,
+      ring.reduce((s, p) => s + p[1], 0) / ring.length,
+    ]
+  }
+
+  const drin = (p, g) => {
+    const polygone = g.type === 'Polygon' ? [g.coordinates] : g.coordinates
+    return polygone.some((poly) => {
+      const ring = poly[0]
+      let c = false
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const [xi, yi] = ring[i]
+        const [xj, yj] = ring[j]
+        if ((yi > p[1]) !== (yj > p[1]) && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) c = !c
+      }
+      return c
+    })
+  }
+
+  const jeKanton = {}
+  let ohneKanton = 0
+
+  for (const z of zonen) {
+    if (!z.id.startsWith('bafu-wrz')) continue
+    const e = recht[z.id]
+    const treffer = (e?.conditions ?? '').match(/Grundlage: (.+?)(?: \(\d{4}\)\.| \(\)\.|$)/)
+    if (!treffer) continue
+    const grundlage = treffer[1].trim()
+    if (!grundlage || grundlage === '-') continue
+
+    const punkt = mitte(z.geometry)
+    const kanton = kantone.find((k) => drin(punkt, k.geometry))
+    if (!kanton?.properties.code) { ohneKanton++; continue }
+
+    const code = kanton.properties.code
+    jeKanton[code] ??= { name: kanton.properties.name, grundlagen: {} }
+    jeKanton[code].grundlagen[grundlage] = (jeKanton[code].grundlagen[grundlage] ?? 0) + 1
+  }
+
+  // Jede Liste absteigend nach Häufigkeit, damit oben steht, was den Kanton prägt.
+  const inhalt = {
+    hinweis: 'Rechtsgrundlagen, auf denen die Wildruhezonen im jeweiligen Kanton beruhen. '
+      + 'Abgeleitet aus dem BAFU-Datensatz — KEINE Aussage darüber, ob und wo im Kanton '
+      + 'gezeltet werden darf. Das ist der Ausgangspunkt der Recherche, nicht ihr Ergebnis.',
+    quelle: 'BAFU / Kantone — Wildruhezonen (opendata.swiss)',
+    stand: new Date().toISOString().slice(0, 10),
+    kantone: Object.fromEntries(
+      Object.entries(jeKanton)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([code, k]) => [code, {
+          name: k.name,
+          grundlagen: Object.entries(k.grundlagen)
+            .sort((a, b) => b[1] - a[1])
+            .map(([text, anzahl]) => ({ text, zonen: anzahl })),
+        }]),
+    ),
+  }
+
+  const out = resolve(ROOT, 'src/data', 'kantone.grundlagen.json')
+  writeFileSync(out, JSON.stringify(inhalt, null, 2) + '\n')
+  const kb = Math.round(JSON.stringify(inhalt).length / 1024)
+  console.log(`Kantonale Grundlagen: ${Object.keys(jeKanton).length} Kantone, ${kb} KB -> ${out}`)
+  if (ohneKanton > 0) console.log(`   ${ohneKanton} Zonen keinem Kanton zugeordnet`)
+  const ohne = kantone.filter((k) => k.properties.code && !jeKanton[k.properties.code])
+  if (ohne.length > 0) {
+    console.log(`   ohne Fundstelle: ${ohne.map((k) => k.properties.code).join(', ')}`)
+  }
+}
+
 /* ---------------- Rechtslage: konservativ ableiten ---------------- */
 
 /**
@@ -1053,6 +1154,7 @@ const GRUPPEN = {
   natur: importNature,
   kantone: importKantone,
   bafu: importBafu,
+  kantonsrecht: importKantonsrecht,
   recht: importRecht,
   alpen: importAlpen,
 }

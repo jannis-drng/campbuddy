@@ -259,9 +259,22 @@ vereinfacht, ~150 m — die Grenze dient der Zuordnung, nicht der Vermessung). E
 sagt: „Zuständig ist hier Graubünden (CH-GR), dazu die Gemeinde."
 
 Was dort *gilt*, steht in `app/src/data/kantone.legal.json` — und die ist **leer**. Das ist
-kein Versehen, sondern der wahrheitsgemässe Zustand: kantonale Regelungen gibt es nirgends
-maschinenlesbar, sie sind Rechtsrecherche. Fehlt ein Eintrag, sagt die Karte „noch nicht
-recherchiert", statt eine landesweite Faustregel als kantonale Auskunft auszugeben.
+kein Versehen, sondern der wahrheitsgemässe Zustand: kantonale Campingregeln gibt es
+nirgends maschinenlesbar. Das Bundesgeoportal führt dazu **keine einzige Ebene** (geprüft
+über die Layer-Konfiguration von geo.admin.ch). Fehlt ein Eintrag, sagt die Karte „noch
+nicht recherchiert", statt eine landesweite Faustregel als kantonale Auskunft auszugeben.
+
+#### Was es stattdessen gibt: die Erlasse
+
+Ein Faden, an dem die Recherche anfängt, steckt in den BAFU-Daten selbst: **jede
+Wildruhezone nennt ihre Rechtsgrundlage**. Über die Schweiz sind das 68 verschiedene —
+kantonale Verordnungen, Regierungsratsbeschlüsse, Waldentwicklungspläne,
+Gemeindebeschlüsse. `npm run import:osm -- kantonsrecht` ordnet sie per Punkt-in-Polygon
+den Kantonen zu und schreibt `app/src/data/kantone.grundlagen.json` (17 der 26 Kantone;
+die übrigen neun haben keine Wildruhezonen).
+
+Die Infokarte zeigt sie unter „Erlasse in …" — mit dem Satz, auf den es ankommt: *sie
+sagen, welches Recht hier den Wildschutz regelt, nicht ob und wo gezeltet werden darf.*
 
 Einen Kanton eintragen — nur mit Quelle und Prüfdatum:
 

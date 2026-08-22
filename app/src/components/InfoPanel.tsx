@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import {
   Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Lock,
-  MapPin, Mountain, Phone, Pencil, Scale, Star, Tent, Trash2, Truck, Users, Waves, X,
+  MapPin, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users, Waves, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type {
@@ -34,6 +34,8 @@ export type Selection =
       kanton: Kanton | null
       /** Dessen recherchierte Regelung — null heisst „noch nicht recherchiert". */
       kantonRecht: KantonRecht | null
+      /** Belegte Erlasse des Kantons, aus den BAFU-Daten abgeleitet. */
+      kantonGrundlagen: { grundlagen: { text: string; zonen: number }[]; quelle: string; stand: string } | null
     }
   | { kind: 'zone'; zone: Zone }
   | { kind: 'point'; point: Point }
@@ -136,6 +138,7 @@ export function InfoPanel({
             quelle={selection.quelle}
             kanton={selection.kanton}
             recht={selection.kantonRecht}
+            grundlagen={selection.kantonGrundlagen}
           />
         )}
         {selection.kind === 'zone' && <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />}
@@ -164,13 +167,14 @@ export function InfoPanel({
  * der allgemeine Rahmen die einzige Auskunft ist, die es gibt.
  */
 function RegionBody({
-  region, stats, quelle, kanton, recht,
+  region, stats, quelle, kanton, recht, grundlagen,
 }: {
   region: Region
   stats: { total: number; entwurf: number }
   quelle: 'gebündelt' | 'datenbank'
   kanton: Kanton | null
   recht: KantonRecht | null
+  grundlagen: { grundlagen: { text: string; zonen: number }[]; quelle: string; stand: string } | null
 }) {
   const [quellenOffen, setQuellenOffen] = useState(false)
 
@@ -222,6 +226,33 @@ function RegionBody({
               {recht.source} <ExternalLink size={11} strokeWidth={2.5} aria-hidden />
             </a>
           )}
+        </section>
+      )}
+
+      {/*
+        Kein Ersatz für die kantonale Auskunft, aber der Faden, an dem sie
+        anfängt: welches Recht in diesem Kanton den Wildschutz regelt, steht in
+        den amtlichen Daten selbst — jede Wildruhezone nennt ihre Grundlage.
+      */}
+      {kanton && grundlagen && (
+        <section>
+          <Label className="mb-1.5">Erlasse in {kanton.name}</Label>
+          <ul className="space-y-1.5">
+            {grundlagen.grundlagen.slice(0, 6).map((g) => (
+              <li key={g.text} className="flex items-start gap-2 text-klein leading-snug text-ink-300">
+                <ScrollText size={13} strokeWidth={2} className="mt-0.5 shrink-0 text-ink-500" aria-hidden />
+                <span className="min-w-0">
+                  {g.text}
+                  <span className="text-ink-500"> · {g.zonen} {g.zonen === 1 ? 'Zone' : 'Zonen'}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
+            Rechtsgrundlagen der Wildruhezonen in diesem Kanton, aus {grundlagen.quelle}
+            {' '}(Stand {grundlagen.stand}). Sie sagen, welches Recht hier den Wildschutz
+            regelt — nicht, ob und wo gezeltet werden darf.
+          </p>
         </section>
       )}
 

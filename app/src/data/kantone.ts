@@ -17,6 +17,7 @@ import type { Position } from './geo'
 import { pointInGeometry } from './geo'
 import kantoneCH from './kantone/CH.json'
 import rechtRoh from './kantone.legal.json'
+import grundlagenRoh from './kantone.grundlagen.json'
 
 interface KantonDatei {
   features: {
@@ -37,6 +38,29 @@ export const KANTONE: Kanton[] = datei.features.map((f) => ({
 }))
 
 const RECHT = (rechtRoh as unknown as { kantone: Record<string, KantonRecht> }).kantone
+
+interface Grundlagen {
+  quelle: string
+  stand: string
+  kantone: Record<string, { name: string; grundlagen: { text: string; zonen: number }[] }>
+}
+
+const GRUNDLAGEN = grundlagenRoh as unknown as Grundlagen
+
+/**
+ * Die Erlasse, auf denen die Wildruhezonen des Kantons beruhen.
+ *
+ * Das ist ausdrücklich **nicht** die Antwort auf „darf ich hier zelten" — es
+ * ist der Hinweis, welches kantonale Recht den Wildschutz regelt, und damit
+ * der Faden, an dem eine Recherche anfängt. Abgeleitet aus dem BAFU-Datensatz,
+ * nicht behauptet.
+ */
+export function kantonGrundlagen(kanton: Kanton | null) {
+  if (!kanton?.code) return null
+  const eintrag = GRUNDLAGEN.kantone[kanton.code]
+  if (!eintrag || eintrag.grundlagen.length === 0) return null
+  return { ...eintrag, quelle: GRUNDLAGEN.quelle, stand: GRUNDLAGEN.stand }
+}
 
 /** Welcher Kanton liegt unter diesem Punkt? null ausserhalb der Schweiz. */
 export function kantonAn(position: Position): Kanton | null {
