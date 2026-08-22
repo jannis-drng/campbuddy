@@ -36,24 +36,37 @@ interface OsmFeature {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
 }
 
+/**
+ * Die gebündelte Fassung — bewusst nur das Wallis.
+ *
+ * Sie ist die Sofortanzeige: sichtbar, bevor irgendetwas über die Leitung
+ * geht, und die einzige Fassung, die auch ohne Backend steht. Die ganze
+ * Schweiz hier hineinzulegen hiesse, jedem Besucher megabyteweise Daten
+ * aufzuladen, die er meist nicht braucht — sie kommt deshalb aus der
+ * Datenbank und ersetzt diese Fassung, sobald sie da ist (siehe `fetchRemote*`
+ * und `datenquelle` in App.tsx).
+ *
+ * Dass hier unter 'CH' nur ein Kanton liegt, ist kein Versehen: es ist ein
+ * Ausschnitt, und die Oberfläche weist offen aus, welche Fassung sie zeigt.
+ */
 const GEOMETRY_SOURCES: Record<RegionCode, { features: OsmFeature[] }> = {
-  'CH-VS': osmZonesVS as unknown as { features: OsmFeature[] },
+  CH: osmZonesVS as unknown as { features: OsmFeature[] },
 }
 
 const LEGAL_SOURCES: Record<RegionCode, { zones: Record<string, LegalEntry> }> = {
-  'CH-VS': legalVS as unknown as { zones: Record<string, LegalEntry> },
+  CH: legalVS as unknown as { zones: Record<string, LegalEntry> },
 }
 
 const POINT_SOURCES: Record<RegionCode, Point[]> = {
-  'CH-VS': pointsVS as unknown as Point[],
+  CH: pointsVS as unknown as Point[],
 }
 
 const PEAK_SOURCES: Record<RegionCode, Peak[]> = {
-  'CH-VS': peaksVS as unknown as Peak[],
+  CH: peaksVS as unknown as Peak[],
 }
 
 const NATURE_SOURCES: Record<RegionCode, NatureFeature[]> = {
-  'CH-VS': natureVS as unknown as NatureFeature[],
+  CH: natureVS as unknown as NatureFeature[],
 }
 
 /**

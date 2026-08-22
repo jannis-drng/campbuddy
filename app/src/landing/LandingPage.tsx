@@ -23,7 +23,8 @@ import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
 import { Einblenden } from './Einblenden'
 import { KartenSchema, Zeltmarke } from './Grafiken'
 import {
-  beispielZone, punkteGesamt, punkteJeArt, zonenBelegt, zonenEntwurf, zonenGesamt,
+  beispielZone, gipfelGesamt, punkteGesamt, punkteJeArt, zonenBelegt, zonenEingestuft,
+  zonenGesamt, zonenUngeklaert,
 } from './zahlen'
 
 import heroBild from '../assets/landing/hero-biwak.webp'
@@ -189,7 +190,7 @@ function Hero({ onStart, zuAnker }: { onStart: () => void; zuAnker: (id: string)
       <div className={`${BREITE} flex min-h-[min(46rem,88vh)] flex-col justify-center py-24 sm:py-28`}>
         <Einblenden als="div" className="max-w-2xl">
           <Badge ton="akzent" icon={MountainSnow}>
-            {region.name} · {region.country} — die erste Region
+            {region.name} — die erste Region
           </Badge>
 
           <h1 className="mt-6 text-held font-semibold text-ink-50">
@@ -274,7 +275,7 @@ function Kennzahlen() {
     {
       wert: String(zonenBelegt),
       label: 'amtlich geprüfte Flächen',
-      hinweis: `Alle ${zonenEntwurf} Flächen sind derzeit Entwurf aus dem Rechtsrahmen`,
+      hinweis: `${zonenEingestuft} regelbasiert eingestuft, ${zonenUngeklaert} ungeklärt, keine geprüft`,
       ton: 'warnung',
     },
   ]
@@ -493,7 +494,7 @@ function Funktionen() {
         punkte={[
           'Filter nach Übernachtungsart: nur Zelt, nur Fahrzeug, nur wo Feuer erlaubt ist.',
           'Etappenplanung setzt jeden Tag an einem Punkt mit Dach oder legalem Platz ab.',
-          '1291 benannte Gipfel als Orientierung auf der Outdoor-Karte mit Höhenlinien.',
+          `${gipfelGesamt?.toLocaleString('de-CH') ?? 'Tausende'} benannte Gipfel als Orientierung auf der Outdoor-Karte mit Höhenlinien.`,
         ]}
         visual={
           <Foto
@@ -540,7 +541,7 @@ const SCHRITTE: { icon: LucideIcon; titel: string; text: string }[] = [
   {
     icon: MountainSnow,
     titel: 'Region öffnen',
-    text: 'Die Karte startet im Wallis — ohne Konto, ohne Einwilligungsdialog, ohne Umweg.',
+    text: 'Die Karte startet in der Schweiz — ohne Konto, ohne Einwilligungsdialog, ohne Umweg.',
   },
   {
     icon: ShieldCheck,
@@ -677,9 +678,13 @@ function Pruefstand() {
           <div className="mt-6 flex gap-2.5 rounded-mittel border border-geduldet-500/20 bg-geduldet-500/[0.07] px-4 py-3.5">
             <FileWarning size={16} strokeWidth={2} className="mt-px shrink-0 text-geduldet-400" aria-hidden />
             <p className="text-klein leading-relaxed text-geduldet-400/90">
-              Ehrlicher Stand heute: alle <strong className="font-semibold">{zonenEntwurf} Flächen</strong> im
-              Wallis sind Entwurf, <strong className="font-semibold">keine einzige ist amtlich geprüft</strong>.
-              Die Karte weist das an jeder Fläche aus, statt es zu verstecken.
+              Ehrlicher Stand heute: von {zonenGesamt} erfassten Flächen sind{' '}
+              <strong className="font-semibold">{zonenEingestuft} regelbasiert eingestuft</strong> und{' '}
+              {zonenUngeklaert} ausdrücklich ungeklärt —{' '}
+              <strong className="font-semibold">keine einzige ist amtlich geprüft</strong>.
+              Abgeleitet wird nur, wo OpenStreetMap ein eindeutiges Signal liefert, und der
+              Fehler geht immer in die sichere Richtung. Die Karte weist das an jeder Fläche
+              aus, statt es zu verstecken.
             </p>
           </div>
         </Einblenden>

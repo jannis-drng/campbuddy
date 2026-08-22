@@ -1,20 +1,60 @@
 /**
- * Die Zahlen der Startseite — aus den Projektdaten, aber schlank geladen.
+ * Die Zahlen der Startseite.
  *
- * Warum nicht einfach `legalData`? Weil dessen Zugriffs-API auch die
- * Gipfeldatei (rund 290 kB) und den Supabase-Client mitzieht. Beides braucht
- * die Karte, die Startseite nicht — und eine Startseite, die erst ein
- * Kartenpaket herunterlädt, bevor sie erklärt, worum es geht, verliert genau
- * die Besucher, für die sie gebaut ist.
+ * Sie kommen aus `data/bestand.json` — einer 193 Bytes grossen Datei, die beim
+ * Import mitgeschrieben wird und zählt, was tatsächlich in der Datenbank
+ * liegt. Selbst nachzuzählen ginge nicht mehr: der vollständige Bestand für
+ * die Schweiz liegt nicht im Bundle, und ausgedachte Zahlen sind in diesem
+ * Projekt tabu. Ändert sich die Datenlage, ändert sich diese Seite mit — aber
+ * erst, wenn jemand den Import laufen lässt, und genau das steht als `stand`
+ * dabei.
  *
- * Gelesen wird deshalb direkt aus den beiden Dateien, die die Aussagen
- * tragen: der rechtlichen Einstufung und den Punkten. Abgeschrieben wird
- * nichts — ändert sich die Datenlage, ändert sich diese Seite mit.
+ * Die Beispiel-Infokarte zieht weiterhin eine echte Fläche aus den gebündelten
+ * Walliser Daten. Die liegt auch in der Datenbank; sie ist hier nur die eine,
+ * die ohne Netz schon da ist.
  */
-import type { LegalStatus, Permission, PointType, ReviewStatus } from '../data/types'
+import type { LegalStatus, Permission, ReviewStatus } from '../data/types'
+import bestandRoh from '../data/bestand.json'
 import legalVS from '../data/zones/CH-VS.legal.json'
 import osmVS from '../data/zones/CH-VS.osm.json'
-import pointsVS from '../data/points/CH-VS.json'
+
+interface Bestand {
+  region: string
+  stand: string
+  zonen: number
+  zonen_abgeleitet: number
+  zonen_ungeklaert: number
+  zonen_geprueft: number
+  punkte: number
+  huetten: number
+  campingplaetze: number
+  stellplaetze: number
+  gipfel: number | null
+}
+
+const bestand = bestandRoh as Bestand
+
+export const STAND = bestand.stand
+
+export const zonenGesamt = bestand.zonen
+/** Alles ohne Prüfdatum — heute ist das jede einzelne Fläche. */
+export const zonenEntwurf = bestand.zonen - bestand.zonen_geprueft
+export const zonenBelegt = bestand.zonen_geprueft
+/** Flächen, für die es überhaupt eine Einstufung gibt (der Rest bleibt „ungeklärt"). */
+export const zonenEingestuft = bestand.zonen_abgeleitet
+export const zonenUngeklaert = bestand.zonen_ungeklaert
+
+export const punkteGesamt = bestand.punkte
+export const gipfelGesamt = bestand.gipfel
+
+const JE_ART: Record<string, number> = {
+  hut: bestand.huetten,
+  campsite: bestand.campingplaetze,
+  vehicle_spot: bestand.stellplaetze,
+}
+export const punkteJeArt = (typ: string) => JE_ART[typ] ?? 0
+
+/* -------------------------------------------------------- Beispielfläche */
 
 interface Eintrag {
   status: LegalStatus
@@ -31,14 +71,6 @@ const namen = new Map(
   (osmVS as unknown as { features: { id: string; properties: { name: string } }[] }).features
     .map((f) => [f.id, f.properties.name] as const),
 )
-const punkte = pointsVS as unknown as { type: PointType }[]
-
-export const zonenGesamt = Object.keys(eintraege).length
-export const zonenEntwurf = Object.values(eintraege).filter((e) => e.review_status === 'entwurf').length
-export const zonenBelegt = zonenGesamt - zonenEntwurf
-
-export const punkteGesamt = punkte.length
-export const punkteJeArt = (typ: PointType) => punkte.filter((p) => p.type === typ).length
 
 /**
  * Eine echte Fläche als Beispiel für die Infokarte. Bevorzugt der Aletschwald,

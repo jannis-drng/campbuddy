@@ -30,11 +30,11 @@ Campingplätze in Routennähe liegen. Export als GPX.
 
 **`[BALD]` — offen:** weitere Regionen (braucht Rechtsrecherche, nicht Code).
 
-| Ebene | Inhalt | Quelle |
+| Ebene | Inhalt (Schweiz) | Quelle |
 |---|---|---|
-| Zonen | 10 Schutzgebietsflächen | Geometrie aus OpenStreetMap, rechtliche Einstufung selbst gepflegt |
-| Punkte | 148 (79 Hütten, 48 Campingplätze, 21 Stellplätze) | OpenStreetMap |
-| Gipfel | 1291 benannte Gipfel mit Höhe | OpenStreetMap |
+| Zonen | 382 Schutzgebietsflächen — 345 regelbasiert eingestuft, 37 ungeklärt, **0 geprüft** | Geometrie aus OpenStreetMap, Einstufung abgeleitet (siehe unten) |
+| Punkte | 955 (318 Hütten, 438 Campingplätze, 199 Stellplätze) | OpenStreetMap |
+| Gipfel | 7274 benannte Gipfel mit Höhe | OpenStreetMap |
 | Natur | 1830 Objekte: 297 Gewässer, 957 Trinkwasserstellen, 37 Quellen, 106 Wasserfälle, 433 Aussichtspunkte | OpenStreetMap |
 | Eigene Punkte | selbst markierte Orte und Fotos | Nutzer, privat bis ausdrücklich veröffentlicht |
 
@@ -193,6 +193,59 @@ Der Versatz der Wegpunkte auf das Wegenetz wird selbst berechnet statt vom Anbie
 
 Beide Instanzen laufen auf Spendenbasis. Anfragen sind deshalb entprellt.
 
+
+## Datenbestand: Schweiz
+
+Die Region ist die **ganze Schweiz** (`CH`). Der Bestand liegt nicht mehr im Bundle,
+sondern in Supabase — 382 Zonen mit Geometrie wären zweistellig megabyteschwer und würden
+jeden Besucher belasten, auch den, der nur die Startseite ansieht.
+
+| | wo | wie viel |
+|---|---|---|
+| Gebündelt (Sofortanzeige, ohne Netz) | `app/src/data/` | Wallis: 10 Zonen, 148 Punkte |
+| Vollständig | Supabase, Tabellen `zones` / `points` | Schweiz: 382 Zonen, 955 Punkte |
+
+Die App zeigt zuerst die gebündelte Fassung und ersetzt sie, sobald die Datenbank
+antwortet; die Infokarte weist aus, welche gerade gilt. Fehlt das Backend oder liefert es
+nichts, bleibt die gebündelte Fassung stehen — die Karte funktioniert immer.
+
+### Rechtliche Einstufung: regelbasiert abgeleitet
+
+382 Schutzgebiete lassen sich nicht einzeln recherchieren. Abgeleitet wird deshalb **nur,
+wo OpenStreetMap ein eindeutiges Signal liefert**, und der Fehler geht immer in die sichere
+Richtung:
+
+| OSM-Merkmal | Einstufung |
+|---|---|
+| `leisure=nature_reserve` | verboten (Zelt, Fahrzeug, Feuer) |
+| `protect_class` 1a, 1b, 2 oder 4 | verboten |
+| alles andere | **ohne Eintrag** → erscheint als „ungeklärt" |
+
+> Eine Karte, die zu Unrecht warnt, kostet einen Umweg. Eine, die zu Unrecht erlaubt,
+> kostet eine Anzeige.
+
+Jeder abgeleitete Eintrag trägt `review_status: 'entwurf'`, kein Prüfdatum und im
+Bedingungstext die Regel, aus der er stammt. Handgeschriebene Einträge (die zehn Walliser)
+werden vom Ableiten **nie überschrieben**. Der landesweite `baseline_status` ist bewusst
+`unknown`: was im Wallis oberhalb der Waldgrenze verbreitet geduldet wird, ist in anderen
+Kantonen ausdrücklich verboten.
+
+### Neu importieren und einspielen
+
+```bash
+REGION=CH npm run import:osm --prefix app -- zonen punkte gipfel natur
+REGION=CH npm run import:osm --prefix app -- recht     # Einstufung ableiten
+REGION=CH node app/scripts/seed-sql.mjs                # Seed-Migrationen erzeugen
+```
+
+Regionen in `BUNDLE_REGIONEN` (derzeit nur `CH-VS`) landen unter `app/src/data/`, alle
+anderen unter `app/import/<REGION>/` — ausserhalb von `src/`, damit nichts versehentlich
+ins Bundle wandert. `seed-sql.mjs` schreibt die SQL-Dateien nach `supabase/migrations/`
+und daneben `app/src/data/bestand.json`: 193 Bytes mit den Kennzahlen, aus denen die
+Startseite ihre Zahlen nimmt, statt megabyteweise Daten zu laden, nur um sie zu zählen.
+
+Die Seed-Dateien sind gestückelt (der SQL-Editor mag keine Megabyte-Einfügungen) und
+mehrfach ausführbar — jede Zeile ist ein Upsert.
 
 ## Startseite
 

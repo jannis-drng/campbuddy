@@ -22,7 +22,7 @@
  * <region>.legal.json ihren Anker. Wer nur Wasserstellen nachladen will,
  * soll die Rechtspflege nicht anfassen müssen.
  */
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -31,6 +31,27 @@ const ROOT = resolve(__dirname, '..')
 
 const REGION = process.env.REGION ?? 'CH-VS'
 const ENDPOINT = 'https://overpass-api.de/api/interpreter'
+
+/**
+ * Welche Regionen ins Bundle gebacken werden.
+ *
+ * Das Wallis bleibt drin: es ist die Sofortanzeige, die auch ohne Netz und ohne
+ * Backend steht. Alles Grössere gehört nicht ins Bundle — die Schweiz als
+ * Ganzes wäre zweistellig megabyteschwer und würde die Startseite ausbremsen,
+ * für Daten, die die meisten Besucher nie brauchen. Solche Regionen landen
+ * unter `import/` und von dort über eine Seed-Migration in die Datenbank.
+ */
+const BUNDLE_REGIONEN = new Set(['CH-VS'])
+const IM_BUNDLE = BUNDLE_REGIONEN.has(REGION)
+const AUSGABE = IM_BUNDLE ? resolve(ROOT, 'src/data') : resolve(ROOT, 'import', REGION)
+
+/**
+ * Ganze Länder tragen ISO3166-1, Kantone und Bundesländer ISO3166-2.
+ * `admin_level=2` schliesst gleichnamige Gebiete unterhalb der Landesebene aus.
+ */
+const GEBIET = REGION.includes('-')
+  ? `area["ISO3166-2"="${REGION}"]->.a;`
+  : `area["ISO3166-1"="${REGION}"][admin_level=2]->.a;`
 
 const round = (n) => Math.round(n * 1e5) / 1e5
 
@@ -82,7 +103,7 @@ const POINT_TYPES = {
 async function importPoints() {
   const q = `
     [out:json][timeout:180];
-    area["ISO3166-2"="${REGION}"]->.a;
+    ${GEBIET}
     (
       node["tourism"~"^(alpine_hut|wilderness_hut|camp_site|caravan_site)$"](area.a);
       way["tourism"~"^(camp_site|caravan_site)$"](area.a);
@@ -121,7 +142,7 @@ async function importPoints() {
     .filter((p) => p.name !== '(unbenannt)')
     .sort((a, b) => a.name.localeCompare(b.name, 'de'))
 
-  const out = resolve(ROOT, 'src/data/points', `${REGION}.json`)
+  const out = resolve(AUSGABE, 'points', `${REGION}.json`)
   mkdirSync(dirname(out), { recursive: true })
   writeFileSync(out, JSON.stringify(points, null, 2) + '\n')
   console.log(`Punkte: ${points.length} -> ${out}`)
@@ -136,7 +157,7 @@ async function importPeaks() {
   // bei der Orientierung nicht und bläht die Karte nur auf.
   const q = `
     [out:json][timeout:180];
-    area["ISO3166-2"="${REGION}"]->.a;
+    ${GEBIET}
     node["natural"="peak"]["name"]["ele"](area.a);
     // 'out tags' liefert KEINE Koordinaten — für Knoten braucht es 'out body'.
     out body;`
@@ -161,7 +182,7 @@ async function importPeaks() {
     // Die höchsten zuerst: so lassen sich später die prominenten zuerst zeigen.
     .sort((a, b) => b.elevation - a.elevation)
 
-  const out = resolve(ROOT, 'src/data/peaks', `${REGION}.json`)
+  const out = resolve(AUSGABE, 'peaks', `${REGION}.json`)
   mkdirSync(dirname(out), { recursive: true })
   writeFileSync(out, JSON.stringify(peaks, null, 2) + '\n')
   console.log(`Gipfel: ${peaks.length} -> ${out}`)
@@ -170,10 +191,54 @@ async function importPeaks() {
 
 /* ---------------- Zonen: Schutzgebiete (Geometrie) ---------------- */
 
+/**
+ * Wie grob die Umrisse der Schutzgebiete sein dürfen, in Grad (~40 m).
+ *
+ * OSM liefert Schutzgebietsgrenzen metergenau. Für die Frage „liegt mein
+ * Schlafplatz drin?" ist das eine Scheingenauigkeit: die Auskunft ist ohnehin
+ * ein ungeprüfter Entwurf, und vor Ort entscheidet die Beschilderung. Über
+ * eine ganze Landesfläche macht der Unterschied aber Megabytes aus, und ein
+ * Megabyte, das über die Leitung muss, kostet echte Wartezeit im Funkloch.
+ */
+const ZONEN_TOLERANZ = 0.0004
+
+/** Ramer-Douglas-Peucker, iterativ statt rekursiv — grosse Ringe sprengen den Stack. */
+function vereinfacheRing(punkte, toleranz) {
+  if (punkte.length < 5) return punkte
+  const behalten = new Uint8Array(punkte.length)
+  behalten[0] = 1
+  behalten[punkte.length - 1] = 1
+
+  const stapel = [[0, punkte.length - 1]]
+  while (stapel.length) {
+    const [start, ende] = stapel.pop()
+    let maxAbstand = 0
+    let index = -1
+    for (let i = start + 1; i < ende; i++) {
+      const d = abstandZurGeraden(punkte[i], punkte[start], punkte[ende])
+      if (d > maxAbstand) { maxAbstand = d; index = i }
+    }
+    if (maxAbstand > toleranz && index > 0) {
+      behalten[index] = 1
+      stapel.push([start, index], [index, ende])
+    }
+  }
+  return punkte.filter((_, i) => behalten[i])
+}
+
+function abstandZurGeraden(p, a, b) {
+  const dx = b[0] - a[0]
+  const dy = b[1] - a[1]
+  const laengeQ = dx * dx + dy * dy
+  if (laengeQ === 0) return Math.hypot(p[0] - a[0], p[1] - a[1])
+  const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / laengeQ))
+  return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy))
+}
+
 async function importProtectedAreas() {
   const q = `
     [out:json][timeout:300];
-    area["ISO3166-2"="${REGION}"]->.a;
+    ${GEBIET}
     (
       relation["boundary"="protected_area"]["name"](area.a);
       way["boundary"="protected_area"]["name"](area.a);
@@ -199,6 +264,8 @@ async function importProtectedAreas() {
       if (merged.length) coords = merged.map(closeRing)
     }
     if (!coords) continue
+    coords = coords.map((ring) => vereinfacheRing(ring, ZONEN_TOLERANZ)).filter((r) => r.length > 3)
+    if (coords.length === 0) continue
 
     features.push({
       type: 'Feature',
@@ -208,6 +275,9 @@ async function importProtectedAreas() {
         name: t.name ?? t['name:de'] ?? '(unbenannt)',
         protect_class: t.protect_class ?? null,
         protection_title: t.protection_title ?? null,
+        // Für die regelbasierte Ableitung der Rechtslage gebraucht.
+        leisure: t.leisure ?? null,
+        boundary: t.boundary ?? null,
         operator: t.operator ?? null,
         source: 'OpenStreetMap',
         source_url: `https://www.openstreetmap.org/${el.type}/${el.id}`,
@@ -219,7 +289,7 @@ async function importProtectedAreas() {
   }
 
   const fc = { type: 'FeatureCollection', features }
-  const out = resolve(ROOT, 'src/data/zones', `${REGION}.osm.json`)
+  const out = resolve(AUSGABE, 'zones', `${REGION}.osm.json`)
   mkdirSync(dirname(out), { recursive: true })
   writeFileSync(out, JSON.stringify(fc) + '\n')
   const kb = Math.round(JSON.stringify(fc).length / 1024)
@@ -289,7 +359,7 @@ async function importNature() {
   for (const [type, ...selektoren] of NATURE_QUERIES) {
     const q = `
       [out:json][timeout:180];
-      area["ISO3166-2"="${REGION}"]->.a;
+      ${GEBIET}
       (
         ${selektoren.map((sel) => `${sel}(area.a);`).join('\n        ')}
       );
@@ -321,11 +391,86 @@ async function importNature() {
 
   features.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name, 'de'))
 
-  const out = resolve(ROOT, 'src/data/nature', `${REGION}.json`)
+  const out = resolve(AUSGABE, 'nature', `${REGION}.json`)
   mkdirSync(dirname(out), { recursive: true })
   writeFileSync(out, JSON.stringify(features) + '\n')
   const kb = Math.round(JSON.stringify(features).length / 1024)
   console.log(`Natur: ${features.length} Objekte, ${kb} KB -> ${out}`)
+}
+
+/* ---------------- Rechtslage: konservativ ableiten ---------------- */
+
+/**
+ * Rechtliche Ersteinstufung aus den OSM-Merkmalen — und nur so weit, wie die
+ * Merkmale tragen.
+ *
+ * Vierhundert Schutzgebiete lassen sich nicht einzeln recherchieren, und
+ * Erfundenes ist in diesem Projekt tabu. Also wird nur dort etwas behauptet,
+ * wo OpenStreetMap ein eindeutiges Signal liefert, und der Fehler geht immer
+ * in die sichere Richtung: im Zweifel „verboten" statt „erlaubt". Eine Karte,
+ * die zu Unrecht warnt, kostet einen Umweg; eine, die zu Unrecht erlaubt,
+ * kostet eine Anzeige.
+ *
+ * Alles andere bleibt ohne Eintrag und erscheint dadurch als „ungeklärt" —
+ * das ist eine Information, keine Lücke.
+ *
+ * Jeder abgeleitete Eintrag trägt `review_status: 'entwurf'`, kein Prüfdatum
+ * und im Bedingungstext die Regel, aus der er stammt. Handgeschriebene
+ * Einträge werden nie überschrieben.
+ */
+const STRENGE_SCHUTZKLASSEN = new Set(['1a', '1b', '2', '4'])
+
+function ableitung(f) {
+  const t = f.properties
+  if (t.leisure === 'nature_reserve') {
+    return {
+      grund: 'als Naturschutzgebiet erfasst (leisure=nature_reserve)',
+      folgerung: 'In Naturschutzgebieten ist Übernachten im Freien in der Schweiz in der Regel untersagt.',
+    }
+  }
+  if (t.protect_class && STRENGE_SCHUTZKLASSEN.has(String(t.protect_class))) {
+    return {
+      grund: `als Schutzgebiet der Klasse ${t.protect_class} erfasst (IUCN-Kategorie)`,
+      folgerung: 'Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.',
+    }
+  }
+  return null
+}
+
+async function importRecht() {
+  const quelle = resolve(AUSGABE, 'zones', `${REGION}.osm.json`)
+  if (!existsSync(quelle)) {
+    throw new Error(`${quelle} fehlt — erst 'zonen' importieren.`)
+  }
+  const geo = JSON.parse(readFileSync(quelle, 'utf8'))
+
+  const ziel = resolve(AUSGABE, 'zones', `${REGION}.legal.json`)
+  const bestand = existsSync(ziel) ? JSON.parse(readFileSync(ziel, 'utf8')).zones ?? {} : {}
+
+  let neu = 0
+  let behalten = 0
+  let ungeklaert = 0
+
+  for (const f of geo.features) {
+    if (bestand[f.id]) { behalten++; continue }
+    const ab = ableitung(f)
+    if (!ab) { ungeklaert++; continue }
+    bestand[f.id] = {
+      status: 'forbidden',
+      tent_allowed: 'no',
+      vehicle_allowed: 'no',
+      fire_allowed: 'no',
+      conditions: `Aus OpenStreetMap abgeleitet: ${ab.grund}. ${ab.folgerung}`,
+      notes: 'Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.',
+      review_status: 'entwurf',
+      last_verified: null,
+    }
+    neu++
+  }
+
+  mkdirSync(dirname(ziel), { recursive: true })
+  writeFileSync(ziel, JSON.stringify({ zones: bestand }, null, 2) + '\n')
+  console.log(`Rechtslage: ${neu} abgeleitet, ${behalten} bestehende unverändert, ${ungeklaert} bleiben ungeklärt -> ${ziel}`)
 }
 
 /* ---------------- Alpen: umschliessendes Rechteck ---------------- */
@@ -386,6 +531,7 @@ const GRUPPEN = {
   gipfel: importPeaks,
   zonen: importProtectedAreas,
   natur: importNature,
+  recht: importRecht,
   alpen: importAlpen,
 }
 
