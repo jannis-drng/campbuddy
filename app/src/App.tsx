@@ -10,7 +10,6 @@ import { DisclaimerBar } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
 import { InfoPanel, type Selection } from './components/InfoPanel'
 import { Legend } from './components/Legend'
-import { RegionIntro } from './components/RegionIntro'
 import { MyToursPanel } from './components/MyToursPanel'
 import { CommunityPanel } from './components/CommunityPanel'
 import { TourDetailModal } from './components/TourDetailModal'
@@ -43,6 +42,8 @@ const INITIAL_FILTERS: MapFilters = {
 }
 
 type View = 'karte' | 'community' | 'touren' | 'konto'
+
+const mehrereRegionen = Object.keys(REGIONS).length > 1
 
 export default function App() {
   const [view, setView] = useState<View>('karte')
@@ -283,7 +284,7 @@ export default function App() {
 
         {/* Ab Tablet in der Kopfzeile; auf dem Telefon liegt die Navigation
             unten in Daumenreichweite (siehe Tableiste am Seitenende). */}
-        <nav className="mx-auto hidden sm:block" aria-label="Ansicht">
+        <nav className={`hidden sm:block ${mehrereRegionen ? 'mx-auto' : 'ml-auto'}`} aria-label="Ansicht">
           <Segmente
             ariaLabel="Ansicht wählen"
             wert={view}
@@ -299,18 +300,27 @@ export default function App() {
           />
         </nav>
 
-        <label className="ml-auto flex shrink-0 items-center gap-2 sm:ml-0">
-          <span className="sr-only">Region</span>
-          <Auswahl
-            value={regionCode}
-            onChange={(e) => { setRegionCode(e.target.value); setSelection(null) }}
-            className="w-auto"
-          >
-            {Object.values(REGIONS).map((r) => (
-              <option key={r.code} value={r.code}>{r.name}</option>
-            ))}
-          </Auswahl>
-        </label>
+        {/*
+          Die Regionswahl erscheint erst, wenn es etwas zu wählen gibt. Bei
+          einer einzigen Region war sie ein Aufklappmenü mit genau einem
+          Eintrag — belegter Platz ohne Nutzen, und der Name der Region steht
+          ohnehin in der Infokarte. Sobald die zweite Region dazukommt, ist sie
+          von selbst wieder da.
+        */}
+        {mehrereRegionen && (
+          <label className="ml-auto flex shrink-0 items-center gap-2 sm:ml-0">
+            <span className="sr-only">Region</span>
+            <Auswahl
+              value={regionCode}
+              onChange={(e) => { setRegionCode(e.target.value); setSelection(null) }}
+              className="w-auto"
+            >
+              {Object.values(REGIONS).map((r) => (
+                <option key={r.code} value={r.code}>{r.name}</option>
+              ))}
+            </Auswahl>
+          </label>
+        )}
       </header>
 
       <DisclaimerBar />
@@ -345,6 +355,7 @@ export default function App() {
             onPointClick={(point) => setSelection({ kind: 'point', point })}
             onNatureClick={(feature) => setSelection({ kind: 'natur', feature })}
             onEigenClick={(punkt) => setSelection({ kind: 'eigen', punkt })}
+            onLeerClick={() => setSelection({ kind: 'region', region, stats, quelle: datenquelle })}
             onMarkieren={(position) => {
               setDialogPunkt(null)
               setDialogPosition(position)
@@ -394,7 +405,6 @@ export default function App() {
             />
           ) : (
             <>
-              <RegionIntro region={region} stats={stats} quelle={datenquelle} />
               {/* Die eine primäre Aktion der Kartenansicht — deshalb gefüllt
                   und als einziges Element hier in Akzentfarbe. */}
               <Button

@@ -275,6 +275,25 @@ Mit einbezogen werden die `bounds` **jeder erfassten Region**, damit eine erfass
 nie ausserhalb des erreichbaren Bereichs liegen kann. Alles steht in
 `app/src/map/alpenRahmen.ts`; die Datei mit der Box ist 311 Bytes gross.
 
+### Was ein Kartenklick öffnet
+
+Der Reihe nach, der kleinere Treffer gewinnt: eigene Markierung → Hütte/Platz → Wasser
+oder Aussicht → Zone. Und wenn nichts davon getroffen wird, **der Rechtsrahmen der
+Region**: „hier ist keine Fläche eingezeichnet, es gilt …".
+
+Früher stand dieser Rahmen als Dauerpanel über der Karte. Das war die falsche Stelle — er
+beantwortet keine Frage, solange man nicht auf eine bestimmte Stelle schaut, und verdeckte
+dabei ausgerechnet die Karte. Jetzt erscheint er dort, wo die Frage entsteht.
+
+Die Regionswahl in der Kopfzeile erscheint erst ab der zweiten Region (`mehrereRegionen` in
+`App.tsx`). Ein Aufklappmenü mit genau einem Eintrag ist belegter Platz ohne Nutzen.
+
+> **Getroffen wird über unsichtbare Kreis-Layer**, nicht über die Symbol-Layer selbst.
+> MapLibres Trefferprüfung auf Symbolen hängt daran, dass die Symbolplatzierung fertig
+> gerechnet ist; ist sie es nicht, kann eine Abfrage auf einen einzelnen Pixel jedes Symbol
+> der Kachel zurückgeben — gemessen wurden Treffer über 250 px entfernt. Kreise werden
+> geometrisch geprüft und kennen das Problem nicht.
+
 ### Symbole statt Farbpunkte
 
 `map/symbole.ts` zeichnet alle Kartensymbole auf ein Canvas und legt sie als Bild in den

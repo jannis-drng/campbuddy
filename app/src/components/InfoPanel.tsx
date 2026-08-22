@@ -5,18 +5,25 @@
  * gilt, dann unter welchen Bedingungen, dann woher die Angabe stammt und wie
  * gut sie belegt ist. Die Quelle steht unten, aber sie steht immer da.
  */
+import { useState } from 'react'
 import {
-  Building2, Camera, Droplet, Eye, ExternalLink, Flame, Globe, Lock, MapPin, Mountain, Phone,
-  Pencil, Star, Tent, Trash2, Truck, Users, Waves, X,
+  Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Lock,
+  MapPin, Mountain, Phone, Pencil, Scale, Star, Tent, Trash2, Truck, Users, Waves, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { EigenerPunkt, NatureFeature, Point, Zone } from '../data/types'
+import type { EigenerPunkt, NatureFeature, Point, Region, Zone } from '../data/types'
 import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
-import { PermissionRow, ReviewBadge, StatusBadge } from './ui'
+import { PermissionRow, ReviewBadge, STATUS_LABEL, StatusBadge } from './ui'
 import { GearHint } from '../affiliate/GearHint'
 import { PunktFoto } from './PunktFoto'
 
 export type Selection =
+  /**
+   * Der Rechtsrahmen der Region. Erscheint beim Tippen auf freie Fläche —
+   * dort, wo keine eingezeichnete Zone liegt und deshalb der allgemeine
+   * Rahmen gilt. Genau die Stelle, an der man sich die Frage stellt.
+   */
+  | { kind: 'region'; region: Region; stats: { total: number; entwurf: number }; quelle: 'gebündelt' | 'datenbank' }
   | { kind: 'zone'; zone: Zone }
   | { kind: 'point'; point: Point }
   | { kind: 'natur'; feature: NatureFeature }
@@ -57,6 +64,8 @@ interface InfoPanelProps {
 
 function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: LucideIcon; titel: string } {
   switch (selection.kind) {
+    case 'region':
+      return { art: `Rechtslage · ${selection.region.country}`, icon: Scale, titel: selection.region.name }
     case 'zone':
       return { art: 'Zone', icon: MapPin, titel: selection.zone.name }
     case 'point':
@@ -107,6 +116,9 @@ export function InfoPanel({
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto">
+        {selection.kind === 'region' && (
+          <RegionBody region={selection.region} stats={selection.stats} quelle={selection.quelle} />
+        )}
         {selection.kind === 'zone' && <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />}
         {selection.kind === 'point' && <PointBody point={selection.point} />}
         {selection.kind === 'natur' && <NaturBody feature={selection.feature} />}
@@ -120,6 +132,83 @@ export function InfoPanel({
         )}
       </div>
     </aside>
+  )
+}
+
+/**
+ * Der allgemeine Rechtsrahmen der Region.
+ *
+ * Er stand früher als Dauerpanel über der Karte. Das war die falsche Stelle:
+ * er beantwortet keine Frage, solange man nicht auf eine bestimmte Fläche
+ * schaut, und verdeckte dabei ausgerechnet die Karte. Jetzt erscheint er beim
+ * Tippen auf eine Stelle *ohne* eingezeichnete Zone — also genau dann, wenn
+ * der allgemeine Rahmen die einzige Auskunft ist, die es gibt.
+ */
+function RegionBody({
+  region, stats, quelle,
+}: {
+  region: Region
+  stats: { total: number; entwurf: number }
+  quelle: 'gebündelt' | 'datenbank'
+}) {
+  const [quellenOffen, setQuellenOffen] = useState(false)
+
+  return (
+    <div className="space-y-5 px-5 py-4">
+      {/* Die wichtigste einzelne Aussage — deshalb zuerst und als eigene Fläche. */}
+      <div className="rounded-mittel border border-kante bg-flaeche-1 px-3 py-2.5">
+        <Label>Hier ist keine Fläche eingezeichnet, es gilt</Label>
+        <p className="mt-1 text-titel font-semibold text-ink-50">
+          {STATUS_LABEL[region.legal_framework.baseline_status]}
+        </p>
+      </div>
+
+      <p className="text-klein leading-relaxed text-ink-300">{region.legal_framework.summary}</p>
+
+      <div>
+        <button
+          onClick={() => setQuellenOffen((v) => !v)}
+          aria-expanded={quellenOffen}
+          className="flex items-center gap-1 text-klein font-medium text-gletscher-400
+                     transition-colors duration-[160ms] hover:text-gletscher-300"
+        >
+          <ChevronRight
+            size={14} strokeWidth={2.5} aria-hidden
+            className={`transition-transform duration-[160ms] ease-[var(--ease-heraus)] ${quellenOffen ? 'rotate-90' : ''}`}
+          />
+          Rechtsgrundlagen &amp; Quellen
+        </button>
+        {quellenOffen && (
+          <ul className="mt-2 space-y-2 pl-5">
+            {region.legal_framework.references.map((r) => (
+              <li key={r.url}>
+                <a
+                  href={r.url} target="_blank" rel="noreferrer noopener"
+                  className="group flex items-start gap-1.5 text-klein leading-snug text-ink-400
+                             transition-colors duration-[160ms] hover:text-gletscher-300"
+                >
+                  <span className="min-w-0">{r.label}</span>
+                  <ExternalLink size={12} strokeWidth={2} aria-hidden
+                                className="mt-0.5 shrink-0 opacity-0 transition-opacity duration-[160ms] group-hover:opacity-100" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <Hinweis ton="warnung" icon={FileWarning}>
+        {stats.total} Flächen erfasst, davon <strong className="font-semibold">{stats.entwurf} ungeprüft</strong>.
+        Ungeprüfte Flächen haben auf der Karte einen gestrichelten Rand.
+        {quelle === 'datenbank' && ' Aktuelle Fassung aus der Datenbank.'}
+      </Hinweis>
+
+      <p className="rounded-mittel border border-geduldet-500/20 bg-geduldet-500/[0.07] px-3 py-2.5
+                    text-mikro normal-case leading-relaxed tracking-normal text-geduldet-400/90">
+        Orientierungshilfe, keine Rechtsgarantie. Beschilderung vor Ort und Auskünfte von
+        Gemeinde oder Wildhut gehen dieser Angabe vor.
+      </p>
+    </div>
   )
 }
 

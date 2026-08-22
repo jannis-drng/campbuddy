@@ -61,6 +61,8 @@ interface Props {
   onPointClick: (point: Point) => void
   onNatureClick: (feature: NatureFeature) => void
   onEigenClick: (punkt: EigenerPunkt) => void
+  /** Klick auf freie Fläche — dort gilt nur der allgemeine Rahmen der Region. */
+  onLeerClick: () => void
   onAddWaypoint: (position: Position) => void
   onInsertWaypoint: (index: number, position: Position) => void
   onMoveWaypoint: (index: number, position: Position) => void
@@ -71,7 +73,7 @@ interface Props {
 export function MapView({
   region, zones, points, peaks, nature, eigene, activity, basemap, visible,
   route, waypoints, drawing, markieren,
-  onZoneClick, onPointClick, onNatureClick, onEigenClick,
+  onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
@@ -84,12 +86,12 @@ export function MapView({
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
   const latest = useRef({
     zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
-    onZoneClick, onPointClick, onNatureClick, onEigenClick,
+    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   })
   latest.current = {
     zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
-    onZoneClick, onPointClick, onNatureClick, onEigenClick,
+    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   }
 
@@ -309,9 +311,12 @@ export function MapView({
         // will genau eine Sache tun.
         if (latest.current.markieren) { latest.current.onMarkieren(position); return }
 
+        // Abgefragt werden ausschliesslich die unsichtbaren Trefferkreise, nicht
+        // die Symbol-Layer — siehe `trefferKreis` in addLayers.
         // queryRenderedFeatures wirft, wenn ein genannter Layer fehlt.
-        const layers = ['eigene-icon', 'points-icon', 'natur-icon', 'natur-see', 'zones-fill']
-          .filter((id) => m.getLayer(id))
+        const layers = [
+          'eigene-treffer', 'points-treffer', 'natur-treffer', 'natur-see-treffer', 'zones-fill',
+        ].filter((id) => m.getLayer(id))
         const hits = layers.length ? m.queryRenderedFeatures(e.point, { layers }) : []
 
         // Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur
@@ -327,12 +332,12 @@ export function MapView({
 
         // Sonst: der kleinere Treffer gewinnt — eigene Punkte, dann Orte,
         // dann Natur, zuletzt die grossflächigen Zonen.
-        const eigen = hits.find((f) => f.layer.id === 'eigene-icon')
+        const eigen = hits.find((f) => f.layer.id === 'eigene-treffer')
         if (eigen) {
           const p = latest.current.eigene.find((x) => x.id === eigen.properties?.id)
           if (p) { latest.current.onEigenClick(p); return }
         }
-        const hitPoint = hits.find((f) => f.layer.id === 'points-icon')
+        const hitPoint = hits.find((f) => f.layer.id === 'points-treffer')
         if (hitPoint) {
           const p = latest.current.points.find((x) => x.id === hitPoint.properties?.id)
           if (p) { latest.current.onPointClick(p); return }
@@ -345,13 +350,19 @@ export function MapView({
         const hitZone = hits.find((f) => f.layer.id === 'zones-fill')
         if (hitZone) {
           const z = latest.current.zones.find((x) => x.id === hitZone.properties?.id)
-          if (z) latest.current.onZoneClick(z)
+          if (z) { latest.current.onZoneClick(z); return }
         }
+
+        // Nichts getroffen: hier ist keine Fläche eingezeichnet, also gilt der
+        // allgemeine Rahmen der Region. Genau an dieser Stelle stellt sich die
+        // Frage — deshalb kommt die Antwort auch hier und nicht in einem
+        // Dauerpanel über der Karte.
+        latest.current.onLeerClick()
       })
 
       // Im Zeichenmodus bleibt das Fadenkreuz stehen — sonst würde der Cursor
       // über Zonen fälschlich Anklickbarkeit signalisieren.
-      for (const layer of ['points-icon', 'natur-icon', 'natur-see', 'eigene-icon', 'zones-fill']) {
+      for (const layer of ['points-treffer', 'natur-treffer', 'natur-see-treffer', 'eigene-treffer', 'zones-fill']) {
         m.on('mouseenter', layer, () => {
           if (!latest.current.drawing && !latest.current.markieren) setzeCursor('pointer')
         })
@@ -684,6 +695,51 @@ function addLayers(m: MlMap) {
     paint: naturPaint,
   })
 
+  /**
+   * Unsichtbare Kreise nur zum Anklicken.
+   *
+   * MapLibres Trefferprüfung auf Symbol-Layern hängt daran, dass die
+   * Symbolplatzierung fertig gerechnet ist. Ist sie das nicht — etwa weil noch
+   * Kacheln unterwegs sind —, liefert eine Abfrage auf einen einzelnen Pixel
+   * unter Umständen jedes Symbol der Kachel zurück; gemessen wurden Treffer
+   * über 250 px entfernt. Ein Klick auf leere Fläche öffnete dann irgendeine
+   * Hütte am anderen Ende des Tals.
+   *
+   * Kreis-Layer werden geometrisch geprüft und kennen dieses Problem nicht.
+   * Sie sind vollständig durchsichtig, liegen deckungsgleich über den Symbolen
+   * und sind die einzigen Layer, die der Klick abfragt.
+   */
+  const trefferKreis = (
+    id: string, source: string, radius: ExpressionSpecification, versatz: [number, number],
+  ): maplibregl.CircleLayerSpecification => ({
+    id,
+    type: 'circle',
+    source,
+    paint: {
+      'circle-radius': radius,
+      'circle-color': '#000000',
+      'circle-opacity': 0,
+      'circle-translate': versatz,
+    },
+  })
+
+  m.addLayer({
+    ...trefferKreis(
+      'natur-see-treffer', 'natur',
+      ['interpolate', ['linear'], ['zoom'], 9.5, 8, 15, 12], [0, 0],
+    ),
+    minzoom: 9.5,
+    filter: ['==', ['get', 'type'], 'lake'],
+  })
+  m.addLayer({
+    ...trefferKreis(
+      'natur-treffer', 'natur',
+      ['interpolate', ['linear'], ['zoom'], 12.5, 9, 16, 12], [0, 0],
+    ),
+    minzoom: 12.5,
+    filter: ['!=', ['get', 'type'], 'lake'],
+  })
+
   m.addLayer({
     id: 'points-icon',
     type: 'symbol',
@@ -709,6 +765,13 @@ function addLayers(m: MlMap) {
       'text-opacity': ['interpolate', ['linear'], ['zoom'], 10, 0, 10.5, 1],
     },
   })
+
+  // Die Nadel steht auf ihrem Ort, der Körper liegt darüber — der Trefferkreis
+  // wird deshalb nach oben versetzt, sonst klickt man ins Leere unter dem Symbol.
+  m.addLayer(trefferKreis(
+    'points-treffer', 'points',
+    ['interpolate', ['linear'], ['zoom'], 7, 7, 11, 10, 15, 14], [0, -13],
+  ))
 
   // Route über die Zonen, aber unter die Punkte: die Punkte sind anklickbar.
   m.addLayer({
@@ -822,6 +885,10 @@ function addLayers(m: MlMap) {
     },
     paint: { 'text-color': '#0f172a', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 },
   })
+  m.addLayer(trefferKreis(
+    'eigene-treffer', 'eigene',
+    ['interpolate', ['linear'], ['zoom'], 8, 8, 14, 13], [0, -12],
+  ))
 }
 
 /**
