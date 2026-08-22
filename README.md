@@ -260,10 +260,16 @@ Karte, nur eben mit Anschlag.
 Das Rechteck ist die umschliessende Box der OSM-Relation
 [2698607](https://www.openstreetmap.org/relation/2698607) (`natural=mountain_range`,
 Wikidata Q1286), geholt über `npm run import:osm -- alpen` — keine ausgedachten Zahlen.
-Dazu 1,4° Länge und 1,2° Puffer, weil der Gebirgsrand nicht die sinnvolle Kante ist: man
-fährt aus München, Mailand, Lyon oder Wien los, und der Blick dorthin gehört zur Planung.
-Drin liegen damit auch Zürich, Turin, Ljubljana, Salzburg, Genf und Venedig; das offene
-Mittelmeer und die norddeutsche Tiefebene nicht.
+Dazu 3° Länge und 1,2° Breite Puffer, weil der Gebirgsrand nicht die sinnvolle Kante ist:
+man fährt aus München, Mailand, Lyon oder Wien los, und der Blick dorthin gehört zur
+Planung.
+
+Seitlich mehr als oben und unten, aus zwei Gründen: der Alpenbogen liegt quer, die Anfahrt
+kommt also von den Enden; und ein Längengrad ist auf 46° Breite nur rund 77 km breit, ein
+Breitengrad aber 111 — gleiche Gradzahlen wären seitlich die deutlich kürzere Strecke.
+Ergebnis: **2,05–19,61° O · 42,21–49,61° N**. Drin liegen Lyon, Clermont-Ferrand,
+Marseille, Dijon, München, Mailand, Zürich, Turin, Salzburg, Graz, Zagreb, Ljubljana,
+Wien und Budapest; Hamburg, Barcelona und Rom nicht.
 
 Mit einbezogen werden die `bounds` **jeder erfassten Region**, damit eine erfasste Fläche
 nie ausserhalb des erreichbaren Bereichs liegen kann. Alles steht in

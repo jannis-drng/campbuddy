@@ -30,12 +30,16 @@ const daten = alpen as unknown as AlpenDatei
  * Wie weit über die Alpen hinaus man schauen darf, in Grad.
  *
  * Der Gebirgsrand ist nicht die sinnvolle Kante: man fährt aus München,
- * Mailand, Lyon oder Wien los, und der Blick dorthin gehört zur Planung. Bei
- * 1,4° Länge und 1,2° Breite sind das rund 110 km nach Osten und Westen,
- * 130 km nach Norden und Süden — die Städte ringsum liegen damit drin, das
- * offene Mittelmeer und die norddeutsche Tiefebene nicht.
+ * Mailand, Lyon oder Wien los, und der Blick dorthin gehört zur Planung.
+ *
+ * Nach Osten und Westen mehr als nach Norden und Süden, und das aus zwei
+ * Gründen. Erstens liegt der Alpenbogen quer — die Anfahrt kommt von den
+ * Enden, nicht von oben und unten. Zweitens ist ein Längengrad auf 46° Breite
+ * nur rund 77 km breit, ein Breitengrad aber 111: gleiche Gradzahlen wären
+ * seitlich die deutlich kürzere Strecke. 3° mal 1,2° sind so etwa 230 km nach
+ * Osten und Westen, 130 km nach Norden und Süden.
  */
-const PUFFER_LNG = 1.4
+const PUFFER_LNG = 3
 const PUFFER_LAT = 1.2
 
 /**
