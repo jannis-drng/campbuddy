@@ -30,7 +30,7 @@ import type {
 import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
 import { effectiveStatus } from '../data/legalData'
 import { ATTRIBUTION, BASEMAPS, STATUS_COLORS, TEXT_FONT, type BasemapKey } from './mapConfig'
-import { alpenGrenzen, maskeGeoJson, MIN_ZOOM } from './alpenRahmen'
+import { alpenGrenzen, MIN_ZOOM } from './alpenRahmen'
 import { symboleAnlegen } from './symbole'
 
 interface Props {
@@ -101,10 +101,11 @@ export function MapView({
       style: BASEMAPS[basemap].style,
       center: region.center,
       zoom: region.zoom,
-      // Der Ausschnitt endet am Alpenbogen (siehe alpenRahmen): ausserhalb
-      // hätte diese Karte nichts zu sagen, und eine leere Weltkarte liest sich
-      // wie „hier gilt nichts". Unabhängig von der gewählten Region — die
-      // Alpen sind der Horizont des Projekts, nicht das Wallis.
+      // Der Ausschnitt bleibt bei den Alpen (siehe alpenRahmen): ausserhalb
+      // hätte diese Karte nichts zu sagen, und eine Weltkarte ohne einen
+      // einzigen Hinweis darauf liest sich wie „hier gilt nichts". Unabhängig
+      // von der gewählten Region — die Alpen sind der Horizont des Projekts,
+      // nicht das Wallis.
       maxBounds: alpenGrenzen(),
       minZoom: MIN_ZOOM,
       maxZoom: 17,
@@ -544,31 +545,6 @@ const eigenSymbol: ExpressionSpecification = [
 
 function addLayers(m: MlMap) {
   const empty: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
-
-  /**
-   * Der Rahmen zuerst — er liegt direkt auf der Hintergrundkarte und unter
-   * allem Eigenen. Alles, was diese App zeigt, liegt in den Alpen; was
-   * ausserhalb läge, gehörte ohnehin überdeckt.
-   */
-  m.addSource('rahmen', { type: 'geojson', data: maskeGeoJson() })
-  m.addLayer({
-    id: 'rahmen-fuellung',
-    type: 'fill',
-    source: 'rahmen',
-    filter: ['!=', ['get', 'kante'], true],
-    // Dieselbe Fläche wie unter der Oberfläche: die Karte wirkt wie ein
-    // ausgeschnittenes Blatt, nicht wie ein Ladefehler.
-    paint: { 'fill-color': '#0C1113', 'fill-opacity': 1 },
-  })
-  m.addLayer({
-    id: 'rahmen-kante',
-    type: 'line',
-    source: 'rahmen',
-    filter: ['==', ['get', 'kante'], true],
-    layout: { 'line-cap': 'round', 'line-join': 'round' },
-    // Eine Haarlinie, damit der Rand gezogen aussieht und nicht abgerissen.
-    paint: { 'line-color': '#94ABB0', 'line-opacity': 0.35, 'line-width': 1 },
-  })
 
   m.addSource('zones', { type: 'geojson', data: empty })
   m.addSource('points', { type: 'geojson', data: empty })

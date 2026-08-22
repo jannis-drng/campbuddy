@@ -328,38 +328,22 @@ async function importNature() {
   console.log(`Natur: ${features.length} Objekte, ${kb} KB -> ${out}`)
 }
 
-/* ---------------- Alpen: Umriss für den Kartenrahmen ---------------- */
+/* ---------------- Alpen: umschliessendes Rechteck ---------------- */
 
 /**
- * Der Alpenbogen als Fläche — nicht als Datenschicht, sondern als Rahmen.
+ * Wie weit die Karte reicht — als Rechteck, nicht als Umriss.
  *
- * Die Karte endet an diesem Umriss; ausserhalb liegt Dunkelheit statt einer
- * Weltkarte, über die diese App nichts zu sagen hat. Deshalb landet die Datei
- * auch unter `src/map/` und nicht bei den Legalitäts-Daten: sie behauptet
- * nichts über Recht, sie beschreibt nur, wo das Blatt aufhört.
+ * Gebraucht wird nur die umschliessende Box: die Karte selbst wird nirgends
+ * beschnitten, sie lässt sich bloss nicht beliebig weit von den Alpen
+ * wegschieben. Der Puffer ringsum steht in `src/map/alpenRahmen.ts`, weil er
+ * eine Gestaltungsfrage ist und keine Eigenschaft der OSM-Daten.
+ *
+ * Die Datei liegt unter `src/map/` und nicht bei den Legalitäts-Daten: sie
+ * behauptet nichts über Recht, sie beschreibt nur, wohin man scrollen kann.
  *
  * OSM-Relation 2698607, `natural=mountain_range`, Wikidata Q1286.
  */
 const ALPEN_RELATION = 2698607
-
-/**
- * Wie grob der Umriss sein darf, in Grad. Rund 500 m — auf den Zoomstufen, auf
- * denen er als Kartenrand dient, sieht man das nicht.
- */
-const ALPEN_TOLERANZ = 0.005
-
-/**
- * Wie weit der Umriss nach aussen wächst, in Grad.
- *
- * Gemeint ist der *Alpenraum*, nicht der Gebirgskamm: die Städte, aus denen man
- * losfährt, gehören aufs Blatt. Bei 1,1° sind das rund 120 km nach Norden und
- * Süden, 85 km nach Osten und Westen — genug für München, Mailand, Lyon, Wien,
- * Zürich, Turin und Ljubljana, mit Luft dahinter.
- */
-const ALPEN_WACHSTUM = 1.1
-
-/** Kantenlänge einer Rasterzelle beim Aufblasen, in Grad (~2 km). */
-const RASTER = 0.02
 
 async function importAlpen() {
   const data = await overpass(`
@@ -370,250 +354,29 @@ async function importAlpen() {
   const rel = data.elements.find((e) => e.type === 'relation')
   if (!rel) throw new Error('Alpen-Relation nicht gefunden')
 
-  const segmente = (rel.members ?? [])
+  const punkte = (rel.members ?? [])
     .filter((m) => m.role === 'outer' && m.geometry)
-    .map((m) => m.geometry.map((p) => [p.lon, p.lat]))
+    .flatMap((m) => m.geometry)
+  if (punkte.length === 0) throw new Error('Relation ohne Geometrie')
 
-  const rohPunkte = segmente.reduce((s, r) => s + r.length, 0)
-  const ringe = mergeRings(segmente)
-    .filter((r) => r.length > 3)
-    .map(closeRing)
-    .filter((r) => ringFlaeche(r) > 0.01)
-    .sort((a, b) => ringFlaeche(b) - ringFlaeche(a))
-
-  if (ringe.length === 0) throw new Error('Kein brauchbarer Ring aus der Relation')
-
-  console.log(`   Rohumriss: ${ringe.length} Ring(e), ${rohPunkte} Punkte`)
-  const gewachsen = aufblasen(ringe[0], ALPEN_WACHSTUM)
-  const vereinfacht = vereinfacheRing(gewachsen, ALPEN_TOLERANZ)
-  const gerundet = [vereinfacht.map(([x, y]) => [round(x), round(y)])]
-
-  const alle = gerundet.flat()
   const bbox = [
-    Math.min(...alle.map((p) => p[0])), Math.min(...alle.map((p) => p[1])),
-    Math.max(...alle.map((p) => p[0])), Math.max(...alle.map((p) => p[1])),
+    Math.min(...punkte.map((p) => p.lon)), Math.min(...punkte.map((p) => p.lat)),
+    Math.max(...punkte.map((p) => p.lon)), Math.max(...punkte.map((p) => p.lat)),
   ].map(round)
 
   const inhalt = {
     quelle: 'OpenStreetMap',
     source_url: `https://www.openstreetmap.org/relation/${ALPEN_RELATION}`,
     lizenz: 'ODbL',
-    hinweis: `Gebirgsumriss, um ${ALPEN_WACHSTUM}° nach aussen erweitert — gedacht als Kartenrahmen, nicht als Gebietsgrenze.`,
-    wachstum_grad: ALPEN_WACHSTUM,
+    hinweis: 'Umschliessendes Rechteck des Alpenbogens — begrenzt den Kartenausschnitt, ist aber keine Gebietsgrenze.',
     bbox,
-    geometry: { type: 'MultiPolygon', coordinates: gerundet.map((r) => [r]) },
   }
 
   const out = resolve(ROOT, 'src/map', 'alpen.json')
   mkdirSync(dirname(out), { recursive: true })
-  writeFileSync(out, JSON.stringify(inhalt) + '\n')
-  const kb = Math.round(JSON.stringify(inhalt).length / 1024)
-  console.log(`Alpen: ${rohPunkte} -> ${vereinfacht.length} Punkte, ${kb} KB -> ${out}`)
+  writeFileSync(out, JSON.stringify(inhalt, null, 2) + '\n')
+  console.log(`Alpen: ${punkte.length} Punkte ausgewertet -> ${out}`)
   console.log(`   Umschliessend: ${bbox.join(', ')}`)
-  for (const [name, lng, lat] of PROBESTAEDTE) {
-    const drin = lng > bbox[0] && lng < bbox[2] && lat > bbox[1] && lat < bbox[3]
-    console.log(`   ${drin ? '✓' : '✗'} ${name}`)
-  }
-}
-
-/** Kontrolle, dass der Rahmen tatsächlich den Alpenraum umfasst. */
-const PROBESTAEDTE = [
-  ['München', 11.58, 48.14],
-  ['Mailand', 9.19, 45.46],
-  ['Lyon', 4.83, 45.76],
-  ['Wien', 16.37, 48.21],
-  ['Zürich', 8.54, 47.37],
-  ['Turin', 7.69, 45.07],
-  ['Ljubljana', 14.51, 46.06],
-]
-
-/**
- * Den Umriss nach aussen wachsen lassen.
- *
- * Die Ecken einzeln nach aussen zu schieben wäre kürzer gewesen, erzeugt an
- * einspringenden Stellen aber Schlaufen — und der Alpenbogen ist voller
- * einspringender Täler. Der Weg über ein Raster kann das nicht: was gefüllt
- * ist, ist gefüllt.
- *
- * Drei Schritte: die Fläche in ein Raster füllen, jede Zelle mit ihrem Abstand
- * zur Fläche versehen (exakte euklidische Distanztransformation nach
- * Felzenszwalb/Huttenlocher), dann die Kante des gewachsenen Bereichs ablaufen.
- */
-function aufblasen(ring, wachstum) {
-  const rand = wachstum + 4 * RASTER
-  const minX = Math.min(...ring.map((p) => p[0])) - rand
-  const maxX = Math.max(...ring.map((p) => p[0])) + rand
-  const minY = Math.min(...ring.map((p) => p[1])) - rand
-  const maxY = Math.max(...ring.map((p) => p[1])) + rand
-
-  const breite = Math.ceil((maxX - minX) / RASTER) + 1
-  const hoehe = Math.ceil((maxY - minY) / RASTER) + 1
-  const zellX = (i) => minX + i * RASTER
-  const zellY = (j) => minY + j * RASTER
-
-  // --- 1. Füllen per Scanlinie: pro Rasterzeile die Schnittpunkte mit dem Ring.
-  const innen = new Uint8Array(breite * hoehe)
-  for (let j = 0; j < hoehe; j++) {
-    const y = zellY(j)
-    const schnitte = []
-    for (let k = 1; k < ring.length; k++) {
-      const [x1, y1] = ring[k - 1]
-      const [x2, y2] = ring[k]
-      if ((y1 > y) === (y2 > y)) continue
-      schnitte.push(x1 + ((y - y1) / (y2 - y1)) * (x2 - x1))
-    }
-    schnitte.sort((a, b) => a - b)
-    for (let s = 0; s + 1 < schnitte.length; s += 2) {
-      const von = Math.max(0, Math.ceil((schnitte[s] - minX) / RASTER))
-      const bis = Math.min(breite - 1, Math.floor((schnitte[s + 1] - minX) / RASTER))
-      for (let i = von; i <= bis; i++) innen[j * breite + i] = 1
-    }
-  }
-
-  // --- 2. Abstand jeder Zelle zur gefüllten Fläche.
-  const grenze = Math.pow(wachstum / RASTER, 2)
-  const dist = distanzQuadrate(innen, breite, hoehe)
-  const gross = new Uint8Array(breite * hoehe)
-  for (let n = 0; n < gross.length; n++) gross[n] = dist[n] <= grenze ? 1 : 0
-
-  // --- 3. Kante ablaufen (Moore-Nachbarschaft).
-  const kante = randVerfolgen(gross, breite, hoehe)
-  if (!kante) throw new Error('Kante des gewachsenen Umrisses nicht gefunden')
-  const punkte = kante.map(([i, j]) => [zellX(i), zellY(j)])
-  return closeRing(punkte)
-}
-
-/**
- * Exakte euklidische Distanztransformation in Zellen zum Quadrat.
- * Zwei Durchgänge über Spalten und Zeilen, je linear — Felzenszwalb/Huttenlocher.
- */
-function distanzQuadrate(maske, breite, hoehe) {
-  const UNENDLICH = 1e12
-  const f = new Float64Array(Math.max(breite, hoehe))
-  const d = new Float64Array(breite * hoehe)
-
-  for (let n = 0; n < d.length; n++) d[n] = maske[n] ? 0 : UNENDLICH
-
-  const spalte = new Float64Array(hoehe)
-  for (let i = 0; i < breite; i++) {
-    for (let j = 0; j < hoehe; j++) f[j] = d[j * breite + i]
-    eindimensional(f, spalte, hoehe)
-    for (let j = 0; j < hoehe; j++) d[j * breite + i] = spalte[j]
-  }
-  const zeile = new Float64Array(breite)
-  for (let j = 0; j < hoehe; j++) {
-    for (let i = 0; i < breite; i++) f[i] = d[j * breite + i]
-    eindimensional(f, zeile, breite)
-    for (let i = 0; i < breite; i++) d[j * breite + i] = zeile[i]
-  }
-  return d
-}
-
-/** Untere Einhüllende von Parabeln — der Kern der Distanztransformation. */
-function eindimensional(f, aus, n) {
-  const v = new Int32Array(n)
-  const z = new Float64Array(n + 1)
-  let k = 0
-  v[0] = 0
-  z[0] = -1e20
-  z[1] = 1e20
-  for (let q = 1; q < n; q++) {
-    let s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k])
-    while (s <= z[k]) {
-      k--
-      s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k])
-    }
-    k++
-    v[k] = q
-    z[k] = s
-    z[k + 1] = 1e20
-  }
-  k = 0
-  for (let q = 0; q < n; q++) {
-    while (z[k + 1] < q) k++
-    aus[q] = (q - v[k]) * (q - v[k]) + f[v[k]]
-  }
-}
-
-/** Aussenkante einer Rastermaske ablaufen (Moore-Nachbarschaft, im Uhrzeigersinn). */
-function randVerfolgen(maske, breite, hoehe) {
-  const gefuellt = (i, j) => i >= 0 && j >= 0 && i < breite && j < hoehe && maske[j * breite + i] === 1
-
-  let start = null
-  for (let j = 0; j < hoehe && !start; j++) {
-    for (let i = 0; i < breite; i++) {
-      if (maske[j * breite + i]) { start = [i, j]; break }
-    }
-  }
-  if (!start) return null
-
-  const nachbarn = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
-  const rand = [start]
-  let [ci, cj] = start
-  let richtung = 6
-  // Grosszügige Obergrenze: der Umfang kann die Zellzahl nie überschreiten.
-  const maxSchritte = breite * hoehe * 4
-
-  for (let schritt = 0; schritt < maxSchritte; schritt++) {
-    let gefunden = false
-    for (let n = 0; n < 8; n++) {
-      const r = (richtung + n) % 8
-      const ni = ci + nachbarn[r][0]
-      const nj = cj + nachbarn[r][1]
-      if (!gefuellt(ni, nj)) continue
-      ci = ni; cj = nj
-      // Um zwei zurückdrehen: von dort aus weitersuchen, wo man herkam.
-      richtung = (r + 6) % 8
-      rand.push([ci, cj])
-      gefunden = true
-      break
-    }
-    if (!gefunden) break
-    if (ci === start[0] && cj === start[1] && rand.length > 3) break
-  }
-  return rand
-}
-
-/** Ramer-Douglas-Peucker, iterativ statt rekursiv — 58 000 Punkte sprengen den Stack. */
-function vereinfacheRing(punkte, toleranz) {
-  if (punkte.length < 4) return punkte
-  const behalten = new Uint8Array(punkte.length)
-  behalten[0] = 1
-  behalten[punkte.length - 1] = 1
-
-  const stapel = [[0, punkte.length - 1]]
-  while (stapel.length) {
-    const [start, ende] = stapel.pop()
-    let maxAbstand = 0
-    let index = -1
-    for (let i = start + 1; i < ende; i++) {
-      const d = abstandZurGeraden(punkte[i], punkte[start], punkte[ende])
-      if (d > maxAbstand) { maxAbstand = d; index = i }
-    }
-    if (maxAbstand > toleranz && index > 0) {
-      behalten[index] = 1
-      stapel.push([start, index], [index, ende])
-    }
-  }
-  return punkte.filter((_, i) => behalten[i])
-}
-
-function abstandZurGeraden(p, a, b) {
-  const dx = b[0] - a[0]
-  const dy = b[1] - a[1]
-  const laengeQ = dx * dx + dy * dy
-  if (laengeQ === 0) return Math.hypot(p[0] - a[0], p[1] - a[1])
-  const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / laengeQ))
-  return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy))
-}
-
-/** Flächeninhalt in Quadratgrad — reicht, um Krümel von Hauptringen zu trennen. */
-function ringFlaeche(ring) {
-  let summe = 0
-  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    summe += (ring[j][0] + ring[i][0]) * (ring[j][1] - ring[i][1])
-  }
-  return Math.abs(summe / 2)
 }
 
 /* ---------------- main ---------------- */
