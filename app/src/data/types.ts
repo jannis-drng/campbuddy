@@ -123,6 +123,46 @@ export interface EigenerPunkt {
   created_at?: string
 }
 
+/**
+ * Ein Kanton — beziehungsweise allgemein die Ebene, die ausserhalb
+ * eingezeichneter Schutzgebiete zuständig ist.
+ *
+ * Das ist in der Schweiz der eigentliche Punkt: Bundesrecht regelt die
+ * Schutzgebiete, alles andere regeln Kanton und Gemeinde. Eine landesweite
+ * Auskunft ist dort bestenfalls unscharf. Diese Ebene sagt deshalb wenigstens,
+ * *wer* zuständig ist — und wo die Recherche dazu steht.
+ */
+export interface Kanton {
+  id: string
+  /** ISO-Code wie 'CH-BE'. Schlüssel der Rechtspflege. */
+  code: string | null
+  name: string
+  source_url: string
+  geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
+}
+
+/**
+ * Die kantonale Regelung zum Übernachten im Freien.
+ *
+ * Fehlt ein Eintrag, ist das keine Lücke im Code, sondern der wahrheitsgemässe
+ * Zustand: für diesen Kanton wurde noch nicht recherchiert. Die Oberfläche
+ * sagt das auch so, statt eine landesweite Faustregel als kantonale Auskunft
+ * auszugeben.
+ */
+export interface KantonRecht {
+  status: LegalStatus
+  tent_allowed: Permission
+  vehicle_allowed: Permission
+  fire_allowed: Permission
+  /** Was gilt, in zwei bis vier Sätzen. */
+  summary: string
+  conditions: string | null
+  source: string
+  source_url: string
+  review_status: ReviewStatus
+  last_verified: string | null
+}
+
 export type RegionCode = string
 
 export interface Region {

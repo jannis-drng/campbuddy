@@ -32,7 +32,8 @@ Campingplätze in Routennähe liegen. Export als GPX.
 
 | Ebene | Inhalt (Schweiz) | Quelle |
 |---|---|---|
-| Zonen | 382 Schutzgebietsflächen — 345 regelbasiert eingestuft, 37 ungeklärt, **0 geprüft** | Geometrie aus OpenStreetMap, Einstufung abgeleitet (siehe unten) |
+| Zonen | 622 Schutzgebietsflächen — 562 regelbasiert eingestuft, 60 ungeklärt, **0 geprüft** | Geometrie aus OpenStreetMap, Einstufung abgeleitet (siehe unten) |
+| Kantone | 26 Flächen für die Zuständigkeit ausserhalb der Schutzgebiete | OpenStreetMap; Rechtspflege offen |
 | Punkte | 955 (318 Hütten, 438 Campingplätze, 199 Stellplätze) | OpenStreetMap |
 | Gipfel | 7274 benannte Gipfel mit Höhe | OpenStreetMap |
 | Natur | Seen, Quellen, Trinkwasser, Wasserfälle, Aussichtspunkte | OpenStreetMap |
@@ -226,9 +227,17 @@ Richtung:
 
 | OSM-Merkmal | Einstufung |
 |---|---|
-| `leisure=nature_reserve` | verboten (Zelt, Fahrzeug, Feuer) |
+| `leisure=nature_reserve`, `boundary=national_park` | verboten (Zelt, Fahrzeug, Feuer) |
+| Titel enthält „Jagdbann" | verboten — Schutzzweck ist die Ruhe des Wildes (VEJ, SR 922.31) |
+| Titel enthält „Wildruhe" oder „Wildschutz" | verboten |
+| Titel enthält „Moor", „Ried", „Aue" | verboten — Bundesinventar, trittempfindlich |
 | `protect_class` 1a, 1b, 2 oder 4 | verboten |
+| `protect_class` 5, Landschaftsschutz, regionaler Naturpark | geduldet/bedingt, Fahrzeug verboten |
 | alles andere | **ohne Eintrag** → erscheint als „ungeklärt" |
+
+Die Regeln werden der Reihe nach geprüft, die erste passende gewinnt. Nur eine läuft nicht
+auf „verboten" hinaus: Landschaftsschutz und regionale Naturpärke sind grossflächig und
+kennen kein pauschales Zeltverbot — Kernzonen darin sehr wohl.
 
 > Eine Karte, die zu Unrecht warnt, kostet einen Umweg. Eine, die zu Unrecht erlaubt,
 > kostet eine Anzeige.
@@ -239,15 +248,58 @@ werden vom Ableiten **nie überschrieben**. Der landesweite `baseline_status` is
 `unknown`: was im Wallis oberhalb der Waldgrenze verbreitet geduldet wird, ist in anderen
 Kantonen ausdrücklich verboten.
 
+### Wer ausserhalb der Schutzgebiete zuständig ist
+
+Ein Klick auf unmarkiertes Gelände zeigte bisher den landesweiten Rahmen. Für die Schweiz
+ist das die schwächste mögliche Auskunft: Bundesrecht regelt die Schutzgebiete, alles
+andere regeln **Kanton und Gemeinde** — und die tun das sehr unterschiedlich.
+
+Jetzt liegen die 26 Kantonsgrenzen gebündelt in `app/src/data/kantone/CH.json` (grob
+vereinfacht, ~150 m — die Grenze dient der Zuordnung, nicht der Vermessung). Ein Klick
+sagt: „Zuständig ist hier Graubünden (CH-GR), dazu die Gemeinde."
+
+Was dort *gilt*, steht in `app/src/data/kantone.legal.json` — und die ist **leer**. Das ist
+kein Versehen, sondern der wahrheitsgemässe Zustand: kantonale Regelungen gibt es nirgends
+maschinenlesbar, sie sind Rechtsrecherche. Fehlt ein Eintrag, sagt die Karte „noch nicht
+recherchiert", statt eine landesweite Faustregel als kantonale Auskunft auszugeben.
+
+Einen Kanton eintragen — nur mit Quelle und Prüfdatum:
+
+```json
+{ "kantone": { "CH-GR": {
+  "status": "tolerated", "tent_allowed": "conditional",
+  "vehicle_allowed": "no", "fire_allowed": "conditional",
+  "summary": "…", "conditions": "…",
+  "source": "Kantonales Gesetz …", "source_url": "https://…",
+  "review_status": "quelle", "last_verified": "2026-08-22"
+} } }
+```
+
+### Was die Karte NICHT zeigt
+
+Ehrlichkeit über die Grenzen gehört hier zur Funktion:
+
+- **Eidgenössische Jagdbanngebiete** (42 nach VEJ Anhang 1) sind in OSM **nicht als solche
+  benannt**. Ein Teil steckt vermutlich in den 102 Flächen mit `protect_class=4`, die als
+  verboten eingestuft werden — sicher ist das nicht. Der verbindliche Datensatz liegt beim
+  BAFU.
+- **Wildruhezonen**: in ganz OSM finden sich für die Schweiz genau **vier**. Tatsächlich
+  gibt es mehrere hundert, geführt von BAFU und Kantonen.
+- **Kantonale und kommunale Regeln**: siehe oben, noch keine einzige recherchiert.
+
+Eine Fläche, die hier fehlt, ist deshalb **kein Freibrief**. Die Karte weist das an jeder
+Fläche und im Haftungshinweis aus.
+
 ### Neu importieren und einspielen
 
 ```bash
-REGION=CH npm run import:osm --prefix app -- zonen punkte gipfel natur
+REGION=CH npm run import:osm --prefix app -- zonen punkte gipfel natur kantone
 REGION=CH npm run import:osm --prefix app -- recht     # Einstufung ableiten
 REGION=CH node app/scripts/seed-sql.mjs                # Seed-Migrationen erzeugen
 ```
 
-Der Natur-Import läuft **kachelweise** (3×3 über das Land). Landesweit ist allein
+Zonen- und Natur-Import laufen **kachelweise** (3×3 über das Land) und sind
+**wiederaufnehmbar**: nach jeder Kachel wird gespeichert, ein neuer Lauf ergänzt nur. Landesweit ist allein
 Trinkwasser fünfstellig, und die öffentliche Overpass-Instanz bricht solche Antworten mit
 einem Verbindungsabbruch ab — neun kleine Abfragen kommen durch, wo eine grosse scheitert,
 und belasten einen Gemeinschaftsserver auch weniger.

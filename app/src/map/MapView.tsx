@@ -62,8 +62,11 @@ interface Props {
   onPointClick: (point: Point) => void
   onNatureClick: (feature: NatureFeature) => void
   onEigenClick: (punkt: EigenerPunkt) => void
-  /** Klick auf freie Fläche — dort gilt nur der allgemeine Rahmen der Region. */
-  onLeerClick: () => void
+  /**
+   * Klick auf freie Fläche. Dort ist keine Zone eingezeichnet, also entscheidet,
+   * wer an dieser Stelle zuständig ist — deshalb kommt der Ort mit.
+   */
+  onLeerClick: (position: Position) => void
   /**
    * Meldet den sichtbaren Ausschnitt nach jeder Bewegung. Gipfel und
    * Natur-Objekte werden danach nachgeladen: landesweit wären es Zehntausende,
@@ -383,7 +386,7 @@ export function MapView({
         // allgemeine Rahmen der Region. Genau an dieser Stelle stellt sich die
         // Frage — deshalb kommt die Antwort auch hier und nicht in einem
         // Dauerpanel über der Karte.
-        latest.current.onLeerClick()
+        latest.current.onLeerClick(position)
       })
 
       // Im Zeichenmodus bleibt das Fadenkreuz stehen — sonst würde der Cursor

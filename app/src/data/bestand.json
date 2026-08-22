@@ -1,13 +1,14 @@
 {
   "region": "CH",
   "stand": "2026-08-22",
-  "zonen": 382,
-  "zonen_abgeleitet": 345,
-  "zonen_ungeklaert": 37,
+  "zonen": 622,
+  "zonen_abgeleitet": 562,
+  "zonen_ungeklaert": 60,
   "zonen_geprueft": 0,
   "punkte": 955,
   "huetten": 318,
   "campingplaetze": 438,
   "stellplaetze": 199,
-  "gipfel": 7274
+  "gipfel": 7274,
+  "natur": 1603
 }

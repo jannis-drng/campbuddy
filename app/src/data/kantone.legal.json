@@ -1,0 +1,4 @@
+{
+  "_hinweis": "Kantonale Regelungen zum Übernachten im Freien. Schlüssel ist der ISO-Code (z. B. 'CH-BE'). Leer heisst: für diesen Kanton wurde noch nicht recherchiert — und die Karte sagt das auch so. Eintragen nur mit Quelle und Prüfdatum, siehe README.",
+  "kantone": {}
+}

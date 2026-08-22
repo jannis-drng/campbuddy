@@ -11,7 +11,9 @@ import {
   MapPin, Mountain, Phone, Pencil, Scale, Star, Tent, Trash2, Truck, Users, Waves, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { EigenerPunkt, NatureFeature, Point, Region, Zone } from '../data/types'
+import type {
+  EigenerPunkt, Kanton, KantonRecht, NatureFeature, Point, Region, Zone,
+} from '../data/types'
 import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
 import { PermissionRow, ReviewBadge, STATUS_LABEL, StatusBadge } from './ui'
 import { GearHint } from '../affiliate/GearHint'
@@ -23,7 +25,16 @@ export type Selection =
    * dort, wo keine eingezeichnete Zone liegt und deshalb der allgemeine
    * Rahmen gilt. Genau die Stelle, an der man sich die Frage stellt.
    */
-  | { kind: 'region'; region: Region; stats: { total: number; entwurf: number }; quelle: 'gebündelt' | 'datenbank' }
+  | {
+      kind: 'region'
+      region: Region
+      stats: { total: number; entwurf: number }
+      quelle: 'gebündelt' | 'datenbank'
+      /** Wer an der angetippten Stelle zuständig ist — null ausserhalb der Schweiz. */
+      kanton: Kanton | null
+      /** Dessen recherchierte Regelung — null heisst „noch nicht recherchiert". */
+      kantonRecht: KantonRecht | null
+    }
   | { kind: 'zone'; zone: Zone }
   | { kind: 'point'; point: Point }
   | { kind: 'natur'; feature: NatureFeature }
@@ -65,7 +76,9 @@ interface InfoPanelProps {
 function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: LucideIcon; titel: string } {
   switch (selection.kind) {
     case 'region':
-      return { art: `Rechtslage · ${selection.region.country}`, icon: Scale, titel: selection.region.name }
+      return selection.kanton
+        ? { art: 'Rechtslage · zuständig', icon: Scale, titel: selection.kanton.name }
+        : { art: 'Rechtslage', icon: Scale, titel: selection.region.name }
     case 'zone':
       return { art: 'Zone', icon: MapPin, titel: selection.zone.name }
     case 'point':
@@ -117,7 +130,13 @@ export function InfoPanel({
 
       <div className="min-h-0 flex-1 overflow-y-auto">
         {selection.kind === 'region' && (
-          <RegionBody region={selection.region} stats={selection.stats} quelle={selection.quelle} />
+          <RegionBody
+            region={selection.region}
+            stats={selection.stats}
+            quelle={selection.quelle}
+            kanton={selection.kanton}
+            recht={selection.kantonRecht}
+          />
         )}
         {selection.kind === 'zone' && <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />}
         {selection.kind === 'point' && <PointBody point={selection.point} />}
@@ -145,11 +164,13 @@ export function InfoPanel({
  * der allgemeine Rahmen die einzige Auskunft ist, die es gibt.
  */
 function RegionBody({
-  region, stats, quelle,
+  region, stats, quelle, kanton, recht,
 }: {
   region: Region
   stats: { total: number; entwurf: number }
   quelle: 'gebündelt' | 'datenbank'
+  kanton: Kanton | null
+  recht: KantonRecht | null
 }) {
   const [quellenOffen, setQuellenOffen] = useState(false)
 
@@ -159,11 +180,55 @@ function RegionBody({
       <div className="rounded-mittel border border-kante bg-flaeche-1 px-3 py-2.5">
         <Label>Hier ist keine Fläche eingezeichnet, es gilt</Label>
         <p className="mt-1 text-titel font-semibold text-ink-50">
-          {STATUS_LABEL[region.legal_framework.baseline_status]}
+          {STATUS_LABEL[recht ? recht.status : region.legal_framework.baseline_status]}
         </p>
       </div>
 
-      <p className="text-klein leading-relaxed text-ink-300">{region.legal_framework.summary}</p>
+      {/*
+        Ausserhalb der Schutzgebiete regeln Kanton und Gemeinde — und die tun
+        das sehr unterschiedlich. Wenn die Karte dazu nichts weiss, sagt sie
+        genau das, statt eine landesweite Faustregel als kantonale Auskunft
+        auszugeben.
+      */}
+      {kanton && !recht && (
+        <Hinweis ton="warnung" icon={Scale}>
+          <strong className="font-semibold">Kantonale Regelung noch nicht recherchiert.</strong>{' '}
+          Zuständig ist hier {kanton.name}
+          {kanton.code && ` (${kanton.code})`}, dazu die Gemeinde. Was unten steht, ist der
+          landesweite Rahmen — er ersetzt die kantonale Auskunft nicht. Erkundige dich vor
+          Ort oder beim Kanton.
+        </Hinweis>
+      )}
+
+      {kanton && recht && (
+        <section>
+          <Label className="mb-1">Was in {kanton.name} gilt</Label>
+          <PermissionRow label="Zelt / Biwak" value={recht.tent_allowed} icon={Tent} />
+          <PermissionRow label="Auto / Camper" value={recht.vehicle_allowed} icon={Truck} />
+          <PermissionRow label="Offenes Feuer" value={recht.fire_allowed} icon={Flame} />
+          <p className="mt-2.5 text-klein leading-relaxed text-ink-300">{recht.summary}</p>
+          {recht.conditions && (
+            <p className="mt-1.5 text-klein leading-relaxed text-ink-400">{recht.conditions}</p>
+          )}
+          <div className="mt-2.5">
+            <ReviewBadge status={recht.review_status} lastVerified={recht.last_verified} />
+          </div>
+          {recht.source_url && (
+            <a
+              href={recht.source_url} target="_blank" rel="noreferrer noopener"
+              className="mt-2 inline-flex items-center gap-1 text-klein text-gletscher-400
+                         transition-colors duration-[160ms] hover:text-gletscher-300"
+            >
+              {recht.source} <ExternalLink size={11} strokeWidth={2.5} aria-hidden />
+            </a>
+          )}
+        </section>
+      )}
+
+      <div>
+        <Label className="mb-1.5">Landesweiter Rahmen</Label>
+        <p className="text-klein leading-relaxed text-ink-300">{region.legal_framework.summary}</p>
+      </div>
 
       <div>
         <button

@@ -24,6 +24,7 @@ import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/rout
 import { AccountPanel } from './components/AccountPanel'
 import { PunktDialog } from './components/PunktDialog'
 import { ladeEigenePunkte, punktLoeschen } from './services/eigenePunkte'
+import { kantonAn, kantonRecht } from './data/kantone'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
@@ -382,7 +383,15 @@ export default function App() {
             onPointClick={(point) => setSelection({ kind: 'point', point })}
             onNatureClick={(feature) => setSelection({ kind: 'natur', feature })}
             onEigenClick={(punkt) => setSelection({ kind: 'eigen', punkt })}
-            onLeerClick={() => setSelection({ kind: 'region', region, stats, quelle: datenquelle })}
+            onLeerClick={(position) => {
+              // Wer an dieser Stelle zuständig ist, entscheidet die Auskunft —
+              // ausserhalb der Schutzgebiete regeln Kanton und Gemeinde.
+              const kanton = kantonAn(position)
+              setSelection({
+                kind: 'region', region, stats, quelle: datenquelle,
+                kanton, kantonRecht: kantonRecht(kanton),
+              })
+            }}
             onAusschnitt={setAusschnitt}
             onMarkieren={(position) => {
               setDialogPunkt(null)

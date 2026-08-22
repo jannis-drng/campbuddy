@@ -39,6 +39,9 @@ const REGION = process.env.REGION ?? 'CH-VS'
  * fällt einer aus, wird der nächste genommen, statt aufzugeben.
  */
 const ENDPOINTS = [
+  // Zuerst die Instanz der Schweizer OSM-Community: näher an den Daten, die
+  // dieses Projekt braucht, und spürbar entspannter als die grossen Spiegel.
+  'https://overpass.osm.ch/api/interpreter',
   'https://overpass-api.de/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter',
   'https://overpass.private.coffee/api/interpreter',
@@ -253,65 +256,145 @@ function abstandZurGeraden(p, a, b) {
   return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy))
 }
 
+/**
+ * Was als Schutzgebiet geholt wird.
+ *
+ * Vorher waren es nur `nature_reserve` und `protected_area` *mit Namen*. Das
+ * hat zwei Dinge verschluckt, die für diese Karte besonders zählen:
+ * eidgenössische Jagdbanngebiete und Wildruhezonen sind in OSM oft ohne
+ * `name`, aber mit `protection_title` erfasst — und gerade dort ist Übernachten
+ * das Problem, weil der Schutzzweck die Ruhe des Wildes ist. Nationalpark und
+ * die Moor- und Auen-Inventare des Bundes fehlten ebenfalls.
+ *
+ * Namenlose Flächen bekommen ihren Schutztitel als Anzeigenamen: „Wildruhezone"
+ * ist eine brauchbare Auskunft, „(unbenannt)" nicht.
+ */
+const SCHUTZ_SELEKTOREN = [
+  '["boundary"="protected_area"]',
+  '["leisure"="nature_reserve"]',
+  '["boundary"="national_park"]',
+]
+
 async function importProtectedAreas() {
-  const q = `
-    [out:json][timeout:300];
-    ${GEBIET}
-    (
-      relation["boundary"="protected_area"]["name"](area.a);
-      way["boundary"="protected_area"]["name"](area.a);
-      relation["leisure"="nature_reserve"]["name"](area.a);
-      way["leisure"="nature_reserve"]["name"](area.a);
-    );
-    out geom;`
-  const data = await overpass(q)
+  const out = resolve(AUSGABE, 'zones', `${REGION}.osm.json`)
 
-  const features = []
-  for (const el of data.elements) {
-    const t = el.tags ?? {}
-    let coords = null
-
-    if (el.type === 'way' && el.geometry) {
-      const ring = el.geometry.map((p) => [round(p.lon), round(p.lat)])
-      if (ring.length > 3) coords = [closeRing(ring)]
-    } else if (el.type === 'relation' && el.members) {
-      const outers = el.members
-        .filter((m) => m.role === 'outer' && m.geometry)
-        .map((m) => m.geometry.map((p) => [round(p.lon), round(p.lat)]))
-      const merged = mergeRings(outers).filter((r) => r.length > 3)
-      if (merged.length) coords = merged.map(closeRing)
-    }
-    if (!coords) continue
-    coords = coords.map((ring) => vereinfacheRing(ring, ZONEN_TOLERANZ)).filter((r) => r.length > 3)
-    if (coords.length === 0) continue
-
-    features.push({
-      type: 'Feature',
-      id: `osm-${el.type}-${el.id}`,
-      properties: {
-        osm_id: `${el.type}/${el.id}`,
-        name: t.name ?? t['name:de'] ?? '(unbenannt)',
-        protect_class: t.protect_class ?? null,
-        protection_title: t.protection_title ?? null,
-        // Für die regelbasierte Ableitung der Rechtslage gebraucht.
-        leisure: t.leisure ?? null,
-        boundary: t.boundary ?? null,
-        operator: t.operator ?? null,
-        source: 'OpenStreetMap',
-        source_url: `https://www.openstreetmap.org/${el.type}/${el.id}`,
-      },
-      geometry: coords.length === 1
-        ? { type: 'Polygon', coordinates: coords }
-        : { type: 'MultiPolygon', coordinates: coords.map((c) => [c]) },
-    })
+  /**
+   * Dieselbe Mechanik wie beim Natur-Import: kachelweise, wiederaufnehmbar.
+   *
+   * Die erweiterte Abfrage — Jagdbanngebiete, Wildruhezonen, Moore, Nationalpark
+   * — ist deutlich schwerer als die alte, und die öffentlichen Overpass-Server
+   * lehnen sie landesweit am Stück ab. Neun kleine Abfragen kommen durch; was
+   * eine Kachel liefert, bleibt auch dann erhalten, wenn die nächste scheitert.
+   */
+  const gefunden = new Map()
+  if (existsSync(out)) {
+    const alt = JSON.parse(readFileSync(out, 'utf8'))
+    for (const f of alt.features ?? []) gefunden.set(f.id, f)
+    console.log(`   ${gefunden.size} Flächen aus früherem Lauf übernommen`)
   }
 
-  const fc = { type: 'FeatureCollection', features }
-  const out = resolve(AUSGABE, 'zones', `${REGION}.osm.json`)
-  mkdirSync(dirname(out), { recursive: true })
-  writeFileSync(out, JSON.stringify(fc) + '\n')
-  const kb = Math.round(JSON.stringify(fc).length / 1024)
+  const sichern = () => {
+    const features = [...gefunden.values()]
+      .sort((x, y) => x.properties.name.localeCompare(y.properties.name, 'de'))
+    mkdirSync(dirname(out), { recursive: true })
+    writeFileSync(out, JSON.stringify({ type: 'FeatureCollection', features }) + '\n')
+    return features
+  }
+
+  const felder = kacheln(REGION)
+  const luecken = []
+
+  for (const [index, kachel] of felder.entries()) {
+    const box = kachel ? `(${kachel.join(',')})` : ''
+    const q = `
+      [out:json][timeout:300];
+      ${GEBIET}
+      (
+        ${SCHUTZ_SELEKTOREN.flatMap((sel) => [
+          `relation${sel}(area.a)${box};`,
+          `way${sel}(area.a)${box};`,
+        ]).join('\n        ')}
+      );
+      out geom;`
+
+    let data
+    try {
+      data = await overpass(q)
+    } catch (e) {
+      luecken.push(`Kachel ${index + 1}`)
+      console.log(`\n   Kachel ${index + 1} übersprungen (${e.message})`)
+      continue
+    }
+
+    let neuInKachel = 0
+    for (const el of data.elements) {
+      try {
+      const id = `osm-${el.type}-${el.id}`
+      // Eine Fläche kann an mehrere Kacheln grenzen; Overpass liefert sie dann
+      // mehrfach, jedes Mal vollständig.
+      if (gefunden.has(id)) continue
+      const t = el.tags ?? {}
+      let coords = null
+
+      // Overpass setzt Platzhalter ohne Koordinaten, wo ein Knoten ausserhalb
+      // des abgefragten Ausschnitts liegt — bei kachelweisen Abfragen also an
+      // jeder Kachelkante. Unbehandelt reisst das den ganzen Lauf ab.
+      const punkte = (g) => g.filter((p) => p && p.lon != null && p.lat != null)
+        .map((p) => [round(p.lon), round(p.lat)])
+
+      if (el.type === 'way' && el.geometry) {
+        const ring = punkte(el.geometry)
+        if (ring.length > 3) coords = [closeRing(ring)]
+      } else if (el.type === 'relation' && el.members) {
+        const outers = el.members
+          .filter((m) => m.role === 'outer' && m.geometry)
+          .map((m) => punkte(m.geometry))
+          .filter((g) => g.length > 1)
+        const merged = mergeRings(outers).filter((r) => r.length > 3)
+        if (merged.length) coords = merged.map(closeRing)
+      }
+      if (!coords) continue
+      coords = coords.map((ring) => vereinfacheRing(ring, ZONEN_TOLERANZ)).filter((r) => r.length > 3)
+      if (coords.length === 0) continue
+
+      gefunden.set(id, {
+        type: 'Feature',
+        id,
+        properties: {
+          osm_id: `${el.type}/${el.id}`,
+          name: t.name ?? t['name:de'] ?? t.protection_title ?? '(unbenannt)',
+          protect_class: t.protect_class ?? null,
+          protection_title: t.protection_title ?? null,
+          // Für die regelbasierte Ableitung der Rechtslage gebraucht.
+          leisure: t.leisure ?? null,
+          boundary: t.boundary ?? null,
+          operator: t.operator ?? null,
+          source: 'OpenStreetMap',
+          source_url: `https://www.openstreetmap.org/${el.type}/${el.id}`,
+        },
+        geometry: coords.length === 1
+          ? { type: 'Polygon', coordinates: coords }
+          : { type: 'MultiPolygon', coordinates: coords.map((c) => [c]) },
+      })
+      neuInKachel++
+      } catch (e) {
+        // Eine kaputte Fläche ist eine Fläche weniger, kein Grund, den Lauf
+        // abzubrechen. Sie wird genannt, damit sie nicht lautlos verschwindet.
+        console.log(`\n   ${el.type}/${el.id} übersprungen: ${e.message}`)
+      }
+    }
+
+    console.log(`   Kachel ${index + 1}/${felder.length}: +${neuInKachel} (insgesamt ${gefunden.size})`)
+    sichern()
+    if (felder.length > 1) await new Promise((r) => setTimeout(r, 1500))
+  }
+
+  const features = sichern()
+  const kb = Math.round(JSON.stringify(features).length / 1024)
   console.log(`Schutzgebiete: ${features.length} Flächen, ${kb} KB -> ${out}`)
+  if (luecken.length > 0) {
+    console.log(`   ${luecken.length} Lücke(n): ${luecken.join(', ')} — erneut laufen lassen.`)
+  }
 }
 
 /** Ring schließen (erster == letzter Punkt), wie GeoJSON es verlangt. */
@@ -410,8 +493,34 @@ function kacheln(region) {
 }
 
 async function importNature() {
+  const out = resolve(AUSGABE, 'nature', `${REGION}.json`)
+
+  /**
+   * Was schon da ist, bleibt.
+   *
+   * Der Lauf besteht aus Dutzenden Abfragen an einen Gemeinschaftsserver, und
+   * der antwortet unter Last auch mal mit 502. Früher warf ein einziger
+   * Fehlschlag alles Bisherige weg — nach zwanzig Minuten stand man wieder bei
+   * null. Jetzt wird nach jeder Gattung gespeichert und beim nächsten Lauf
+   * darauf aufgebaut; fehlende Kacheln füllen sich über mehrere Anläufe.
+   */
   const gefunden = new Map()
+  if (existsSync(out)) {
+    for (const eintrag of JSON.parse(readFileSync(out, 'utf8'))) gefunden.set(eintrag.id, eintrag)
+    console.log(`   ${gefunden.size} Objekte aus früherem Lauf übernommen`)
+  }
+
+  const sichern = () => {
+    const liste = [...gefunden.values()]
+      .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name, 'de'))
+    mkdirSync(dirname(out), { recursive: true })
+    writeFileSync(out, JSON.stringify(liste) + '\n')
+    return liste
+  }
+
   const felder = kacheln(REGION)
+  /** Kacheln, die nicht durchkamen — beim nächsten Lauf erneut versucht. */
+  const luecken = []
 
   for (const [type, ...selektoren] of NATURE_QUERIES) {
     let vorher = gefunden.size
@@ -426,7 +535,17 @@ async function importNature() {
           ${selektoren.map((sel) => `${sel}(area.a)${box};`).join('\n          ')}
         );
         out center tags;`
-      const data = await overpass(q)
+      let data
+      try {
+        data = await overpass(q)
+      } catch (e) {
+        // Eine Kachel, die nicht kommt, ist ein Loch — kein Grund, die
+        // achtunddreissig anderen wegzuwerfen. Sie wird gemerkt und beim
+        // nächsten Lauf erneut versucht.
+        luecken.push(`${type} Kachel ${index + 1}`)
+        console.log(`\n   ${type}: Kachel ${index + 1} übersprungen (${e.message})`)
+        continue
+      }
 
       for (const el of data.elements) {
         const lat = el.lat ?? el.center?.lat
@@ -459,18 +578,104 @@ async function importNature() {
       }
     }
     if (felder.length > 1) process.stdout.write('\n')
-    console.log(`   ${type}: ${gefunden.size - vorher}`)
+    console.log(`   ${type}: +${gefunden.size - vorher}`)
     vorher = gefunden.size
+    // Nach jeder Gattung sichern: der nächste Ausfall kostet dann höchstens
+    // eine Gattung, nicht den ganzen Lauf.
+    sichern()
   }
 
-  const features = [...gefunden.values()]
-    .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name, 'de'))
-
-  const out = resolve(AUSGABE, 'nature', `${REGION}.json`)
-  mkdirSync(dirname(out), { recursive: true })
-  writeFileSync(out, JSON.stringify(features) + '\n')
+  const features = sichern()
   const kb = Math.round(JSON.stringify(features).length / 1024)
   console.log(`Natur: ${features.length} Objekte, ${kb} KB -> ${out}`)
+  if (luecken.length > 0) {
+    console.log(`   ${luecken.length} Lücke(n): ${luecken.join(', ')}`)
+    console.log('   Erneut laufen lassen — Vorhandenes bleibt, es wird nur ergänzt.')
+  }
+}
+
+/* ---------------- Kantone: wer hier zuständig ist ---------------- */
+
+/**
+ * Die Kantonsgrenzen.
+ *
+ * Ausserhalb eingezeichneter Schutzgebiete gilt kantonales und kommunales
+ * Recht — und das ist in der Schweiz der eigentliche Punkt: was im Wallis
+ * oberhalb der Waldgrenze geduldet wird, ist anderswo ausdrücklich verboten.
+ * Eine landesweite Auskunft ist dort bestenfalls unscharf.
+ *
+ * Mit dieser Ebene kann die Karte wenigstens sagen, *wer* zuständig ist, statt
+ * pauschal zu antworten. Was in dem Kanton gilt, ist damit noch nicht bekannt:
+ * das steht in `kantone.legal.json` und ist Handarbeit mit Quelle und Datum.
+ *
+ * Grob vereinfacht (~150 m): die Grenze dient der Zuordnung, nicht der
+ * Vermessung. Wer davon abhängt, auf welcher Seite eines 150-m-Streifens er
+ * steht, hat ohnehin ein Problem, das diese Karte nicht löst.
+ */
+const KANTON_TOLERANZ = 0.0015
+
+async function importKantone() {
+  const data = await overpass(`
+    [out:json][timeout:300];
+    ${GEBIET}
+    relation["admin_level"="4"]["boundary"="administrative"](area.a);
+    out geom;`)
+
+  const features = []
+  for (const el of data.elements) {
+    const t = el.tags ?? {}
+    if (!el.members) continue
+    // Overpass setzt in `geometry` Platzhalter ohne Koordinaten, wenn ein Knoten
+    // ausserhalb des abgefragten Gebiets liegt — bei Landesgrenzen also
+    // regelmässig. Sie müssen raus, sonst zerfällt der Ring an dieser Stelle.
+    const outers = el.members
+      .filter((m) => m.role === 'outer' && m.geometry)
+      .map((m) => m.geometry.filter((p) => p && p.lon != null && p.lat != null))
+      .filter((g) => g.length > 1)
+      .map((g) => g.map((p) => [round(p.lon), round(p.lat)]))
+    const ringe = mergeRings(outers)
+      .filter((r) => r.length > 3)
+      .map(closeRing)
+      .map((r) => vereinfacheRing(r, KANTON_TOLERANZ))
+      .filter((r) => r.length > 3)
+    if (ringe.length === 0) continue
+
+    const code = t['ISO3166-2'] ?? null
+    // Der Gebietsfilter zieht Nachbarregionen mit herein, sobald sie die Schweiz
+    // berühren — die Lombardei etwa über die Enklave Campione. Eine falsche
+    // Zuständigkeit an der Grenze wäre schlimmer als gar keine.
+    if (REGION.length === 2 && code && !code.startsWith(`${REGION}-`)) continue
+
+    features.push({
+      type: 'Feature',
+      id: `osm-relation-${el.id}`,
+      properties: {
+        // ISO-Code wie 'CH-BE' — der Schlüssel, unter dem die Rechtspflege liegt.
+        code,
+        name: t['name:de'] ?? t.name ?? '(unbenannt)',
+        source_url: `https://www.openstreetmap.org/relation/${el.id}`,
+      },
+      geometry: ringe.length === 1
+        ? { type: 'Polygon', coordinates: ringe }
+        : { type: 'MultiPolygon', coordinates: ringe.map((r) => [r]) },
+    })
+  }
+
+  features.sort((a, b) => a.properties.name.localeCompare(b.properties.name, 'de'))
+
+  const fc = { type: 'FeatureCollection', features }
+  // Immer ins Bundle, unabhängig von BUNDLE_REGIONEN: 26 grob vereinfachte
+  // Flächen sind klein, ändern sich praktisch nie, und die Zuordnung „welcher
+  // Kanton ist hier zuständig" muss sofort da sein — auch ohne Netz.
+  const out = resolve(ROOT, 'src/data/kantone', `${REGION}.json`)
+  mkdirSync(dirname(out), { recursive: true })
+  writeFileSync(out, JSON.stringify(fc) + '\n')
+  const kb = Math.round(JSON.stringify(fc).length / 1024)
+  console.log(`Kantone: ${features.length} Flächen, ${kb} KB -> ${out}`)
+  const ohneCode = features.filter((f) => !f.properties.code)
+  if (ohneCode.length > 0) {
+    console.log(`   ohne ISO-Code: ${ohneCode.map((f) => f.properties.name).join(', ')}`)
+  }
 }
 
 /* ---------------- Rechtslage: konservativ ableiten ---------------- */
@@ -495,21 +700,73 @@ async function importNature() {
  */
 const STRENGE_SCHUTZKLASSEN = new Set(['1a', '1b', '2', '4'])
 
+/**
+ * Die Ableitungsregeln, von streng nach mild.
+ *
+ * Jede Regel nennt, woran sie erkennt, und was daraus folgt — beides landet
+ * wörtlich im Bedingungstext der Zone, damit jede Behauptung ihre Herkunft
+ * mitträgt. Geprüft wird der Reihe nach; die erste passende Regel gewinnt.
+ *
+ * Warum Jagdbanngebiete und Wildruhezonen streng behandelt werden: ihr
+ * Schutzzweck ist ausdrücklich die Ruhe des Wildes. Eine Nacht im Gelände ist
+ * genau die Störung, gegen die sie erlassen wurden — auch dort, wo kein
+ * Schild „Zelten verboten" steht.
+ */
+const REGELN = [
+  {
+    trifft: (t) => t.leisure === 'nature_reserve' || t.boundary === 'national_park',
+    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
+    grund: 'als Naturschutzgebiet beziehungsweise Nationalpark erfasst',
+    folgerung: 'Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.',
+  },
+  {
+    trifft: (t) => /jagdbann/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
+    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
+    grund: 'als eidgenössisches Jagdbanngebiet erfasst',
+    folgerung: 'Diese Gebiete schützen Wild vor Störung (VEJ, SR 922.31); Übernachten im Gelände ist damit in aller Regel unvereinbar.',
+  },
+  {
+    trifft: (t) => /wildruhe|wildschutz/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
+    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
+    grund: 'als Wildruhezone beziehungsweise Wildschutzgebiet erfasst',
+    folgerung: 'Wildruhezonen sind gerade dafür da, dass Wild ungestört bleibt — vielerorts nur im Winterhalbjahr, aber dann verbindlich.',
+  },
+  {
+    trifft: (t) => /moor|ried|auengebiet|aue\b/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
+    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
+    grund: 'als Moor-, Ried- oder Auengebiet erfasst',
+    folgerung: 'Moor- und Auenflächen von nationaler Bedeutung sind bundesrechtlich geschützt und trittempfindlich; Zelten und Feuer sind dort untersagt.',
+  },
+  {
+    trifft: (t) => STRENGE_SCHUTZKLASSEN.has(String(t.protect_class ?? '')),
+    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
+    grund: (t) => `als Schutzgebiet der IUCN-Klasse ${t.protect_class} erfasst`,
+    folgerung: 'Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.',
+  },
+  {
+    // Die einzige Regel, die nicht auf „verboten" hinausläuft: Landschaftsschutz
+    // und regionale Naturpärke sind grossflächig und kennen kein pauschales
+    // Zeltverbot — aber Kernzonen und Reservate darin sehr wohl.
+    trifft: (t) => String(t.protect_class ?? '') === '5'
+      || /landschaftsschutz|naturpark|landschaftspark/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
+    status: 'tolerated', zelt: 'conditional', fahrzeug: 'no', feuer: 'conditional',
+    grund: 'als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst',
+    folgerung: 'Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.',
+  },
+]
+
 function ableitung(f) {
   const t = f.properties
-  if (t.leisure === 'nature_reserve') {
-    return {
-      grund: 'als Naturschutzgebiet erfasst (leisure=nature_reserve)',
-      folgerung: 'In Naturschutzgebieten ist Übernachten im Freien in der Schweiz in der Regel untersagt.',
-    }
+  const regel = REGELN.find((r) => r.trifft(t))
+  if (!regel) return null
+  return {
+    status: regel.status,
+    zelt: regel.zelt,
+    fahrzeug: regel.fahrzeug,
+    feuer: regel.feuer,
+    grund: typeof regel.grund === 'function' ? regel.grund(t) : regel.grund,
+    folgerung: regel.folgerung,
   }
-  if (t.protect_class && STRENGE_SCHUTZKLASSEN.has(String(t.protect_class))) {
-    return {
-      grund: `als Schutzgebiet der Klasse ${t.protect_class} erfasst (IUCN-Kategorie)`,
-      folgerung: 'Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.',
-    }
-  }
-  return null
 }
 
 async function importRecht() {
@@ -531,10 +788,10 @@ async function importRecht() {
     const ab = ableitung(f)
     if (!ab) { ungeklaert++; continue }
     bestand[f.id] = {
-      status: 'forbidden',
-      tent_allowed: 'no',
-      vehicle_allowed: 'no',
-      fire_allowed: 'no',
+      status: ab.status,
+      tent_allowed: ab.zelt,
+      vehicle_allowed: ab.fahrzeug,
+      fire_allowed: ab.feuer,
       conditions: `Aus OpenStreetMap abgeleitet: ${ab.grund}. ${ab.folgerung}`,
       notes: 'Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.',
       review_status: 'entwurf',
@@ -606,6 +863,7 @@ const GRUPPEN = {
   gipfel: importPeaks,
   zonen: importProtectedAreas,
   natur: importNature,
+  kantone: importKantone,
   recht: importRecht,
   alpen: importAlpen,
 }

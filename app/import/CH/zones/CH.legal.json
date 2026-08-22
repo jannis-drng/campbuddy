@@ -3449,6 +3449,2176 @@
       "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
       "review_status": "entwurf",
       "last_verified": null
+    },
+    "osm-way-209972747": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-218695640": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219207187": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-696348866": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1125456886": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1425057260": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-12724524": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-20749787": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-339415327": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-37579324": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1080917205": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-13833656": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-194442492": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-194442493": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-198309719": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-199649119": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-199649120": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219198081": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219198086": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-220153294": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-323517253": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-356236275": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-498032165": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-498032166": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-498032167": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1024225142": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1050985499": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1050985502": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6651110": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6658580": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-7083661": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-7309721": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-10986195": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-8900566": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-22940408": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-25573689": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-32119200": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-32993874": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-36226825": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-36226906": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-41445631": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-52739717": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-53573412": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-72663705": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-100168158": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-100168159": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-106885857": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-108926089": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-129773316": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-130510017": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-138444557": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-138480129": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-145333642": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-145333673": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-160534687": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-161491671": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-162193834": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-169446738": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-172193315": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-177167378": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-177167379": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-177167381": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-178677829": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-178708959": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-182504194": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-182504493": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-182505297": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-189898768": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-193563952": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-205377339": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-210871182": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-212506218": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-218840359": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-228647515": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-230669113": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-232333189": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-232333190": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-233127271": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-256205695": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-263110926": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-263111283": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-263111307": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-265330123": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-275857834": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-282752718": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-304126207": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-311917834": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-311974823": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-311974824": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-312122190": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-322740627": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-323159360": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-323159361": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-323159363": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-333304137": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-347277484": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-361726297": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-370359835": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-372967356": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-374072715": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-391957051": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-419292303": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-486620779": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-583570281": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-646102676": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-646103300": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-646105466": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-646108622": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-646108623": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-646110490": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-646278757": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-741586051": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-783246012": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-820407052": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-820407759": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-846534787": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-846536062": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-929280592": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-941630988": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-980888954": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-990491856": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1007684063": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1054318117": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1144924477": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1184705888": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1186854015": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1200632956": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1245900506": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1291151653": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1302618808": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1330443654": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1347829382": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1378756728": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1445269530": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1468071654": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1493522089": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1497031150": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1537210183": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-2921963": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-3432191": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5143831": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5643282": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5648785": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5742451": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5742452": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5816806": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5819797": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5874431": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5874432": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5874433": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5928831": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5928834": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5950663": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-5962429": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6130395": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6207606": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6211289": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6865519": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6880729": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6891722": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-10568374": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-11159189": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-14420957": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-16857359": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-363049238": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1240190944": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1240405792": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-122998209": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-122998213": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-122998591": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-122998791": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-209972599": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 1a erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-217011130": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-217011646": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219016527": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 1a erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219016528": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 1a erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219016529": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 1a erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219016534": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 1a erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219016535": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-219016536": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 1a erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-422648769": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-783248085": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-957197381": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 1a erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-65157778": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 4 erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-155197372": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-275855960": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-406668139": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-445016259": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-995862258": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1021642698": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-6803488": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-10302188": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-20772406": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-15067142": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-11865839": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-13496893": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-340691090": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1162999846": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-220538628": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Moor-, Ried- oder Auengebiet erfasst. Moor- und Auenflächen von nationaler Bedeutung sind bundesrechtlich geschützt und trittempfindlich; Zelten und Feuer sind dort untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1127865150": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-220539729": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Moor-, Ried- oder Auengebiet erfasst. Moor- und Auenflächen von nationaler Bedeutung sind bundesrechtlich geschützt und trittempfindlich; Zelten und Feuer sind dort untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-868727138": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-275264297": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-446936295": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-492200919": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-493414026": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1307009445": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-8521583": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-relation-8550009": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1227872184": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Schutzgebiet der IUCN-Klasse 4 erfasst. Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-72892640": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-220539861": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Moor-, Ried- oder Auengebiet erfasst. Moor- und Auenflächen von nationaler Bedeutung sind bundesrechtlich geschützt und trittempfindlich; Zelten und Feuer sind dort untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-37898084": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Naturschutzgebiet beziehungsweise Nationalpark erfasst. Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1254442999": {
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst. Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1241587011": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Wildruhezone beziehungsweise Wildschutzgebiet erfasst. Wildruhezonen sind gerade dafür da, dass Wild ungestört bleibt — vielerorts nur im Winterhalbjahr, aber dann verbindlich.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-231688318": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Wildruhezone beziehungsweise Wildschutzgebiet erfasst. Wildruhezonen sind gerade dafür da, dass Wild ungestört bleibt — vielerorts nur im Winterhalbjahr, aber dann verbindlich.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
+    },
+    "osm-way-1240290307": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "no",
+      "conditions": "Aus OpenStreetMap abgeleitet: als Wildruhezone beziehungsweise Wildschutzgebiet erfasst. Wildruhezonen sind gerade dafür da, dass Wild ungestört bleibt — vielerorts nur im Winterhalbjahr, aber dann verbindlich.",
+      "notes": "Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.",
+      "review_status": "entwurf",
+      "last_verified": null
     }
   }
 }
