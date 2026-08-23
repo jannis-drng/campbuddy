@@ -249,14 +249,17 @@ function RegionBody({
         diese Karte tun könnte — also sagt sie es offen und gibt stattdessen
         das Einzige mit, was hier wirklich weiterhilft: den Weg zur Gemeinde.
       */}
-      {gemeinde && !gemeindeRecht && (
+      {gemeinde && (!gemeindeRecht || gemeindeRecht.status === 'unknown') && (
         <Hinweis ton="warnung" icon={Landmark}>
           <strong className="font-semibold">
-            Für {gemeinde.name} ist noch nicht recherchiert.
+            {gemeindeRecht
+              ? `Für ${gemeinde.name} ist die Frage nur teilweise geklärt.`
+              : `Für ${gemeinde.name} ist noch nicht recherchiert.`}
           </strong>{' '}
-          Über das Übernachten im Freien entscheidet hier die Gemeinde — was unten steht, ist
-          der übergeordnete Rahmen und ersetzt ihre Auskunft nicht. Am schnellsten kommst du
-          weiter, indem du direkt dort nachfragst.
+          {gemeindeRecht
+            ? 'Das gefundene Reglement regelt nur einen Teil — was oben steht, ist alles, was es hergibt.'
+            : 'Über das Übernachten im Freien entscheidet hier die Gemeinde — was unten steht, ist der übergeordnete Rahmen und ersetzt ihre Auskunft nicht.'}
+          {' '}Am schnellsten kommst du weiter, indem du direkt dort nachfragst.
           {(gemeinde.website || gemeinde.email) && (
             <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
               {gemeinde.website && (

@@ -38,6 +38,11 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
 - `app/src/map/` — **Schicht 2**, Karte/Routing. `app/src/affiliate/` — **Schicht 3**, vorbereitet.
 - `npm run import:osm --prefix app` — Punkte, Schutzgebiete, Kantone und Gemeinden holen
   (`REGION=CH node scripts/import-osm.mjs gemeinden` für die Gemeindeebene allein).
+- `node scripts/recherche-gemeinden.mjs` — kommunale Reglemente suchen und die Stellen zum
+  Übernachten im Wortlaut sammeln; `node scripts/gemeinden-einstufen.mjs [--schreiben]` trägt
+  geprüfte Musterformulierungen (`gemeinden.muster.json`) auf die passenden Gemeinden auf.
+  **Nicht Gemeinden einzeln einstufen, sondern Formulierungen** — viele Gemeinden nutzen
+  wortgleiche Musterreglemente. Quelle ist immer das Reglement der jeweiligen Gemeinde.
 - `npm run deploy --prefix app` — baut und veröffentlicht auf GitHub Pages.
 
 Live: https://jannis-drng.github.io/campbuddy/ · Repo: https://github.com/jannis-drng/campbuddy

@@ -131,7 +131,7 @@ export function Legend({ activity }: { activity: ActivityMode }) {
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
               Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Schraffiert heisst:
               abgeleitet, nicht mit einem amtlichen Dokument belegt. Ohne Füllung heisst:
-              noch nicht recherchiert — antippen zeigt, wen man fragen kann.
+              keine Gesamteinstufung — antippen zeigt, was bekannt ist und wen man fragen kann.
             </p>
           </div>
 
