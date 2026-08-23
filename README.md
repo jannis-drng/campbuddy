@@ -668,3 +668,54 @@ im Produktions-Build keine Kacheln laden. 5.x bindet den Worker inline ein.
 
 Kartendaten © OpenStreetMap-Mitwirkende ([ODbL](https://www.openstreetmap.org/copyright)),
 Kacheln von [OpenFreeMap](https://openfreemap.org/).
+
+## Sicherheit: Auth, Sessions, Berechtigungen
+
+Stand des Durchgangs vom 23.08.2026. Geprüft wurde gegen das laufende Projekt, nicht
+gegen Annahmen — jede Aussage unten ist entweder gemessen oder ausdrücklich als
+Einstellungssache markiert, die nur im Supabase-Dashboard sichtbar ist.
+
+### Gemessen und in Ordnung
+
+| Punkt | Befund |
+|---|---|
+| E-Mail-Bestätigung | `mailer_autoconfirm: false` — Registrierung ohne bestätigten Link ergibt keine Sitzung |
+| Row Level Security | auf **allen 11** Tabellen aktiv |
+| Schreibrechte | Schreibversuch ohne Anmeldung auf `zones`, `points`, `peaks`, `nature`, `gemeinden`: **401**, RLS greift |
+| Fremde Daten | `trips`, `favorites`, `eigene_punkte` geben Anonymen **0 Zeilen** |
+| Admin-Rechte | es gibt keine Admin-Rolle im Frontend — nichts, was nur dort geprüft würde |
+| Referenzdaten | nur lesbar, Pflege ausschliesslich über den SQL-Editor |
+| Konto löschen | `security definer` mit gepinntem `search_path`, prüft `auth.uid()`, `execute` nur für `authenticated` |
+| XSS | kein `dangerouslySetInnerHTML`, kein `innerHTML` |
+| Protokolle | keine Token, Sessions oder Passwörter in `console.*` |
+| Abmelden | `signOut()` ohne Bereichsangabe — Supabase entwertet global, nicht nur lokal |
+| OAuth-Knöpfe | werden aus den Projekteinstellungen geladen; sind alle Anbieter aus, erscheint kein toter Knopf |
+
+### Behoben
+
+**Abo-Status war für Fremde lesbar** (Migration `0013_auth_haerten.sql`). Eine Policy aus
+0006 sollte den Anzeigenamen veröffentlichender Konten freigeben. RLS filtert aber Zeilen,
+nicht Spalten — freigegeben war die ganze Zeile samt `subscription_status`, `abo_bis` und
+`abo_quelle`. Nachgewiesen mit dem öffentlichen Schlüssel ohne Anmeldung. Die Policy war
+ungenutzt und ist entfernt.
+
+### Einstellungssache — bitte im Dashboard prüfen
+
+| Einstellung | Befund | Wo |
+|---|---|---|
+| **Passwort-Mindestlänge** | Server erzwingt **6**, die App verlangt 8 — über die API reichen 6 | Authentication → Policies |
+| **Bekannte Passwörter blockieren** | **nicht überprüfbar** von aussen; bitte „Leaked password protection" (HIBP) einschalten | Authentication → Policies |
+| **Rate Limiting** | nicht sauber messbar (siehe unten) | Authentication → Rate Limits |
+| **Redirect-Allowlist** | Magic Link und Passwort-Reset nutzen `redirectTo`; ohne strenge Allowlist ist das ein offener Umleitungspfad | Authentication → URL Configuration |
+
+### Offen: Sitzung im localStorage
+
+Der Supabase-Client legt die Sitzung im `localStorage` ab. Ein `httpOnly`-Cookie wäre
+besser gegen XSS — **ist hier aber nicht erreichbar**: die Seite liegt statisch auf GitHub
+Pages, und ein solches Cookie kann nur ein Server setzen. Dafür bräuchte es ein Backend
+(Vercel/Netlify Functions oder Supabase SSR), also einen Architekturwechsel.
+
+Die ehrliche Abwägung: ohne Cookie gibt es auch keine ambienten Anmeldedaten, damit ist
+CSRF strukturell ausgeschlossen. Das Restrisiko ist XSS — und dagegen steht, dass die App
+nirgends rohes HTML rendert. Wer den Wechsel will, bekommt Schutz gegen XSS-Token-Diebstahl
+und handelt sich CSRF-Schutzbedarf ein.
