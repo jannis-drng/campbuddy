@@ -97,8 +97,19 @@ Zwei eingebaute Bremsen, die du nicht lösen solltest:
   griffe dann und legte die Regel unter der falschen Artikelnummer ab. Eine
   falsche Fundstellenangabe ist schlimmer als eine fehlende — sie behauptet
   Belegbarkeit, die bei der Nachprüfung zerfällt.
+- **`hoechstlaenge`** für schwach unterscheidende Muster. Dieselbe Ursache, das
+  feinere Sieb: ein sauber getrennter Artikel über Wohnwagen ist 165 bis 311
+  Zeichen lang, ein zusammengeklebter Block 728 bis 1400. Bei 400 Zeichen
+  trennen sich die beiden sauber.
 - **`review_status: 'entwurf'`** für Muster, deren Lesart eine Schlussfolgerung
   ist statt einer Feststellung. Sie erscheinen schraffiert.
+
+Und eine Eigenschaft, auf die man sich verlassen darf: **das Skript baut die
+Einträge jedes Mal neu aus den Mustern auf.** Setze `gemeinden.legal.json` auf
+die von Hand gepflegten Einträge zurück und lass es laufen — was herauskommt,
+ist reproduzierbar. Eine über viele Läufe gewachsene Datei enthält irgendwann
+Einträge, die der heutige Musterstand nicht mehr erzeugt; reproduzierbar ist
+hier mehr wert als hoch.
 
 Was kein Muster trifft, bleibt liegen. Das ist der Normalfall, kein Fehler.
 
