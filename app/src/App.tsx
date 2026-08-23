@@ -340,7 +340,14 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-dvh flex-col bg-flaeche-1 text-ink-100">
+    /*
+      `overflow-hidden` ist hier kein Zierrat: die Kartenansicht darf unter
+      keinen Umständen die Seite scrollen lassen. Panels über der Karte legen
+      sich darüber und scrollen innen; wenn eines doch zu gross gerät, wird es
+      beschnitten statt die ganze Seite zu verschieben. Die Vollseiten-Ansichten
+      (Touren, Community, Konto) bringen ihr eigenes `overflow-y-auto` mit.
+    */
+    <div className="flex h-dvh flex-col overflow-hidden bg-flaeche-1 text-ink-100">
       <header className="flex h-14 shrink-0 items-center gap-4 border-b border-kante bg-flaeche-2 px-4">
         {/* Wortmarke: das Zelt-Dreieck als Form, nicht als Emoji. */}
         <a href="./" className="flex min-w-0 items-center gap-2.5" aria-label="CampBuddy, Startseite">

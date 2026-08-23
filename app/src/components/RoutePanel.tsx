@@ -75,9 +75,29 @@ export function RoutePanel({
 
   return (
     <aside
-      className="absolute inset-x-0 bottom-0 z-20 flex max-h-[68vh] flex-col rounded-t-riesig border
+      /*
+        Die Höhe kommt vom Kartenbereich, nicht vom Fenster.
+
+        Vorher stand hier `max-h-[68vh]` und am Rand `sm:bottom-auto`. Beides
+        war falsch: `vh` rechnet ohne Kopfzeile, Filterleiste und die
+        Tableiste am unteren Rand, und `bottom-auto` hob das `bottom-0` aus
+        `inset-y-0` wieder auf — das Panel wuchs dann mit seinem Inhalt aus
+        dem Bild heraus und schob die ganze Seite ins Scrollen.
+
+        Jetzt begrenzt der Kartenbereich selbst: auf dem Telefon 70 % davon
+        als Blatt von unten, ab Tablet die volle Höhe als Spalte. Was nicht
+        hineinpasst, scrollt innen (siehe `min-h-0 flex-1 overflow-y-auto`
+        weiter unten) — die Seite selbst nie.
+
+        Das `overflow-y-auto` hier ist der letzte Ausweg für sehr flache
+        Fenster: dort sind Kopfzeile und Fussleiste zusammen schon höher als
+        der Kartenbereich, und der klebende Fuss mit „Tour auswerten" rutschte
+        aus dem Bild. Im Normalfall greift es nie, weil der innere Bereich
+        vorher nachgibt.
+      */
+      className="absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col overflow-y-auto rounded-t-riesig border
                  border-kante bg-flaeche-2/97 shadow-[var(--shadow-4)] backdrop-blur-md
-                 sm:inset-y-0 sm:bottom-auto sm:right-auto sm:left-0 sm:max-h-none sm:w-[23rem]
+                 sm:inset-y-0 sm:right-auto sm:left-0 sm:max-h-none sm:w-[23rem]
                  sm:rounded-none sm:rounded-r-gross"
       aria-label="Route"
     >

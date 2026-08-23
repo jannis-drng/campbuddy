@@ -5561,6 +5561,293 @@
    "stellen": [],
    "fehler": "Startseite: Chrome https://: page.goto: net::ERR_INTERNET_DISCONNECTED at https | Chrome htt",
    "weg": "browser"
+  },
+  {
+   "bfs": 3102,
+   "name": "Gonten",
+   "kanton": "CH-AI",
+   "website": "http://www.gonten.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome http://w: page.goto: net::ERR_INTERNET_DISCONNECTED at http: | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3104,
+   "name": "Schlatt-Haslen",
+   "kanton": "CH-AI",
+   "website": "https://www.schlatt-haslen.ch/",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3112,
+   "name": "Schwende-Rüte",
+   "kanton": "CH-AI",
+   "website": "https://schwende-ruete.ch/",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "PDF: fetch failed",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3203,
+   "name": "St. Gallen",
+   "kanton": "CH-SG",
+   "website": "https://www.stadt.sg.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "PDF: fetch failed",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3201,
+   "name": "Häggenschwil",
+   "kanton": "CH-SG",
+   "website": "https://www.haeggenschwil.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3211,
+   "name": "Berg (SG)",
+   "kanton": "CH-SG",
+   "website": "https://www.bergsg.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_INTERNET_DISCONNECTED at https | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3212,
+   "name": "Eggersriet",
+   "kanton": "CH-SG",
+   "website": "https://www.eggersriet.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3214,
+   "name": "Mörschwil",
+   "kanton": "CH-SG",
+   "website": "https://www.moerschwil.ch",
+   "dokument": "https://www.moerschwil.ch/_rte/publikation/17938",
+   "dokument_titel": "Anhänge zum Baureglement",
+   "stellen": [],
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3233,
+   "name": "Berneck",
+   "kanton": "CH-SG",
+   "website": "https://www.berneck.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3219,
+   "name": "Untereggen",
+   "kanton": "CH-SG",
+   "website": "https://www.untereggen.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3235,
+   "name": "Rheineck",
+   "kanton": "CH-SG",
+   "website": "https://www.rheineck.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3237,
+   "name": "Thal",
+   "kanton": "CH-SG",
+   "website": "https://www.thal.ch",
+   "dokument": "https://www.thal.ch/uploads/65bcf159df5917a1530165e4/-/Polizeireglement_2024.pdf",
+   "dokument_titel": "Gemeindepolizei",
+   "stellen": [
+    {
+     "artikel": "Art. 18 Campieren",
+     "text": "Art. 18 Campieren Auf dem öffentlichen Grund ist das Campieren bewilligungspflichtig. Die Bewilligung muss vorgängig bei der Gemeinde eingeholt werden. Das Campieren auf privaten Grundstücken kann untersagt werden, wenn die öffentliche Sicherheit oder die Ruhe und Ordnung gestört oder gefährdet ist.",
+     "im_titel": true
+    }
+   ],
+   "fehler": null,
+   "weg": "browser"
+  },
+  {
+   "bfs": 3252,
+   "name": "Eichberg",
+   "kanton": "CH-SG",
+   "website": "https://www.eichberg.ch/",
+   "dokument": "https://www.eichberg.ch/reglemente?file=files/Inhalte/Reglemente/Polizeireglement_Eichberg_01.pdf&amp;cid=279",
+   "dokument_titel": null,
+   "stellen": [
+    {
+     "artikel": "Art. 23 Campieren",
+     "text": "Art. 23 Campieren Auf dem öffentlichen Grund ist das Campieren ausserhalb der von den zuständigen Behörden bezeichneten Grundstücken verboten. Das Campieren auf privaten Grundstücken kann verboten werden, wenn die öffentliche Sicherheit, Ruhe und Ordnung gestört oder gefährdet werden.",
+     "im_titel": true
+    }
+   ],
+   "fehler": null,
+   "weg": "browser"
+  },
+  {
+   "bfs": 3213,
+   "name": "Goldach",
+   "kanton": "CH-SG",
+   "website": "https://www.goldach.ch/",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "PDF: fetch failed",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3251,
+   "name": "Altstätten",
+   "kanton": "CH-SG",
+   "website": "https://www.altstaetten.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3253,
+   "name": "Marbach",
+   "kanton": "CH-SG",
+   "website": "https://www.marbach.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3272,
+   "name": "Gams",
+   "kanton": "CH-SG",
+   "website": "https://www.gams.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3254,
+   "name": "Oberriet",
+   "kanton": "CH-SG",
+   "website": "https://www.oberriet.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3255,
+   "name": "Rebstein",
+   "kanton": "CH-SG",
+   "website": "https://www.rebstein.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3273,
+   "name": "Grabs",
+   "kanton": "CH-SG",
+   "website": "https://www.grabs.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3274,
+   "name": "Sennwald",
+   "kanton": "CH-SG",
+   "website": "http://www.sennwald.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome http://w: page.goto: net::ERR_EMPTY_RESPONSE at http://www.s | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3291,
+   "name": "Bad Ragaz",
+   "kanton": "CH-SG",
+   "website": "http://www.badragaz.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome http://w: page.goto: net::ERR_EMPTY_RESPONSE at http://www.b | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3292,
+   "name": "Flums",
+   "kanton": "CH-SG",
+   "website": "https://www.flums.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3293,
+   "name": "Mels",
+   "kanton": "CH-SG",
+   "website": "https://www.mels.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3294,
+   "name": "Pfäfers",
+   "kanton": "CH-SG",
+   "website": "http://www.pfaefers.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome http://w: page.goto: net::ERR_EMPTY_RESPONSE at http://www.p | Chrome htt",
+   "weg": "browser"
   }
  ]
 }
