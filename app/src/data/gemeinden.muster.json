@@ -209,6 +209,295 @@
       "_hinweis": "Weit gefasst — greift deshalb nur, wenn schon die Artikelüberschrift vom Campieren handelt. Sonst fängt es Textblöcke ein, in denen die Artikeltrennung versagt hat."
     },
     {
+      "id": "be-nuit-vehicule-ou-tente-verboten",
+      "_gelesen_an": "La Ferrière Art. 8, Renan (BE) Art. 9",
+      "_hinweis": "Nennt das Übernachten im Fahrzeug oder Zelt ausdrücklich — für diese Karte die genaueste Fassung.",
+      "erkennt": [
+        "interdit de passer la nuit dans son v",
+        "sous tente"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist es verboten, im Fahrzeug oder im Zelt zu übernachten. Der Artikel spricht das Übernachten ausdrücklich an, nicht bloss das Aufstellen.",
+      "conditions": "In begründeten Einzelfällen kann die Gemeinde eine Ausnahme bewilligen; sie kann mit Auflagen verbunden werden, etwa der Reinigung auf eigene Kosten. Wo die Gemeinde eigens Zonen dafür vorgesehen hat, gilt das Verbot nicht.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "fr-camper-domaine-public-hors-emplacements",
+      "_gelesen_an": "Saint-Imier Art. 32, Rossinière Art. 22, Leysin Art. 79",
+      "erkennt": [
+        "interdit de camper sur le domaine public"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ausserhalb der Plätze verboten, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Für Privatgrund gelten je nach Reglement eigene Regeln, meist die Zustimmung der Eigentümerschaft und ab einigen Tagen eine Gemeindebewilligung. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle",
+      "nur_im_titel": true
+    },
+    {
+      "id": "fr-camping-verboten-territoire-communal",
+      "_gelesen_an": "Buchillon Art. 46",
+      "erkennt": [
+        "le camping est interdit sur l'ensemble du territoire"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ist im gesamten Gemeindegebiet verboten — nicht nur auf öffentlichem Grund.",
+      "conditions": "Der Artikel nennt keine Ausnahme. Für ein Vorhaben trotzdem bei der Gemeinde nachfragen.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "fr-camping-toute-forme-domaine-public",
+      "_gelesen_an": "Tartegnin Art. 18, Vinzel Art. 23",
+      "erkennt": [
+        "le camping",
+        "interdit",
+        "domaine public",
+        "occasionnel"
+      ],
+      "erkennt_nicht": [
+        "l'entreposage de roulottes"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in jeder Form — Zelt, Wohnwagen, Wohnmobil oder anderes Fahrzeug als Unterkunft — ist auf öffentlichem und kommunalem Grund verboten. Die Gemeinde legt fest, wo campiert werden darf.",
+      "conditions": "Auf privatem Grund wird gelegentliches Campieren mit Zustimmung der Eigentümerin, Pächterin oder Mieterin geduldet; ab vier Tagen braucht es zusätzlich eine Gemeindebewilligung, die vorher schriftlich zu beantragen ist.",
+      "review_status": "quelle",
+      "nur_im_titel": true
+    },
+    {
+      "id": "fr-camper-voie-publique-allgemein",
+      "_gelesen_an": "Savigny Art. 36, Echallens Art. 78",
+      "_hinweis": "Weiter gefasste Fassung des Waadtländer Musters — steht deshalb hinter den genaueren.",
+      "erkennt": [
+        "interdit de camper sur la voie publique"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund und in dessen Umgebung ist verboten.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren mit Zustimmung der Eigentümerin, Pächterin oder Mieterin zulässig; ab vier Tagen braucht es eine Gemeindebewilligung. Sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind.",
+      "review_status": "quelle",
+      "nur_im_titel": true
+    },
+    {
+      "id": "vs-freies-campieren-untersagt",
+      "_gelesen_an": "Goms Art. 16 Freies Campieren",
+      "erkennt": [
+        "freie zelten",
+        "biwakieren ist untersagt"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Freies Zelten, Campieren und Biwakieren sind untersagt. Erlaubt bleibt die Benutzung offizieller, zonenkonformer Campingplätze. Der Artikel nennt das Biwakieren ausdrücklich — ein einzelnes Nachtlager ohne Zelt ist mitgemeint.",
+      "conditions": "Gelegentliches, nicht kommerzielles Campieren auf privatem Boden ist zulässig, wenn die schriftliche Einwilligung der Grundeigentümerschaft vorliegt. Für Fahrzeuge gelten zusätzlich die Strassenverkehrsvorschriften des Bundes.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "fr-camping-caravaning-interdits-hors-emplacements",
+      "_gelesen_an": "Saint-Martin (VS) Art. 26",
+      "erkennt": [
+        "le camping et le caravaning sont interdits en dehors de ces emplacements"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeindebehörde kann Plätze bestimmen, auf denen Campieren und Caravaning erlaubt sind. Ausserhalb dieser Plätze sind beide verboten.",
+      "conditions": "Für die bezeichneten Plätze schreibt die Behörde sanitäre Bedingungen, eine Höchstzahl an Plätzen und eine interne Ordnung vor. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "de-campieren-ausserhalb-bewilligter-plaetze-verboten",
+      "_gelesen_an": "Erlach Art. 9, Gurtnellen Art. 2, Vinelz Art. 2",
+      "erkennt": [
+        "campieren ausserhalb"
+      ],
+      "erkennt_nicht": [
+        "im hochgebirge"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile zum Campieren ausserhalb behördlich bewilligter Camping- oder Stellplätze aufzustellen ist nicht gestattet.",
+      "conditions": "Je nach Reglement ist vereinzeltes, gelegentliches Campieren auf privatem Grund mit Einwilligung der Eigentümerschaft, Pächterin oder deren Vertretung möglich; für längere Aufenthalte kommt eine Bewilligung dazu. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "de-campieren-zelten-biwakieren-ganze-gemeinde-verboten",
+      "_gelesen_an": "Horrenbach-Buchen Art. 14",
+      "erkennt": [
+        "biwakieren ist in der ganzen gemeinde verboten"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren, Zelten und Biwakieren sind in der ganzen Gemeinde verboten. Der Artikel nennt das Biwakieren ausdrücklich und macht keine Ausnahme.",
+      "conditions": "Das Verbot gilt für das ganze Gemeindegebiet, nicht nur für öffentlichen Grund.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "gr-campieren-hochgebirge-ausgenommen",
+      "_gelesen_an": "Trin Art. 12",
+      "_hinweis": "Der seltene Fall, in dem eine Gemeinde das Tourenbiwak ausdrücklich erlaubt. Die Gesamtfarbe bleibt gelb, weil es im Tal verboten ist — die Unterscheidung steht im Text.",
+      "erkennt": [
+        "campieren im hochgebirge",
+        "hochgebirgstouren ist erlaubt"
+      ],
+      "status": "tolerated",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten in Fahrzeugen sind auf öffentlichem Grund ausserhalb bewilligter Campingplätze und bezeichneter Stellplätze verboten. Ausdrücklich erlaubt bleibt aber das Campieren im Hochgebirge, wenn es unmittelbar mit einer Hochgebirgstour zusammenhängt.",
+      "conditions": "Entscheidend ist der Zusammenhang mit der Tour: ein Biwak am Berg ist gedeckt, ein Zelt im Tal oder auf einem Parkplatz nicht. Für Zeltlager kann der Gemeindevorstand Ausnahmen bewilligen.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "gr-campieren-ganzes-gemeindegebiet-verboten-4-wochen",
+      "_gelesen_an": "Sils im Domleschg Art. 9",
+      "erkennt": [
+        "auf dem gesamten gemeindegebiet verboten",
+        "auf privatem grund"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren mit Wohnwagen und Zelt ist auf dem gesamten Gemeindegebiet verboten.",
+      "conditions": "Ausgenommen ist das vorübergehende, auf vier Wochen befristete und unentgeltliche Aufstellen von Zelten und Wohnwagen auf privatem Grund. Für Zeltlager kann der Gemeindevorstand Ausnahmen an zugewiesenen Orten bewilligen.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "gr-campieren-ausserhalb-gekennzeichneter-plaetze-untersagt",
+      "_gelesen_an": "St. Moritz Art. 16, Silvaplana Art. 17",
+      "erkennt": [
+        "ausserhalb von gekennzeichneten campingpl",
+        "campieren untersagt"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Ausserhalb gekennzeichneter Campingplätze ist Campieren untersagt.",
+      "conditions": "Der Artikel nennt keine Ausnahme und unterscheidet nicht zwischen öffentlichem und privatem Grund. Zum offenen Feuer trifft er keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "gr-campieren-oeffentlich-verboten-bezeichnete-stellen",
+      "_gelesen_an": "Luzein Art. 19, Churwalden Art. 9",
+      "erkennt": [
+        "campieren",
+        "verboten",
+        "gemeinde",
+        "bezeichnete"
+      ],
+      "erkennt_nicht": [
+        "im hochgebirge",
+        "waldungen"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "nur_im_titel": true,
+      "summary": "Campieren in Zelt, Wohnwagen oder Wohnmobil ist auf öffentlichem Grund verboten. Ausgenommen sind die Stellen, die die Gemeinde eigens dafür bezeichnet hat.",
+      "conditions": "Der Gemeindevorstand kann Ausnahmen für befristetes Aufstellen und für organisierte Zeltlager an von ihm bestimmten Standorten bewilligen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "gr-campieren-bewilligungspflichtig-gemeindegebiet",
+      "_gelesen_an": "Cazis Art. 9",
+      "erkennt": [
+        "ausserhalb bewilligter campingpl",
+        "bewilligungspflichtig"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen und Zelte ausserhalb bewilligter Campingplätze aufzustellen ist im gesamten Gemeindegebiet bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung ist vorher bei der Gemeinde einzuholen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "de-nur-bezeichnete-zonen",
+      "_gelesen_an": "Bürchen Art. 11 Campieren",
+      "erkennt": [
+        "campieren",
+        "auf öffentlichem grund",
+        "nur in den",
+        "bezeichneten zonen"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Ausserhalb dieser Zonen ist beides untersagt.",
+      "conditions": "Der Artikel betrifft öffentlichen Grund. Zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "be-uebernachten-in-fahrzeugen-und-zelten-verboten",
+      "_gelesen_an": "Ipsach Art. 8 Campingverbot, Lengnau (BE) Art. 18 Camping",
+      "_hinweis": "Nennt das Uebernachten ausdruecklich und definiert es als Campieren - fuer diese Karte die genaueste deutsche Fassung.",
+      "erkennt": [
+        "übernachten in fahrzeugen und zelten"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist das Übernachten in Fahrzeugen und Zelten verboten. Das Reglement nennt das ausdrücklich Campieren — gemeint ist das Übernachten selbst, nicht bloss das Aufstellen.",
+      "conditions": "In begründeten Fällen kann das Polizeiorgan der Gemeinde eine Ausnahme bewilligen; sie kann davon abhängig gemacht werden, dass für allfällige Ersatzvornahmen wie die Reinigung ein Kostenvorschuss geleistet wird.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "gr-campieren-nur-in-campingzone",
+      "_gelesen_an": "Churwalden Art. 9",
+      "erkennt": [
+        "nur in der campingzone"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder bewohnten Wohnwagen sind grundsätzlich nur in der Campingzone und auf den vom Gemeindevorstand bewilligten Lager- und Wohnmobilstellplätzen erlaubt.",
+      "conditions": "Für vorübergehende Belegungen kann der Gemeindevorstand auf Gesuch weitere Plätze zur Verfügung stellen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "vd-camping-voie-publique-ocr-tolerant",
+      "_gelesen_an": "Echallens Art. 78 - dasselbe Waadtlaender Muster, im PDF ist nur das Verb verstuemmelt (œmper statt camper).",
+      "_hinweis": "Erkennt das Muster ueber seine unverwechselbaren Nebensaetze statt ueber das Verb. Greift nur bei passender Artikelueberschrift.",
+      "erkennt": [
+        "sur la voie publique ou ses abords",
+        "camping occasionnel",
+        "accord du propri"
+      ],
+      "nur_im_titel": true,
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
       "id": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung",
       "_gelesen_an": "Cronay Art. 50, Cuarny, Donneloye",
       "_hinweis": "Nur 'entwurf': der Artikel spricht kein Verbot aus, er setzt es voraus. Diese Lesart ist eine Schlussfolgerung, keine Feststellung — deshalb schraffiert.",
@@ -238,7 +527,8 @@
       "fire_allowed": "unknown",
       "summary": "Wohnwagen, Wohnmobile und andere bewohnbare Fahrzeuge dürfen im Gemeindegebiet nur mit Bewilligung des Gemeinderats stehen; er bezeichnet den Standort.",
       "conditions": "Der Artikel regelt ausdrücklich nur Fahrzeuge. Ob und wo ein Zelt aufgestellt werden darf, sagt er nicht — dazu ist für diese Gemeinde nichts recherchiert.",
-      "review_status": "quelle"
+      "review_status": "quelle",
+      "hoechstlaenge": 400
     },
     {
       "id": "nur-fahrzeuge-als-wohnung-verboten",
@@ -253,7 +543,43 @@
       "fire_allowed": "unknown",
       "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im ganzen Gemeindegebiet verboten — ausser auf dafür eingerichteten Campingplätzen.",
       "conditions": "Der Artikel regelt ausdrücklich nur Fahrzeuge als Unterkunft. Zur Zeltfrage sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert.",
-      "review_status": "quelle"
+      "review_status": "quelle",
+      "hoechstlaenge": 400
+    },
+    {
+      "id": "nur-fahrzeuge-logements-mobiles-verboten",
+      "_gelesen_an": "Fey Art. 32, Montcherand Art. 60, Rougemont Art. 58, Crans (VD) Art. 21",
+      "_hinweis": "Regelt ausdrücklich nur Fahrzeuge — Gesamtstatus bleibt offen.",
+      "erkennt": [
+        "roulottes",
+        "logements mobiles",
+        "interdite"
+      ],
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung oder Ferienunterkunft zu nutzen ist verboten — je nach Fassung im ganzen Gemeindegebiet oder auf öffentlichem Grund.",
+      "conditions": "Der Artikel regelt ausdrücklich nur Fahrzeuge als Unterkunft. Zur Zeltfrage sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert.",
+      "review_status": "quelle",
+      "hoechstlaenge": 400
+    },
+    {
+      "id": "nur-fahrzeuge-entreposage-domaine-public",
+      "_gelesen_an": "Crissier Art. 35, Saint-Sulpice Art. 35, Nyon Art. 26, Veytaux Art. 34",
+      "_hinweis": "Regelt das Abstellen von Fahrzeugen, nicht das Übernachten — die Zeltfrage bleibt offen.",
+      "erkennt": [
+        "l'entreposage de roulottes",
+        "interdit sur le domaine public"
+      ],
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "review_status": "quelle",
+      "hoechstlaenge": 400
     }
   ]
 }

@@ -109,13 +109,22 @@ const recht = JSON.parse(readFileSync(RECHT, 'utf8'))
  * die bei der Nachprüfung zerfällt. Solche Muster greifen deshalb nur, wenn
  * schon die Überschrift vom Campieren handelt.
  */
-const TITEL_THEMA = /campier|camping|caravaning|zelt|nächtig|naechtig|biwak|bivouac|campeggi|tende|roulotte|wohnwagen|wohnmobil/i
+// `camp` als Wortanfang deckt campieren, camping, camper, campement und
+// campeggio zugleich ab. Vorher fehlte die franzoesische Verbform "camper" -
+// dadurch fielen gerade die eindeutigsten Artikel durch die Pruefung.
+const TITEL_THEMA = /camp|zelt|n[äa]chtig|biwak|bivouac|tende|tenda|roulotte|wohnwagen|wohnmobil/i
 
 function passendesMuster(stelle) {
   const k = kern(stelle.text)
   for (const m of muster.muster) {
     if ((m.erkennt ?? []).length === 0) continue
     if (m.nur_im_titel && !TITEL_THEMA.test(stelle.artikel ?? '')) continue
+    // Die zweite Notbremse gegen zusammengeklebte Artikel, und die feinere:
+    // ein sauber getrennter Artikel ueber Wohnwagen ist kurz. Wo die
+    // Artikeltrennung versagt hat, entsteht ein Block von vielen hundert
+    // Zeichen, in dem das Stichwort irgendwo steht - und die Artikelnummer am
+    // Anfang gehoert dann nicht mehr dazu.
+    if (m.hoechstlaenge && stelle.text.length > m.hoechstlaenge) continue
     const alle = m.erkennt.every((teil) => k.includes(kern(teil)))
     const keins = (m.erkennt_nicht ?? []).some((teil) => k.includes(kern(teil)))
     if (alle && !keins) return m
