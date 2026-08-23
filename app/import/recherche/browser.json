@@ -1,0 +1,143 @@
+{
+ "stand": "2026-08-23",
+ "ergebnisse": [
+  {
+   "bfs": 31,
+   "name": "Henggart",
+   "kanton": "CH-ZH",
+   "website": "http://www.henggart.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome http://w: page.goto: net::ERR_EMPTY_RESPONSE at http://www.h | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 88,
+   "name": "Neerach",
+   "kanton": "CH-ZH",
+   "website": "http://www.neerach.ch",
+   "dokument": "https://www.neerach.ch/verwaltung/rechtssammlung.html/164/opendcategory/155",
+   "dokument_titel": "Ebene 1: 5 Öffentliche Ordnung und Sicherheit (Polizei / Zivilschutz / Feuerwehr)",
+   "stellen": [
+    {
+     "artikel": "Art. 30 Campieren, Aufstellen von Wohnwagen, Fahrende",
+     "text": "Art. 30 Campieren, Aufstellen von Wohnwagen, Fahrende Das Campieren, das Aufstellen von Zelten, Wohnwagen und dergleichen auf öffentlichem Grund ist verboten. Der Sicherheitsvorstand kann in besonderen Fällen Ausnahmen bewilli- gen. Bei Zuwiderhandlung kann der Sicherheitsvorstand die sofortige Wegweisung verfügen.",
+     "im_titel": true
+    }
+   ],
+   "fehler": null,
+   "weg": "browser"
+  },
+  {
+   "bfs": 227,
+   "name": "Seuzach",
+   "kanton": "CH-ZH",
+   "website": "http://www.seuzach.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
+   "weg": "browser"
+  },
+  {
+   "bfs": 586,
+   "name": "Lütschental",
+   "kanton": "CH-BE",
+   "website": "https://www.luetschental.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  },
+  {
+   "bfs": 703,
+   "name": "Reconvilier",
+   "kanton": "CH-BE",
+   "website": "http://www.reconvilier.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3297,
+   "name": "Vilters-Wangs",
+   "kanton": "CH-SG",
+   "website": "https://www.vilters-wangs.ch/",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_CONNECTION_CLOSED at https://w | Chrome htt",
+   "weg": "browser"
+  },
+  {
+   "bfs": 3514,
+   "name": "Schmitten (GR)",
+   "kanton": "CH-GR",
+   "website": "https://www.schmitten-gr.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  },
+  {
+   "bfs": 4721,
+   "name": "Bichelsee-Balterswil",
+   "kanton": "CH-TG",
+   "website": "http://www.bichelsee-balterswil.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "PDF: HTTP 429",
+   "weg": "browser"
+  },
+  {
+   "bfs": 4941,
+   "name": "Märstetten",
+   "kanton": "CH-TG",
+   "website": "https://www.maerstetten.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  },
+  {
+   "bfs": 5171,
+   "name": "Caslano",
+   "kanton": "CH-TI",
+   "website": "https://www.caslano.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
+   "weg": "browser"
+  },
+  {
+   "bfs": 5208,
+   "name": "Origlio",
+   "kanton": "CH-TI",
+   "website": "https://www.origlio.ch",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
+   "weg": "browser"
+  },
+  {
+   "bfs": 6605,
+   "name": "Bardonnex",
+   "kanton": "CH-GE",
+   "website": "https://www.bardonnex.ch/",
+   "dokument": null,
+   "dokument_titel": null,
+   "stellen": [],
+   "fehler": "kein passendes Reglement gefunden",
+   "weg": "browser"
+  }
+ ]
+}
