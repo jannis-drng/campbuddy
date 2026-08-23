@@ -1,0 +1,18 @@
+{
+  "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
+  "_stand": "2026-08-23",
+  "gemeinden": {
+    "6300": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist in Zermatt verboten. Als Campieren gilt schon das blosse Aufstellen eines Zeltes oder Wohnwagens, nicht erst das Übernachten darin. Abseits bewilligter Campingplätze ist vereinzeltes, gelegentliches Campieren nur mit Zustimmung der Grundeigentümerin oder des Grundeigentümers gestattet.",
+      "conditions": "Auf Privatgrund mit ausdrücklicher Zustimmung der Eigentümerschaft möglich. Zum offenen Feuer trifft das Polizeireglement keine Aussage — dafür gelten die kantonalen und eidgenössischen Regeln sowie allfällige Feuerverbote.",
+      "source": "Polizeireglement der Einwohnergemeinde Zermatt (2022), Art. 43 Campieren",
+      "source_url": "https://gemeinde.zermatt.ch/pdf/reglement/Polizeireglement2022.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-23"
+    }
+  }
+}

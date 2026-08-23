@@ -37,6 +37,31 @@ const ZONEN = [
   ['Ungeklärt', STATUS_COLORS.unknown],
 ] as const
 
+/**
+ * Die Gemeindeebene, und was ihre zwei Darstellungen bedeuten.
+ *
+ * Der Unterschied zwischen voller Fläche und Schraffur ist keine Spielerei,
+ * sondern die wichtigste Auskunft dieser Karte über sich selbst: die eine
+ * Einstufung ist mit einem amtlichen Dokument belegt, die andere bloss
+ * abgeleitet. Deshalb steht er in der Legende, und deshalb steht dabei, was er
+ * heisst.
+ */
+const GEMEINDEN = [
+  ['Erlaubt', STATUS_COLORS.allowed, true],
+  ['Geduldet', STATUS_COLORS.tolerated, true],
+  ['Verboten', STATUS_COLORS.forbidden, true],
+  ['… schraffiert: unbestätigt', STATUS_COLORS.forbidden, false],
+] as const
+
+/** Dieselbe Schraffur wie auf der Karte, nur als Kachel im Kästchen. */
+function schraffurStil(farbe: string) {
+  return {
+    backgroundColor: 'transparent',
+    backgroundImage: `repeating-linear-gradient(-45deg, ${farbe} 0 2px, transparent 2px 5px)`,
+    borderColor: farbe,
+  }
+}
+
 const PUNKTE: [string, string, LucideIcon | typeof Huettenzeichen][] = [
   ['Hütte', SYMBOL_FARBEN.hut, Huettenzeichen],
   ['Campingplatz', SYMBOL_FARBEN.campsite, Tent],
@@ -87,6 +112,27 @@ export function Legend({ activity }: { activity: ActivityMode }) {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="border-t border-kante pt-2.5">
+            <Label className="mb-1.5">Gemeinde</Label>
+            <div className="space-y-1.5">
+              {GEMEINDEN.map(([label, farbe, voll]) => (
+                <div key={label} className="flex items-center gap-2 text-klein text-ink-300">
+                  <span
+                    className="h-3 w-3 shrink-0 rounded-[3px] border"
+                    style={voll ? { backgroundColor: `${farbe}55`, borderColor: farbe } : schraffurStil(farbe)}
+                    aria-hidden
+                  />
+                  {label}
+                </div>
+              ))}
+            </div>
+            <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
+              Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Schraffiert heisst:
+              abgeleitet, nicht mit einem amtlichen Dokument belegt. Ohne Füllung heisst:
+              noch nicht recherchiert — antippen zeigt, wen man fragen kann.
+            </p>
           </div>
 
           <div className="border-t border-kante pt-2.5">

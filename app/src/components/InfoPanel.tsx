@@ -7,12 +7,13 @@
  */
 import { useState } from 'react'
 import {
-  Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Lock,
-  MapPin, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users, Waves, X,
+  Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Landmark,
+  Lock, Mail, MapPin, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users,
+  Waves, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type {
-  EigenerPunkt, Kanton, KantonRecht, NatureFeature, Point, Region, Zone,
+  EigenerPunkt, Gemeinde, GemeindeRecht, Kanton, KantonRecht, NatureFeature, Point, Region, Zone,
 } from '../data/types'
 import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
 import { PermissionRow, ReviewBadge, STATUS_LABEL, StatusBadge } from './ui'
@@ -36,6 +37,10 @@ export type Selection =
       kantonRecht: KantonRecht | null
       /** Belegte Erlasse des Kantons, aus den BAFU-Daten abgeleitet. */
       kantonGrundlagen: { grundlagen: { text: string; zonen: number }[]; quelle: string; stand: string } | null
+      /** Die Gemeinde an dieser Stelle — die Ebene, die tatsächlich entscheidet. */
+      gemeinde: Gemeinde | null
+      /** Deren recherchierte Regelung — null heisst „noch nicht recherchiert". */
+      gemeindeRecht: GemeindeRecht | null
     }
   | { kind: 'zone'; zone: Zone }
   | { kind: 'point'; point: Point }
@@ -139,6 +144,8 @@ export function InfoPanel({
             kanton={selection.kanton}
             recht={selection.kantonRecht}
             grundlagen={selection.kantonGrundlagen}
+            gemeinde={selection.gemeinde}
+            gemeindeRecht={selection.gemeindeRecht}
           />
         )}
         {selection.kind === 'zone' && <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />}
@@ -167,7 +174,7 @@ export function InfoPanel({
  * der allgemeine Rahmen die einzige Auskunft ist, die es gibt.
  */
 function RegionBody({
-  region, stats, quelle, kanton, recht, grundlagen,
+  region, stats, quelle, kanton, recht, grundlagen, gemeinde, gemeindeRecht,
 }: {
   region: Region
   stats: { total: number; entwurf: number }
@@ -175,18 +182,105 @@ function RegionBody({
   kanton: Kanton | null
   recht: KantonRecht | null
   grundlagen: { grundlagen: { text: string; zonen: number }[]; quelle: string; stand: string } | null
+  gemeinde: Gemeinde | null
+  gemeindeRecht: GemeindeRecht | null
 }) {
   const [quellenOffen, setQuellenOffen] = useState(false)
 
   return (
     <div className="space-y-5 px-5 py-4">
-      {/* Die wichtigste einzelne Aussage — deshalb zuerst und als eigene Fläche. */}
+      {/*
+        Die wichtigste einzelne Aussage — deshalb zuerst und als eigene Fläche.
+        Die Reihenfolge ist die der Zuständigkeit: was die Gemeinde geregelt
+        hat, schlägt die kantonale Auskunft, und beide schlagen den landesweiten
+        Rahmen. Nur wenn nichts davon recherchiert ist, bleibt der Rahmen übrig —
+        und dann steht auch dabei, dass er die Auskunft nicht ersetzt.
+      */}
       <div className="rounded-mittel border border-kante bg-flaeche-1 px-3 py-2.5">
-        <Label>Hier ist keine Fläche eingezeichnet, es gilt</Label>
+        <Label>
+          {gemeinde ? `Hier entscheidet ${gemeinde.name}` : 'Hier ist keine Fläche eingezeichnet, es gilt'}
+        </Label>
         <p className="mt-1 text-titel font-semibold text-ink-50">
-          {STATUS_LABEL[recht ? recht.status : region.legal_framework.baseline_status]}
+          {STATUS_LABEL[
+            gemeindeRecht?.status ?? recht?.status ?? region.legal_framework.baseline_status
+          ]}
         </p>
+        {gemeinde && (
+          <p className="mt-0.5 text-mikro normal-case tracking-normal text-ink-500">
+            Gemeinde {gemeinde.name}
+            {gemeinde.bfs && ` · BFS ${gemeinde.bfs}`}
+            {kanton && ` · Kanton ${kanton.name}`}
+          </p>
+        )}
       </div>
+
+      {/*
+        Die kommunale Ebene ist die, auf der die Frage tatsächlich entschieden
+        wird: Polizeireglement, Nutzungsplanung, ein Verbot am Seeufer. Zwei
+        Nachbargemeinden im selben Kanton können es gegensätzlich halten.
+      */}
+      {gemeinde && gemeindeRecht && (
+        <section>
+          <Label className="mb-1">Was in {gemeinde.name} gilt</Label>
+          <PermissionRow label="Zelt / Biwak" value={gemeindeRecht.tent_allowed} icon={Tent} />
+          <PermissionRow label="Auto / Camper" value={gemeindeRecht.vehicle_allowed} icon={Truck} />
+          <PermissionRow label="Offenes Feuer" value={gemeindeRecht.fire_allowed} icon={Flame} />
+          <p className="mt-2.5 text-klein leading-relaxed text-ink-300">{gemeindeRecht.summary}</p>
+          {gemeindeRecht.conditions && (
+            <p className="mt-1.5 text-klein leading-relaxed text-ink-400">{gemeindeRecht.conditions}</p>
+          )}
+          <div className="mt-2.5">
+            <ReviewBadge status={gemeindeRecht.review_status} lastVerified={gemeindeRecht.last_verified} />
+          </div>
+          {gemeindeRecht.source_url && (
+            <a
+              href={gemeindeRecht.source_url} target="_blank" rel="noreferrer noopener"
+              className="mt-2 inline-flex items-center gap-1 text-klein text-gletscher-400
+                         transition-colors duration-[160ms] hover:text-gletscher-300"
+            >
+              {gemeindeRecht.source} <ExternalLink size={11} strokeWidth={2.5} aria-hidden />
+            </a>
+          )}
+        </section>
+      )}
+
+      {/*
+        Ungeprüfte Gemeinde. Hier eine Farbe zu raten wäre das Schlimmste, was
+        diese Karte tun könnte — also sagt sie es offen und gibt stattdessen
+        das Einzige mit, was hier wirklich weiterhilft: den Weg zur Gemeinde.
+      */}
+      {gemeinde && !gemeindeRecht && (
+        <Hinweis ton="warnung" icon={Landmark}>
+          <strong className="font-semibold">
+            Für {gemeinde.name} ist noch nicht recherchiert.
+          </strong>{' '}
+          Über das Übernachten im Freien entscheidet hier die Gemeinde — was unten steht, ist
+          der übergeordnete Rahmen und ersetzt ihre Auskunft nicht. Am schnellsten kommst du
+          weiter, indem du direkt dort nachfragst.
+          {(gemeinde.website || gemeinde.email) && (
+            <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+              {gemeinde.website && (
+                <a
+                  href={gemeinde.website} target="_blank" rel="noreferrer noopener"
+                  className="inline-flex items-center gap-1 font-medium text-gletscher-400
+                             transition-colors duration-[160ms] hover:text-gletscher-300"
+                >
+                  <Globe size={11} strokeWidth={2.5} aria-hidden /> Gemeindewebseite
+                </a>
+              )}
+              {gemeinde.email && (
+                <a
+                  href={`mailto:${gemeinde.email}`}
+                  className="inline-flex items-center gap-1 font-medium text-gletscher-400
+                             transition-colors duration-[160ms] hover:text-gletscher-300"
+                >
+                  <Mail size={11} strokeWidth={2.5} aria-hidden /> {gemeinde.email}
+                </a>
+              )}
+            </span>
+          )}
+        </Hinweis>
+      )}
 
       {/*
         Ausserhalb der Schutzgebiete regeln Kanton und Gemeinde — und die tun
@@ -194,7 +288,7 @@ function RegionBody({
         genau das, statt eine landesweite Faustregel als kantonale Auskunft
         auszugeben.
       */}
-      {kanton && !recht && (
+      {kanton && !recht && !gemeinde && (
         <Hinweis ton="warnung" icon={Scale}>
           <strong className="font-semibold">Kantonale Regelung noch nicht recherchiert.</strong>{' '}
           Zuständig ist hier {kanton.name}

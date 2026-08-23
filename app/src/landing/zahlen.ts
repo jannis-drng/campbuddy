@@ -32,6 +32,10 @@ interface Bestand {
   campingplaetze: number
   stellplaetze: number
   gipfel: number | null
+  gemeinden: number
+  gemeinden_eingestuft: number
+  gemeinden_belegt: number
+  gemeinden_vor_ort: number
 }
 
 const bestand = bestandRoh as Bestand
@@ -49,6 +53,21 @@ export const zonenAmtlich = bestand.zonen_amtlich
 /** Flächen, für die es überhaupt eine Einstufung gibt (der Rest bleibt „ungeklärt"). */
 export const zonenEingestuft = bestand.zonen_abgeleitet
 export const zonenUngeklaert = bestand.zonen_ungeklaert
+
+/**
+ * Die Gemeindeebene — und was daran wirklich zählt.
+ *
+ * Nicht „2119 Gemeinden erfasst": Grenzen zu laden ist keine Leistung, das ist
+ * ein Nachmittag Arbeit an einem OSM-Import. Die Zahl, die etwas aussagt, ist
+ * `gemeindenBelegt` — wie viele davon eine mit einem amtlichen Dokument
+ * belegte Einstufung tragen. Solange das eine Handvoll ist, soll genau das
+ * dastehen.
+ */
+export const gemeindenGesamt = bestand.gemeinden
+export const gemeindenEingestuft = bestand.gemeinden_eingestuft
+/** Mit einem benannten amtlichen Dokument belegt. Die einzige Zahl, die trägt. */
+export const gemeindenBelegt = bestand.gemeinden_belegt
+export const gemeindenVorOrt = bestand.gemeinden_vor_ort
 
 export const punkteGesamt = bestand.punkte
 export const gipfelGesamt = bestand.gipfel

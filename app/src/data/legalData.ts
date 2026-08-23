@@ -7,8 +7,8 @@
  * die UI bleibt unverändert, weil sie nur diese Signaturen kennt.
  */
 import type {
-  ActivityMode, LegalStatus, MapFilters, NatureFeature, Peak, Permission, Point, RegionCode,
-  ReviewStatus, Zone,
+  ActivityMode, Gemeinde, LegalStatus, MapFilters, NatureFeature, Peak, Permission, Point,
+  RegionCode, ReviewStatus, Zone,
 } from './types'
 import { REGIONS } from './regions'
 import { getSupabase } from '../services/supabase'
@@ -263,6 +263,33 @@ export async function fetchRemoteZones(region: RegionCode): Promise<Zone[] | nul
     last_verified: row.last_verified,
     review_status: row.review_status,
     notes: row.notes,
+    geometry: row.geometry,
+  }))
+}
+
+/**
+ * Die Gemeindeflächen aus der Datenbank.
+ *
+ * Gebündelt liegt nur die Fokusregion; die ganze Schweiz sind 2119 Flächen und
+ * gut 700 KB gepackt. Ohne diesen Weg endet die Gemeindeauskunft an der
+ * Kantonsgrenze — und damit die Antwort, auf die es ankommt.
+ */
+export async function fetchRemoteGemeinden(): Promise<Gemeinde[] | null> {
+  const sb = getSupabase()
+  if (!sb) return null
+  const { data, error } = await sb
+    .from('gemeinden')
+    .select('id, bfs, name, kanton, website, email, source_url, geometry')
+  if (error || !data || data.length === 0) return null
+
+  return data.map((row): Gemeinde => ({
+    id: row.id,
+    bfs: row.bfs,
+    name: row.name,
+    kanton: row.kanton,
+    website: row.website,
+    email: row.email,
+    source_url: row.source_url,
     geometry: row.geometry,
   }))
 }

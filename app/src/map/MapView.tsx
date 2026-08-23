@@ -41,6 +41,11 @@ interface Props {
   peaks: Peak[]
   nature: NatureFeature[]
   eigene: EigenerPunkt[]
+  /**
+   * Die Gemeindeflächen mit ihrer Rechtslage — die Ebene, auf der die Frage
+   * ausserhalb der Schutzgebiete tatsächlich entschieden wird.
+   */
+  gemeinden: GeoJSON.FeatureCollection
   /** Steuert nur die Einfärbung — es werden nie Zonen ausgeblendet. */
   activity: ActivityMode
   basemap: BasemapKey
@@ -81,7 +86,7 @@ interface Props {
 }
 
 export function MapView({
-  region, zones, points, peaks, nature, eigene, activity, basemap, visible,
+  region, zones, points, peaks, nature, eigene, gemeinden, activity, basemap, visible,
   route, waypoints, drawing, markieren,
   onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
@@ -95,12 +100,12 @@ export function MapView({
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
   const latest = useRef({
-    zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
+    zones, points, peaks, nature, eigene, gemeinden, activity, drawing, markieren, waypoints,
     onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   })
   latest.current = {
-    zones, points, peaks, nature, eigene, activity, drawing, markieren, waypoints,
+    zones, points, peaks, nature, eigene, gemeinden, activity, drawing, markieren, waypoints,
     onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   }
@@ -151,6 +156,7 @@ export function MapView({
       ;(m.getSource('peaks') as GeoJSONSource | undefined)?.setData(peaksToGeoJson(latest.current.peaks))
       ;(m.getSource('natur') as GeoJSONSource | undefined)?.setData(natureToGeoJson(latest.current.nature))
       ;(m.getSource('eigene') as GeoJSONSource | undefined)?.setData(eigeneToGeoJson(latest.current.eigene))
+      ;(m.getSource('gemeinden') as GeoJSONSource | undefined)?.setData(latest.current.gemeinden)
       ;(m.getSource('route') as GeoJSONSource | undefined)
         ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
       ready.current = true
@@ -434,6 +440,12 @@ export function MapView({
   useEffect(() => {
     const m = map.current
     if (!m || !ready.current) return
+    ;(m.getSource('gemeinden') as GeoJSONSource | undefined)?.setData(gemeinden)
+  }, [gemeinden])
+
+  useEffect(() => {
+    const m = map.current
+    if (!m || !ready.current) return
     ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route, waypoints))
   }, [route, waypoints])
 
@@ -596,6 +608,79 @@ function addLayers(m: MlMap) {
   m.addSource('route', { type: 'geojson', data: empty })
   m.addSource('route-griff', { type: 'geojson', data: empty })
   m.addSource('peaks', { type: 'geojson', data: empty })
+  m.addSource('gemeinden', { type: 'geojson', data: empty })
+
+  schraffurenAnlegen(m)
+
+  // Die Gemeindeebene liegt unter allem anderen. Sie beantwortet die Frage im
+  // Normalfall — auf freier Fläche, wo kein Schutzgebiet eingezeichnet ist.
+  // Wo eines liegt, gilt dessen strengere Regel, und es muss darüber sichtbar
+  // bleiben.
+  //
+  // Nicht recherchierte Gemeinden bekommen gar keine Füllung — nur Grenze und
+  // Name. Zwei Gründe, und beide zählen: sie mit einer der drei Rechtsfarben
+  // zu füllen hiesse zu raten, und ein neutraler Grauschleier läge derzeit über
+  // der ganzen Schweiz und würde die Grundkarte vermatschen. Die leere Fläche
+  // ist die ehrlichere und die lesbarere Lösung — und je weiter die Recherche
+  // kommt, desto mehr färbt sich die Karte. Man sieht dem Bild den Fortschritt an.
+  m.addLayer({
+    id: 'gemeinden-fill',
+    type: 'fill',
+    source: 'gemeinden',
+    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], true]],
+    paint: { 'fill-color': statusColor, 'fill-opacity': 0.32 },
+  })
+
+  // Abgeleitet, aber nicht belegt: schraffiert statt voll. Der Prüfstand ist
+  // damit Teil des Kartenbilds und nicht bloss eine Fussnote im Infofeld.
+  m.addLayer({
+    id: 'gemeinden-fill-unbestaetigt',
+    type: 'fill',
+    source: 'gemeinden',
+    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], false]],
+    paint: { 'fill-pattern': schraffurBild, 'fill-opacity': 0.5 },
+  })
+
+  // Zwei Linien übereinander: eine helle Kasche, darauf die dunkle Grenze.
+  // Die Grundkarte lässt sich umschalten und reicht von hellem Papier bis zu
+  // dunklem Relief — eine einzelne graue Linie verschwindet auf der einen oder
+  // der anderen. Die Gemeindegrenze ist nach der Rechtslage die zweitwichtigste
+  // Linie auf dieser Karte; sie darf nicht von der Grundkarte abhängen.
+  m.addLayer({
+    id: 'gemeinden-outline-kasche',
+    type: 'line',
+    source: 'gemeinden',
+    minzoom: 8,
+    paint: {
+      'line-color': 'rgba(255,255,255,0.75)',
+      'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1.6, 13, 2.8],
+    },
+  })
+  m.addLayer({
+    id: 'gemeinden-outline',
+    type: 'line',
+    source: 'gemeinden',
+    minzoom: 8,
+    paint: {
+      'line-color': '#334155',
+      'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 13, 1.1],
+      'line-opacity': 0.75,
+    },
+  })
+
+  m.addLayer({
+    id: 'gemeinden-label',
+    type: 'symbol',
+    source: 'gemeinden',
+    minzoom: 10,
+    layout: {
+      'text-field': ['get', 'name'], 'text-size': 10.5, 'text-font': TEXT_FONT,
+      'text-letter-spacing': 0.03, 'text-max-width': 9,
+    },
+    paint: {
+      'text-color': '#1E293B', 'text-halo-color': 'rgba(255,255,255,0.92)', 'text-halo-width': 1.6,
+    },
+  })
 
   m.addLayer({
     id: 'zones-fill',
@@ -922,6 +1007,53 @@ function addLayers(m: MlMap) {
     ['interpolate', ['linear'], ['zoom'], 8, 8, 14, 13], [0, -12],
   ))
 }
+
+/**
+ * Diagonale Schraffuren als Kachelbilder — eine je Rechtslage.
+ *
+ * Sie machen den Prüfstand im Kartenbild sichtbar: eine belegte Einstufung
+ * wird als volle Fläche gezeichnet, eine bloss abgeleitete schraffiert. Wer
+ * die Karte anschaut, sieht damit sofort, wo die Auskunft trägt und wo sie
+ * erst ein Anhaltspunkt ist — ohne eine Zeile zu lesen.
+ *
+ * Drei Bilder statt eines eingefärbten, weil `fill-pattern` sich nicht pro
+ * Fläche tönen lässt; die Auswahl passiert stattdessen über einen
+ * `match`-Ausdruck auf `status`.
+ */
+function schraffurenAnlegen(m: MlMap) {
+  const kante = 8
+  const dpr = 2
+  for (const [name, farbe] of Object.entries(STATUS_COLORS)) {
+    const id = `schraffur-${name}`
+    if (m.hasImage(id)) continue
+    const c = document.createElement('canvas')
+    c.width = kante * dpr
+    c.height = kante * dpr
+    const g = c.getContext('2d')
+    if (!g) return
+    g.scale(dpr, dpr)
+    g.strokeStyle = farbe
+    g.lineWidth = 2.2
+    // Zwei versetzte Striche, damit die Kachel nahtlos aneinanderstösst.
+    for (const versatz of [-kante, 0]) {
+      g.beginPath()
+      g.moveTo(versatz, kante)
+      g.lineTo(versatz + kante, 0)
+      g.stroke()
+    }
+    const bild = g.getImageData(0, 0, c.width, c.height)
+    m.addImage(id, { width: c.width, height: c.height, data: new Uint8Array(bild.data) }, { pixelRatio: dpr })
+  }
+}
+
+/** Welche Schraffur zu welcher Rechtslage gehört. */
+const schraffurBild: ExpressionSpecification = [
+  'match', ['get', 'status'],
+  'allowed', 'schraffur-allowed',
+  'tolerated', 'schraffur-tolerated',
+  'forbidden', 'schraffur-forbidden',
+  'schraffur-unknown',
+]
 
 /**
  * Kleines Gipfeldreieck als Bild in den Style legen.

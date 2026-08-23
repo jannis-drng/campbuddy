@@ -163,6 +163,56 @@ export interface KantonRecht {
   last_verified: string | null
 }
 
+/**
+ * Eine Gemeinde — die Ebene, auf der über das Campieren tatsächlich entschieden wird.
+ *
+ * Der Kanton war die falsche Auflösung. In der Schweiz regelt das Übernachten
+ * im Freien überwiegend die Gemeinde: über Polizeireglement, Nutzungsplanung
+ * oder ein Verbot am Seeufer. Zwei Nachbargemeinden im selben Kanton können es
+ * gegensätzlich halten — eine kantonale Auskunft ist dann im Zweifel eine
+ * falsche Auskunft.
+ *
+ * `website` und `email` sind nicht Beiwerk, sondern Teil der Antwort: solange
+ * eine Gemeinde ungeprüft ist, ist "frag dort nach" das Ehrlichste, was diese
+ * Karte sagen kann — und der Kontakt soll dann einen Klick weit weg sein.
+ */
+export interface Gemeinde {
+  id: string
+  /** Amtliche BFS-Nummer. Überlebt Umbenennungen und Fusionen; Schlüssel der Rechtspflege. */
+  bfs: number | null
+  name: string
+  /** ISO-Code des Kantons, z. B. 'CH-VS'. */
+  kanton: string | null
+  website: string | null
+  email: string | null
+  source_url: string
+  geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
+}
+
+/**
+ * Die kommunale Regelung zum Übernachten im Freien.
+ *
+ * Fehlt ein Eintrag, ist das kein Fehler, sondern der wahrheitsgemässe Zustand:
+ * für diese Gemeinde wurde noch nicht recherchiert. Die Karte färbt solche
+ * Flächen deshalb neutral ein und sagt es offen — sie rät nicht.
+ *
+ * Bewusst dieselbe Form wie `KantonRecht`, damit die Oberfläche beide Ebenen
+ * gleich darstellen kann und die feinere die gröbere nur überschreibt.
+ */
+export interface GemeindeRecht {
+  status: LegalStatus
+  tent_allowed: Permission
+  vehicle_allowed: Permission
+  fire_allowed: Permission
+  /** Was gilt, in zwei bis vier Sätzen. */
+  summary: string
+  conditions: string | null
+  source: string
+  source_url: string
+  review_status: ReviewStatus
+  last_verified: string | null
+}
+
 export type RegionCode = string
 
 export interface Region {

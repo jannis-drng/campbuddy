@@ -26,7 +26,7 @@ const REGION = process.env.REGION ?? 'CH'
 const QUELLE = resolve(ROOT, 'import', REGION)
 const ZIEL = resolve(REPO, 'supabase/migrations')
 /** Zeilen pro Datei — bei Zonen zählt die Geometrie, deshalb klein gehalten. */
-const STUECK = { zones: 200, points: 2000, peaks: 4000, nature: 4000 }
+const STUECK = { zones: 200, points: 2000, peaks: 4000, nature: 4000, gemeinden: 300 }
 
 /** Einfache Anführungszeichen verdoppeln; das ist die einzige nötige Maskierung. */
 const q = (wert) => (wert == null ? 'null' : `'${String(wert).replace(/'/g, "''")}'`)
@@ -282,6 +282,7 @@ function bestand() {
     stellplaetze: punkteListe.filter((p) => p.type === 'vehicle_spot').length,
     gipfel,
     natur: naturZahl,
+    ...gemeindeBestand(),
   }
 
   const datei = resolve(ROOT, 'src/data', 'bestand.json')
@@ -289,9 +290,70 @@ function bestand() {
   console.log(`${datei}  (${JSON.stringify(inhalt).length} Bytes)`)
 }
 
+/**
+ * Wie weit die kommunale Rechtspflege gediehen ist.
+ *
+ * Die Zahl, die zählt, ist nicht „2119 Gemeinden erfasst" — Grenzen zu laden
+ * ist keine Leistung. Sie ist, wie viele davon eine mit einer amtlichen Quelle
+ * belegte Einstufung tragen. Solange das eine Handvoll ist, soll genau das
+ * dastehen.
+ */
+function gemeindeBestand() {
+  const flaechen = JSON.parse(readFileSync(resolve(QUELLE, 'gemeinden', `${REGION}.json`), 'utf8'))
+  const recht = JSON.parse(readFileSync(resolve(ROOT, 'src/data/gemeinden.legal.json'), 'utf8'))
+  const eintraege = Object.values(recht.gemeinden ?? {})
+  return {
+    gemeinden: flaechen.features.length,
+    gemeinden_eingestuft: eintraege.length,
+    gemeinden_belegt: eintraege.filter((e) => e.review_status === 'quelle').length,
+    gemeinden_vor_ort: eintraege.filter((e) => e.review_status === 'vor-ort').length,
+  }
+}
+
+/* ------------------------------------------------------------ Gemeinden */
+
+/**
+ * Die Gemeindeflächen — nur Geometrie und Kontakt, keine Rechtslage.
+ *
+ * Die Einstufung bleibt in `gemeinden.legal.json` im Repo: von Hand gepflegt,
+ * versioniert, und von einem Neu-Import nicht zu überschreiben. Dieselbe
+ * Trennung wie bei den Zonen, und aus demselben Grund — die Rechtspflege ist
+ * die Arbeit, die man kein zweites Mal machen will.
+ */
+function gemeinden() {
+  const pfad = resolve(QUELLE, 'gemeinden', `${REGION}.json`)
+  const daten = JSON.parse(readFileSync(pfad, 'utf8'))
+
+  const spalten = 'id, bfs, name, kanton, website, email, source_url, geometry'
+  const tupel = daten.features.map((f) => {
+    const p = f.properties
+    return [
+      q(f.id), p.bfs ?? 'null', q(p.name), q(p.kanton), q(p.website), q(p.email),
+      q(p.source_url), `${q(JSON.stringify(f.geometry))}::jsonb`,
+    ].join(', ')
+  })
+
+  const mitKontakt = daten.features.filter((f) => f.properties.website || f.properties.email).length
+  schreibe(
+    `0014_seed_gemeinden_${REGION.toLowerCase()}`,
+    [
+      '-- CampBuddy — Gemeindeflächen.',
+      '--',
+      `-- ${daten.features.length} Gemeinden, davon ${mitKontakt} mit Kontakt.`,
+      '-- Nur Geometrie und Kontakt; die Rechtslage steht in gemeinden.legal.json.',
+      '--',
+      '-- Voraussetzung: 0013_gemeinden.sql ist gelaufen.',
+    ].join('\n'),
+    { tabelle: 'public.gemeinden', liste: spalten },
+    tupel,
+    ['bfs', 'name', 'kanton', 'website', 'email', 'source_url', 'geometry'],
+    STUECK.gemeinden,
+  )
+}
+
 /* ----------------------------------------------------------------- main */
 
-const GRUPPEN = { zonen, punkte, gipfel, natur, bestand }
+const GRUPPEN = { zonen, punkte, gipfel, natur, gemeinden, bestand }
 const gewaehlt = process.argv.slice(2).filter((a) => a in GRUPPEN)
 const laufen = gewaehlt.length ? gewaehlt : Object.keys(GRUPPEN)
 

@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import {
-  fetchRemoteNature, fetchRemotePeaks, fetchRemotePoints, fetchRemoteZones, filterNature,
-  filterPoints, getNature, getPeaks, getPoints, getRegion, getZones, verificationStats,
+  fetchRemoteGemeinden, fetchRemoteNature, fetchRemotePeaks, fetchRemotePoints, fetchRemoteZones,
+  filterNature, filterPoints, getNature, getPeaks, getPoints, getRegion, getZones,
+  verificationStats,
   type Ausschnitt,
 } from './data/legalData'
 import type { EigenerPunkt, MapFilters, NatureFeature, Peak, Point, Zone } from './data/types'
@@ -25,6 +26,7 @@ import { AccountPanel } from './components/AccountPanel'
 import { PunktDialog } from './components/PunktDialog'
 import { ladeEigenePunkte, punktLoeschen } from './services/eigenePunkte'
 import { kantonAn, kantonGrundlagen, kantonRecht } from './data/kantone'
+import { gemeindeAn, gemeindeRecht, gemeindenGeoJSON, setzeGemeinden } from './data/gemeinden'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
@@ -164,6 +166,31 @@ export default function App() {
     [eigenePunkte, filters.showEigene],
   )
   const stats = useMemo(() => verificationStats(allZones), [allZones])
+
+  /*
+   * Die Gemeindeflächen der ganzen Schweiz nachladen.
+   *
+   * Gebündelt ist nur die Fokusregion — ohne diesen Schritt endet die
+   * Gemeindeauskunft an deren Grenze und die Karte fiele auf die gröbere
+   * kantonale Ebene zurück. Kommt nichts, bleibt es bei der gebündelten
+   * Fassung; ein Backend-Ausfall darf die Karte nicht leeren.
+   */
+  const [gemeindenStand, setGemeindenStand] = useState(0)
+  useEffect(() => {
+    let aktuell = true
+    fetchRemoteGemeinden()
+      .then((g) => {
+        if (!aktuell || !g) return
+        setzeGemeinden(g)
+        setGemeindenStand((n) => n + 1)
+      })
+      .catch(() => {})
+    return () => { aktuell = false }
+  }, [])
+
+  // Nur neu bauen, wenn tatsächlich andere Flächen vorliegen: 2119 Polygone bei
+  // jedem Rendern durchzurechnen wäre reine Verschwendung.
+  const gemeindenGeo = useMemo(() => gemeindenGeoJSON(), [gemeindenStand])
   // Die Analyse läuft über alle Punkte, nicht die gefilterten: eine ausgeblendete
   // Hütte ist trotzdem eine Schlafmöglichkeit an der Route.
   // Eine importierte Spur folgt bereits realen Wegen und wird nicht neu geroutet.
@@ -372,6 +399,7 @@ export default function App() {
             peaks={filters.showPeaks ? allPeaks : []}
             nature={nature}
             eigene={sichtbareEigene}
+            gemeinden={gemeindenGeo}
             activity={filters.activity}
             basemap={basemap}
             visible={view === 'karte'}
@@ -387,11 +415,14 @@ export default function App() {
               // Wer an dieser Stelle zuständig ist, entscheidet die Auskunft —
               // ausserhalb der Schutzgebiete regeln Kanton und Gemeinde.
               const kanton = kantonAn(position)
+              const gemeinde = gemeindeAn(position)
               setSelection({
                 kind: 'region', region, stats, quelle: datenquelle,
                 kanton,
                 kantonRecht: kantonRecht(kanton),
                 kantonGrundlagen: kantonGrundlagen(kanton),
+                gemeinde,
+                gemeindeRecht: gemeindeRecht(gemeinde),
               })
             }}
             onAusschnitt={setAusschnitt}

@@ -27,8 +27,17 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
 - `app/src/data/` — **Schicht 1**, die Legalitäts-Daten. Geometrie (`*.osm.json`, importiert)
   und rechtliche Einstufung (`*.legal.json`, manuell gepflegt) sind getrennte Dateien, damit
   ein Neu-Import die Rechtspflege nicht überschreibt.
+- **Drei Zuständigkeitsebenen, feinste gewinnt:** Schutzgebiet (`zones`) → Gemeinde
+  (`gemeinden.legal.json`, Schlüssel = BFS-Nummer) → Kanton (`kantone.legal.json`) →
+  landesweiter Rahmen. Ausserhalb der Schutzgebiete entscheidet in der Schweiz fast immer
+  die **Gemeinde**; eine bloss kantonale Auskunft ist dort im Zweifel falsch. Wie ein Eintrag
+  aussieht und welche Belege er braucht: `app/src/data/gemeinden.README.md`.
+- **Kein Eintrag ≠ keine Regel.** Ungeprüfte Gemeinden bleiben auf der Karte ungefüllt und
+  nennen stattdessen den Kontakt der Gemeinde. Schraffiert = eingestuft, aber nicht mit einem
+  amtlichen Dokument belegt (`review_status: 'entwurf'`).
 - `app/src/map/` — **Schicht 2**, Karte/Routing. `app/src/affiliate/` — **Schicht 3**, vorbereitet.
-- `npm run import:osm --prefix app` — Punkte und Schutzgebiete aus OpenStreetMap holen.
+- `npm run import:osm --prefix app` — Punkte, Schutzgebiete, Kantone und Gemeinden holen
+  (`REGION=CH node scripts/import-osm.mjs gemeinden` für die Gemeindeebene allein).
 - `npm run deploy --prefix app` — baut und veröffentlicht auf GitHub Pages.
 
 Live: https://jannis-drng.github.io/campbuddy/ · Repo: https://github.com/jannis-drng/campbuddy

@@ -866,6 +866,186 @@ async function importKantone() {
   }
 }
 
+/* ---------------- Gemeinden ---------------- */
+
+/**
+ * Die Gemeindegrenzen — die Ebene, auf der die Frage tatsächlich entschieden wird.
+ *
+ * Bisher konnte die Karte ausserhalb der Schutzgebiete nur sagen, welcher
+ * *Kanton* zuständig ist. Das ist zu grob: in der Schweiz regelt das Campieren
+ * überwiegend die Gemeinde — über Polizeireglement, Nutzungsplanung oder
+ * schlicht ein Verbot am Seeufer. Zwei Nachbargemeinden im selben Kanton können
+ * es gegensätzlich halten. Eine kantonale Auskunft ist deshalb im Zweifel eine
+ * falsche Auskunft.
+ *
+ * Geholt wird nur die Geometrie plus das, was die Gemeinde erreichbar macht:
+ * BFS-Nummer (der stabile amtliche Schlüssel, unter dem die Rechtspflege liegt),
+ * Webseite und E-Mail. Die Regeln selbst stehen nirgends maschinenlesbar — sie
+ * werden von Hand in `gemeinden.legal.json` gepflegt, mit Quelle und Prüfdatum.
+ * Genau deshalb trägt die Karte den Kontakt gleich mit: solange eine Gemeinde
+ * ungeprüft ist, ist „frag hier nach" die einzige ehrliche Antwort, die wir
+ * geben können — und sie soll wenigstens einen Klick weit weg sein.
+ */
+const GEMEINDE_TOLERANZ = 0.0006
+
+async function importGemeinden() {
+  const data = await overpass(`
+    [out:json][timeout:600];
+    ${GEBIET}
+    relation["admin_level"="8"]["boundary"="administrative"](area.a);
+    out geom;`)
+
+  // Für die Zuordnung „welcher Kanton" — die Kantonsflächen liegen schon vor.
+  const kantonePfad = resolve(ROOT, 'src/data/kantone', `${REGION}.json`)
+  if (!existsSync(kantonePfad)) {
+    throw new Error(`${kantonePfad} fehlt — erst 'kantone' importieren.`)
+  }
+  const kantone = JSON.parse(readFileSync(kantonePfad, 'utf8')).features
+
+  const webseiten = await gemeindeWebseiten()
+  console.log(`   Wikidata: ${webseiten.size} Gemeindewebseiten`)
+
+  const features = []
+  for (const el of data.elements) {
+    const t = el.tags ?? {}
+    if (!el.members) continue
+    const outers = el.members
+      .filter((m) => m.role === 'outer' && m.geometry)
+      .map((m) => m.geometry.filter((p) => p && p.lon != null && p.lat != null))
+      .filter((g) => g.length > 1)
+      .map((g) => g.map((p) => [round(p.lon), round(p.lat)]))
+    const ringe = mergeRings(outers)
+      .filter((r) => r.length > 3)
+      .map(closeRing)
+      .map((r) => vereinfacheRing(r, GEMEINDE_TOLERANZ))
+      .filter((r) => r.length > 3)
+    if (ringe.length === 0) continue
+
+    // Die BFS-Nummer ist der amtliche Schlüssel und überlebt Umbenennungen und
+    // Fusionen sauberer als der Name. Ohne sie gibt es keinen stabilen Haken für
+    // die Rechtspflege — dann lieber die OSM-Relation als Notschlüssel.
+    const bfs = t['swisstopo:BFS_NUMMER'] ?? t['ref:BFS'] ?? null
+
+    const geometry = ringe.length === 1
+      ? { type: 'Polygon', coordinates: ringe }
+      : { type: 'MultiPolygon', coordinates: ringe.map((r) => [r]) }
+
+    const mittel = schwerpunkt(ringe[0])
+    const kanton = kantone.find((k) => punktInGeometrie(mittel, k.geometry))
+    // Der Gebietsfilter zieht Grenzgemeinden jenseits der Landesgrenze mit
+    // herein. Ohne Kanton ist die Fläche für diese Karte wertlos — und eine
+    // deutsche Gemeinde als Schweizer Zuständigkeit auszuweisen wäre falsch.
+    if (!kanton) continue
+
+    features.push({
+      type: 'Feature',
+      id: bfs ? `bfs-${bfs}` : `osm-relation-${el.id}`,
+      properties: {
+        bfs: bfs ? Number(bfs) : null,
+        name: t['name:de'] ?? t.name ?? '(unbenannt)',
+        kanton: kanton.properties.code,
+        // OSM zuerst — dort steht die Adresse, wenn jemand sie vor Ort gepflegt
+        // hat; Wikidata füllt den grossen Rest auf.
+        website: t.website ?? t['contact:website'] ?? (bfs ? webseiten.get(Number(bfs)) ?? null : null),
+        email: t.email ?? t['contact:email'] ?? null,
+        source_url: `https://www.openstreetmap.org/relation/${el.id}`,
+      },
+      geometry,
+    })
+  }
+
+  features.sort((a, b) => a.properties.name.localeCompare(b.properties.name, 'de'))
+
+  const schreibe = (pfad, liste) => {
+    const fc = { type: 'FeatureCollection', features: liste }
+    mkdirSync(dirname(pfad), { recursive: true })
+    writeFileSync(pfad, JSON.stringify(fc) + '\n')
+    return Math.round(JSON.stringify(fc).length / 1024)
+  }
+
+  const voll = resolve(AUSGABE, 'gemeinden', `${REGION}.json`)
+  const kb = schreibe(voll, features)
+  const ohneBfs = features.filter((f) => f.properties.bfs == null).length
+  const mitKontakt = features.filter((f) => f.properties.website || f.properties.email).length
+  console.log(`Gemeinden: ${features.length} Flächen, ${kb} KB -> ${voll}`)
+  console.log(`   ohne BFS-Nummer: ${ohneBfs} · mit Kontakt: ${mitKontakt}`)
+
+  // Die ganze Schweiz sind 2100 Flächen und gut 700 KB gepackt — das ist zu
+  // viel, um es jedem Besucher vorab aufzuladen. Ins Bundle kommt deshalb nur
+  // die Fokusregion; sie steht sofort und auch ohne Netz. Der Rest kommt aus
+  // der Datenbank und ersetzt sie, sobald er da ist — dasselbe Verfahren wie
+  // bei Zonen, Gipfeln und Natur.
+  if (!IM_BUNDLE) {
+    for (const kantonCode of BUNDLE_REGIONEN) {
+      const teil = features.filter((f) => f.properties.kanton === kantonCode)
+      if (teil.length === 0) continue
+      const pfad = resolve(ROOT, 'src/data/gemeinden', `${kantonCode}.json`)
+      console.log(`   Bundle ${kantonCode}: ${teil.length} Flächen, ${schreibe(pfad, teil)} KB`)
+    }
+  }
+}
+
+/**
+ * Die offiziellen Gemeindewebseiten aus Wikidata nachtragen.
+ *
+ * OSM führt sie nur für gut 130 der 2119 Gemeinden — zu wenig, denn solange
+ * eine Gemeinde nicht recherchiert ist, ist „frag dort nach" die einzige
+ * ehrliche Auskunft, die diese Karte geben kann, und sie taugt nur mit einem
+ * Link daran. Wikidata verknüpft die amtliche BFS-Nummer (P771) mit der
+ * offiziellen Webseite (P856) und deckt fast alle ab.
+ *
+ * Geraten wird nichts: gibt Wikidata keine Adresse her, bleibt das Feld leer
+ * und die Karte sagt schlicht nichts dazu. Eine zusammengereimte URL wäre
+ * schlimmer als keine.
+ */
+const WIKIDATA_ABFRAGE = `SELECT ?bfs ?site WHERE { ?g wdt:P771 ?bfs . ?g wdt:P856 ?site . }`
+
+async function gemeindeWebseiten() {
+  const url = 'https://query.wikidata.org/sparql?query=' + encodeURIComponent(WIKIDATA_ABFRAGE)
+  const antwort = await fetch(url, {
+    headers: {
+      Accept: 'application/sparql-results+json',
+      'User-Agent': 'CampBuddy-Import/1.0 (https://github.com/jannis-drng/campbuddy)',
+    },
+  })
+  if (!antwort.ok) throw new Error(`Wikidata: HTTP ${antwort.status}`)
+  const daten = await antwort.json()
+
+  const nach = new Map()
+  for (const zeile of daten.results.bindings) {
+    const bfs = Number(zeile.bfs.value)
+    const site = zeile.site.value
+    if (!Number.isFinite(bfs)) continue
+    // Mehrere Sprachfassungen je Gemeinde: die kürzeste URL ist verlässlich
+    // die Einstiegsseite, die längeren sind /fr, /en und Ähnliches.
+    const bisher = nach.get(bfs)
+    if (!bisher || site.length < bisher.length) nach.set(bfs, site)
+  }
+  return nach
+}
+
+/** Grober Flächenschwerpunkt eines Rings — reicht, um den Kanton zu bestimmen. */
+function schwerpunkt(ring) {
+  let x = 0, y = 0
+  for (const [lon, lat] of ring) { x += lon; y += lat }
+  return [x / ring.length, y / ring.length]
+}
+
+/** Punkt-in-Polygon (Ray-Casting), nur fürs Zuordnen beim Import. */
+function punktInGeometrie([lon, lat], geometry) {
+  const polygone = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates
+  return polygone.some((poly) => {
+    let drin = false
+    const ring = poly[0]
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i]
+      const [xj, yj] = ring[j]
+      if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) drin = !drin
+    }
+    return drin
+  })
+}
+
 /* ---------------- Kantonale Rechtsgrundlagen ---------------- */
 
 /**
@@ -1153,6 +1333,7 @@ const GRUPPEN = {
   zonen: importProtectedAreas,
   natur: importNature,
   kantone: importKantone,
+  gemeinden: importGemeinden,
   bafu: importBafu,
   kantonsrecht: importKantonsrecht,
   recht: importRecht,
