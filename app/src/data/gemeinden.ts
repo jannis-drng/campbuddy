@@ -59,9 +59,23 @@ const GEBUENDELT = ausDatei(gemeindenVS as unknown as GemeindeDatei)
 
 let AKTUELL: Gemeinde[] = GEBUENDELT
 
-/** Ersetzt die gebündelte Fassung durch die vollständige aus der Datenbank. */
+/**
+ * Die Fassung aus der Datenbank dazunehmen — ergänzend, nicht ersetzend.
+ *
+ * Ersetzen war ein Fehler. Ins Bundle kommt genau das, was recherchiert ist
+ * (siehe `bundleNachziehen` in scripts/gemeinden-einstufen.mjs), und es ist
+ * per Konstruktion mit der Rechtspflege im selben Commit synchron. Die
+ * Datenbank wird von Hand nachgeführt und hinkt deshalb hinterher. Wer sie
+ * das Bundle überschreiben lässt, verliert genau die Gemeinden, für die
+ * jemand die Arbeit gemacht hat — sie fallen ohne Fehlermeldung von der Karte.
+ *
+ * Also: das Bundle bleibt massgeblich für die Flächen, die es führt, und die
+ * Datenbank füllt den grossen Rest der Schweiz auf.
+ */
 export function setzeGemeinden(gemeinden: Gemeinde[]) {
-  AKTUELL = gemeinden.length > 0 ? gemeinden : GEBUENDELT
+  if (gemeinden.length === 0) { AKTUELL = GEBUENDELT; return }
+  const gebuendelt = new Set(GEBUENDELT.map((g) => g.id))
+  AKTUELL = [...GEBUENDELT, ...gemeinden.filter((g) => !gebuendelt.has(g.id))]
 }
 
 export function alleGemeinden(): Gemeinde[] {

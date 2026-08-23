@@ -61,8 +61,63 @@ const kern = (s) => s
  * Das ist die Zeile, an der jemand die Aussage nachprüft — sie muss sagen,
  * welches Dokument gemeint ist, sonst trägt der Beleg nicht.
  */
+/**
+ * HTML-Reste aus einem Linktext entfernen.
+ *
+ * Gemeindeseiten liefern Linktexte samt Entitaeten: &shy; fuer weiche
+ * Trennung, &nbsp; als Fuellzeichen, &emsp; als Einzug. Roh uebernommen
+ * stehen sie mitten in der Quellenangabe, die jemand lesen soll.
+ */
+function entschaerft(s) {
+  return s
+    .replace(/&shy;?/gi, '')
+    .replace(/&(nbsp|emsp|ensp|thinsp|#160);?/gi, ' ')
+    .replace(/&amp;?/gi, '&')
+    .replace(/&(quot|#34);?/gi, '"')
+    .replace(/&(apos|#39);?/gi, "'")
+    .replace(/&[a-z]+;/gi, ' ')
+}
+
+/**
+ * Aus der Artikelzeile eine Ueberschrift machen, keinen Textanfang.
+ *
+ * Der Rechercheläufer schneidet nach der Artikelnummer bis zu 80 Zeichen mit —
+ * hat der Artikel gar keine Ueberschrift, ist das schon der erste Satz. In der
+ * Quellenangabe soll aber „Art. 12 Campieren" stehen und nicht „Art. 12
+ * Campieren Das Campieren sowie das Uebernachten in Wohnmobilen und anderen".
+ * Abgeschnitten wird am Absatzbeginn: eine angeklebte oder alleinstehende
+ * Ziffer ist in schweizerischen Reglementen die Absatznummer.
+ */
+function artikelLabel(roh) {
+  let t = entschaerft(roh ?? '').replace(/\s+/g, ' ').trim()
+  const nummer = t.match(/^(Art(?:icle|icolo)?\.?\s*\d+[a-z]?)\s*[:.\-–]?\s*/i)
+  const kopf = nummer ? nummer[1].replace(/\s+/g, ' ') : ''
+  let rest = nummer ? t.slice(nummer[0].length) : t
+  // Absatzbeginn: „1Auf", „1 Auf", „1. Auf" — ab hier faengt der Text an.
+  rest = rest.split(/\s*\d+[.)]?\s*(?=[A-ZÄÖÜ])/)[0]
+
+  // Hat der Artikel keine Absatznummer, faengt der Text ohne Trennzeichen an:
+  // „Campieren Das Campieren sowie das Uebernachten in ...". Eine Ueberschrift
+  // wiederholt kein Wort, eine Ueberschrift samt Textanfang tut es fast immer —
+  // beim ersten wiederholten Wort ist die Ueberschrift zu Ende.
+  const gesehen = new Set()
+  const worte = []
+  for (const wort of rest.split(' ').filter(Boolean).slice(0, 6)) {
+    const schluessel = wort.toLowerCase().replace(/[^a-zäöüàâçéèêëîïôùûœ]/g, '')
+    if (schluessel.length > 3 && gesehen.has(schluessel)) break
+    gesehen.add(schluessel)
+    worte.push(wort)
+  }
+  // Beim Abbruch bleibt gern der Artikel des naechsten Satzes haengen —
+  // „Campieren Das" statt „Campieren". Fuellwoerter am Ende gehoeren weg.
+  const FUELLWORT = /^(das|der|die|den|dem|des|ein|eine|einer|le|la|les|un|une|il|lo|gli|the)$/i
+  while (worte.length > 1 && FUELLWORT.test(worte[worte.length - 1])) worte.pop()
+  const label = [kopf, worte.join(' ')].filter(Boolean).join(' ').replace(/[\s,;.:\-–]+$/, '')
+  return label || t.slice(0, 40)
+}
+
 function dokumentTitel(roh, url) {
-  let t = (roh ?? '')
+  let t = entschaerft(roh ?? '')
     // Was Gemeinde-CMS an den Linktext hängen: Dateigrösse, Format, Lesehilfen
     // für Bildschirmleser. Nichts davon benennt das Dokument.
     .replace(/\[[^\]]*\]/g, ' ')
@@ -159,7 +214,7 @@ for (const r of kandidaten) {
     summary: m.summary,
     conditions: m.conditions ?? null,
     // Die Quelle ist immer das Reglement dieser Gemeinde, nie das Muster.
-    source: `${dokumentTitel(r.dokument_titel, r.dokument)}, ${s.artikel}`,
+    source: `${dokumentTitel(r.dokument_titel, r.dokument)}, ${artikelLabel(s.artikel)}`,
     source_url: r.dokument,
     review_status: m.review_status ?? 'entwurf',
     last_verified: HEUTE,
