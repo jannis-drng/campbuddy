@@ -461,6 +461,13 @@ function PointBody({ point }: { point: Point }) {
     ['Höhe', point.elevation ? `${point.elevation} m` : null, Mountain],
   ] as [string, string | null | undefined, LucideIcon | null][]).filter(([, v]) => v)
 
+  /**
+   * Die Telefonnummer einer Hütte ist der Grund, warum sie hier steht: man
+   * will anrufen und fragen, ob ein Platz frei ist. Auf dem Telefon eine
+   * Nummer zum Abtippen zu zeigen, ist eine verpasste Gelegenheit.
+   */
+  const waehlbar = (wert: string) => wert.replace(/[^\d+]/g, '')
+
   return (
     <div className="space-y-5 px-5 py-4">
       {zeilen.length > 0 ? (
@@ -471,7 +478,17 @@ function PointBody({ point }: { point: Point }) {
                 {Icon && <Icon size={15} strokeWidth={1.75} className="text-ink-500" aria-hidden />}
                 {label}
               </span>
-              <span className="text-right text-fliess font-medium text-ink-100">{wert}</span>
+              {label === 'Telefon' ? (
+                <a
+                  href={`tel:${waehlbar(String(wert))}`}
+                  className="text-right text-fliess font-medium text-gletscher-400
+                             transition-colors duration-[160ms] hover:text-gletscher-300"
+                >
+                  {wert}
+                </a>
+              ) : (
+                <span className="text-right text-fliess font-medium text-ink-100">{wert}</span>
+              )}
             </div>
           ))}
         </section>

@@ -59,6 +59,12 @@ export default function Root() {
     return () => window.removeEventListener('hashchange', auf)
   }, [])
 
+  // Die Startseite trägt den werbenden Titel, die App den der Ansicht (siehe
+  // App.tsx). Ohne das bliebe der Titel der zuletzt besuchten Ansicht stehen.
+  useEffect(() => {
+    if (erzwungen === 'start') document.title = 'CampBuddy — Wo darf ich draussen übernachten?'
+  }, [erzwungen])
+
   const kennt = kenntStartseite()
 
   const inDieApp = () => {

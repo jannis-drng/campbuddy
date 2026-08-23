@@ -99,6 +99,23 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [drawing, markieren])
 
+  /**
+   * Der Seitentitel folgt der Ansicht.
+   *
+   * Eine Einzelseiten-App behält sonst denselben Titel, egal wo man ist —
+   * in der Verlaufsliste und in einer Leiste voller Tabs sind dann alle
+   * Einträge gleich, und Lesezeichen tragen den falschen Namen.
+   */
+  useEffect(() => {
+    const titel = {
+      karte: 'Karte',
+      community: 'Community',
+      touren: 'Deine Touren',
+      konto: session ? 'Konto' : 'Anmelden',
+    }[view]
+    document.title = `${titel} — CampBuddy`
+  }, [view, session])
+
   const region = getRegion(regionCode)
   // Gebündelte Fassung als Startanzeige …
   const bundledZones = useMemo(() => getZones(regionCode), [regionCode])

@@ -11,14 +11,14 @@
  *    Erfundene Nutzerstimmen gibt es aus demselben Grund nicht; an ihrer
  *    Stelle stehen Anwendungsfälle.
  */
-import { useCallback, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import {
   ArrowRight, Ban, CloudSun, Compass, Flame, FileWarning, Code2, Map, MapPinned,
-  MountainSnow, Route, ScrollText, ShieldCheck, Tent, TriangleAlert, Truck,
+  Menu, MountainSnow, Route, ScrollText, ShieldCheck, Tent, TriangleAlert, Truck, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { DEFAULT_REGION, REGIONS } from '../data/regions'
-import { Badge, Button, Card } from '../ui'
+import { Badge, Button, Card, IconButton } from '../ui'
 import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
 import { Einblenden } from './Einblenden'
 import { KartenSchema, Zeltmarke } from './Grafiken'
@@ -127,21 +127,34 @@ export function LandingPage({ onStart }: { onStart: () => void }) {
 
 /* ---------------------------------------------------------------- Kopfzeile */
 
+const ABSCHNITTE: [string, string][] = [
+  ['funktionen', 'Funktionen'],
+  ['ablauf', 'Ablauf'],
+  ['pruefstand', 'Prüfstand'],
+]
+
 function Kopfzeile({ onStart }: { onStart: () => void }) {
+  const [menuOffen, setMenuOffen] = useState(false)
+
+  // Escape schliesst, und ein Sprung zu einem Abschnitt auch — ein Menü, das
+  // über dem Ziel liegen bleibt, ist schlimmer als keins.
+  useEffect(() => {
+    if (!menuOffen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuOffen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOffen])
+
   return (
     <header className="sticky top-0 z-40 border-b border-kante/70 bg-flaeche-1/80 backdrop-blur-lg">
-      <div className={`${BREITE} flex h-16 items-center gap-6`}>
+      <div className={`${BREITE} flex h-16 items-center gap-4`}>
         <a href="#inhalt" className="flex shrink-0 items-center gap-2.5" aria-label="CampBuddy, Seitenanfang">
           <Zeltmarke className="h-7 w-7" />
           <span className="text-ueberschrift font-semibold tracking-tight text-ink-50">CampBuddy</span>
         </a>
 
         <nav aria-label="Abschnitte" className="ml-auto hidden items-center gap-7 md:flex">
-          {[
-            ['funktionen', 'Funktionen'],
-            ['ablauf', 'Ablauf'],
-            ['pruefstand', 'Prüfstand'],
-          ].map(([id, label]) => (
+          {ABSCHNITTE.map(([id, label]) => (
             <a
               key={id}
               href={`#${id}`}
@@ -155,7 +168,41 @@ function Kopfzeile({ onStart }: { onStart: () => void }) {
         <Button variante="primaer" icon={Map} onClick={onStart} className="ml-auto md:ml-0">
           Karte öffnen
         </Button>
+
+        {/*
+          Auf dem Telefon war die Abschnittsnavigation schlicht ausgeblendet —
+          drei Kapitel der Seite waren dort nur durch Scrollen erreichbar.
+        */}
+        <IconButton
+          icon={menuOffen ? X : Menu}
+          label={menuOffen ? 'Menü schliessen' : 'Menü öffnen'}
+          onClick={() => setMenuOffen((v) => !v)}
+          aria-expanded={menuOffen}
+          className="-mr-1.5 md:hidden"
+        />
       </div>
+
+      {menuOffen && (
+        <nav
+          aria-label="Abschnitte"
+          className="border-t border-kante bg-flaeche-1/95 backdrop-blur-lg md:hidden"
+        >
+          <ul className={`${BREITE} flex flex-col py-2`}>
+            {ABSCHNITTE.map(([id, label]) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  onClick={() => setMenuOffen(false)}
+                  className="block py-3 text-fliess font-medium text-ink-200
+                             transition-colors duration-[160ms] hover:text-ink-50"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
   )
 }
@@ -824,7 +871,10 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
 
       <div className="border-t border-kante">
         <div className={`${BREITE} flex flex-wrap items-center justify-between gap-3 py-5 text-mikro normal-case tracking-normal text-ink-500`}>
-          <p>Kartendaten © OpenStreetMap-Mitwirkende (ODbL). Rechtliche Einstufung: eigene Pflege.</p>
+          <p>
+            © {new Date().getFullYear()} CampBuddy · Kartendaten © OpenStreetMap-Mitwirkende (ODbL).
+            Rechtliche Einstufung: eigene Pflege.
+          </p>
           <p className="flex items-center gap-1.5">
             <Ban size={12} strokeWidth={2.5} aria-hidden />
             Keine Rechtsgarantie — prüfe die Lage vor Ort.
