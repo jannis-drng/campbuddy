@@ -259,3 +259,84 @@ export function dokumentKandidaten(gefundene) {
   const gesehen = new Set()
   return bewertet.filter(([u]) => !gesehen.has(u) && gesehen.add(u)).map(([u, t]) => [u, t])
 }
+
+/* ------------------------------------------------------------ Anbieter */
+
+/**
+ * Eine Drossel je Anbieter — und die Einsicht, warum es sie braucht.
+ *
+ * Beim ersten vollen Browserlauf sind 726 von 1056 Gemeinden an der Startseite
+ * gescheitert. Das sah nach einem Netzausfall aus, war aber etwas anderes:
+ * rund zwei Drittel aller Schweizer Gemeindeseiten liegen bei einem einzigen
+ * Hoster (i-web, 195.65.x), ein weiteres Viertel bei 193.135.x. Drei
+ * gleichzeitige Abrufe über tausend Gemeinden hinweg sind für uns
+ * „drei gleichzeitig" — für den Anbieter sind es tausende Anfragen aus einer
+ * Hand, und er hat uns folgerichtig ausgesperrt.
+ *
+ * Deshalb wird hier nicht nach Gemeinden gedrosselt, sondern nach Anbieter:
+ * pro Adressblock immer nur ein Abruf, mit spürbarem Abstand. Der Lauf dauert
+ * dadurch länger. Das ist der richtige Preis — die Gegenseite stellt diese
+ * Dokumente freiwillig bereit.
+ */
+const ANBIETER_PAUSE = 2500
+const letzterAbruf = new Map()
+const wartend = new Map()
+
+/** Der Adressblock hinter einer Adresse. Fällt auf den Hostnamen zurück. */
+export function anbieterVon(url) {
+  try {
+    const host = new URL(url).hostname
+    // Ohne DNS-Auflösung ist die zweite Ebene die beste verfügbare Näherung;
+    // Gemeinden desselben Hosters teilen sie zwar nicht, aber der Aufrufer
+    // reicht den aufgelösten Block durch, wo er ihn kennt.
+    return host.split('.').slice(-2).join('.')
+  } catch {
+    return url
+  }
+}
+
+/**
+ * Anstehen, bis dieser Anbieter wieder an der Reihe ist.
+ *
+ * Bewusst eine Kette statt eines blossen Zeitvergleichs: bei parallelen
+ * Arbeitern würden sonst alle gleichzeitig feststellen, dass die Pause vorbei
+ * ist, und wieder im Pulk losrennen.
+ */
+export async function anstehen(schluessel) {
+  const vorherige = wartend.get(schluessel) ?? Promise.resolve()
+  let freigeben
+  wartend.set(schluessel, new Promise((r) => { freigeben = r }))
+  await vorherige
+  const seit = Date.now() - (letzterAbruf.get(schluessel) ?? 0)
+  if (seit < ANBIETER_PAUSE) await schlafe(ANBIETER_PAUSE - seit)
+  letzterAbruf.set(schluessel, Date.now())
+  return freigeben
+}
+
+/**
+ * Woran man erkennt, dass ein Anbieter dichtmacht.
+ *
+ * Diese Fehler sind ausdrücklich **kein** Befund über die Gemeinde. Sie als
+ * „kein Reglement gefunden" abzulegen wäre die schlimmere Art von Datenmüll:
+ * ein Ergebnis, dem niemand ansieht, dass es keines ist.
+ */
+export const SPERRE = /EMPTY_RESPONSE|CONNECTION_CLOSED|INTERNET_DISCONNECTED|UND_ERR_SOCKET|ECONNRESET|CONNECT_TIMEOUT|ETIMEDOUT/
+
+/**
+ * Zählt Fehlschläge je Anbieter und meldet, wann Schluss ist.
+ *
+ * Nach einer Reihe von Sperrsignalen hintereinander hat es keinen Sinn mehr,
+ * weiter anzuklopfen — dann sind wir gesperrt, und jeder weitere Abruf macht
+ * es nur schlimmer.
+ */
+export function sperrWaechter(grenze = 8) {
+  const reihe = new Map()
+  return {
+    melde(schluessel, gescheitert) {
+      reihe.set(schluessel, gescheitert ? (reihe.get(schluessel) ?? 0) + 1 : 0)
+    },
+    gesperrt(schluessel) {
+      return (reihe.get(schluessel) ?? 0) >= grenze
+    },
+  }
+}

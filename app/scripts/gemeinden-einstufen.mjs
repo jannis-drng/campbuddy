@@ -28,6 +28,7 @@ import { fileURLToPath } from 'node:url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 const SCHREIBEN = process.argv.includes('--schreiben')
+const NEU_BERECHNEN = process.argv.includes('--neu-berechnen')
 const HEUTE = new Date().toISOString().slice(0, 10)
 
 const KANDIDATEN = resolve(ROOT, 'import/recherche/kandidaten.json')
@@ -149,7 +150,22 @@ function dokumentTitel(roh, url) {
 }
 
 const muster = JSON.parse(readFileSync(MUSTER, 'utf8'))
-const kandidaten = JSON.parse(readFileSync(KANDIDATEN, 'utf8')).ergebnisse
+/**
+ * Beide Läufe zusammen: der schlichte Abruf und der Browserlauf.
+ *
+ * Welchen Weg ein Fund genommen hat, ist für die Einstufung ohne Belang — es
+ * zählt das Dokument, nicht die Abrufart. Bei doppelten Gemeinden gewinnt der
+ * Eintrag mit Fundstelle.
+ */
+const BROWSER = resolve(ROOT, 'import/recherche/browser.json')
+const ausBrowser = existsSync(BROWSER)
+  ? JSON.parse(readFileSync(BROWSER, 'utf8')).ergebnisse.filter((r) => r.stellen?.length)
+  : []
+const ausAbruf = JSON.parse(readFileSync(KANDIDATEN, 'utf8')).ergebnisse
+const kandidaten = [
+  ...ausAbruf.filter((a) => !ausBrowser.some((b) => b.bfs === a.bfs && !a.stellen?.length)),
+  ...ausBrowser.filter((b) => !ausAbruf.some((a) => a.bfs === b.bfs && a.stellen?.length)),
+]
 const recht = JSON.parse(readFileSync(RECHT, 'utf8'))
 
 /**
@@ -193,7 +209,16 @@ let ohneMuster = 0
 
 for (const r of kandidaten) {
   if (!r.bfs || !r.stellen?.length || !r.dokument) continue
-  if (recht.gemeinden[String(r.bfs)]) continue
+  const vorhanden = recht.gemeinden[String(r.bfs)]
+  // Von Hand gepflegte Einträge bleiben unangetastet — sie sind an der
+  // fehlenden `_muster`-Spur zu erkennen. Maschinell aufgetragene dürfen mit
+  // --neu-berechnen neu abgeleitet werden, wenn ein Muster geschärft wurde.
+  //
+  // Diese Unterscheidung ist nicht kosmetisch: der Eintrag zu Zermatt entstand
+  // aus einem Reglement, das der Läufer nie erreicht hat. Wer die Datei
+  // pauschal leert und neu ableitet, verliert genau solche Einträge — und
+  // merkt es nicht, weil die Gesamtzahl kaum sinkt.
+  if (vorhanden && !(NEU_BERECHNEN && vorhanden._muster)) continue
 
   // Artikel mit dem Stichwort in der Überschrift zuerst — das ist der Artikel,
   // der das Thema wirklich regelt, und nicht der, der es streift.
@@ -218,6 +243,11 @@ for (const r of kandidaten) {
     source_url: r.dokument,
     review_status: m.review_status ?? 'entwurf',
     last_verified: HEUTE,
+    // Welches Muster die Lesart geliefert hat. Ohne diese Spur liesse sich
+    // später nicht mehr feststellen, welche Einträge von einer korrigierten
+    // Formulierung betroffen sind — und ein stiller Fehler im Muster bliebe
+    // in hunderten Gemeinden stehen.
+    _muster: m.id,
   }
   zaehler[m.id] = (zaehler[m.id] ?? 0) + 1
 }
@@ -261,6 +291,9 @@ function bundleNachziehen(rechtGemeinden) {
   const auswaerts = teil.filter((f) => f.properties.kanton !== 'CH-VS').length
   console.log(`Bundle: ${teil.length} Flächen (${auswaerts} ausserhalb des Wallis), ${kb} KB`)
 }
+
+const vonHand = Object.values(recht.gemeinden).filter((e) => !e._muster).length
+if (vonHand > 0) console.log(`\nVon Hand gepflegt und unangetastet: ${vonHand}`)
 
 if (!SCHREIBEN) {
   console.log('\nNur Bericht. Mit --schreiben wird gemeinden.legal.json ergänzt.')

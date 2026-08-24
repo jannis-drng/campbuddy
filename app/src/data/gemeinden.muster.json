@@ -1,5 +1,5 @@
 {
-  "_hinweis": "Geprüfte Formulierungen aus kommunalen Reglementen und ihre rechtliche Lesart. Sehr viele Gemeinden übernehmen das Musterreglement ihres Kantons oder Verbands wortgleich — wer den Satz einmal gelesen und eingeordnet hat, hat ihn für alle gelesen. 'erkennt' listet Textteile, die ALLE im gefundenen Artikel vorkommen müssen (klein, ohne Satzzeichen verglichen); 'erkennt_nicht' schliesst aus. Reihenfolge zählt: das erste passende Muster gewinnt, spezielle Fassungen gehören deshalb nach oben. Aufgetragen wird mit scripts/gemeinden-einstufen.mjs — die Quelle ist dann immer das Reglement der jeweiligen Gemeinde, nie dieses Muster.",
+  "_hinweis": "Geprüfte Formulierungen aus kommunalen Reglementen und ihre rechtliche Lesart. Sehr viele Gemeinden übernehmen das Musterreglement ihres Kantons oder Verbands wortgleich — wer den Satz einmal gelesen und eingeordnet hat, hat ihn für alle gelesen. 'erkennt' listet Textteile, die ALLE im gefundenen Artikel vorkommen müssen (klein, ohne Satzzeichen verglichen); 'erkennt_nicht' schliesst aus. Reihenfolge zählt: das erste passende Muster gewinnt, spezielle Fassungen gehören deshalb nach oben. Reihenfolge zaehlt: das erste passende Muster gewinnt, deshalb stehen enger gefasste Formulierungen vor weiteren. Aufgetragen wird mit scripts/gemeinden-einstufen.mjs — die Quelle ist dann immer das Reglement der jeweiligen Gemeinde, nie dieses Muster.",
   "_stand": "2026-08-23",
   "muster": [
     {
@@ -320,6 +320,21 @@
       "review_status": "quelle"
     },
     {
+      "id": "gr-campieren-ausserhalb-gekennzeichneter-plaetze-untersagt",
+      "_gelesen_an": "St. Moritz Art. 16, Silvaplana Art. 17",
+      "erkennt": [
+        "ausserhalb von gekennzeichneten campingpl",
+        "campieren untersagt"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Ausserhalb gekennzeichneter Campingplätze ist Campieren untersagt.",
+      "conditions": "Der Artikel nennt keine Ausnahme und unterscheidet nicht zwischen öffentlichem und privatem Grund. Zum offenen Feuer trifft er keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
       "id": "de-campieren-ausserhalb-bewilligter-plaetze-verboten",
       "_gelesen_an": "Erlach Art. 9, Gurtnellen Art. 2, Vinelz Art. 2",
       "erkennt": [
@@ -379,21 +394,6 @@
       "fire_allowed": "unknown",
       "summary": "Campieren mit Wohnwagen und Zelt ist auf dem gesamten Gemeindegebiet verboten.",
       "conditions": "Ausgenommen ist das vorübergehende, auf vier Wochen befristete und unentgeltliche Aufstellen von Zelten und Wohnwagen auf privatem Grund. Für Zeltlager kann der Gemeindevorstand Ausnahmen an zugewiesenen Orten bewilligen.",
-      "review_status": "quelle"
-    },
-    {
-      "id": "gr-campieren-ausserhalb-gekennzeichneter-plaetze-untersagt",
-      "_gelesen_an": "St. Moritz Art. 16, Silvaplana Art. 17",
-      "erkennt": [
-        "ausserhalb von gekennzeichneten campingpl",
-        "campieren untersagt"
-      ],
-      "status": "forbidden",
-      "tent_allowed": "no",
-      "vehicle_allowed": "no",
-      "fire_allowed": "unknown",
-      "summary": "Ausserhalb gekennzeichneter Campingplätze ist Campieren untersagt.",
-      "conditions": "Der Artikel nennt keine Ausnahme und unterscheidet nicht zwischen öffentlichem und privatem Grund. Zum offenen Feuer trifft er keine Aussage.",
       "review_status": "quelle"
     },
     {

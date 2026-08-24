@@ -1,6 +1,6 @@
 {
   "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
-  "_stand": "2026-08-23",
+  "_stand": "2026-08-24",
   "gemeinden": {
     "1": {
       "status": "forbidden",
@@ -12,7 +12,8 @@
       "source": "Polizeiverordnung, Art. 14 Campieren",
       "source_url": "https://www.aeugst-albis.ch/public/upload/assets/8882/Reglement%20%20Polizeiverordnung%20revidiert%202026.pdf?fp=1",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "8": {
       "status": "forbidden",
@@ -24,7 +25,21 @@
       "source": "Polizeiverordnung, Art. 13 Campieren und Nächtigen im Freien",
       "source_url": "https://www.maschwanden.ch/wAssets/docs/Rechtssammlung/5-Oeffentliche-Ordnung-Sicherheit-Polizei-Zivilschutz-Feuerwehr-Feuerpolizei-Tierschutz/Polizeiverordnung.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-oeffentlich-und-wald-verboten"
+    },
+    "11": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt oder Wohnwagen und auch das blosse Nächtigen im Freien brauchen auf öffentlichem Grund eine Bewilligung der Gemeinde, sobald man ausserhalb besonders bezeichneter oder eingerichteter Plätze übernachtet.",
+      "conditions": "Das Reglement nennt das Nächtigen im Freien ausdrücklich — ein einzelnes Biwak ohne Zelt ist also mitgemeint. Für regelmässiges Campieren erlässt der Gemeinderat ergänzende Vorschriften. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeiverordnung 2015, Art. 13 Campieren und Nächtigen im Freien",
+      "source_url": "https://www.ottenbach.ch/topics/politik-verwaltung/verwaltung/abteilungen/bevoelkerungsdienste/abteilung-sicherheit/formulare-merkblaetter/polizeiverordnung-2015",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
     },
     "22": {
       "status": "forbidden",
@@ -36,7 +51,8 @@
       "source": "Polizeiverordnung, Art. 26 Campieren",
       "source_url": "https://www.benken-zh.ch/public/upload/assets/856/Polizeiverordnung.pdf?fp=1630585305261",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-wohnwagen-bewilligung-gemeinderat"
     },
     "23": {
       "status": "forbidden",
@@ -48,7 +64,34 @@
       "source": "polizeiverordnung ab 01 01 2024, Art. 15 Campieren und Nächtigen im Freien",
       "source_url": "https://www.berg-am-irchel.ch/site/assets/files/2043/polizeiverordnung_ab_01_01_2024.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
+    },
+    "51": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt oder Wohnwagen und auch das blosse Nächtigen im Freien brauchen auf öffentlichem Grund eine Bewilligung der Gemeinde, sobald man ausserhalb besonders bezeichneter oder eingerichteter Plätze übernachtet.",
+      "conditions": "Das Reglement nennt das Nächtigen im Freien ausdrücklich — ein einzelnes Biwak ohne Zelt ist also mitgemeint. Für regelmässiges Campieren erlässt der Gemeinderat ergänzende Vorschriften. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr &…, Art. 14 Campieren und Nächtigen im Freien",
+      "source_url": "https://www.bachenbuelach.ch/verwaltung/systematische-rechtssammlung.html/397/opendcategory/185",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
+    },
+    "52": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr &…, Art. 19",
+      "source_url": "https://www.bassersdorf.ch/politik-verwaltung/verwaltung/rechtssammlung.html/527/opendcategory/489",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "57": {
       "status": "forbidden",
@@ -60,7 +103,8 @@
       "source": "Polizeiverordnung 2025 mit Bussenliste inkl. Feuerwerksverbot, Art. 17 Campieren und Nächtigen im Freien",
       "source_url": "https://www.freienstein-teufen.ch/public/upload/assets/1246/Polizeiverordnung%202025%20mit%20Bussenliste%20inkl.%20Feuerwerksverbot.pdf?fp=3",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
     },
     "65": {
       "status": "forbidden",
@@ -72,7 +116,8 @@
       "source": "Polizeiverordnung, Art. 18 Campieren, Aufstellen von Wohnwagen",
       "source_url": "https://secure.i-web.ch/gemweb/oberembrach/dl.php/de/61893f648f815/Polizeiverordnung_vom_20.06.2012.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-oeffentlich-und-wald-verboten"
     },
     "68": {
       "status": "forbidden",
@@ -84,7 +129,8 @@
       "source": "Polizeiverordnung, Art. 52 Campieren",
       "source_url": "https://www.rorbas.ch/files/rorbas/Verwaltung/Systematische_Rechtsordnung/5/Polizeiverordnung.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "95": {
       "status": "forbidden",
@@ -96,7 +142,8 @@
       "source": "Polizeiverordnung, Art. 60 Campieren",
       "source_url": "https://www.regensberg.ch/public/upload/assets/132/5.1_Polizeiverordnung.pdf?fp=2",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "135": {
       "status": "forbidden",
@@ -108,7 +155,8 @@
       "source": "Polizeiverordnung der Gemeinde Kilchberg, Art. 14 Campieren, Aufstellen von Wohnwagen, Nächtigen in",
       "source_url": "https://www.kilchberg.ch/secure/gemeinde/Systematische_Rechtssammlung/5_Oeffentliche_Ordnung___Sicherheit__Polizei_-_Zivilschutz__Feuerwehr___Feuerpolizei_-_Tierschutz/5.1_Polizeiverordnung_der_Politischen_Gemeinde/Revidierte_Polizeiverordnung_2025.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-in-anlagen-verboten"
     },
     "137": {
       "status": "forbidden",
@@ -120,7 +168,8 @@
       "source": "Polizeiverordnung, Art. 15 Campieren und Nächtigen im Freien",
       "source_url": "http://www.oberrieden.ch/system/files/container/downloads/5_polizeiverordn.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
     },
     "151": {
       "status": "forbidden",
@@ -132,7 +181,8 @@
       "source": "30.11.2009 510.1 Polizeiverordnung…, Art. 15 Campieren und Nächtigen im Freien",
       "source_url": "https://www.erlenbach.ch/wp-content/uploads/2009/11/510.1-polizeiverordnung.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
     },
     "301": {
       "status": "forbidden",
@@ -144,7 +194,8 @@
       "source": "Polizeireglement, Art. 16",
       "source_url": "https://www.aarberg.ch/de/verwaltung/dokumente/dokumente/Polizeireglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "387": {
       "status": "forbidden",
@@ -156,7 +207,8 @@
       "source": "Ortspolizeireglement, Art. 18 Camping",
       "source_url": "https://www.lengnau.ch/wp-content/uploads/2022/06/Ortspolizeireglement-1.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "435": {
       "status": "forbidden",
@@ -168,7 +220,8 @@
       "source": "Règlement de Police communale La Ferrière1, Art. 8",
       "source_url": "https://www.laferriere.ch/images/Commune_La_Ferriere/Documents/Reglements/R%C3%A8glement_de_Police_communale_La_Ferri%C3%A8re1.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "be-nuit-vehicule-ou-tente-verboten"
     },
     "441": {
       "status": "forbidden",
@@ -180,7 +233,8 @@
       "source": "Règlement de la police locale 2021, Article 9",
       "source_url": "https://renan.ch/wp-content/uploads/2022/02/Reglement-de-la-police-locale-2021-O.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "be-nuit-vehicule-ou-tente-verboten"
     },
     "443": {
       "status": "forbidden",
@@ -192,7 +246,8 @@
       "source": "Règlement de la police locale de la commune municipale de Saint-Imier, Art. 32",
       "source_url": "https://www.saint-imier.ch/wp-content/uploads/2024/03/st-imier_-reglements-communaux-5_54.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
     "492": {
       "status": "forbidden",
@@ -204,7 +259,8 @@
       "source": "Campingreglement campingreglement, Art. 9 Grundsatz Das Aufstellen von Zelten, Wohnwagen",
       "source_url": "https://www.erlach.ch/de/verwaltung/dokumente/dokumente/campingreglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
     },
     "502": {
       "status": "forbidden",
@@ -216,7 +272,8 @@
       "source": "Campingreglement, Art. 2 Campieren",
       "source_url": "https://www.vinelz.ch/fileadmin/Dateien_Vinelz/Online_Schalter/Reglemente/Campingreglement__01.06.2022_.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
     },
     "538": {
       "status": "forbidden",
@@ -228,7 +285,8 @@
       "source": "Ortspolizeireglement ortspolizeireglement, Art. 18",
       "source_url": "https://www.fraubrunnen.ch/wAssets/docs/dienstleistungen/ortspolizeireglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "544": {
       "status": "forbidden",
@@ -240,7 +298,8 @@
       "source": "Polizeireglement, Art. 10",
       "source_url": "https://www.moosseedorf.ch/de/verwaltung/dokumente/dokumente/Reglemente-Verordnungen/Polizeireglement-unterschriebene-Version.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "be-uebernachten-in-fahrzeugen-und-zelten-verboten"
     },
     "561": {
       "status": "forbidden",
@@ -252,7 +311,8 @@
       "source": "Ortspolizeireglement, Art. 32 Camping",
       "source_url": "https://www.3715.ch/public/upload/assets/678/Ortspolizeireglement_rev._1.1.2021.pdf?fp=1",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "735": {
       "status": "forbidden",
@@ -264,7 +324,8 @@
       "source": "Gemeindepolizeireglement, Art. 9",
       "source_url": "https://epsach.ch/wp-content/uploads/2022/08/Gemeindepolizeireglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "be-uebernachten-in-fahrzeugen-und-zelten-verboten"
     },
     "739": {
       "status": "forbidden",
@@ -276,7 +337,8 @@
       "source": "Polizeireglement, Art.8 Campingverbot",
       "source_url": "https://www.ipsach.ch/de/verwaltung/dokumente/dokumente/Polizeireglement-gueltig-ab-01.08.2024.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "be-uebernachten-in-fahrzeugen-und-zelten-verboten"
     },
     "932": {
       "status": "forbidden",
@@ -288,7 +350,8 @@
       "source": "Ortspolizeireglement, Art. 14 Das Campieren, das Zelten oder",
       "source_url": "https://horrenbach-buchen.ch/wp-content/uploads/2025/01/Ortspolizeireglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "de-campieren-zelten-biwakieren-ganze-gemeinde-verboten"
     },
     "1209": {
       "status": "forbidden",
@@ -300,7 +363,8 @@
       "source": "Campingverordnung, Art. 2 Campieren ausserhalb von Campingplätzen",
       "source_url": "https://ksuo.ch/uploads/downloads/Rechtssammlung/Campingverordnung.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
     },
     "2904": {
       "status": "forbidden",
@@ -312,7 +376,21 @@
       "source": "Polizeiverordnung, Art. 19 Campieren",
       "source_url": "https://www.neunkirch.ch/public/upload/assets/1784/62_Polizeiverordnung_Homepage_Version_2020.pdf?fp=1",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "3252": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile zum Campieren ausserhalb behördlich bewilligter Camping- oder Stellplätze aufzustellen ist nicht gestattet.",
+      "conditions": "Je nach Reglement ist vereinzeltes, gelegentliches Campieren auf privatem Grund mit Einwilligung der Eigentümerschaft, Pächterin oder deren Vertretung möglich; für längere Aufenthalte kommt eine Bewilligung dazu. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement Eichberg 01, Art. 23 Campieren",
+      "source_url": "https://www.eichberg.ch/reglemente?file=files/Inhalte/Reglemente/Polizeireglement_Eichberg_01.pdf&amp;cid=279",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
     },
     "3640": {
       "status": "forbidden",
@@ -324,7 +402,8 @@
       "source": "Polizeigesetz, Art. 9 Campieren",
       "source_url": "https://www.sils-id.ch/wp-content/uploads/2024/03/Polizeigesetz-ab-1.1.2024.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-ganzes-gemeindegebiet-verboten-4-wochen"
     },
     "3661": {
       "status": "forbidden",
@@ -336,7 +415,8 @@
       "source": ".st0{fill:#020203;} 613 Gesetz über die öffentliche Ordnung und Sicherheit…, Art. 9 Campieren",
       "source_url": "https://cazis.ch/wp-content/uploads/2025/08/613-Polizeigesetz.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-bewilligungspflichtig-gemeindegebiet"
     },
     "3668": {
       "status": "forbidden",
@@ -348,7 +428,8 @@
       "source": "Polizeigesetz ab 01.01.2024, Art. 11",
       "source_url": "https://thusis.ch/wp-content/uploads/2023/12/2024.01.01-Polizeigesetz-der-Gemeinde-Thusis.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-oeffentlich-verboten-ausnahmen"
     },
     "3673": {
       "status": "forbidden",
@@ -360,7 +441,8 @@
       "source": "Polizeigesetz, Art. 20 Campieren",
       "source_url": "https://domleschg.ch/wp-content/uploads/2024/01/Polizeigesetz.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-oeffentlich-verboten-ausnahmen"
     },
     "3734": {
       "status": "tolerated",
@@ -372,7 +454,8 @@
       "source": "Gemeindepolizeiordnung, Art. 12 Campieren",
       "source_url": "https://www.trin.ch/wp-content/uploads/2023/10/Gemeindepolizeiordnung_8.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-hochgebirge-ausgenommen"
     },
     "3786": {
       "status": "forbidden",
@@ -384,19 +467,21 @@
       "source": "Polizeigesetz, Art. 14 Auf öffentlichem Grund ist das Campieren",
       "source_url": "https://www.samedan.ch/public/upload/assets/1095/6.61%20Polizeigesetz_V1%20Publikation.pdf?fp=1783436596014",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-oeffentlich-verboten-ausnahmen"
     },
     "3787": {
       "status": "forbidden",
       "tent_allowed": "no",
       "vehicle_allowed": "no",
       "fire_allowed": "unknown",
-      "summary": "Zelte, Wohnwagen und Wohnmobile zum Campieren ausserhalb behördlich bewilligter Camping- oder Stellplätze aufzustellen ist nicht gestattet.",
-      "conditions": "Je nach Reglement ist vereinzeltes, gelegentliches Campieren auf privatem Grund mit Einwilligung der Eigentümerschaft, Pächterin oder deren Vertretung möglich; für längere Aufenthalte kommt eine Bewilligung dazu. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "summary": "Ausserhalb gekennzeichneter Campingplätze ist Campieren untersagt.",
+      "conditions": "Der Artikel nennt keine Ausnahme und unterscheidet nicht zwischen öffentlichem und privatem Grund. Zum offenen Feuer trifft er keine Aussage.",
       "source": "Polizeigesetz, Art. 16 Campieren",
       "source_url": "https://www.gemeinde-stmoritz.ch/fileadmin/user_upload/dokumente/pdf/gesetze/7.7_Polizeigesetz_Anhang_Teilrevision_vom_26.11.2025_in_Kraft_am_01.02.2026.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-ausserhalb-gekennzeichneter-plaetze-untersagt"
     },
     "3790": {
       "status": "forbidden",
@@ -408,7 +493,8 @@
       "source": "Gesetz über die Öffentliche Ruhe, Ordnung und Sicherheit - Kommunale…, Art.17 Ausserhalb von gekennzeichneten Campingplätzen ist",
       "source_url": "https://gemeinde-silvaplana.ch/assets/dokumente/politik/gesetze/2020_06_24-polizeigesetz.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-ausserhalb-gekennzeichneter-plaetze-untersagt"
     },
     "3891": {
       "status": "forbidden",
@@ -420,7 +506,8 @@
       "source": "Polizeigesetz, Art. 19 Campieren",
       "source_url": "https://www.luzein.ch/system/files/2022-11/polizeigesetz.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-oeffentlich-verboten-bezeichnete-stellen"
     },
     "3911": {
       "status": "forbidden",
@@ -432,7 +519,8 @@
       "source": "Kommunales Polizeigesetz gültig ab 01.07.2026, Art. 9",
       "source_url": "https://churwalden.ch/wp-content/uploads/2026/06/111-Polizeigesetz-gueltig-ab-01072026-1.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "gr-campieren-nur-in-campingzone"
     },
     "3951": {
       "status": "forbidden",
@@ -444,7 +532,21 @@
       "source": "Polizeigesetz, Art. 18 Campieren",
       "source_url": "https://www.flaesch.ch/Portals/0/adam/Content/KvLaAztQF0GEwOI2ECy68w/Link/100.0%20Polizeigesetz%20der%20Gemeinde%20Flaesch.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "5401": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police 2021 adopté par le conseil communal le 18 juin 2021, Article 79 Camping et caravaning",
+      "source_url": "https://www.aigle.ch/N3377/reglement-de-police-2021.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5404": {
       "status": "unknown",
@@ -456,7 +558,8 @@
       "source": "Police des constructions (RPE), Art. 50 L'utilisation de roulottes, caravanes et autres",
       "source_url": "https://corbeyrier.ch/wp-content/uploads/2026/01/Reglement_RPE.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
     "5406": {
       "status": "forbidden",
@@ -468,7 +571,8 @@
       "source": "Règlement sur la police, Article 82 Camping et caravaning",
       "source_url": "http://www.lavey.ch/uploads/6bf6b0a6f6715c4572d8ad62a0a1633b/documents/2021-05-04-_Reglement_de_police_1620133671.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5407": {
       "status": "forbidden",
@@ -480,7 +584,8 @@
       "source": "Règlement de police (2020), Article 79 Camping et caravaning",
       "source_url": "https://leysin-commune.ch/wp-content/uploads/2020/11/114_Reglement_approuve.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camping-toute-forme-domaine-public"
     },
     "5412": {
       "status": "forbidden",
@@ -492,7 +597,21 @@
       "source": "Police, Article 74 Camping et caravaning",
       "source_url": "http://www.rennaz.ch/uploads/a98c19db8d226de0e4376af668cff771/documents/61_1677660767.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5414": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im ganzen Gemeindegebiet verboten — ausser auf dafür eingerichteten Campingplätzen.",
+      "conditions": "Der Artikel regelt ausdrücklich nur Fahrzeuge als Unterkunft. Zur Zeltfrage sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert.",
+      "source": "Règlement communal sur le plan général d'affectation et la police des…, Article 132 L’utilisation de roulottes, caravanes et autres",
+      "source_url": "https://www.villeneuve.ch/_rte/publikation/534631",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
     "5422": {
       "status": "unknown",
@@ -504,7 +623,8 @@
       "source": "Règlement communal sur le plan d'extension et la police des constructions, Art. 130 L'utilisation de roulottes, caravanes et autres",
       "source_url": "https://www.aubonne.ch/fileadmin/documents/aubonne.ch/pdf/R%C3%A8glements_et_plans/Reglementdelapolicedesconstructions-05.11.2021.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
     "5423": {
       "status": "forbidden",
@@ -516,7 +636,21 @@
       "source": "Règlement général de police, Article 73 Camping et caravaning",
       "source_url": "http://www.ballens.ch/uploads/86a05adc674e2d67e850bcbc6508a01f/documents/Ballens_-_Re-glement_de_police_2022_1660234494.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5425": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Réglement de police, Art. 22 Il est interdit de camper ou",
+      "source_url": "https://www.biere-vd.ch/wp-content/uploads/Reglement-de-police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5426": {
       "status": "unknown",
@@ -528,7 +662,8 @@
       "source": "Règlement communal sur le plan d'affectation et la police des constructions, Art. 68 Les logements mobiles",
       "source_url": "https://www.bougy-villars.ch/uploads/18ea716aa316c9446dc1945163d9d111/documents/2016_Reglement%20communal%20sur%20le%20plan%20general%20d%20affectation%20et%20la%20police%20des%20constructions_1538582891.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
     "5427": {
       "status": "forbidden",
@@ -540,7 +675,8 @@
       "source": "Règlement de police, Art. 47 Il est interdit de camper sur",
       "source_url": "https://www.fechy.ch/officiel/reglements/police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5428": {
       "status": "unknown",
@@ -552,7 +688,8 @@
       "source": "Télécharger (2.69 Mo), Art. 79 Caravanes, roulottes",
       "source_url": "http://www.gimel.ch/files/1532509940-gimel-reglement-communal-sur-le-plan-d-extension-et-la-police-des-constructions-20423.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
     "5472": {
       "status": "unknown",
@@ -564,7 +701,8 @@
       "source": "Règlement sur la Police des constructions (96.21 ko), Art. 51 L'installation des roulottes, caravanes et autres",
       "source_url": "https://www.bournens.ch/files/1748020011-reglement-communal-6847.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5473": {
       "status": "forbidden",
@@ -576,7 +714,8 @@
       "source": "Règlement de police de la commune de Boussens, Article 74 Camping et caravaning",
       "source_url": "https://boussens.ch/wp-content/uploads/2020/11/Reglement-general-de-police-de-Boussens_valide-le-19-octobre-2020.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5488": {
       "status": "forbidden",
@@ -588,7 +727,21 @@
       "source": "R glement de police 2009, Art. 24 Il est interdit de camper ou",
       "source_url": "http://www.mauraz.ch/docs/Reglement%20de%20police%202009.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-verboten-mit-bewilligung"
+    },
+    "5493": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ausserhalb der Plätze verboten, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Für Privatgrund gelten je nach Reglement eigene Regeln, meist die Zustimmung der Eigentümerschaft und ab einigen Tagen eine Gemeindebewilligung. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police, Art. 26 Il est interdit de camper sur",
+      "source_url": "https://www.orny.ch/_rte/publikation/534889",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
     "5496": {
       "status": "forbidden",
@@ -600,7 +753,21 @@
       "source": "Règlement de police - 2011 (241.20 ko), Art. 49 Il est interdit de camper sur",
       "source_url": "https://www.penthaz.ch/files/1635696963-reglement-de-police-pour-site-internet-f1_fr-2180-554.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5514": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Police, ARTICLE 74 CAMPING ET CARAVANING",
+      "source_url": "https://www.bottens.ch/_rte/publikation/537364",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5516": {
       "status": "forbidden",
@@ -612,7 +779,8 @@
       "source": "Règlement de police, Art. 24 Il est interdit de camper ou",
       "source_url": "https://www.cugy-vd.ch/assets/idm_medias/d8a17f9a165e9b79dee0d2c399cfe97b.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5518": {
       "status": "forbidden",
@@ -624,7 +792,8 @@
       "source": "Règlement général de Police (RGP), Article 78 Camping et caravaning",
       "source_url": "http://www.echallens.ch/images/Communiqu%C3%A9s_officiels/Images/R%C3%A8glement_police_14.01.2021-modifi%C3%A9_le_24.06.2021.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-ocr-tolerant"
     },
     "5522": {
       "status": "unknown",
@@ -636,7 +805,8 @@
       "source": "Télécharger, Art. 32 Camping",
       "source_url": "http://www.fey-vd.ch/PDF/Regl-comm-plan-extension-police-constr.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5527": {
       "status": "unknown",
@@ -648,7 +818,21 @@
       "source": "Règlement sur la police des constructions, Art. 97 L'utilisation de roulottes, caravanes et autres",
       "source_url": "https://www.morrens.ch/wp-content/uploads/2019/06/regl_police_construction.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
+    },
+    "5529": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ausserhalb der Plätze verboten, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Für Privatgrund gelten je nach Reglement eigene Regeln, meist die Zustimmung der Eigentümerschaft und ab einigen Tagen eine Gemeindebewilligung. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement général de police (2026), Article 58 Camping et caravaning",
+      "source_url": "https://www.oulens.ch/_doc/7091404",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
     "5540": {
       "status": "unknown",
@@ -660,7 +844,8 @@
       "source": "Poliez-le-Grand, Art. 73 CARAVANES, ROULOTTES, ETC",
       "source_url": "https://www.montilliez.ch/wp-content/uploads/2025/08/reglementplangeneralaffectationpolicedesconstructionpoliez.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
     "5553": {
       "status": "forbidden",
@@ -672,7 +857,8 @@
       "source": "Règlement communal de Police, Art. 48 Camping et caravaning",
       "source_url": "https://champagne.ch/wp-content/uploads/2020/02/reglement-communal-police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5554": {
       "status": "forbidden",
@@ -684,7 +870,8 @@
       "source": "Règlement de Police, Article 80 Camping et caravaning",
       "source_url": "https://concise.ch/wp-content/uploads/2024/02/15095_RGP-Concise_Reglement-de-Police_OCR-2021.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5583": {
       "status": "unknown",
@@ -696,7 +883,8 @@
       "source": "Règlement de police de l’Association de communes « Sécurité dans l’Ouest…, Art. 35 L’entreposage de roulottes, de caravanes, de",
       "source_url": "https://www.crissier.ch/wp-content/uploads/2012/05/reglement_pol.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
     },
     "5587": {
       "status": "forbidden",
@@ -708,7 +896,8 @@
       "source": "Règlement général de police, Article 65 Camping et caravaning",
       "source_url": "https://www.lemontsurlausanne.ch/fileadmin/documents/Tous_documents/4_Le_Mont_officiel/4.7_Reglementation_communale/85-Reglement_general_de_police_2025.02.04_cbess.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5606": {
       "status": "forbidden",
@@ -720,7 +909,8 @@
       "source": "Règlement de police de la commune de Lutry, Art. 52 Camping et caravaning",
       "source_url": "https://www.lutry.ch/fileadmin/user_upload/Documents_services/Reglements/lutry_reglement_de_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5611": {
       "status": "forbidden",
@@ -732,7 +922,8 @@
       "source": "Télécharger (146.73 ko), Article 36 Camping",
       "source_url": "https://www.savigny.ch/files/1562326951-reglement_general_de_police_b-5446.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camper-voie-publique-allgemein"
     },
     "5613": {
       "status": "forbidden",
@@ -744,7 +935,8 @@
       "source": "Règlement, Art. 75 Camping et caravaning",
       "source_url": "https://www.b-e-l.ch/media/documents/11.02-R%C3%A8glement-de-police-d%C3%A9finitif-Bourg-en-Lavaux-FINAL.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5622": {
       "status": "forbidden",
@@ -756,7 +948,8 @@
       "source": "Règlement de police, Art. 46 Il est interdit de camper ou",
       "source_url": "http://www.bremblens.ch/admin/resources/030820reglementpoliceocr.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5623": {
       "status": "forbidden",
@@ -768,7 +961,8 @@
       "source": "Règlement de police, Art. 46 Le camping est interdit sur l’ensemble",
       "source_url": "http://www.buchillon.ch/uploads/593d176f50c236d3270c395022d17508/documents/rgl_police_1638258015.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camping-verboten-territoire-communal"
     },
     "5633": {
       "status": "forbidden",
@@ -780,7 +974,8 @@
       "source": "Règlement de police (PDF, 2341ko), Article 57 Camping et caravaning",
       "source_url": "https://echandens.ch/wp-content/uploads/2024/03/reglement-general-de-police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5635": {
       "status": "unknown",
@@ -792,7 +987,8 @@
       "source": "Règlement sur le plan général d'affectation et la police des constructions RPGA…, Art. 104 Logements mobiles",
       "source_url": "http://www.ecublens.ch/images/stories/Greffe/documents/reglements/RPGA_2018_-_Version_site_internet_-_signatures.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5636": {
       "status": "unknown",
@@ -804,7 +1000,8 @@
       "source": "Règlement sur le plan général d'affectation et la police des constructions, Art. 40 Logements mobiles",
       "source_url": "https://www.etoy.ch/cms/images/reglements/plan-affectation.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5637": {
       "status": "forbidden",
@@ -816,7 +1013,8 @@
       "source": "Télécharger, Art. 24 Il est interdit de camper ou",
       "source_url": "https://lavigny.ch/wp-content/uploads/2023/10/reglement_police..pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-verboten-mit-bewilligung"
     },
     "5638": {
       "status": "forbidden",
@@ -828,7 +1026,8 @@
       "source": "Nouveau Règlement de police à Lonay, Article 56 Camping et caravaning",
       "source_url": "http://www.lonay.ch/images/20250417122419394.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5645": {
       "status": "forbidden",
@@ -840,7 +1039,8 @@
       "source": "Règlement de police De mai 1991, Art.16 rr est interdit de camper ou",
       "source_url": "https://cms.romanel-sur-morges.bureauweb.ch/storage/documents/reglements/reglement_de_police_1991.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5646": {
       "status": "unknown",
@@ -852,7 +1052,8 @@
       "source": "Règlement communal sur le plan général d'affectation et la police des…, Art. 96 Pour des raisons d'esthétique, les constructions",
       "source_url": "https://www.saint-prex.ch/wp-content/uploads/2026/02/RPGA_2011_signe.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5648": {
       "status": "unknown",
@@ -864,7 +1065,8 @@
       "source": "Règlement de police de l'Association de communes \"Sécurité dans l'Ouest…, Art. 35 L’entreposage de roulottes, de caravanes, de",
       "source_url": "https://www.st-sulpice.ch/fileadmin/documents/st-sulpice.ch/pdf/R%C3%A9glements_communaux/PolOuest-Reglement-2011.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
     },
     "5650": {
       "status": "unknown",
@@ -876,7 +1078,8 @@
       "source": "Règlement sur le plan d'extension et la police des constructions, Art. 34 Constructions prohibées",
       "source_url": "http://www.vaux-sur-morges.ch/assets/idm_medias/b48aec3ee5ddda2a13ade059f9e705d6.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5669": {
       "status": "forbidden",
@@ -888,7 +1091,8 @@
       "source": "Règlement de police de 2008, Art. 48 — Camping",
       "source_url": "https://www.curtilles.ch/images/PDF/R%C3%A8glement%20de%20police%20de%202008.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5671": {
       "status": "forbidden",
@@ -900,7 +1104,21 @@
       "source": "Règlement général de police, Article 56 Camping et caravaning",
       "source_url": "https://dompierre-vd.ch/wp-content/uploads/2026/01/2513_001.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5678": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police, Article 79 Camping et caravaning",
+      "source_url": "https://www.moudon.ch/sites/default/files/documents/2024/04/35.%20r%C3%A8glement%20de%20police%202020.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5680": {
       "status": "forbidden",
@@ -912,7 +1130,8 @@
       "source": "Règlement général de Police, Article 66 Camping et caravaning",
       "source_url": "https://www.ogens.ch/assets/idm_medias/2115526d8133c87ddb5d3ce8d60ca961.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5703": {
       "status": "forbidden",
@@ -924,7 +1143,8 @@
       "source": "Règlement de Police, Art. 25 11 est interdit de camper ou",
       "source_url": "https://www.bassins.ch/wp-content/uploads/2022/09/Reglement_Police_Bassins.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
     "5713": {
       "status": "unknown",
@@ -936,7 +1156,8 @@
       "source": "Reglement PGA_police_constructions, Article 21 Roulottes, caravanes et autres logements mobiles",
       "source_url": "https://www.cransvd.ch/assets/idm_medias/8d8fd419674a3280aa89b4b216f05711.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5721": {
       "status": "unknown",
@@ -948,7 +1169,8 @@
       "source": "Règlement communal sur le plan d’extension et la police des constructions, art. 67 Roulottes, caravanes",
       "source_url": "https://gland.ch/fileadmin/documents/pdf/Reglements/Reglement-plan-extension-et-police-des-constructions.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
     "5744": {
       "status": "forbidden",
@@ -960,7 +1182,8 @@
       "source": "Règlement de police, Art. 47 Toute exposition, vente, location, ou distribution",
       "source_url": "http://www.ballaigues.ch/images/pdf/Reglement_de_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5752": {
       "status": "forbidden",
@@ -972,7 +1195,8 @@
       "source": "Règlement de police, Art. 48 Il est interdit de camper sur",
       "source_url": "https://croy.ch/wp-content/uploads/Reglement_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5756": {
       "status": "unknown",
@@ -984,7 +1208,8 @@
       "source": "Police des constructions du 27.06.1984, Article 60 Caravanes",
       "source_url": "https://www.montcherand.ch/data/files/montcherand/reglements_lois/rc-plan-d-affectation.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
     "5757": {
       "status": "forbidden",
@@ -996,7 +1221,8 @@
       "source": "Règlement de police, Art. 59",
       "source_url": "https://www.orbe.ch/images/documents/reglements-communaux/R%C3%A8glement_de_police_Orbe_2025_VFinale_Amendements_CC.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5812": {
       "status": "forbidden",
@@ -1008,7 +1234,8 @@
       "source": "champtauroz reglement de police, Article 70 Camping et caravaning",
       "source_url": "https://d1bwlkaa4lme6t.cloudfront.net/assets/pdf/champtauroz_reglement_de_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5821": {
       "status": "forbidden",
@@ -1020,7 +1247,8 @@
       "source": "Règlement général de police, Article 55 Camping et caravaning",
       "source_url": "https://www.missy.ch/uploads/228d200bb964a7ceda2966eec7d1fda4/documents/Reglement_general_de_police_2024_1750918592.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5842": {
       "status": "forbidden",
@@ -1032,7 +1260,8 @@
       "source": "Règlement communal de police, Art. 22 Camping et caravaning",
       "source_url": "https://rossiniere.ch/uploads/373502c1156a2830a34268a872cb6902/documents/Reglement_de_police_1600068863.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
     "5856": {
       "status": "forbidden",
@@ -1044,7 +1273,8 @@
       "source": "Règlement général de police, Article 60 Camping et caravaning",
       "source_url": "https://www.essertines-sur-rolle.ch/assets/idm_medias/de638d8a82d000cc6cf8e4f55b00c5b0.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5859": {
       "status": "forbidden",
@@ -1056,7 +1286,8 @@
       "source": "Règlement de police, Art. 44 bis - Ne sont pas considérés",
       "source_url": "https://www.mont-sur-rolle.ch/images/pdf/Reglements/reglement_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5862": {
       "status": "forbidden",
@@ -1068,7 +1299,8 @@
       "source": "Règlement de police (2024), Article 18 Camping, caravaning et roulottes",
       "source_url": "https://www.tartegnin.ch/assets/idm_medias/6e4949252e270db9c1398b268da3eafa.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camping-toute-forme-domaine-public"
     },
     "5863": {
       "status": "forbidden",
@@ -1080,7 +1312,8 @@
       "source": "Règlement de police, Art. 23 Le camping, l’entreposage des roulottes ou",
       "source_url": "https://www.vinzel.ch/wp-content/uploads/2020/07/reglement-de-police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camping-toute-forme-domaine-public"
     },
     "5891": {
       "status": "unknown",
@@ -1092,7 +1325,8 @@
       "source": "Règlement de police, Article 34 L'entreposage de roulottes, caravanes, véhicules servant",
       "source_url": "https://www.securite-riviera.ch/getmedia/ab6359f0-cbe0-4b7d-95bb-c4673a4c3c11/001-Reglement-general-de-police-intercommunal-RGPI-du-15-04-10-(modifications-du-24-11-16-entrees-en-force-le-06-02-17).pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
     },
     "5903": {
       "status": "forbidden",
@@ -1104,7 +1338,8 @@
       "source": "Règlement communal de police (2004), Art. 46 Il est interdit de camper sur",
       "source_url": "https://bioley-magnoux.ch/wp-content/uploads/2017/04/Reglement_de_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5910": {
       "status": "forbidden",
@@ -1116,7 +1351,8 @@
       "source": "Règlement de police, Art. 50 La Municipalité fixe les emplacements de",
       "source_url": "https://www.cronay.ch/images/PDF_autre/Reglement_de_police.pdf",
       "review_status": "entwurf",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
     "5911": {
       "status": "forbidden",
@@ -1128,7 +1364,8 @@
       "source": "Réglement de police, Art. 44 La Municipalité fixe les emplacements de",
       "source_url": "https://www.cuarny.ch/fileadmin/documents/cuarny.ch/pdf/R%C3%A8glement_de_police_Cuarny.pdf",
       "review_status": "entwurf",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
     "5913": {
       "status": "forbidden",
@@ -1140,7 +1377,8 @@
       "source": "R glement police 01.01.08, Art. 45 La Municipalité fixe les emplacements de",
       "source_url": "https://www.donneloye.ch/images/Reglements/reglement_police.pdf",
       "review_status": "entwurf",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
     "5923": {
       "status": "forbidden",
@@ -1152,7 +1390,8 @@
       "source": "Règlement de police, Art. 43 l[ est interdit de camper ou",
       "source_url": "http://test.oppens.ch/wp-content/uploads/2015/09/R%C3%A8gl.-de-police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camper-ou-dormir-verboten-mit-bewilligung"
     },
     "5929": {
       "status": "forbidden",
@@ -1164,7 +1403,8 @@
       "source": "Règlement de Police 2022, Article 75 Camping et caravaning",
       "source_url": "https://suchy.ch/wp-content/uploads/2022/10/Reglement-Police-Suchy-2022-1.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "6023": {
       "status": "forbidden",
@@ -1176,7 +1416,8 @@
       "source": "Règlement de Police, Art. 53 Camping, pique-nique et caravaning",
       "source_url": "https://www.conthey.ch/files/Conthey_Reglement_Police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6025": {
       "status": "forbidden",
@@ -1188,7 +1429,8 @@
       "source": "Règlement de police, Art. 53 Camping, pique-nique et caravaning",
       "source_url": "https://vetroz.ch/download/153/reglements/1483/reglement-de-police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6077": {
       "status": "forbidden",
@@ -1200,7 +1442,8 @@
       "source": "Polizeireglement 06.07.2022, Art. 16 Freies Campieren",
       "source_url": "https://www.gemeinde-goms.ch/files/Online-Schalter/reglemente/20220706_Polizeireglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-freies-campieren-untersagt"
     },
     "6082": {
       "status": "forbidden",
@@ -1212,7 +1455,8 @@
       "source": "Règlement de police, Article 54 Camping, pique-nique et caravaning",
       "source_url": "http://www.ayent.ch/data/documents/Reglements/Reglement_police_2025.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6087": {
       "status": "forbidden",
@@ -1224,7 +1468,8 @@
       "source": "Règlement de police, Article 26 Camping",
       "source_url": "http://www.saint-martin.ch/files/249/Police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "fr-camping-caravaning-interdits-hors-emplacements"
     },
     "6134": {
       "status": "forbidden",
@@ -1236,7 +1481,8 @@
       "source": "Règlement de police de la commune d Isérables, Article 48 Camping et caravaning",
       "source_url": "https://iserables.ch/wp-content/uploads/2018/09/Id_271_R%C3%A8glement_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6136": {
       "status": "forbidden",
@@ -1248,7 +1494,8 @@
       "source": "Règlement de Police, Article 42 Camping et caravaning",
       "source_url": "https://www.martigny.ch/files/Police-Reglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6141": {
       "status": "forbidden",
@@ -1260,7 +1507,8 @@
       "source": "Règlement de police, Article 49 Camping et caravaning",
       "source_url": "https://www.saxon.ch/wp-content/uploads/2018/10/02-regl_pol_9.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6155": {
       "status": "forbidden",
@@ -1272,7 +1520,8 @@
       "source": "Règlement de la Police Intercommunale du Haut-Lac (PIHL), Art. 56 Camping, pique-nique et caravaning",
       "source_url": "https://st-gingolph.ch/wp-content/uploads/2018/03/R%C3%A8glement-de-Police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6157": {
       "status": "forbidden",
@@ -1284,7 +1533,8 @@
       "source": "Règlement de police, Article 38 Camping",
       "source_url": "https://www.illiez.ch/data/documents/Formulaires-Reglements/Rglement_Police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6193": {
       "status": "forbidden",
@@ -1296,7 +1546,8 @@
       "source": "Polizeireglement (PDF), Art. 11 Campieren",
       "source_url": "https://gemeinde.buerchen.ch/wp-content/uploads/2021/07/Polizeireglement.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "de-nur-bezeichnete-zonen"
     },
     "6232": {
       "status": "forbidden",
@@ -1308,7 +1559,8 @@
       "source": "Police, Art. 94 Camping",
       "source_url": "https://www.chalais.ch/data/documents/officiel/reglements/Police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "ju-camping-sauvage-verboten"
     },
     "6238": {
       "status": "forbidden",
@@ -1320,7 +1572,8 @@
       "source": "Règlement de police, Article 47 Camping, caravaning",
       "source_url": "https://www.grone.ch/data/documents/reglements/reglementPolice1.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6246": {
       "status": "forbidden",
@@ -1332,7 +1585,8 @@
       "source": "Règlement de police, Art. 29 Camping, caravaning",
       "source_url": "http://stleonard.dunamibu.myhostpoint.ch/wp-content/uploads/2026/07/reglementcommunaux_police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6252": {
       "status": "forbidden",
@@ -1344,7 +1598,8 @@
       "source": "Règlement de Police homologué le 26.08.2015, Art 58 Camping et caravaning",
       "source_url": "https://www.anniviers.org/data/documents/2_Administration/Reglements/Police/20180826_Police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-oeffentlich-und-privat"
     },
     "6254": {
       "status": "forbidden",
@@ -1356,7 +1611,8 @@
       "source": "Règlement communal de police, Art. 55 Camping, pique-nique et caravaning",
       "source_url": "https://www.noble-contree.ch/data/documents/administration/reglements/Rglementcommunaldepolice_Noble-Contre_vdef_SIGNE.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6261": {
       "status": "forbidden",
@@ -1368,7 +1624,8 @@
       "source": "Règlement de police, Art. 55 Camping, pique-nique et caravaning",
       "source_url": "http://www.arbaz.ch/data/documents/0-RglementdePoliceArbaz_v2002.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6263": {
       "status": "forbidden",
@@ -1380,7 +1637,8 @@
       "source": "Règlement, Art. 55 Camping, pique-nique et caravaning",
       "source_url": "https://www.grimisuat.ch/files/20260610_Re-Police.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6267": {
       "status": "forbidden",
@@ -1392,7 +1650,8 @@
       "source": "Règlement de police 2012, Art. 40 Camping",
       "source_url": "https://veysonnaz.org/images/pdf/reglements/Reglement_de_police_VEYSONNAZ_homologue_19_12_2012.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6300": {
       "status": "forbidden",
@@ -1416,7 +1675,8 @@
       "source": "Règlement de police locale (PDF, 157 Ko), Art. 27",
       "source_url": "https://www.develier.ch/Htdocs/Files/v/5923.pdf/2015_10_23_Reglement-police-locale_version-signee.pdf?download=1",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "ju-camping-sauvage-verboten"
     },
     "6721": {
       "status": "forbidden",
@@ -1428,7 +1688,8 @@
       "source": "picture_as_pdf Règlement de police locale (2012), Art. 27",
       "source_url": "http://www.rossemaison.ch/images/documents/250_03_police_2012.pdf",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "ju-camping-sauvage-verboten"
     },
     "6730": {
       "status": "forbidden",
@@ -1440,7 +1701,8 @@
       "source": "Police locale (PDF, 255 Ko), Art. 27",
       "source_url": "https://www.val-terbi.ch/Htdocs/Files/v/10225.pdf/Reglement-de-Police-locale_version-internet_06.05.2024.pdf?download=1",
       "review_status": "quelle",
-      "last_verified": "2026-08-23"
+      "last_verified": "2026-08-24",
+      "_muster": "ju-camping-sauvage-verboten"
     }
   }
 }

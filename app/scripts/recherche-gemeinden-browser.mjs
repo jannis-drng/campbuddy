@@ -106,6 +106,38 @@ async function oeffne(seite, url) {
   throw new Error(scheitern.join(' | '))
 }
 
+/**
+ * Ist die Leitung überhaupt da?
+ *
+ * Beim ersten vollen Lauf riss die Netzverbindung mittendrin ab. Der Läufer
+ * merkte davon nichts und hakte 702 Gemeinden als „Startseite nicht erreichbar"
+ * ab — ein Befund, der wie ein Ergebnis aussieht und keines ist. Genau solche
+ * stillen Falschbefunde sind für diese Karte gefährlicher als eine Lücke:
+ * niemand sieht ihnen an, dass sie nichts wert sind.
+ *
+ * Deshalb wird ein Verbindungsfehler nicht mehr als Befund gewertet. Der Läufer
+ * hält an, bis die Leitung wieder steht, und nimmt die Gemeinde dann erneut vor.
+ */
+const NETZFEHLER = /INTERNET_DISCONNECTED|NETWORK_CHANGED|CONNECTION_CLOSED|EMPTY_RESPONSE|ENOTFOUND|EAI_AGAIN/
+
+async function netzDa() {
+  try {
+    await fetch('https://www.admin.ch', { signal: AbortSignal.timeout(8000), method: 'HEAD' })
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** Warten, bis die Leitung wieder steht. Gibt false, wenn sie lange wegbleibt. */
+async function aufNetzWarten() {
+  for (let versuch = 0; versuch < 30; versuch++) {
+    await new Promise((r) => setTimeout(r, 10000))
+    if (await netzDa()) return true
+  }
+  return false
+}
+
 /* ------------------------------------------------------- Eine Gemeinde */
 
 async function eineGemeinde(browser, g) {
@@ -258,9 +290,22 @@ if (!existsSync(KANDIDATEN)) {
 }
 const bisher = JSON.parse(readFileSync(KANDIDATEN, 'utf8')).ergebnisse
 
-let offen = bisher.filter((r) => (
-  r.website && (ALLE ? !r.stellen?.length : r.fehler === 'kein passendes Reglement gefunden')
-))
+// Mit --wiederholen werden die Gemeinden erneut vorgenommen, die am
+// Netzabbruch gescheitert sind — nicht die, über die tatsächlich etwas
+// festgestellt wurde.
+const WIEDERHOLEN = process.argv.includes('--wiederholen')
+const frueher = WIEDERHOLEN && existsSync(resolve(ROOT, 'import/recherche/browser.json'))
+  ? JSON.parse(readFileSync(resolve(ROOT, 'import/recherche/browser.json'), 'utf8')).ergebnisse
+  : []
+
+let offen
+if (WIEDERHOLEN) {
+  offen = frueher.filter((r) => r.website && !r.stellen?.length && NETZFEHLER.test(r.fehler ?? ''))
+} else {
+  offen = bisher.filter((r) => (
+    r.website && (ALLE ? !r.stellen?.length : r.fehler === 'kein passendes Reglement gefunden')
+  ))
+}
 if (KANTON) offen = offen.filter((r) => r.kanton === KANTON)
 if (NUR) offen = offen.filter((r) => String(r.bfs) === NUR)
 
@@ -287,20 +332,50 @@ const browser = await chromium.launch({ channel: 'chrome', headless: true })
 const ergebnisse = []
 let fertig = 0
 const warteschlange = [...offen]
+// Nach einer Reihe von Abweisungen desselben Anbieters wird nicht weiter
+// angeklopft. Weiterzumachen brächte nichts und wäre unanständig.
+const waechter = sperrWaechter(8)
 
 async function arbeiter() {
   while (warteschlange.length) {
     const g = warteschlange.shift()
-    // Kurz durchatmen. Bei fünf gleichzeitigen Kontexten ohne Pause haben 32
-    // von 40 Startseiten nicht mehr geantwortet, die einzeln aufgerufen alle
-    // luden — die Gemeindeserver drosseln, und zwar zu Recht.
-    await new Promise((r) => setTimeout(r, 300 + Math.random() * 400))
+    // Nach Anbieter drosseln, nicht nach Gemeinde: zwei Drittel aller
+    // Gemeindeseiten liegen beim selben Hoster, und der sieht nicht drei
+    // gleichzeitige Abrufe, sondern tausende aus einer Hand.
+    const anbieter = anbieterVon(g.website ?? '')
+    if (waechter.gesperrt(anbieter)) {
+      ergebnisse.push({
+        bfs: g.bfs, name: g.name, kanton: g.kanton, website: g.website,
+        stellen: [], fehler: 'Anbieter sperrt uns aus', weg: 'browser',
+      })
+      fertig++
+      continue
+    }
+    const freigeben = await anstehen(anbieter)
     let r
     try {
       r = await eineGemeinde(browser, g)
+      // Ein Verbindungsfehler ist kein Befund über die Gemeinde. Warten und
+      // dieselbe Gemeinde noch einmal — sonst steht am Ende ein Ergebnis da,
+      // das nur die eigene Leitung beschreibt.
+      if (NETZFEHLER.test(r.fehler ?? '') && !(await netzDa())) {
+        if (await aufNetzWarten()) {
+          warteschlange.unshift(g)
+          continue
+        }
+        console.log('  Netz bleibt weg — Lauf wird abgebrochen.')
+        warteschlange.length = 0
+        break
+      }
     } catch (e) {
       r = { bfs: g.bfs, name: g.name, kanton: g.kanton, website: g.website, stellen: [], fehler: `unerwartet: ${e.message.slice(0, 70)}`, weg: 'browser' }
     }
+    freigeben()
+    // Ein Sperrsignal ist kein Befund über die Gemeinde — es zählt auf den
+    // Anbieter, nicht auf sie.
+    const abgewiesen = SPERRE.test(r.fehler ?? '')
+    waechter.melde(anbieter, abgewiesen)
+    if (abgewiesen) r.fehler = 'Anbieter sperrt uns aus'
     ergebnisse.push(r)
     fertig++
     if (fertig % 25 === 0 || fertig === offen.length) {
@@ -314,13 +389,21 @@ async function arbeiter() {
 await Promise.all(Array.from({ length: GLEICHZEITIG }, arbeiter))
 await browser.close()
 
-ergebnisse.sort((a, b) => (a.bfs ?? 0) - (b.bfs ?? 0))
-writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse }, null, 1) + '\n')
+// Beim Wiederholen die früheren Befunde behalten und nur die ersetzen, die
+// jetzt neu erhoben wurden.
+const zusammen = WIEDERHOLEN
+  ? [...frueher.filter((a) => !ergebnisse.some((b) => b.bfs === a.bfs)), ...ergebnisse]
+  : ergebnisse
+zusammen.sort((a, b) => (a.bfs ?? 0) - (b.bfs ?? 0))
+writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse: zusammen }, null, 1) + '\n')
 
-const mitStelle = ergebnisse.filter((r) => r.stellen.length > 0)
 console.log('')
-console.log(`Fundstelle zum Übernachten: ${mitStelle.length} von ${ergebnisse.length}`)
-console.log(`Reglement gefunden: ${ergebnisse.filter((r) => r.dokument).length}`)
+console.log(`In diesem Lauf: ${ergebnisse.filter((r) => r.stellen.length > 0).length} Fundstellen `
+  + `aus ${ergebnisse.length} Gemeinden, Reglement gefunden bei ${ergebnisse.filter((r) => r.dokument).length}.`)
+console.log(`Insgesamt in der Datei: ${zusammen.filter((r) => r.stellen.length > 0).length} Fundstellen `
+  + `aus ${zusammen.length} Gemeinden.`)
+const gesperrt = zusammen.filter((r) => r.fehler === 'Anbieter sperrt uns aus').length
+if (gesperrt > 0) console.log(`Vom Anbieter abgewiesen (kein Befund über die Gemeinde): ${gesperrt}`)
 console.log(`-> ${AUSGABE}`)
 const gründe = {}
 for (const r of ergebnisse) if (r.stellen.length === 0 && r.fehler) {
