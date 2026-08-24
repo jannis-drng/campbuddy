@@ -20,10 +20,26 @@
 -- eine View liest, sperrt erst sie und dann die Basistabelle. Eine Migration,
 -- die umgekehrt vorgeht, läuft in einen Deadlock. Ausführlich in 0016,
 -- Abschnitt 0.
+-- Was an der View hängt, muss zuerst weg. `touren_bei` (Migration 0020)
+-- gibt `setof public.oeffentliche_routen` zurück und blockiert das Löschen
+-- sonst — was diese Migration nach einem Lauf von 0020 unbrauchbar machte.
+-- Wer diese Datei erneut laufen lässt, spielt danach 0020 noch einmal ein:
+-- die Funktion wird hier gelöscht und dort wieder angelegt.
+drop function if exists public.touren_bei(double precision, double precision, integer, integer);
+
 drop view if exists public.oeffentliche_kommentare;
 drop view if exists public.oeffentliche_routen;
 
 set lock_timeout = '20s';
+
+-- Alle Sperren vorab in einer Anweisung (siehe 0020, Abschnitt 0): solange
+-- diese Migration wartet, hält sie nichts und kann deshalb in keinem
+-- Deadlock-Ring stehen. Danach kommt kein Leser mehr dazwischen.
+lock table
+  public.kommentare,
+  public.profiles,
+  public.routes
+  in access exclusive mode;
 
 -- ---------------------------------------------------------------------------
 -- 1. Was ein Name nicht sein darf

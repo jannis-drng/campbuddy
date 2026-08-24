@@ -23,13 +23,39 @@
 -- die Datenbank ihre Kandidaten dann nach etwas anderem auswählen müsste.
 
 -- ---------------------------------------------------------------------------
--- 0. Erst die Views weg, dann die Tabelle
+-- 0. Alle Sperren zuerst, in einem Zug
 -- ---------------------------------------------------------------------------
--- Sperrreihenfolge wie in 0016–0019.
+-- 0016 bis 0019 haben die Views vor den Tabellen freigegeben, weil ein Leser
+-- der View erst sie und dann die Basistabelle sperrt. Das hat den Deadlock in
+-- dieser Richtung beseitigt — aber nicht den in der anderen: es gibt auch
+-- Zugriffe, die zuerst `routes` anfassen und danach die View. Der offenste
+-- Kandidat dafür ist PostgREST selbst, das nach jeder DDL-Anweisung seinen
+-- Schema-Cache neu einliest und dabei quer durch den Katalog greift.
+--
+-- Gegen zwei entgegengesetzte Reihenfolgen hilft keine dritte. Was hilft:
+-- alles, was diese Migration anfasst, **vor dem ersten Schreibzugriff** in
+-- einer einzigen Anweisung sperren. Danach kann kein Leser mehr mitten in
+-- der Migration eine Sperre halten, die sie noch braucht — und solange sie
+-- selbst wartet, hält sie nichts, kann also in keinem Ring stehen.
+--
+-- Bricht es trotzdem ab: die Transaktion hinterlässt nichts, die Migration
+-- ist mehrfach ausführbar. Am ruhigsten läuft sie mit geschlossener App.
+set lock_timeout = '20s';
+
+lock table
+  public.kommentare,
+  public.profiles,
+  public.routes
+  in access exclusive mode;
+
+-- Die Funktion zuerst: sie gibt `setof public.oeffentliche_routen` zurück und
+-- hängt damit am Typ der View. Ohne diese Zeile scheitert ein zweiter Lauf an
+-- „cannot drop view ... because other objects depend on it" — die Migration
+-- wäre also genau einmal ausführbar gewesen, entgegen ihrer eigenen Zusage.
+drop function if exists public.touren_bei(double precision, double precision, integer, integer);
+
 drop view if exists public.oeffentliche_kommentare;
 drop view if exists public.oeffentliche_routen;
-
-set lock_timeout = '20s';
 
 -- ---------------------------------------------------------------------------
 -- 1. Das Umgebungsrechteck jeder Tour

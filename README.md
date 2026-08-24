@@ -732,11 +732,15 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0019_verschachtelte_antworten.sql`](./supabase/migrations/0019_verschachtelte_antworten.sql) | Antworten auf Antworten — echter Strangbezug statt einer Ebene |
 | [`0020_touren_in_der_naehe.sql`](./supabase/migrations/0020_touren_in_der_naehe.sql) | „Welche Touren kommen hier vorbei?" — Umgebungsrechteck plus echte Entfernung |
 
-Die Dateien sind mehrfach ausführbar. Bricht 0016 mit `40P01: deadlock detected` oder mit
+Die Dateien sind mehrfach ausführbar. Bricht eine mit `40P01: deadlock detected` oder mit
 einem Sperr-Zeitablauf ab, hat die Transaktion nichts hinterlassen — einfach noch einmal
-laufen lassen, am besten mit geschlossener App. Warum diese Migration überhaupt mit
-Sperren in Berührung kommt und in welcher Reihenfolge sie sie nimmt, steht in ihrem
-Abschnitt 0.
+laufen lassen, **am besten mit geschlossener App**.
+
+Ab 0016 sperrt jede Migration alles, was sie anfasst, vorab in *einer* Anweisung. Der
+Grund steht ausführlich in 0020, Abschnitt 0: eine feste Reihenfolge allein reicht nicht,
+weil es Zugriffe in beide Richtungen gibt (Leser der View sperren View → Tabelle, die
+Schema-Cache-Erneuerung von PostgREST greift quer durch den Katalog). Wer alles vorab
+nimmt, hält beim Warten nichts und kann in keinem Deadlock-Ring stehen.
 
 Dann `app/.env.example` nach `app/.env.local` kopieren, beide Werte eintragen und
 `npm run deploy --prefix app`.

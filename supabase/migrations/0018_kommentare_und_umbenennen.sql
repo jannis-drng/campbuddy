@@ -12,6 +12,15 @@ drop view if exists public.oeffentliche_kommentare;
 
 set lock_timeout = '20s';
 
+-- Alle Sperren vorab in einer Anweisung (siehe 0020, Abschnitt 0): solange
+-- diese Migration wartet, hält sie nichts und kann deshalb in keinem
+-- Deadlock-Ring stehen. Danach kommt kein Leser mehr dazwischen.
+lock table
+  public.kommentare,
+  public.profiles,
+  public.routes
+  in access exclusive mode;
+
 -- ---------------------------------------------------------------------------
 -- 1. Umbenennen höchstens einmal im Monat
 -- ---------------------------------------------------------------------------

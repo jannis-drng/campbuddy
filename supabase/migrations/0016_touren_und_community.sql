@@ -32,6 +32,13 @@
 -- Migration und Leser in derselben Reihenfolge: erst View, dann Tabelle. Wer
 -- gerade liest, blockiert die Migration höchstens kurz; einen Ring kann es
 -- nicht mehr geben. Neu gebaut werden die Views weiter unten.
+-- Was an der View hängt, muss zuerst weg. `touren_bei` (Migration 0020)
+-- gibt `setof public.oeffentliche_routen` zurück und blockiert das Löschen
+-- sonst — was diese Migration nach einem Lauf von 0020 unbrauchbar machte.
+-- Wer diese Datei erneut laufen lässt, spielt danach 0020 noch einmal ein:
+-- die Funktion wird hier gelöscht und dort wieder angelegt.
+drop function if exists public.touren_bei(double precision, double precision, integer, integer);
+
 drop view if exists public.oeffentliche_kommentare;
 drop view if exists public.eigene_kommentar_ids;
 drop view if exists public.oeffentliche_routen;
@@ -41,6 +48,15 @@ drop view if exists public.oeffentliche_routen;
 -- ausführbar (`if not exists`, `coalesce`, geprüftes `insert`) — ein
 -- Abbruch kostet nichts ausser einem zweiten Anlauf.
 set lock_timeout = '20s';
+
+-- Alle Sperren vorab in einer Anweisung (siehe 0020, Abschnitt 0): solange
+-- diese Migration wartet, hält sie nichts und kann deshalb in keinem
+-- Deadlock-Ring stehen. Danach kommt kein Leser mehr dazwischen.
+lock table
+  public.meldungen,
+  public.routes,
+  public.trips
+  in access exclusive mode;
 
 -- ---------------------------------------------------------------------------
 -- 1. Route und Tour waren dasselbe, nur in zwei Tabellen
