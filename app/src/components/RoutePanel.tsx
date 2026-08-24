@@ -12,10 +12,24 @@
  */
 import { useRef } from 'react'
 import {
-  ArrowRight, Bike, Camera, Car, Download, Flag, Footprints, MapPin, MousePointerClick,
-  Pencil, PencilOff, Trash2, TriangleAlert, Undo2, Upload, X,
+  ArrowRight, Bike, Building2, Camera, Car, Download, Droplet, Eye, Flag, Footprints, MapPin,
+  MountainSnow, MousePointerClick, Pencil, PencilOff, Star, Tent, Trash2, TriangleAlert, Truck,
+  Undo2, Upload, X,
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { lineLength, type Position } from '../data/geo'
+import type { Wegpunkt, WegpunktArt } from '../data/types'
+
+/** Symbol je Art des uebernommenen Ortes — dieselben wie auf der Karte. */
+const WEGPUNKT_ICON: Record<WegpunktArt, LucideIcon> = {
+  hut: Building2,
+  campsite: Tent,
+  vehicle_spot: Truck,
+  peak: MountainSnow,
+  wasser: Droplet,
+  aussicht: Eye,
+  eigen: Star,
+}
 import { formatDauer, type HikingStats } from '../data/hiking'
 import { PROFILE_LABEL, SNAP_WARN_M, type RoutedPath, type RoutingProfile } from '../map/routing'
 import { toGpx } from '../services/gpx'
@@ -23,7 +37,7 @@ import { Button, Hinweis, IconButton, Label, Leer, Segmente } from '../ui'
 
 interface Props {
   route: Position[]
-  waypoints: Position[]
+  waypoints: Wegpunkt[]
   waypointCount: number
   routed: RoutedPath | null
   routingBusy: boolean
@@ -216,11 +230,12 @@ export function RoutePanel({
           <section>
             <Label className="mb-1.5">Wegpunkte ({waypoints.length})</Label>
             <ul className="divide-y divide-kante overflow-hidden rounded-mittel border border-kante bg-flaeche-1">
-              {waypoints.map((_, i) => {
+              {waypoints.map((w, i) => {
                 const start = i === 0
                 const ziel = i === waypoints.length - 1
                 const rolle = start ? 'Start' : ziel ? 'Ziel' : `Zwischenstopp ${i}`
                 const Symbol = start ? MapPin : ziel ? Flag : null
+                const OrtIcon = w.ort ? WEGPUNKT_ICON[w.ort.art] : null
                 return (
                   <li key={i} className="group flex items-center gap-2.5 px-2.5 py-2">
                     {Symbol ? (
@@ -235,7 +250,24 @@ export function RoutePanel({
                         {i}
                       </span>
                     )}
-                    <span className="min-w-0 flex-1 truncate text-klein text-ink-200">{rolle}</span>
+                    {/*
+                      Hat der Wegpunkt einen Namen, steht er vorn und die Rolle
+                      dahinter: „Cabane de Moiry · Start" liest sich als Ort,
+                      „Start · Cabane de Moiry" als Formularfeld.
+                    */}
+                    <span className="flex min-w-0 flex-1 items-center gap-1.5">
+                      {OrtIcon && (
+                        <OrtIcon size={12} strokeWidth={2} className="shrink-0 text-ink-500" aria-hidden />
+                      )}
+                      <span className="min-w-0 truncate text-klein text-ink-200">
+                        {w.ort ? w.ort.name : rolle}
+                      </span>
+                      {w.ort && (
+                        <span className="shrink-0 text-mikro normal-case tracking-normal text-ink-600">
+                          {rolle}
+                        </span>
+                      )}
+                    </span>
                     <button
                       onClick={() => onRemoveWaypoint(i)}
                       aria-label={`${rolle} entfernen`}
@@ -250,8 +282,10 @@ export function RoutePanel({
               })}
             </ul>
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Wegpunkte lassen sich auf der Karte verschieben, Rechtsklick entfernt sie. Um einen
-              Umweg einzubauen, die Linie an der gewünschten Stelle anfassen und ziehen.
+              Ein Tippen auf eine Hütte, einen Gipfel, eine Quelle oder eine eigene Markierung
+              übernimmt sie als Wegpunkt — mit Namen. Wegpunkte lassen sich auf der Karte
+              verschieben, Rechtsklick entfernt sie. Um einen Umweg einzubauen, die Linie an
+              der gewünschten Stelle anfassen und ziehen.
             </p>
           </section>
         )}

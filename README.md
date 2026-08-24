@@ -583,6 +583,20 @@ abstreifen, und die Zuschreibung wird wertlos. Der allererste Wechsel nach der
 Registrierung ist frei — ein einmal gewählter Name muss korrigierbar bleiben. Denselben
 Namen noch einmal zu speichern löst die Sperre nicht aus.
 
+### Symbole beim Zeichnen
+
+Im Zeichenmodus wird ein angetipptes Symbol — Hütte, Campingplatz, Stellplatz, Gipfel,
+Quelle, Aussichtspunkt oder eigene Markierung — zum Wegpunkt, **mit seinem Namen**. Die
+Liste im Routenpanel sagt dann „Cabane de Moiry · Start" statt „Zwischenstopp 2". Der
+Zeiger wechselt über einem Symbol auf `copy`, damit sichtbar ist, dass es sich übernehmen
+lässt.
+
+Ein Wegpunkt trägt den Namen nur, solange er dort liegt: wird er auf der Karte verschoben,
+fällt er auf eine namenlose Koordinate zurück — er steht dann ja nicht mehr an der Hütte.
+
+Denselben Weg gibt es aus der Infokarte, ohne den Zeichenmodus vorher einzuschalten
+(„Route hier beginnen" bzw. „An die Route anhängen").
+
 ### Touren an einem Ort
 
 Ein Tippen auf eine Hütte, einen Gipfel, eine Quelle oder eine eigene Markierung zeigt

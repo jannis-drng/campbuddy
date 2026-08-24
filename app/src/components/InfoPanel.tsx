@@ -9,12 +9,12 @@ import { useEffect, useState } from 'react'
 import {
   Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Landmark,
   Lock, Mail, MapPin, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users,
-  Route as RouteIcon, Waves, X,
+  Footprints, Route as RouteIcon, Waves, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type {
   EigenerPunkt, Gemeinde, GemeindeRecht, Kanton, KantonRecht, NatureFeature, Peak, Point, Region,
-  Zone,
+  WegpunktArt, Zone,
 } from '../data/types'
 import type { Position } from '../data/geo'
 import type { PublicTour } from '../services/supabase'
@@ -82,16 +82,30 @@ const PUNKT_ART: Record<Point['type'], { label: string; icon: LucideIcon }> = {
  * vorbeikommen kann — eine Zone ist eine Fläche, und der Rechtsrahmen einer
  * Region gar kein Ort.
  */
-function ortDerAuswahl(selection: NonNullable<Selection>): { name: string; position: Position } | null {
+function ortDerAuswahl(
+  selection: NonNullable<Selection>,
+): { name: string; position: Position; art: WegpunktArt } | null {
   switch (selection.kind) {
     case 'point':
-      return { name: selection.point.name, position: [selection.point.lng, selection.point.lat] }
+      return {
+        name: selection.point.name,
+        position: [selection.point.lng, selection.point.lat],
+        art: selection.point.type,
+      }
     case 'natur':
-      return { name: selection.feature.name, position: [selection.feature.lng, selection.feature.lat] }
+      return {
+        name: selection.feature.name,
+        position: [selection.feature.lng, selection.feature.lat],
+        art: selection.feature.type === 'viewpoint' ? 'aussicht' : 'wasser',
+      }
     case 'eigen':
-      return { name: selection.punkt.name, position: [selection.punkt.lng, selection.punkt.lat] }
+      return {
+        name: selection.punkt.name,
+        position: [selection.punkt.lng, selection.punkt.lat],
+        art: 'eigen',
+      }
     case 'peak':
-      return { name: selection.peak.name, position: [selection.peak.lng, selection.peak.lat] }
+      return { name: selection.peak.name, position: [selection.peak.lng, selection.peak.lat], art: 'peak' }
     default:
       return null
   }
@@ -109,6 +123,14 @@ interface InfoPanelProps {
   onTourOeffnen?: (tour: PublicTour) => void
   /** Wechselt in die Community und sucht dort ab diesem Ort. */
   onAlleTouren?: (name: string, position: Position) => void
+  /**
+   * Haengt diesen Ort als Wegpunkt an die Route und schaltet das Zeichnen ein.
+   * Der zweite Weg zu derselben Sache: auf der Karte geht es durch Antippen im
+   * Zeichenmodus, hier ohne ihn vorher einschalten zu muessen.
+   */
+  onAlsWegpunkt?: (position: Position, ort: { name: string; art: WegpunktArt }) => void
+  /** Steht die Route schon offen? Entscheidet nur ueber die Beschriftung. */
+  zeichnetGerade?: boolean
 }
 
 function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: LucideIcon; titel: string } {
@@ -144,7 +166,7 @@ function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: Luci
 
 export function InfoPanel({
   selection, onClose, onOpenPlanner, nutzerId, onPunktBearbeiten, onPunktLoeschen,
-  onTourOeffnen, onAlleTouren,
+  onTourOeffnen, onAlleTouren, onAlsWegpunkt, zeichnetGerade,
 }: InfoPanelProps) {
   if (!selection) return null
 
@@ -169,6 +191,21 @@ export function InfoPanel({
         </div>
         <IconButton icon={X} label="Schliessen" onClick={onClose} className="-mr-1.5 -mt-1" />
       </header>
+
+      {/*
+        Der schnellste Weg von „was ist das?" zu „da will ich hin": direkt
+        unter dem Namen, nicht unten nach allem anderen.
+      */}
+      {ort && onAlsWegpunkt && (
+        <div className="shrink-0 border-b border-kante px-5 py-3">
+          <Button
+            variante="sekundaer" breit icon={Footprints}
+            onClick={() => onAlsWegpunkt(ort.position, { name: ort.name, art: ort.art })}
+          >
+            {zeichnetGerade ? 'An die Route anhängen' : 'Route hier beginnen'}
+          </Button>
+        </div>
+      )}
 
       <div className="min-h-0 flex-1 overflow-y-auto">
         {selection.kind === 'region' && (

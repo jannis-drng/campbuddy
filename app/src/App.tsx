@@ -6,7 +6,9 @@ import {
   verificationStats,
   type Ausschnitt,
 } from './data/legalData'
-import type { EigenerPunkt, MapFilters, NatureFeature, Peak, Point, TripParams, Zone } from './data/types'
+import type {
+  EigenerPunkt, MapFilters, NatureFeature, Peak, Point, TripParams, Wegpunkt, Zone,
+} from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
@@ -76,7 +78,16 @@ export default function App() {
   const [drawing, setDrawing] = useState(false)
   const [routeError, setRouteError] = useState<string | null>(null)
   // Die vom Nutzer gesetzten Stützpunkte …
-  const [waypoints, setWaypoints] = useState<Position[]>([])
+  /*
+    Wegpunkte tragen jetzt mit, *was* an ihrer Stelle steht, wenn sie durch
+    Antippen eines Symbols entstanden sind. Die Koordinaten allein reichten
+    nicht: die Liste im Routenpanel konnte danach nur „Zwischenstopp 2" sagen,
+    obwohl gerade bewusst eine bestimmte Hütte angetippt worden war.
+  */
+  const [waypoints, setWaypoints] = useState<Wegpunkt[]>([])
+
+  /** Nur die Koordinaten — für Routing, Karte und Speichern. */
+  const wegpunktOrte = useMemo(() => waypoints.map((w) => w.position), [waypoints])
   // … das Ergebnis des Weg-Routings dazwischen …
   const [routed, setRouted] = useState<RoutedPath | null>(null)
   const [routingBusy, setRoutingBusy] = useState(false)
@@ -213,8 +224,8 @@ export default function App() {
   // Hütte ist trotzdem eine Schlafmöglichkeit an der Route.
   // Eine importierte Spur folgt bereits realen Wegen und wird nicht neu geroutet.
   const routeGeometry = useMemo<Position[]>(
-    () => gpxTrack ?? routed?.coordinates ?? waypoints,
-    [gpxTrack, routed, waypoints],
+    () => gpxTrack ?? routed?.coordinates ?? wegpunktOrte,
+    [gpxTrack, routed, wegpunktOrte],
   )
 
   const analysis = useMemo(
@@ -252,7 +263,7 @@ export default function App() {
     const controller = new AbortController()
     const timer = setTimeout(() => {
       setRoutingBusy(true)
-      routeWaypoints(waypoints, profile, controller.signal)
+      routeWaypoints(wegpunktOrte, profile, controller.signal)
         .then(setRouted)
         .catch((e: unknown) => {
           if ((e as Error).name !== 'AbortError') setRouteError((e as Error).message)
@@ -260,7 +271,7 @@ export default function App() {
         .finally(() => setRoutingBusy(false))
     }, 400)
     return () => { clearTimeout(timer); controller.abort() }
-  }, [waypoints, profile, gpxTrack])
+  }, [wegpunktOrte, profile, gpxTrack])
 
   const importGpx = async (file: File) => {
     try {
@@ -289,7 +300,7 @@ export default function App() {
   const handleSaveTour = session
     ? async (name: string, trip: TripParams) => {
         await saveTour(
-          name, regionCode, routeGeometry, gpxTrack ? [] : waypoints,
+          name, regionCode, routeGeometry, gpxTrack ? [] : wegpunktOrte,
           {
             ...trip,
             distance_m: routeGeometry.length > 1 ? lineLength(routeGeometry) : null,
@@ -329,7 +340,7 @@ export default function App() {
 
   const routeLaden = (geometry: Position[], wps: Position[]) => {
     setGpxTrack(geometry)
-    setWaypoints(wps)
+    setWaypoints(wps.map((position) => ({ position })))
     setRouted(null)
     setView('karte')
     setRouteOpen(true)
@@ -473,7 +484,7 @@ export default function App() {
             basemap={basemap}
             visible={view === 'karte'}
             route={routeGeometry}
-            waypoints={gpxTrack ? [] : waypoints}
+            waypoints={gpxTrack ? [] : wegpunktOrte}
             kameraZiel={kameraZiel}
             drawing={drawing}
             markieren={markieren}
@@ -502,21 +513,22 @@ export default function App() {
               setDialogPosition(position)
               setMarkieren(false)
             }}
-            onAddWaypoint={(position) => {
+            onAddWaypoint={(position, ort) => {
               // Ein neuer Klick beginnt eine gezeichnete Route; eine importierte
               // Spur würde sonst stillschweigend mit Wegpunkten vermischt.
               setGpxTrack(null)
-              setWaypoints((w) => [...w, position])
+              setWaypoints((w) => [...w, { position, ort }])
             }}
             onInsertWaypoint={(index, position) =>
               setWaypoints((w) => {
                 const kopie = [...w]
-                kopie.splice(index, 0, position)
+                kopie.splice(index, 0, { position })
                 return kopie
               })
             }
             onMoveWaypoint={(index, position) =>
-              setWaypoints((w) => w.map((p, i) => (i === index ? position : p)))
+              // Verschoben heisst: nicht mehr an dem Symbol, das den Namen gab.
+              setWaypoints((w) => w.map((p, i) => (i === index ? { position } : p)))
             }
             onRemoveWaypoint={(index) => setWaypoints((w) => w.filter((_, i) => i !== index))}
           />
@@ -576,6 +588,16 @@ export default function App() {
               )
             }}
             onAlleTouren={tourenBeiOrt}
+            onAlsWegpunkt={(position, ort) => {
+              // Eine importierte Spur und gesetzte Wegpunkte vertragen sich
+              // nicht — dieselbe Regel wie beim Zeichnen auf der Karte.
+              setGpxTrack(null)
+              setWaypoints((w) => [...w, { position, ort }])
+              setDrawing(true)
+              setRouteOpen(true)
+              setSelection(null)
+            }}
+            zeichnetGerade={drawing || waypoints.length > 0}
           />
         </main>
       </div>

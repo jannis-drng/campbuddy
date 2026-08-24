@@ -26,7 +26,7 @@ import type maplibregl from 'maplibre-gl'
 import type { ExpressionSpecification } from '@maplibre/maplibre-gl-style-spec'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type {
-  ActivityMode, EigenerPunkt, NatureFeature, Peak, Point, Region, Zone,
+  ActivityMode, EigenerPunkt, NatureFeature, Peak, Point, Region, Wegpunkt, Zone,
 } from '../data/types'
 import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
 import type { Ausschnitt } from '../data/legalData'
@@ -92,7 +92,7 @@ interface Props {
    * sichtbar ist immer nur ein Ausschnitt davon.
    */
   onAusschnitt: (a: Ausschnitt) => void
-  onAddWaypoint: (position: Position) => void
+  onAddWaypoint: (position: Position, ort?: Wegpunkt['ort']) => void
   onInsertWaypoint: (index: number, position: Position) => void
   onMoveWaypoint: (index: number, position: Position) => void
   onRemoveWaypoint: (index: number) => void
@@ -372,12 +372,27 @@ export function MapView({
         // Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur
         // Infokarte: „Route über diese Hütte" ist beim Planen das, was man will.
         if (latest.current.drawing) {
-          const ort = hits.find((f) => f.layer.id.startsWith('points-')
-            || f.layer.id.startsWith('natur-') || f.layer.id.startsWith('peaks-'))
-          const koordinaten = ort?.geometry.type === 'Point'
-            ? (ort.geometry.coordinates as Position)
-            : position
-          latest.current.onAddWaypoint(koordinaten)
+          /*
+            Ein angetipptes Symbol wird zum Wegpunkt — mit seinem Namen.
+            Vorher wurden zwar schon die Koordinaten uebernommen, aber nicht,
+            *was* dort steht: die Liste im Routenpanel konnte danach nur
+            „Zwischenstopp 2" sagen, obwohl gerade bewusst eine bestimmte
+            Huette angetippt worden war.
+
+            Reihenfolge wie bei der Infokarte: der kleinere Treffer gewinnt.
+          */
+          const symbol = hits.find((f) =>
+            f.layer.id === 'eigene-treffer' || f.layer.id === 'points-treffer'
+            || f.layer.id.startsWith('peaks-') || f.layer.id.startsWith('natur-'))
+
+          if (symbol?.geometry.type === 'Point') {
+            latest.current.onAddWaypoint(
+              symbol.geometry.coordinates as Position,
+              wegpunktOrt(symbol, latest.current),
+            )
+            return
+          }
+          latest.current.onAddWaypoint(position)
           return
         }
 
@@ -418,14 +433,22 @@ export function MapView({
 
       // Im Zeichenmodus bleibt das Fadenkreuz stehen — sonst würde der Cursor
       // über Zonen fälschlich Anklickbarkeit signalisieren.
-      for (const layer of ['points-treffer', 'natur-treffer', 'natur-see-treffer', 'eigene-treffer',
-                           'peaks-hoch-treffer', 'peaks-mittel-treffer', 'peaks-niedrig-treffer',
-                           'zones-fill']) {
+      const symbolEbenen = [
+        'points-treffer', 'natur-treffer', 'natur-see-treffer', 'eigene-treffer',
+        'peaks-hoch-treffer', 'peaks-mittel-treffer', 'peaks-niedrig-treffer',
+      ]
+      for (const layer of [...symbolEbenen, 'zones-fill']) {
+        const istSymbol = symbolEbenen.includes(layer)
         m.on('mouseenter', layer, () => {
-          if (!latest.current.drawing && !latest.current.markieren) setzeCursor('pointer')
+          if (latest.current.markieren) return
+          // Beim Zeichnen bleibt das Fadenkreuz stehen — ausser ueber einem
+          // Symbol: dort sagt der Zeiger, dass es sich uebernehmen laesst.
+          if (latest.current.drawing) { if (istSymbol) setzeCursor('copy') ; return }
+          setzeCursor('pointer')
         })
         m.on('mouseleave', layer, () => {
-          if (!latest.current.drawing && !latest.current.markieren) setzeCursor('')
+          if (latest.current.markieren) return
+          setzeCursor(latest.current.drawing ? 'crosshair' : '')
         })
       }
     }
@@ -1242,4 +1265,39 @@ function gipfelSymbolAnlegen(m: MlMap) {
 function updateData(m: MlMap, zones: Zone[], points: Point[], activity: ActivityMode) {
   ;(m.getSource('zones') as GeoJSONSource | undefined)?.setData(zonesToGeoJson(zones, activity))
   ;(m.getSource('points') as GeoJSONSource | undefined)?.setData(pointsToGeoJson(points))
+}
+
+/**
+ * Woher stammt der angetippte Punkt, und wie heisst er?
+ *
+ * Aus der getroffenen Ebene und der ID; den Namen holt die Funktion aus den
+ * Prop-Listen statt aus den GeoJSON-Eigenschaften, damit sie dieselbe Quelle
+ * benutzt wie die Infokarte und nicht zwei Fassungen desselben Namens
+ * auseinanderlaufen koennen.
+ */
+function wegpunktOrt(
+  treffer: maplibregl.MapGeoJSONFeature,
+  daten: { points: Point[]; peaks: Peak[]; nature: NatureFeature[]; eigene: EigenerPunkt[] },
+): Wegpunkt['ort'] {
+  const id = treffer.properties?.id
+  const ebene = treffer.layer.id
+
+  if (ebene === 'eigene-treffer') {
+    const p = daten.eigene.find((x) => x.id === id)
+    return p && { name: p.name, art: 'eigen' }
+  }
+  if (ebene === 'points-treffer') {
+    const p = daten.points.find((x) => x.id === id)
+    return p && { name: p.name, art: p.type }
+  }
+  if (ebene.startsWith('peaks-')) {
+    const p = daten.peaks.find((x) => x.id === id)
+    return p && { name: p.name, art: 'peak' }
+  }
+  if (ebene.startsWith('natur-')) {
+    const n = daten.nature.find((x) => x.id === id)
+    if (!n) return undefined
+    return { name: n.name, art: n.type === 'viewpoint' ? 'aussicht' : 'wasser' }
+  }
+  return undefined
 }

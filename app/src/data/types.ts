@@ -7,6 +7,8 @@
  * und keine Änderung an der UI erfordert.
  */
 
+import type { Position } from './geo'
+
 export type LegalStatus = 'allowed' | 'forbidden' | 'tolerated' | 'unknown'
 
 /** Für Zelt / Fahrzeug / Feuer: erlaubt, verboten oder an Bedingungen geknüpft. */
@@ -276,4 +278,22 @@ export interface TripParams {
   season: Season
   /** Übernachtungsart — entscheidet, ob Zelt/Biwak überhaupt nötig ist. */
   shelter: 'zelt' | 'biwak' | 'huette'
+}
+
+/**
+ * Ein gesetzter Wegpunkt.
+ *
+ * Trägt neben dem Ort auch, *was* dort steht, wenn er durch Antippen eines
+ * Symbols entstanden ist. Vorher war ein Wegpunkt eine nackte Koordinate, und
+ * die Liste im Routenpanel konnte nur „Zwischenstopp 2" sagen — obwohl der
+ * Nutzer gerade bewusst eine bestimmte Hütte angetippt hatte.
+ *
+ * `ort` ist optional: ein Klick auf freie Fläche ist weiterhin ein gültiger
+ * Wegpunkt, er heisst nur nicht.
+ */
+export type WegpunktArt = 'hut' | 'campsite' | 'vehicle_spot' | 'peak' | 'wasser' | 'aussicht' | 'eigen'
+
+export interface Wegpunkt {
+  position: Position
+  ort?: { name: string; art: WegpunktArt }
 }
