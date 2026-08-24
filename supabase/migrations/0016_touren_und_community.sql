@@ -12,6 +12,37 @@
 --      ohne `user_id`.
 
 -- ---------------------------------------------------------------------------
+-- 0. Erst die Views weg, dann die Tabelle — sonst gibt es einen Deadlock
+-- ---------------------------------------------------------------------------
+-- Diese Migration fasst `routes` an *und* die View `oeffentliche_routen`, die
+-- darauf liegt. Die Reihenfolge ist dabei nicht beliebig.
+--
+-- Wer die View liest (die laufende App über PostgREST, das Dashboard, ein
+-- offener Tab), sperrt zuerst die View und dann die Basistabelle. Eine
+-- Migration, die umgekehrt vorgeht — erst `alter table routes`, viel später
+-- `drop view` —, läuft dieser Leserichtung entgegen: sie hält die Tabelle
+-- und will die View, der Leser hält die View und will die Tabelle. Genau
+-- dieser Ring ist der Deadlock:
+--
+--   ERROR: 40P01: deadlock detected
+--   Process A waits for AccessExclusiveLock on relation <routes>
+--   Process B waits for AccessShareLock on relation <oeffentliche_routen>
+--
+-- Deshalb fallen die Views hier oben, vor jedem `alter table`. Ab da laufen
+-- Migration und Leser in derselben Reihenfolge: erst View, dann Tabelle. Wer
+-- gerade liest, blockiert die Migration höchstens kurz; einen Ring kann es
+-- nicht mehr geben. Neu gebaut werden die Views weiter unten.
+drop view if exists public.oeffentliche_kommentare;
+drop view if exists public.eigene_kommentar_ids;
+drop view if exists public.oeffentliche_routen;
+
+-- Lieber nach zwanzig Sekunden mit klarer Meldung abbrechen als unbegrenzt
+-- hinter einer langen Abfrage hängen. Diese Migration ist mehrfach
+-- ausführbar (`if not exists`, `coalesce`, geprüftes `insert`) — ein
+-- Abbruch kostet nichts ausser einem zweiten Anlauf.
+set lock_timeout = '20s';
+
+-- ---------------------------------------------------------------------------
 -- 1. Route und Tour waren dasselbe, nur in zwei Tabellen
 -- ---------------------------------------------------------------------------
 -- Der Entwurf trennte den Verlauf (`routes`) von den Eckdaten (`trips`, mit

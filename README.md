@@ -644,6 +644,12 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0007_eigene_punkte.sql`](./supabase/migrations/0007_eigene_punkte.sql) | Selbst markierte Punkte und der private Fotospeicher |
 | [`0016_touren_und_community.sql`](./supabase/migrations/0016_touren_und_community.sql) | Route und Tour werden **eine** Tour; Likes, Kommentare und gezählte Spalten |
 
+Die Dateien sind mehrfach ausführbar. Bricht 0016 mit `40P01: deadlock detected` oder mit
+einem Sperr-Zeitablauf ab, hat die Transaktion nichts hinterlassen — einfach noch einmal
+laufen lassen, am besten mit geschlossener App. Warum diese Migration überhaupt mit
+Sperren in Berührung kommt und in welcher Reihenfolge sie sie nimmt, steht in ihrem
+Abschnitt 0.
+
 Dann `app/.env.example` nach `app/.env.local` kopieren, beide Werte eintragen und
 `npm run deploy --prefix app`.
 
