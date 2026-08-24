@@ -30,48 +30,69 @@ export function getSupabase(): SupabaseClient | null {
   return client
 }
 
-/** Eine gespeicherte Route (Abschnitt 8.4). */
-export interface StoredRoute {
+/**
+ * Eine gespeicherte Tour (Abschnitte 8.4 und 8.6 zusammengelegt).
+ *
+ * Verlauf und Eckdaten lagen bis Migration 0016 in zwei Tabellen (`routes`
+ * und `trips`). Was jemand plant, ist aber eine Sache: ein Weg mit einem
+ * Datum, einer Dauer und einer Packliste. Zweimal speichern hiess in der
+ * Oberfläche zwei Listen und die unbeantwortbare Frage, ob die eigene Tour
+ * nun die Route oder die Tour sei.
+ *
+ * Die Eckdaten sind optional: eine Tour darf gespeichert werden, bevor jemand
+ * ein Datum gesetzt hat.
+ */
+export interface Tour {
   id: string
   user_id: string
   name: string
   region: string
-  /** GeoJSON-LineString des gerouteten Verlaufs. */
+  /** GeoJSON-LineString des gerouteten Verlaufs. Leer = Tour ohne Weg. */
   geometry: { type: 'LineString'; coordinates: [number, number][] }
   /** Die vom Nutzer gesetzten Stützpunkte, damit die Route weiterbearbeitbar bleibt. */
   waypoints: [number, number][] | null
-  /** Opt-in: nur ausdrücklich veröffentlichte Routen sind für andere sichtbar. */
+  /** Opt-in: nur ausdrücklich veröffentlichte Touren sind für andere sichtbar. */
   is_public: boolean
   beschreibung: string | null
   /** Frei wählbarer Anzeigename — niemand muss seine Mailadresse veröffentlichen. */
   autor: string | null
   created_at: string
+  /** Wann geteilt. Null, solange die Tour privat ist. */
+  veroeffentlicht_am: string | null
+
+  /* --- Eckdaten der Planung (vormals `trips`) --- */
+  start_date: string | null
+  days: number | null
+  persons: number | null
+  /** Geplante Schlafhöhe in Metern — bestimmt Temperatur und Ausrüstung. */
+  elevation: number | null
+  season: 'sommer' | 'uebergang' | 'winter' | null
+  shelter: 'zelt' | 'biwak' | 'huette' | null
+
+  /* --- Einmal beim Speichern berechnet, damit die Übersicht nicht rechnen muss --- */
+  distance_m: number | null
+  ascent_m: number | null
+  duration_s: number | null
+
+  /* --- Community-Zähler, von Triggern gepflegt (Migration 0016) --- */
+  likes_count: number
+  kommentare_count: number
 }
 
 /**
- * Eine geteilte Route, wie sie Fremde zu sehen bekommen.
+ * Eine geteilte Tour, wie sie Fremde zu sehen bekommen.
  *
  * Bewusst ohne `user_id`: die View `oeffentliche_routen` gibt sie nicht heraus.
  * Der Typ hält das fest, damit niemand versehentlich wieder danach greift und
  * die Spalte zurückholt.
  */
-export type PublicRoute = Omit<StoredRoute, 'user_id'>
+export type PublicTour = Omit<Tour, 'user_id'>
 
-/** Eine gespeicherte Tour (Abschnitt 8.6). */
-export interface StoredTrip {
+/** Ein Kommentar, wie ihn die View `oeffentliche_kommentare` herausgibt. */
+export interface Kommentar {
   id: string
-  user_id: string
-  route_id: string | null
-  name: string
-  start_date: string
-  days: number
-  persons: number
-  elevation: number
-  season: string
-  shelter: string
-  region: string | null
-  distance_m: number | null
-  ascent_m: number | null
-  duration_s: number | null
+  route_id: string
+  autor: string | null
+  text: string
   created_at: string
 }

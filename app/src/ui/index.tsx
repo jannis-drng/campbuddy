@@ -346,12 +346,19 @@ export function Seite({
 }: {
   titel: string
   beschreibung?: string
-  breite?: 'schmal' | 'normal'
+  /**
+   * `schmal` und `normal` sind Lesespalten. `breit` ist für Raster aus
+   * Karten: drei Spalten in einer Lesespalte lassen jeder Karte so wenig
+   * Platz, dass schon die Knopfzeile umbricht.
+   */
+  breite?: 'schmal' | 'normal' | 'breit'
   aktion?: ReactNode
   children: ReactNode
 }) {
   return (
-    <div className={`mx-auto w-full px-4 py-8 pb-20 sm:px-6 ${breite === 'schmal' ? 'max-w-md' : 'max-w-3xl'}`}>
+    <div className={`mx-auto w-full px-4 py-8 pb-20 sm:px-6 ${
+      breite === 'schmal' ? 'max-w-md' : breite === 'breit' ? 'max-w-6xl' : 'max-w-3xl'
+    }`}>
       <header className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           <h1 className="text-display font-semibold text-ink-50">{titel}</h1>

@@ -1,178 +1,441 @@
 /**
- * Community-Routen [SPÄTER, vorgezogen] — Abschnitt 4.6 der Spezifikation.
+ * Community — geteilte Touren [SPÄTER, vorgezogen], Abschnitt 4.6.
  *
- * Zeigt Routen, die andere ausdrücklich veröffentlicht haben. Lesen geht ohne
- * Konto; favorisieren und selbst veröffentlichen brauchen eines.
+ * Zeigt Touren, die andere ausdrücklich veröffentlicht haben. Lesen geht
+ * ohne Konto; liken, merken und kommentieren brauchen eines.
+ *
+ * Der Entwurf ist auf Menge gebaut, nicht auf die zwölf Touren des Anfangs.
+ * Drei Entscheidungen tragen das:
+ *
+ *   1. **Gesucht, gefiltert und sortiert wird in der Datenbank.** Die Liste
+ *      holt nie „alles" und siebt dann im Browser. Was hier ankommt, ist
+ *      bereits die Antwort. (Siehe `services/community.ts`.)
+ *   2. **Seitenweise mit Nachladen am Ende.** Kein Sprung auf Seite 7, kein
+ *      Zählen der Gesamtmenge auf jeder Anfrage — nur „gibt es noch mehr?",
+ *      und das beantwortet ein einziger zusätzlich geholter Eintrag.
+ *   3. **Karten statt Zeilen.** Man erkennt eine Tour am Verlauf. Die
+ *      Vorschau lädt erst, wenn sie in Sichtweite kommt.
+ *
+ * Der Filterbereich bleibt sichtbar, wenn nichts gefunden wurde — sonst
+ * steht man vor einer leeren Seite ohne den Weg zurück.
  */
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import {
+  Bookmark, Compass, Heart, MessageCircle, Search, SlidersHorizontal, TriangleAlert, X,
+} from 'lucide-react'
 import type { Position } from '../data/geo'
-import { lineLength } from '../data/geo'
-import { isSupabaseConfigured, type PublicRoute } from '../services/supabase'
-import { addFavorite, listFavoriteIds, listPublicRoutes, removeFavorite } from '../services/account'
-import { MeldeDialog } from './MeldeDialog'
-import { Compass, Flag, Map as MapIcon, Star, TriangleAlert } from 'lucide-react'
-import { Button, Hinweis, IconButton, Leer, Liste, Seite } from '../ui'
+import { REGIONS } from '../data/regions'
+import { isSupabaseConfigured, type PublicTour } from '../services/supabase'
+import { addFavorite, ladeProfil, listFavoriteIds, removeFavorite } from '../services/account'
+import {
+  listCommunityTouren, listLikeIds, setLike, verfuegbareRegionen,
+  LAENGENKLASSEN, SORTIERUNGEN, STANDARD_FILTER,
+  type CommunityFilter, type Laengenklasse, type Sortierung,
+} from '../services/community'
+import { Auswahl, Button, Eingabe, Hinweis, Leer, Seite, Segmente } from '../ui'
+import { AufKarteKnopf, TourKarte, ZaehlerKnopf } from './TourKarte'
+import { TourModal } from './TourModal'
 
 interface Props {
   session: Session | null
   onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
 }
 
-const formatKm = (m: number) =>
-  m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
-
 export function CommunityPanel({ session, onLoadRoute }: Props) {
-  const [routen, setRouten] = useState<PublicRoute[]>([])
-  // Welche Route gerade gemeldet wird — null heisst: kein Dialog offen.
-  const [meldet, setMeldet] = useState<{ id: string; name: string } | null>(null)
-  const [favoriten, setFavoriten] = useState<Set<string>>(new Set())
+  const [filter, setFilter] = useState<CommunityFilter>(STANDARD_FILTER)
+  const [sucheRoh, setSucheRoh] = useState('')
+  const [touren, setTouren] = useState<PublicTour[]>([])
+  const [seite, setSeite] = useState(0)
+  const [mehr, setMehr] = useState(false)
+  const [gesamt, setGesamt] = useState<number | null>(null)
   const [laedt, setLaedt] = useState(true)
   const [fehler, setFehler] = useState<string | null>(null)
 
+  const [likes, setLikes] = useState<Set<string>>(new Set())
+  const [favoriten, setFavoriten] = useState<Set<string>>(new Set())
+  const [anzeigename, setAnzeigename] = useState<string | null>(null)
+  const [regionen, setRegionen] = useState<string[]>([])
+  const [offen, setOffen] = useState<PublicTour | null>(null)
+  const [filterOffen, setFilterOffen] = useState(false)
+
+  /*
+    Getippte Suche entprellen: sonst geht pro Tastenanschlag eine Abfrage
+    hinaus. Bei zehn Zeichen sind das zehn Abfragen für ein Ergebnis.
+  */
+  useEffect(() => {
+    const t = setTimeout(
+      () => setFilter((f) => (f.suche === sucheRoh ? f : { ...f, suche: sucheRoh })),
+      300,
+    )
+    return () => clearTimeout(t)
+  }, [sucheRoh])
+
+  const laden = useCallback(async (s: number, anhaengen: boolean) => {
+    setLaedt(true)
+    try {
+      const ergebnis = await listCommunityTouren(filter, s)
+      setTouren((alt) => (anhaengen ? [...alt, ...ergebnis.touren] : ergebnis.touren))
+      setMehr(ergebnis.mehr)
+      setGesamt(ergebnis.gesamt)
+      setFehler(null)
+    } catch (e) {
+      setFehler((e as Error).message)
+    } finally {
+      setLaedt(false)
+    }
+  }, [filter])
+
+  // Jede Filteränderung beginnt wieder bei Seite eins — alles andere ergäbe
+  // eine Liste aus zwei verschiedenen Abfragen.
   useEffect(() => {
     if (!isSupabaseConfigured) { setLaedt(false); return }
-    setLaedt(true)
-    listPublicRoutes()
-      .then(setRouten)
-      .catch((e: Error) => setFehler(e.message))
-      .finally(() => setLaedt(false))
+    setSeite(0)
+    void laden(0, false)
+  }, [laden])
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    verfuegbareRegionen().then(setRegionen).catch(() => {})
   }, [])
 
   useEffect(() => {
-    if (!session) { setFavoriten(new Set()); return }
+    if (!session) { setLikes(new Set()); setFavoriten(new Set()); setAnzeigename(null); return }
+    listLikeIds().then(setLikes).catch(() => {})
     listFavoriteIds().then(setFavoriten).catch(() => {})
+    ladeProfil().then((p) => setAnzeigename(p?.anzeigename ?? null)).catch(() => {})
   }, [session])
 
-  const umschalten = async (id: string) => {
-    const istFavorit = favoriten.has(id)
-    // Sofort umschalten, damit sich der Knopf nicht träge anfühlt; bei einem
-    // Fehler wird zurückgenommen.
-    setFavoriten((f) => {
-      const n = new Set(f)
-      if (istFavorit) n.delete(id); else n.add(id)
-      return n
-    })
+  /**
+   * Umschalten mit sofortiger Anzeige und Rücknahme im Fehlerfall.
+   *
+   * Ein Herz, das erst nach der Serverantwort reagiert, fühlt sich kaputt an.
+   * Der Zähler wandert gleich mit, sonst stünde „gefällt mir" an einer
+   * Karte, die weiter 12 zeigt.
+   */
+  const likeUmschalten = async (tour: PublicTour) => {
+    if (!session) return
+    const mag = !likes.has(tour.id)
+    setLikes((l) => { const n = new Set(l); if (mag) n.add(tour.id); else n.delete(tour.id); return n })
+    zaehlerAendern(tour.id, 'likes_count', mag ? 1 : -1)
     try {
-      if (istFavorit) await removeFavorite(id)
-      else await addFavorite(id)
+      await setLike(tour.id, mag)
     } catch (e) {
       setFehler((e as Error).message)
-      setFavoriten((f) => {
-        const n = new Set(f)
-        if (istFavorit) n.add(id); else n.delete(id)
-        return n
-      })
+      setLikes((l) => { const n = new Set(l); if (mag) n.delete(tour.id); else n.add(tour.id); return n })
+      zaehlerAendern(tour.id, 'likes_count', mag ? -1 : 1)
     }
   }
 
+  const merkenUmschalten = async (tour: PublicTour) => {
+    if (!session) return
+    const merken = !favoriten.has(tour.id)
+    setFavoriten((f) => { const n = new Set(f); if (merken) n.add(tour.id); else n.delete(tour.id); return n })
+    try {
+      if (merken) await addFavorite(tour.id)
+      else await removeFavorite(tour.id)
+    } catch (e) {
+      setFehler((e as Error).message)
+      setFavoriten((f) => { const n = new Set(f); if (merken) n.delete(tour.id); else n.add(tour.id); return n })
+    }
+  }
+
+  const zaehlerAendern = (id: string, feld: 'likes_count' | 'kommentare_count', delta: number) => {
+    const anpassen = (t: PublicTour) =>
+      t.id === id ? { ...t, [feld]: Math.max(0, t[feld] + delta) } : t
+    setTouren((liste) => liste.map(anpassen))
+    setOffen((o) => (o && o.id === id ? anpassen(o) : o))
+  }
+
+  const aufKarte = (tour: PublicTour) => {
+    setOffen(null)
+    onLoadRoute(
+      (tour.geometry?.coordinates ?? []) as Position[],
+      (tour.waypoints ?? []) as Position[],
+    )
+  }
+
+  const filterAktiv =
+    filter.suche !== '' || filter.region !== null || filter.laenge !== 'alle' || filter.nurMitWeg
+
   if (!isSupabaseConfigured) {
     return (
-      <Rahmen>
+      <Seite titel="Community" beschreibung="Touren, die andere geteilt haben.">
         <Leer
           icon={Compass}
-          titel="Keine geteilten Routen"
+          titel="Keine geteilten Touren"
           text="Für dieses Projekt ist kein Backend hinterlegt. Karte und Tourenplanung funktionieren ohne."
         />
-      </Rahmen>
+      </Seite>
     )
   }
 
   return (
-    <Rahmen>
-      {laedt && (
-        <div className="space-y-2" aria-label="Routen werden geladen">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-16 animate-pulse rounded-gross border border-kante bg-flaeche-2" />
-          ))}
+    <Seite
+      titel="Community"
+      beschreibung="Touren, die andere geteilt haben — mit Verlauf, Kenndaten und dem, was Leute dazu sagen."
+      breite="breit"
+    >
+      {/* ---- Suche und Filter ---- */}
+      <div className="space-y-3">
+        <div className="flex gap-2">
+          <div className="relative min-w-0 flex-1">
+            <Search
+              size={15} strokeWidth={2} aria-hidden
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-500"
+            />
+            <Eingabe
+              value={sucheRoh}
+              onChange={(e) => setSucheRoh(e.target.value)}
+              placeholder="Nach Namen oder Beschreibung suchen …"
+              aria-label="Touren durchsuchen"
+              className="pl-9 pr-9"
+            />
+            {sucheRoh && (
+              <button
+                onClick={() => setSucheRoh('')}
+                aria-label="Suche leeren"
+                className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-klein text-ink-500 hover:text-ink-100"
+              >
+                <X size={14} strokeWidth={2.5} aria-hidden />
+              </button>
+            )}
+          </div>
+          <Button
+            variante={filterOffen || filterAktiv ? 'primaer' : 'sekundaer'}
+            groesse="gross"
+            icon={SlidersHorizontal}
+            onClick={() => setFilterOffen((o) => !o)}
+            aria-expanded={filterOffen}
+            className="sm:hidden"
+          >
+            Filter
+          </Button>
         </div>
-      )}
+
+        {/*
+          Auf dem Telefon zugeklappt, ab Tablet immer da: dort ist Platz, und
+          ein Filter, den man erst aufklappen muss, wird nicht benutzt.
+        */}
+        <div className={`${filterOffen ? 'grid' : 'hidden'} grid-cols-1 gap-3 sm:grid sm:grid-cols-[auto_auto_minmax(0,1fr)] sm:items-center`}>
+          <Auswahl
+            value={filter.region ?? ''}
+            onChange={(e) => setFilter((f) => ({ ...f, region: e.target.value || null }))}
+            aria-label="Region"
+            className="w-full sm:w-auto"
+          >
+            <option value="">Alle Regionen</option>
+            {regionen.map((r) => (
+              <option key={r} value={r}>{REGIONS[r]?.name ?? r}</option>
+            ))}
+          </Auswahl>
+
+          <Auswahl
+            value={filter.laenge}
+            onChange={(e) => setFilter((f) => ({ ...f, laenge: e.target.value as Laengenklasse }))}
+            aria-label="Länge"
+            className="w-full sm:w-auto"
+          >
+            {LAENGENKLASSEN.map((k) => (
+              <option key={k.wert} value={k.wert}>{k.label}</option>
+            ))}
+          </Auswahl>
+
+          <div className="flex min-w-0 flex-wrap items-center gap-3 sm:justify-end">
+            <Segmente
+              groesse="klein"
+              ariaLabel="Sortierung"
+              wert={filter.sortierung}
+              onWaehlen={(w: Sortierung) => setFilter((f) => ({ ...f, sortierung: w }))}
+              optionen={SORTIERUNGEN}
+              // Fünf Optionen passen auf dem Telefon nicht nebeneinander. Sie
+              // brechen aber auch nicht um — dann wären die Felder verschieden
+              // hoch. Stattdessen schiebbar.
+              className="max-w-full overflow-x-auto [&>button]:shrink-0 [&>button]:whitespace-nowrap"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-klein text-ink-500" role="status">
+            {laedt && touren.length === 0
+              ? 'Wird geladen …'
+              : gesamt != null
+                ? `${gesamt.toLocaleString('de-DE')} ${gesamt === 1 ? 'geteilte Tour' : 'geteilte Touren'}`
+                : `${touren.length} geteilte Touren`}
+          </p>
+          {filterAktiv && (
+            <Button
+              variante="geist" groesse="klein"
+              onClick={() => { setSucheRoh(''); setFilter(STANDARD_FILTER) }}
+            >
+              Filter zurücksetzen
+            </Button>
+          )}
+        </div>
+      </div>
+
       {fehler && <Hinweis ton="fehler" icon={TriangleAlert}>{fehler}</Hinweis>}
 
-      {!laedt && routen.length === 0 && (
-        <Leer
-          icon={Compass}
-          titel="Noch keine geteilten Routen"
-          text="Das ist der erwartete Anfang: hier steht nur, was jemand ausdrücklich veröffentlicht. Zeichne eine Route auf der Karte, speichere sie, und setze sie unter „Deine Touren“ auf öffentlich."
-        />
+      {/* ---- Die Liste ---- */}
+      {laedt && touren.length === 0 && <Platzhalter />}
+
+      {!laedt && touren.length === 0 && !fehler && (
+        filterAktiv ? (
+          <Leer
+            icon={Search}
+            titel="Nichts gefunden"
+            text="Keine geteilte Tour passt auf diese Suche. Weniger Filter zeigt mehr."
+            aktion={
+              <Button variante="sekundaer" onClick={() => { setSucheRoh(''); setFilter(STANDARD_FILTER) }}>
+                Filter zurücksetzen
+              </Button>
+            }
+          />
+        ) : (
+          <Leer
+            icon={Compass}
+            titel="Noch keine geteilten Touren"
+            text="Das ist der erwartete Anfang: hier steht nur, was jemand ausdrücklich veröffentlicht. Plane eine Tour auf der Karte, speichere sie, und teile sie unter „Deine Touren“."
+          />
+        )
       )}
 
-      {routen.length > 0 && <Liste>
-        {routen.map((r) => {
-          const laenge = lineLength(r.geometry.coordinates as Position[])
-          const istFavorit = favoriten.has(r.id)
-          return (
-            <li key={r.id} className="p-3.5 transition-colors duration-[160ms] hover:bg-flaeche-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate font-medium text-ink-50">{r.name}</p>
-                  <p className="text-mikro text-ink-500">
-                    {r.autor ? `von ${r.autor} · ` : ''}
-                    {r.region} · {formatKm(laenge)} ·{' '}
-                    {new Date(r.created_at).toLocaleDateString('de-DE')}
-                  </p>
-                </div>
-                <div className="flex shrink-0 gap-1.5">
-                  <Button
-                    variante="sekundaer" groesse="klein" icon={MapIcon}
-                    onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}
-                  >
-                    Auf Karte
-                  </Button>
-                  {session ? (
-                    <Button
-                      variante={istFavorit ? 'primaer' : 'sekundaer'}
-                      groesse="klein"
-                      icon={Star}
-                      onClick={() => umschalten(r.id)}
-                      aria-pressed={istFavorit}
-                      aria-label={istFavorit ? `${r.name} aus Favoriten entfernen` : `${r.name} favorisieren`}
-                    >
-                      {istFavorit ? 'Gemerkt' : 'Merken'}
-                    </Button>
-                  ) : null}
-                  <IconButton
-                    icon={Flag}
-                    label={`${r.name} melden`}
-                    onClick={() => setMeldet({ id: r.id, name: r.name })}
-                  />
-                </div>
-              </div>
-              {r.beschreibung && (
-                <p className="mt-1.5 text-klein leading-relaxed text-ink-400">{r.beschreibung}</p>
-              )}
-            </li>
-          )
-        })}
-      </Liste>}
+      {touren.length > 0 && (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {touren.map((t) => (
+              <TourKarte
+                key={t.id}
+                tour={t}
+                onOeffnen={() => setOffen(t)}
+                aktionen={
+                  <>
+                    <ZaehlerKnopf
+                      icon={Heart}
+                      zahl={t.likes_count}
+                      aktiv={likes.has(t.id)}
+                      tonAktiv="warm"
+                      disabled={!session}
+                      label={session
+                        ? likes.has(t.id) ? `„${t.name}" nicht mehr liken` : `„${t.name}" liken`
+                        : 'Zum Liken anmelden'}
+                      onClick={() => likeUmschalten(t)}
+                    />
+                    <ZaehlerKnopf
+                      icon={MessageCircle}
+                      zahl={t.kommentare_count}
+                      label={`Kommentare zu „${t.name}" lesen`}
+                      onClick={() => setOffen(t)}
+                    />
+                    <ZaehlerKnopf
+                      icon={Bookmark}
+                      aktiv={favoriten.has(t.id)}
+                      disabled={!session}
+                      label={session
+                        ? favoriten.has(t.id) ? `„${t.name}" nicht mehr merken` : `„${t.name}" merken`
+                        : 'Zum Merken anmelden'}
+                      onClick={() => merkenUmschalten(t)}
+                    />
+                    <AufKarteKnopf onClick={() => aufKarte(t)} />
+                  </>
+                }
+              />
+            ))}
+          </div>
 
-      {!session && routen.length > 0 && (
-        <p className="text-klein text-ink-500">
-          Zum Merken von Routen ist eine Anmeldung nötig. Ansehen und laden geht ohne.
+          <NachladeRand
+            aktiv={mehr}
+            laedt={laedt}
+            onNachladen={() => { const n = seite + 1; setSeite(n); void laden(n, true) }}
+          />
+        </>
+      )}
+
+      {!session && touren.length > 0 && (
+        <p className="text-klein leading-relaxed text-ink-500">
+          Liken, Merken und Kommentieren brauchen ein Konto. Ansehen und auf die Karte laden
+          geht ohne.
         </p>
       )}
 
       <Hinweis ton="warnung" icon={TriangleAlert}>
-        Geteilte Routen stammen von Nutzern, nicht von CampBuddy. Ob Übernachten entlang einer
-        Route zulässig ist, sagt dir die Legalitäts-Ebene auf der Karte — nicht die Tatsache,
-        dass jemand die Route geteilt hat.
+        Geteilte Touren stammen von Nutzern, nicht von CampBuddy. Ob Übernachten entlang einer
+        Tour zulässig ist, sagt dir die Legalitäts-Ebene auf der Karte — nicht die Tatsache,
+        dass jemand die Tour geteilt hat.
       </Hinweis>
 
-      <MeldeDialog
-        offen={meldet !== null}
-        zielArt="route"
-        zielId={meldet?.id ?? ''}
-        zielName={meldet?.name ?? ''}
-        onClose={() => setMeldet(null)}
+      <TourModal
+        tour={offen}
+        session={session}
+        anzeigename={anzeigename}
+        geliked={offen ? likes.has(offen.id) : false}
+        gemerkt={offen ? favoriten.has(offen.id) : false}
+        onLike={() => offen && likeUmschalten(offen)}
+        onMerken={() => offen && merkenUmschalten(offen)}
+        onAufKarte={() => offen && aufKarte(offen)}
+        onClose={() => setOffen(null)}
+        onKommentarZahl={(id, delta) => zaehlerAendern(id, 'kommentare_count', delta)}
       />
-    </Rahmen>
+    </Seite>
   )
 }
 
-function Rahmen({ children }: { children: React.ReactNode }) {
+/* ------------------------------------------------------------ Bausteine */
+
+/** Platzhalterkarten in der Form der echten — kein Springen beim Eintreffen. */
+function Platzhalter() {
   return (
-    <Seite titel="Community" beschreibung="Routen, die andere geteilt haben.">
-      {children}
-    </Seite>
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Touren werden geladen">
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <div key={i} className="overflow-hidden rounded-gross border border-kante bg-flaeche-2">
+          <div className="aspect-[16/9] animate-pulse bg-flaeche-3" />
+          <div className="space-y-2 p-4">
+            <div className="h-4 w-3/4 animate-pulse rounded bg-flaeche-3" />
+            <div className="h-3 w-1/2 animate-pulse rounded bg-flaeche-3" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/**
+ * Nachladen am Listenende.
+ *
+ * Lädt von selbst, sobald der Rand ins Bild kommt — und trägt trotzdem einen
+ * Knopf. Der ist nicht nur die Notlösung ohne IntersectionObserver: mit der
+ * Tastatur gibt es kein „scrollt in Sicht", und ohne den Knopf endete die
+ * Liste dort für immer.
+ */
+function NachladeRand({
+  aktiv, laedt, onNachladen,
+}: { aktiv: boolean; laedt: boolean; onNachladen: () => void }) {
+  const rand = useRef<HTMLDivElement>(null)
+  // In einem Ref, damit der Beobachter nicht bei jeder Neuzeichnung neu
+  // aufgesetzt werden muss.
+  const handler = useRef(onNachladen)
+  handler.current = onNachladen
+  const bereit = aktiv && !laedt
+
+  useEffect(() => {
+    const el = rand.current
+    if (!el || !bereit || typeof IntersectionObserver === 'undefined') return
+    const beobachter = new IntersectionObserver(
+      (eintraege) => { if (eintraege.some((e) => e.isIntersecting)) handler.current() },
+      { rootMargin: '400px' },
+    )
+    beobachter.observe(el)
+    return () => beobachter.disconnect()
+  }, [bereit])
+
+  if (!aktiv) return null
+
+  return (
+    <div ref={rand} className="flex justify-center">
+      <Button variante="sekundaer" groesse="gross" disabled={laedt} onClick={onNachladen}>
+        {laedt ? 'Lädt …' : 'Mehr Touren laden'}
+      </Button>
+    </div>
   )
 }

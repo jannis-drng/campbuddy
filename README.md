@@ -501,17 +501,59 @@ Meinung, keine Auskunft. Die Infokarte sagt das auch so.
 | Bereich | Inhalt |
 |---|---|
 | **Karte** | Legalitäts-Ebene und Routenplanung. Beim Zeichnen zeigt das Seitenpanel nur Länge und Gehzeit; „Tour auswerten" öffnet die vollständige Auswertung mit Legalität, Höhenprofil, Etappen, Ausrüstung, Verpflegung und Wetter |
-| **Community** | Routen, die andere veröffentlicht haben. Ansehen ohne Konto, Merken mit |
-| **Deine Touren** | Gespeicherte Routen, Touren und Favoriten |
+| **Community** | Touren, die andere geteilt haben — als Kartenraster mit Vorschaubild, Suche, Filter und Sortierung. Ansehen und Mitlesen ohne Konto; Liken, Merken und Kommentieren mit |
+| **Deine Touren** | Zwei Stapel: eigene Touren und gemerkte |
 | **Konto** | Anmeldung per Magic Link |
 
 In der Auswertung sind **Dauer und Schlafhöhe aus der Route übernommen** — die Tage aus
 den Etappen, die Höhe aus den Etappenübernachtungen. Die Packliste passt damit zur
 konkreten Tour, statt bei Standardwerten zu beginnen; anpassen lässt sich beides.
 
-Veröffentlichen ist **opt-in**: gespeicherte Routen sind privat, bis man sie unter
-„Deine Touren" ausdrücklich auf öffentlich stellt. Der Autorenname ist frei wählbar —
-niemand soll seine E-Mail-Adresse veröffentlichen müssen, um eine Route zu teilen.
+Veröffentlichen ist **opt-in**: gespeicherte Touren sind privat, bis man sie unter
+„Deine Touren" ausdrücklich teilt. Der Autorenname ist frei wählbar — niemand soll seine
+E-Mail-Adresse veröffentlichen müssen, um eine Tour zu teilen.
+
+### Eine Tour, nicht Route und Tour
+
+Bis Migration 0016 gab es zwei Dinge: eine `route` (der Verlauf) und einen `trip` (Datum,
+Dauer, Personen, Packliste), der optional auf eine Route zeigte. In der Oberfläche hiess
+das zwei Speicherknöpfe und zwei Listen — und die Frage, ob die eigene Mehrtagestour nun
+die Route oder die Tour sei, war nicht zu beantworten. Seither ist es **eine** Sache: ein
+Weg mit Eckdaten. Gespeichert wird einmal, in der Auswertung.
+
+`trips` bleibt als Tabelle stehen und wird nicht mehr beschrieben. Die Migration übernimmt
+den Bestand; Touren ohne gezeichneten Weg ziehen mit leerer Geometrie mit, statt aus der
+Oberfläche zu verschwinden.
+
+### Wie die Community mit der Menge umgeht
+
+Die Übersicht ist nicht auf die zwölf Touren des Anfangs gebaut:
+
+- **Gesucht, gefiltert und sortiert wird in der Datenbank.** Die Liste holt nie „alles"
+  und siebt dann im Browser (`app/src/services/community.ts`). Dafür liegen Teilindizes
+  auf `is_public` — je einer für neu, beliebt, lang und Region — plus ein Trigramm-Index
+  für die Namenssuche.
+- **Likes und Kommentare werden beim Schreiben gezählt**, nicht beim Lesen. Zwei Trigger
+  pflegen `likes_count` und `kommentare_count`; eine Unterabfrage pro Karte wäre bei
+  zwanzig Einträgen unauffällig und bei zwanzigtausend der Grund, warum die Seite steht.
+- **Seitenweise mit Nachladen am Ende.** Eine Seite fragt genau einen Eintrag mehr an, als
+  sie zeigt — daran erkennt sie, ob es weitergeht, ohne zählen zu lassen.
+- **Das Vorschaubild** (`app/src/components/RoutenVorschau.tsx`) ist ein Raster aus
+  Kartenkacheln mit dem Verlauf als SVG darüber, keine zweite MapLibre-Instanz: zwölf
+  Karten auf einer Seite wären zwölf WebGL-Kontexte, und die meisten Browser geben nach
+  etwa sechzehn keinen mehr her. Die Kacheln werden auf doppelte Grösse gezogen (vier
+  statt sechzehn Anfragen pro Karte) und erst geladen, wenn die Karte in Sichtweite
+  scrollt. **OpenTopoMap ist ein ehrenamtliches Projekt** — wird die Nutzung gross, gehört
+  hier ein eigener Kachelserver hin, nicht mehr Last auf fremde Infrastruktur.
+
+### Was Fremde von einem Konto sehen
+
+Nichts ausser dem, was jemand selbst hingeschrieben hat. Geteilte Touren kommen aus der
+View `oeffentliche_routen`, Kommentare aus `oeffentliche_kommentare` — beide **ohne
+`user_id`**. Wer geliked hat, ist nirgends abfragbar: `likes` gibt nur die eigene Zeile
+heraus, öffentlich ist allein die Zahl. Der Grund steht ausführlich in Migration 0014 —
+Row Level Security filtert Zeilen, nicht Spalten, und eine Policy kann deshalb keine
+Spalte verbergen.
 
 ## Konto und gespeicherte Touren
 
@@ -600,6 +642,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0005_community.sql`](./supabase/migrations/0005_community.sql) | Veröffentlichen von Routen und Favoriten |
 | [`0006_konto.sql`](./supabase/migrations/0006_konto.sql) | Anzeigename, Abo-Platzhalter, Konto löschen |
 | [`0007_eigene_punkte.sql`](./supabase/migrations/0007_eigene_punkte.sql) | Selbst markierte Punkte und der private Fotospeicher |
+| [`0016_touren_und_community.sql`](./supabase/migrations/0016_touren_und_community.sql) | Route und Tour werden **eine** Tour; Likes, Kommentare und gezählte Spalten |
 
 Dann `app/.env.example` nach `app/.env.local` kopieren, beide Werte eintragen und
 `npm run deploy --prefix app`.
@@ -682,7 +725,7 @@ Einstellungssache markiert, die nur im Supabase-Dashboard sichtbar ist.
 | E-Mail-Bestätigung | `mailer_autoconfirm: false` — Registrierung ohne bestätigten Link ergibt keine Sitzung |
 | Row Level Security | auf **allen 11** Tabellen aktiv |
 | Schreibrechte | Schreibversuch ohne Anmeldung auf `zones`, `points`, `peaks`, `nature`, `gemeinden`: **401**, RLS greift |
-| Fremde Daten | `trips`, `favorites`, `eigene_punkte` geben Anonymen **0 Zeilen** |
+| Fremde Daten | `routes`, `trips`, `favorites`, `likes`, `kommentare`, `eigene_punkte` geben Anonymen **0 Zeilen**; Geteiltes läuft über Views ohne `user_id` |
 | Admin-Rechte | es gibt keine Admin-Rolle im Frontend — nichts, was nur dort geprüft würde |
 | Referenzdaten | nur lesbar, Pflege ausschliesslich über den SQL-Editor |
 | Konto löschen | `security definer` mit gepinntem `search_path`, prüft `auth.uid()`, `execute` nur für `authenticated` |

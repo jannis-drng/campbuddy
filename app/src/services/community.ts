@@ -1,0 +1,250 @@
+/**
+ * SCHICHT: Community — geteilte Touren, Likes und Kommentare.
+ *
+ * Getrennt von `account.ts`, weil hier etwas anderes gilt: alles in dieser
+ * Datei liest Inhalte *anderer*. Deshalb kommt jede Leseabfrage aus einer
+ * View ohne `user_id` (`oeffentliche_routen`, `oeffentliche_kommentare`) und
+ * nie aus der Basistabelle — eine Lese-Policy könnte keine Spalten verbergen,
+ * siehe Migration 0014.
+ *
+ * Der zweite Leitgedanke ist die Menge. Die Übersicht muss auch dann noch
+ * aufgehen, wenn zehntausend Touren geteilt sind. Praktisch heisst das:
+ *   - gefiltert, sortiert und seitenweise wird in der Datenbank, nicht im
+ *     Browser. Es wird nie „alles holen und dann filtern" gemacht.
+ *   - die Zähler für Likes und Kommentare stehen als Spalte in der Zeile
+ *     (Trigger, Migration 0016). Eine Unterabfrage pro Karte wäre bei
+ *     zwanzig Einträgen unauffällig und bei zwanzigtausend der Grund,
+ *     warum die Seite steht.
+ *   - eine Seite fragt immer einen Eintrag mehr an, als sie zeigt. Daran
+ *     erkennt sie, ob es weitergeht, ohne die Gesamtzahl zählen zu lassen.
+ */
+import { getSupabase, type Kommentar, type PublicTour } from './supabase'
+import { istSchemaFehlt } from './account'
+
+export type Sortierung = 'neu' | 'beliebt' | 'besprochen' | 'lang' | 'kurz'
+
+export const SORTIERUNGEN: { wert: Sortierung; label: string }[] = [
+  { wert: 'neu', label: 'Neueste' },
+  { wert: 'beliebt', label: 'Beliebteste' },
+  { wert: 'besprochen', label: 'Meist besprochen' },
+  { wert: 'lang', label: 'Längste' },
+  { wert: 'kurz', label: 'Kürzeste' },
+]
+
+/** Längenklassen, wie sie jemand beim Suchen denkt — nicht in Metern. */
+export type Laengenklasse = 'alle' | 'kurz' | 'mittel' | 'lang'
+
+export const LAENGENKLASSEN: { wert: Laengenklasse; label: string; von: number; bis: number }[] = [
+  { wert: 'alle', label: 'Alle Längen', von: 0, bis: Number.POSITIVE_INFINITY },
+  { wert: 'kurz', label: 'bis 10 km', von: 0, bis: 10_000 },
+  { wert: 'mittel', label: '10–30 km', von: 10_000, bis: 30_000 },
+  { wert: 'lang', label: 'ab 30 km', von: 30_000, bis: Number.POSITIVE_INFINITY },
+]
+
+export interface CommunityFilter {
+  suche: string
+  /** Regionscode, oder null für „alle Regionen". */
+  region: string | null
+  laenge: Laengenklasse
+  /** Nur Touren mit gezeichnetem Verlauf — die ohne haben kein Kartenbild. */
+  nurMitWeg: boolean
+  sortierung: Sortierung
+}
+
+export const STANDARD_FILTER: CommunityFilter = {
+  suche: '', region: null, laenge: 'alle', nurMitWeg: false, sortierung: 'neu',
+}
+
+/** Wie viele Karten eine Seite trägt. Drei Spalten × vier Reihen. */
+export const SEITENGROESSE = 12
+
+export interface Seitenergebnis {
+  touren: PublicTour[]
+  /** Gibt es hinter dieser Seite noch etwas? */
+  mehr: boolean
+  /**
+   * Geschätzte Gesamtzahl der Treffer. `estimated` lässt PostgREST bei
+   * kleinen Mengen exakt zählen und bei grossen die Schätzung des Planers
+   * nehmen — genau der Kompromiss, den eine Übersicht braucht: eine Zahl,
+   * die stimmt, solange sie klein ist, und die nie teuer wird.
+   */
+  gesamt: number | null
+}
+
+/**
+ * Eine Seite geteilter Touren. Braucht keine Anmeldung.
+ */
+export async function listCommunityTouren(
+  filter: CommunityFilter,
+  seite: number,
+): Promise<Seitenergebnis> {
+  const sb = getSupabase()
+  if (!sb) return { touren: [], mehr: false, gesamt: 0 }
+
+  let q = sb.from('oeffentliche_routen').select('*', { count: 'estimated' })
+
+  const suche = filter.suche.trim()
+  if (suche) {
+    // Beide Felder mit einem ODER, damit die Suche auch die Beschreibung
+    // trifft. Kommas müssen raus: PostgREST trennt die Bedingungen daran.
+    const muster = `%${suche.replace(/[,()]/g, ' ')}%`
+    q = q.or(`name.ilike.${muster},beschreibung.ilike.${muster}`)
+  }
+  if (filter.region) q = q.eq('region', filter.region)
+  if (filter.nurMitWeg) q = q.not('distance_m', 'is', null)
+
+  const klasse = LAENGENKLASSEN.find((k) => k.wert === filter.laenge)
+  if (klasse && filter.laenge !== 'alle') {
+    q = q.gte('distance_m', klasse.von)
+    if (Number.isFinite(klasse.bis)) q = q.lt('distance_m', klasse.bis)
+  }
+
+  switch (filter.sortierung) {
+    case 'beliebt':
+      q = q.order('likes_count', { ascending: false }).order('veroeffentlicht_am', { ascending: false, nullsFirst: false })
+      break
+    case 'besprochen':
+      q = q.order('kommentare_count', { ascending: false }).order('veroeffentlicht_am', { ascending: false, nullsFirst: false })
+      break
+    case 'lang':
+      q = q.order('distance_m', { ascending: false, nullsFirst: false })
+      break
+    case 'kurz':
+      q = q.order('distance_m', { ascending: true, nullsFirst: false })
+      break
+    default:
+      q = q.order('veroeffentlicht_am', { ascending: false, nullsFirst: false })
+  }
+
+  // Einer mehr als gezeigt wird: daran hängt der „Mehr laden"-Knopf, ohne
+  // dass irgendetwas gezaehlt werden müsste.
+  const von = seite * SEITENGROESSE
+  const { data, error, count } = await q.range(von, von + SEITENGROESSE)
+
+  if (istSchemaFehlt(error)) return { touren: [], mehr: false, gesamt: 0 }
+  if (error) throw new Error(error.message)
+
+  const zeilen = (data ?? []) as PublicTour[]
+  return {
+    touren: zeilen.slice(0, SEITENGROESSE),
+    mehr: zeilen.length > SEITENGROESSE,
+    gesamt: count ?? null,
+  }
+}
+
+/** Welche Regionen kommen in geteilten Touren überhaupt vor? */
+export async function verfuegbareRegionen(): Promise<string[]> {
+  const sb = getSupabase()
+  if (!sb) return []
+  // Nur die Spalte, und die Menge begrenzt: das hier füllt ein Auswahlfeld,
+  // es ist keine Auswertung.
+  const { data, error } = await sb.from('oeffentliche_routen').select('region').limit(500)
+  if (error) return []
+  return [...new Set((data ?? []).map((r: { region: string }) => r.region))].sort()
+}
+
+/* ---------------------------------------------------------------- Likes */
+
+export async function listLikeIds(): Promise<Set<string>> {
+  const sb = getSupabase()
+  if (!sb) return new Set()
+  const { data, error } = await sb.from('likes').select('route_id')
+  if (error) return new Set()
+  return new Set((data ?? []).map((r: { route_id: string }) => r.route_id))
+}
+
+export async function setLike(routeId: string, mag: boolean): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (mag) {
+    const { data: userData } = await sb.auth.getUser()
+    const user_id = userData.user?.id
+    if (!user_id) throw new Error('Nicht angemeldet')
+    const { error } = await sb.from('likes').insert({ user_id, route_id: routeId })
+    // Zweimal geliked ist kein Fehler, sondern ein Doppelklick.
+    if (error && error.code !== '23505') throw new Error(uebersetze(error.message))
+  } else {
+    const { error } = await sb.from('likes').delete().eq('route_id', routeId)
+    if (error) throw new Error(uebersetze(error.message))
+  }
+}
+
+/* ----------------------------------------------------------- Kommentare */
+
+export type KommentarSortierung = 'neu' | 'alt'
+
+/**
+ * Kommentare zu einer Tour.
+ *
+ * Auch hier seitenweise: unter einer beliebten Tour stehen irgendwann
+ * hunderte, und die dürfen den Aufschlag der Detailansicht nicht bremsen.
+ */
+export async function listKommentare(
+  routeId: string,
+  optionen: { sortierung?: KommentarSortierung; suche?: string; limit?: number; seite?: number } = {},
+): Promise<{ kommentare: Kommentar[]; mehr: boolean }> {
+  const sb = getSupabase()
+  if (!sb) return { kommentare: [], mehr: false }
+  const limit = optionen.limit ?? 20
+  const seite = optionen.seite ?? 0
+
+  let q = sb.from('oeffentliche_kommentare').select('*').eq('route_id', routeId)
+  const suche = optionen.suche?.trim()
+  if (suche) q = q.ilike('text', `%${suche.replace(/[,()]/g, ' ')}%`)
+  q = q.order('created_at', { ascending: optionen.sortierung === 'alt' })
+
+  const von = seite * limit
+  const { data, error } = await q.range(von, von + limit)
+  if (istSchemaFehlt(error)) return { kommentare: [], mehr: false }
+  if (error) throw new Error(error.message)
+
+  const zeilen = (data ?? []) as Kommentar[]
+  return { kommentare: zeilen.slice(0, limit), mehr: zeilen.length > limit }
+}
+
+export async function schreibeKommentar(
+  routeId: string, text: string, autor: string | null,
+): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const { data: userData } = await sb.auth.getUser()
+  const user_id = userData.user?.id
+  if (!user_id) throw new Error('Nicht angemeldet')
+  const { error } = await sb.from('kommentare').insert({
+    route_id: routeId, user_id, text: text.trim(), autor: autor?.trim() || null,
+  })
+  if (error) throw new Error(uebersetze(error.message))
+}
+
+export async function loescheKommentar(id: string): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) return
+  const { error } = await sb.from('kommentare').delete().eq('id', id)
+  if (error) throw new Error(uebersetze(error.message))
+}
+
+/**
+ * Welche Kommentare unter dieser Tour sind meine?
+ *
+ * Kommt aus einer View mit genau zwei Spalten. Der Text steht schon in der
+ * öffentlichen Liste; hier braucht es nur die Zuordnung, damit neben dem
+ * eigenen Beitrag ein Löschen-Knopf erscheinen kann.
+ */
+export async function eigeneKommentarIds(routeId: string): Promise<Set<string>> {
+  const sb = getSupabase()
+  if (!sb) return new Set()
+  const { data, error } = await sb.from('eigene_kommentar_ids').select('id').eq('route_id', routeId)
+  if (error) return new Set()
+  return new Set((data ?? []).map((r: { id: string }) => r.id))
+}
+
+/** Postgres-Meldungen sind für Entwickler geschrieben, nicht für Wanderer. */
+function uebersetze(meldung: string): string {
+  if (/row-level security/i.test(meldung)) {
+    return 'Dafür fehlt die Berechtigung — bist du noch angemeldet, und ist die Tour noch geteilt?'
+  }
+  if (/relation .* does not exist|schema cache|column .* does not exist/i.test(meldung)) {
+    return 'Die Datenbank kennt Likes und Kommentare noch nicht — Migration 0016 ist noch nicht eingespielt.'
+  }
+  return meldung
+}

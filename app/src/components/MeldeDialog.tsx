@@ -7,12 +7,12 @@
  */
 import { useEffect, useState } from 'react'
 import { Check, Flag, Loader2, X } from 'lucide-react'
-import { BESCHREIBUNG_MAX, MELDE_GRUENDE, meldungAbsenden, type MeldeGrund } from '../services/meldungen'
+import { BESCHREIBUNG_MAX, MELDE_GRUENDE, meldungAbsenden, type MeldeGrund, type ZielArt } from '../services/meldungen'
 import { Button, Hinweis, IconButton, Label } from '../ui'
 
 interface Props {
   offen: boolean
-  zielArt: 'route' | 'punkt'
+  zielArt: ZielArt
   zielId: string
   /** Name des gemeldeten Inhalts — damit klar ist, worum es geht. */
   zielName: string

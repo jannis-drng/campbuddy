@@ -33,6 +33,9 @@ export const MELDE_GRUENDE: { wert: MeldeGrund; label: string; hilfe: string }[]
   { wert: 'sonstiges', label: 'Etwas anderes', hilfe: 'Bitte kurz beschreiben.' },
 ]
 
+/** Worauf sich eine Meldung beziehen kann — Spiegel des Checks in Migration 0016. */
+export type ZielArt = 'route' | 'punkt' | 'kommentar'
+
 export const BESCHREIBUNG_MAX = 1000
 
 /**
@@ -43,7 +46,7 @@ export const BESCHREIBUNG_MAX = 1000
  * Konto unterschieben.
  */
 export async function meldungAbsenden(
-  zielArt: 'route' | 'punkt',
+  zielArt: ZielArt,
   zielId: string,
   grund: MeldeGrund,
   beschreibung: string,

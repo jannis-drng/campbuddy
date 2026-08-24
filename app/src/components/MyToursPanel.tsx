@@ -1,21 +1,29 @@
 /**
  * "Deine Touren" — alles Gespeicherte an einer Stelle (Abschnitt 4.6).
  *
- * Geplant wird ausschliesslich auf der Karte: dort entsteht die Route, und die
- * Auswertung dazu enthält Ausrüstung, Verpflegung und Wetter. Hier liegt nur,
- * was daraus gespeichert wurde.
+ * Hier stand vorher dreierlei nebeneinander: Routen, Favoriten, Touren. Das
+ * war die Datenbank, nicht der Kopf des Nutzers. Seit Migration 0016 ist eine
+ * Tour eine Sache — ein Weg mit Eckdaten — und diese Seite zeigt genau zwei
+ * Stapel: was ich geplant habe, und was ich mir gemerkt habe.
+ *
+ * Geplant wird weiterhin ausschliesslich auf der Karte: dort entsteht der
+ * Verlauf, und die Auswertung dazu enthält Ausrüstung, Verpflegung und
+ * Wetter. Hier liegt nur, was daraus gespeichert wurde.
  */
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import type { Position } from '../data/geo'
-import { lineLength } from '../data/geo'
-import { isSupabaseConfigured, type StoredRoute, type StoredTrip } from '../services/supabase'
-import { Map as MapIcon } from 'lucide-react'
-import { Button, Liste, Seite } from '../ui'
 import {
-  deleteRoute, deleteTrip, ladeProfil, listFavoriteRoutes, listRoutes, listTrips, removeFavorite,
-  setRoutePublic,
+  Bookmark, Globe, Heart, Lock, Map as MapIcon, MessageCircle, Pencil, Share2, Trash2,
+  TriangleAlert, X,
+} from 'lucide-react'
+import type { Position } from '../data/geo'
+import { isSupabaseConfigured, type PublicTour, type Tour } from '../services/supabase'
+import {
+  aktualisiereTour, deleteTour, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
+  setTourPublic,
 } from '../services/account'
+import { Badge, Button, Eingabe, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
+import { AufKarteKnopf, TourKarte, ZaehlerKnopf } from './TourKarte'
 
 interface Props {
   session: Session | null
@@ -25,201 +33,425 @@ interface Props {
   onZurKarte: () => void
 }
 
-const formatKm = (m: number) =>
-  m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
+type Stapel = 'eigene' | 'gemerkt'
 
 export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: Props) {
-  const [routen, setRouten] = useState<StoredRoute[]>([])
-  const [touren, setTouren] = useState<StoredTrip[]>([])
-  const [favoriten, setFavoriten] = useState<StoredRoute[]>([])
-  const [fehler, setFehler] = useState<string | null>(null)
-  const [stand, setStand] = useState(0)
+  const [stapel, setStapel] = useState<Stapel>('eigene')
+  const [eigene, setEigene] = useState<Tour[]>([])
+  const [gemerkt, setGemerkt] = useState<PublicTour[]>([])
   const [anzeigename, setAnzeigename] = useState<string | null>(null)
+  const [fehler, setFehler] = useState<string | null>(null)
+  const [laedt, setLaedt] = useState(true)
 
-  useEffect(() => {
-    if (!session) { setAnzeigename(null); return }
-    ladeProfil().then((p) => setAnzeigename(p?.anzeigename ?? null)).catch(() => {})
-  }, [session])
+  /** Welche Tour gerade geteilt bzw. bearbeitet wird — null heisst: kein Dialog. */
+  const [teilt, setTeilt] = useState<Tour | null>(null)
+  const [bearbeitet, setBearbeitet] = useState<Tour | null>(null)
+  const [loescht, setLoescht] = useState<Tour | null>(null)
 
-  useEffect(() => {
-    if (!session) { setRouten([]); setTouren([]); setFavoriten([]); return }
-    Promise.all([listRoutes(), listTrips(), listFavoriteRoutes()])
-      .then(([r, t, f]) => { setRouten(r); setTouren(t); setFavoriten(f) })
-      .catch((e: Error) => setFehler(e.message))
-  }, [session, stand])
-
-  const veroeffentlichen = async (r: StoredRoute) => {
+  const laden = useCallback(async () => {
+    if (!session) { setEigene([]); setGemerkt([]); setLaedt(false); return }
+    setLaedt(true)
     try {
-      // Beim Veröffentlichen den Anzeigenamen aus dem Profil mitgeben, damit
-      // die Route nicht anonym in der Community steht.
-      await setRoutePublic(r.id, !r.is_public, r.is_public ? undefined : anzeigename ?? undefined)
-      setRouten((liste) => liste.map((x) => (x.id === r.id ? { ...x, is_public: !x.is_public } : x)))
+      const [meine, favoriten, profil] = await Promise.all([
+        listTouren(), listFavoriteTouren(), ladeProfil(),
+      ])
+      setEigene(meine)
+      setGemerkt(favoriten)
+      setAnzeigename(profil?.anzeigename ?? null)
+      setFehler(null)
     } catch (e) {
       setFehler((e as Error).message)
+    } finally {
+      setLaedt(false)
     }
+  }, [session])
+
+  useEffect(() => { void laden() }, [laden])
+
+  const aufKarte = (t: Tour | PublicTour) =>
+    onLoadRoute(
+      (t.geometry?.coordinates ?? []) as Position[],
+      (t.waypoints ?? []) as Position[],
+    )
+
+  const zuruecknehmen = async (t: Tour) => {
+    try {
+      await setTourPublic(t.id, false)
+      setEigene((liste) => liste.map((x) => (x.id === t.id ? { ...x, is_public: false } : x)))
+    } catch (e) { setFehler((e as Error).message) }
   }
+
+  const vergessen = async (t: PublicTour) => {
+    try {
+      await removeFavorite(t.id)
+      setGemerkt((liste) => liste.filter((x) => x.id !== t.id))
+    } catch (e) { setFehler((e as Error).message) }
+  }
+
+  const entfernen = async (t: Tour) => {
+    try {
+      await deleteTour(t.id)
+      setEigene((liste) => liste.filter((x) => x.id !== t.id))
+      setLoescht(null)
+    } catch (e) { setFehler((e as Error).message) }
+  }
+
+  const liste = stapel === 'eigene' ? eigene : gemerkt
+  const geteilteOhneNamen = eigene.some((t) => t.is_public) && !anzeigename
 
   return (
     <Seite
       titel="Deine Touren"
-      beschreibung="Gespeicherte Routen, Touren und Favoriten. Geplant wird auf der Karte."
+      beschreibung="Was du geplant und was du dir gemerkt hast. Geplant wird auf der Karte."
+      breite="breit"
       aktion={<Button variante="primaer" icon={MapIcon} onClick={onZurKarte}>Zur Karte</Button>}
     >
-
-      {fehler && <p className="rounded-mittel bg-verboten-500/10 p-3 text-fliess text-verboten-300">{fehler}</p>}
+      {fehler && <Hinweis ton="fehler" icon={TriangleAlert}>{fehler}</Hinweis>}
 
       {!session && isSupabaseConfigured && (
-        <div className="rounded-mittel bg-flaeche-1 p-4">
-          <p className="text-fliess leading-relaxed text-ink-300">
-            Zum Speichern von Routen und Touren ist eine Anmeldung nötig. Karte,
-            Routenplanung und Auswertung funktionieren ohne.
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            <button
-              onClick={onAnmelden}
-              className="min-h-9 rounded-mittel bg-gletscher-500/15 px-3 text-fliess text-gletscher-200 ring-1 ring-gletscher-500/30 hover:bg-gletscher-500/25"
-            >
-              Anmelden
-            </button>
-            <button
-              onClick={onZurKarte}
-              className="min-h-9 rounded-mittel bg-flaeche-1 px-3 text-fliess text-ink-300 ring-1 ring-kante hover:bg-flaeche-3"
-            >
-              Zur Karte
-            </button>
-          </div>
-        </div>
+        <Leer
+          icon={Bookmark}
+          titel="Zum Speichern ist eine Anmeldung nötig"
+          text="Karte, Routenplanung und Auswertung funktionieren ohne Konto. Gespeichert wird nur, was du selbst anlegst."
+          aktion={
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button variante="primaer" onClick={onAnmelden}>Anmelden</Button>
+              <Button variante="sekundaer" icon={MapIcon} onClick={onZurKarte}>Zur Karte</Button>
+            </div>
+          }
+        />
       )}
 
       {session && (
         <>
-          <Abschnitt titel="Gespeicherte Routen" anzahl={routen.length}
-                     leer="Noch keine. Zeichne auf der Karte eine Route und speichere sie dort.">
-            {routen.map((r) => (
-              <li key={r.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-fliess text-ink-50">{r.name}</p>
-                  <p className="text-mikro text-ink-500">
-                    {r.region} · {formatKm(lineLength(r.geometry.coordinates as Position[]))} ·{' '}
-                    {new Date(r.created_at).toLocaleDateString('de-DE')}
-                    {r.is_public && ' · veröffentlicht'}
-                  </p>
-                </div>
-                <Button variante="sekundaer" groesse="klein" onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}>Auf Karte</Button>
-                <button
-                  onClick={() => veroeffentlichen(r)}
-                  aria-pressed={r.is_public}
-                  title={r.is_public
-                    ? 'Route ist öffentlich sichtbar — Klick nimmt sie zurück'
-                    : 'Route für alle sichtbar machen'}
-                  className={`min-h-9 rounded-mittel px-2.5 text-klein ring-1 ${
-                    r.is_public
-                      ? 'bg-gletscher-500/20 text-gletscher-200 ring-gletscher-500/40'
-                      : 'bg-flaeche-1 text-ink-300 ring-kante hover:bg-flaeche-3'
-                  }`}
-                >
-                  {r.is_public ? 'Öffentlich' : 'Teilen'}
-                </button>
-                <button
-                  onClick={async () => { await deleteRoute(r.id); setStand((n) => n + 1) }}
-                  aria-label={`${r.name} löschen`}
-                  className="min-h-9 rounded-mittel px-2 text-klein text-ink-500 hover:bg-flaeche-3 hover:text-verboten-300"
-                >
-                  Löschen
-                </button>
-              </li>
-            ))}
-          </Abschnitt>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Segmente
+              ariaLabel="Welche Touren"
+              wert={stapel}
+              onWaehlen={setStapel}
+              optionen={[
+                { wert: 'eigene' as const, label: `Eigene (${eigene.length})` },
+                { wert: 'gemerkt' as const, label: `Gemerkt (${gemerkt.length})` },
+              ]}
+            />
+          </div>
 
-          {routen.some((r) => r.is_public) && !anzeigename && (
-            <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
-              Du hast Routen veröffentlicht, aber keinen Anzeigenamen gesetzt — sie erscheinen
-              ohne Urheberangabe. Im Kontobereich lässt sich einer eintragen.
-            </p>
+          {geteilteOhneNamen && (
+            <Hinweis ton="warnung" icon={TriangleAlert}>
+              Du hast Touren geteilt, aber keinen Anzeigenamen gesetzt — sie erscheinen ohne
+              Urheberangabe. Im Kontobereich lässt sich einer eintragen.
+            </Hinweis>
           )}
 
-          <Abschnitt titel="Favoriten aus der Community" anzahl={favoriten.length}
-                     leer="Noch keine. Im Community-Bereich lassen sich Routen mit ☆ merken.">
-            {favoriten.map((r) => (
-              <li key={r.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-fliess text-ink-50">{r.name}</p>
-                  <p className="text-mikro text-ink-500">
-                    {r.autor ? `von ${r.autor} · ` : ''}
-                    {formatKm(lineLength(r.geometry.coordinates as Position[]))}
-                  </p>
-                </div>
-                <Button variante="sekundaer" groesse="klein" onClick={() => onLoadRoute(r.geometry.coordinates as Position[], (r.waypoints ?? []) as Position[])}>Auf Karte</Button>
-                <button
-                  onClick={async () => { await removeFavorite(r.id); setStand((n) => n + 1) }}
-                  aria-label={`${r.name} aus Favoriten entfernen`}
-                  className="min-h-9 rounded-mittel px-2 text-klein text-ink-500 hover:bg-flaeche-3 hover:text-verboten-300"
-                >
-                  Entfernen
-                </button>
-              </li>
-            ))}
-          </Abschnitt>
+          {laedt && <p className="text-klein text-ink-500">Wird geladen …</p>}
 
-          <Abschnitt titel="Gespeicherte Touren" anzahl={touren.length}
-                     leer="Noch keine. Unten die Eckdaten setzen und speichern.">
-            {touren.map((t) => (
-              <li key={t.id} className="flex items-center justify-between gap-3 px-3 py-2.5">
-                <div className="min-w-0">
-                  <p className="truncate text-fliess text-ink-50">{t.name}</p>
-                  <p className="text-mikro text-ink-500">
-                    ab {new Date(t.start_date).toLocaleDateString('de-DE')} · {t.days} Tage ·{' '}
-                    {t.persons} {t.persons === 1 ? 'Person' : 'Personen'} · {t.elevation} m
-                  </p>
-                </div>
-                <button
-                  onClick={async () => { await deleteTrip(t.id); setStand((n) => n + 1) }}
-                  aria-label={`${t.name} löschen`}
-                  className="min-h-9 shrink-0 rounded-mittel px-2 text-klein text-ink-500 hover:bg-flaeche-3 hover:text-verboten-300"
-                >
-                  Löschen
-                </button>
-              </li>
-            ))}
-          </Abschnitt>
+          {!laedt && liste.length === 0 && (
+            stapel === 'eigene' ? (
+              <Leer
+                icon={MapIcon}
+                titel="Noch keine Tour gespeichert"
+                text="Zeichne auf der Karte einen Verlauf, öffne „Tour auswerten“ und speichere sie dort — samt Dauer, Ausrüstung und Wetter."
+                aktion={<Button variante="primaer" icon={MapIcon} onClick={onZurKarte}>Zur Karte</Button>}
+              />
+            ) : (
+              <Leer
+                icon={Bookmark}
+                titel="Noch nichts gemerkt"
+                text="Im Community-Bereich lassen sich fremde Touren mit dem Lesezeichen merken. Sie landen dann hier."
+              />
+            )
+          )}
+
+          {liste.length > 0 && (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {stapel === 'eigene'
+                ? eigene.map((t) => (
+                    <TourKarte
+                      key={t.id}
+                      tour={t}
+                      onOeffnen={() => aufKarte(t)}
+                      marke={
+                        // Unterlage, sonst verschwindet die Marke im Kartenbild.
+                        <Badge
+                          ton={t.is_public ? 'akzent' : 'neutral'}
+                          icon={t.is_public ? Globe : Lock}
+                          className="bg-flaeche-1/85 backdrop-blur-sm"
+                        >
+                          {t.is_public ? 'Geteilt' : 'Privat'}
+                        </Badge>
+                      }
+                      aktionen={
+                        <>
+                          {t.is_public ? (
+                            <>
+                              <ZaehlerKnopf icon={Heart} zahl={t.likes_count} tonAktiv="warm"
+                                            label={`${t.likes_count} Likes`} />
+                              <ZaehlerKnopf icon={MessageCircle} zahl={t.kommentare_count}
+                                            label={`${t.kommentare_count} Kommentare`} />
+                              <IconButton icon={Lock} groesse="klein" label="Nicht mehr teilen"
+                                          onClick={() => zuruecknehmen(t)} />
+                            </>
+                          ) : (
+                            <Button variante="sekundaer" groesse="klein" icon={Share2}
+                                    onClick={() => setTeilt(t)}>
+                              Teilen
+                            </Button>
+                          )}
+                          <IconButton icon={Pencil} groesse="klein" label={`„${t.name}" bearbeiten`}
+                                      onClick={() => setBearbeitet(t)} />
+                          <IconButton icon={Trash2} groesse="klein" label={`„${t.name}" löschen`}
+                                      onClick={() => setLoescht(t)} />
+                          <AufKarteKnopf onClick={() => aufKarte(t)} />
+                        </>
+                      }
+                    />
+                  ))
+                : gemerkt.map((t) => (
+                    <TourKarte
+                      key={t.id}
+                      tour={t}
+                      onOeffnen={() => aufKarte(t)}
+                      aktionen={
+                        <>
+                          <ZaehlerKnopf icon={Heart} zahl={t.likes_count} tonAktiv="warm"
+                                        label={`${t.likes_count} Likes`} />
+                          <ZaehlerKnopf icon={MessageCircle} zahl={t.kommentare_count}
+                                        label={`${t.kommentare_count} Kommentare`} />
+                          <ZaehlerKnopf icon={Bookmark} aktiv label={`„${t.name}" nicht mehr merken`}
+                                        onClick={() => vergessen(t)} />
+                          <AufKarteKnopf onClick={() => aufKarte(t)} />
+                        </>
+                      }
+                    />
+                  ))}
+            </div>
+          )}
+
+          <p className="border-t border-kante pt-5 text-klein leading-relaxed text-ink-500">
+            Neue Touren entstehen auf der Karte: Verlauf zeichnen, „Tour auswerten“ öffnen und
+            dort speichern. Die Auswertung enthält auch Ausrüstung, Verpflegung und Wetter.{' '}
+            <button onClick={onZurKarte} className="text-gletscher-400 underline underline-offset-2 hover:text-gletscher-300">
+              Zur Karte
+            </button>
+          </p>
         </>
       )}
 
-      {session && (
-        <p className="border-t border-kante pt-5 text-klein leading-relaxed text-ink-500">
-          Neue Touren entstehen auf der Karte: Route zeichnen, „Tour auswerten" öffnen und
-          dort speichern. Die Auswertung enthält auch Ausrüstung, Verpflegung und Wetter.{' '}
-          <button onClick={onZurKarte} className="text-gletscher-400 underline underline-offset-2 hover:text-gletscher-300">
-            Zur Karte
-          </button>
-        </p>
-      )}
+      <TeilenDialog
+        tour={teilt}
+        anzeigename={anzeigename}
+        onClose={() => setTeilt(null)}
+        onGeteilt={(id, beschreibung) => {
+          setEigene((l) => l.map((x) => (x.id === id ? { ...x, is_public: true, beschreibung } : x)))
+          setTeilt(null)
+        }}
+        onFehler={setFehler}
+      />
+
+      <BearbeitenDialog
+        tour={bearbeitet}
+        onClose={() => setBearbeitet(null)}
+        onGespeichert={(id, name, beschreibung) => {
+          setEigene((l) => l.map((x) => (x.id === id ? { ...x, name, beschreibung } : x)))
+          setBearbeitet(null)
+        }}
+        onFehler={setFehler}
+      />
+
+      <LoeschDialog
+        tour={loescht}
+        onClose={() => setLoescht(null)}
+        onBestaetigt={() => loescht && entfernen(loescht)}
+      />
     </Seite>
   )
 }
 
-function Abschnitt({
-  titel, anzahl, leer, children,
-}: {
-  titel: string
-  anzahl: number
-  leer: string
-  children: React.ReactNode
-}) {
+/* -------------------------------------------------------------- Dialoge */
+
+/** Gemeinsame Hülle: abgedunkelter Grund, Karte in der Mitte, Escape schliesst. */
+function Dialog({
+  offen, titel, onClose, children,
+}: { offen: boolean; titel: string; onClose: () => void; children: React.ReactNode }) {
+  useEffect(() => {
+    if (!offen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [offen, onClose])
+
+  if (!offen) return null
   return (
-    <section>
-      <h2 className="mb-2.5 flex items-baseline gap-2 text-ueberschrift font-semibold text-ink-50">
-        {titel}
-        {anzahl > 0 && <span className="text-klein font-normal text-ink-500">{anzahl}</span>}
-      </h2>
-      {anzahl === 0 ? (
-        <p className="rounded-gross border border-dashed border-kante px-4 py-5 text-klein
-                      leading-relaxed text-ink-400">
-          {leer}
-        </p>
-      ) : (
-        <Liste>{children}</Liste>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-flaeche-1/70 backdrop-blur-sm sm:items-center sm:p-6"
+      role="dialog" aria-modal="true" aria-label={titel}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className="w-full max-w-md rounded-t-riesig border border-kante bg-flaeche-2 p-5 shadow-[var(--shadow-4)] sm:rounded-riesig">
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <h2 className="text-titel font-semibold text-ink-50">{titel}</h2>
+          <IconButton icon={X} label="Schliessen" onClick={onClose} className="-mr-1.5 -mt-1" />
+        </div>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Teilen ist der einzige Schritt, mit dem etwas den eigenen Bereich verlässt.
+ * Deshalb ein eigener Dialog statt eines Umschalters: hier steht, was genau
+ * sichtbar wird, und hier lässt sich die Beschreibung mitgeben, die die Tour
+ * in der Community erst lesbar macht.
+ */
+function TeilenDialog({
+  tour, anzeigename, onClose, onGeteilt, onFehler,
+}: {
+  tour: Tour | null
+  anzeigename: string | null
+  onClose: () => void
+  onGeteilt: (id: string, beschreibung: string | null) => void
+  onFehler: (m: string) => void
+}) {
+  const [text, setText] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => { setText(tour?.beschreibung ?? '') }, [tour])
+
+  const teilen = async () => {
+    if (!tour) return
+    setBusy(true)
+    try {
+      const beschreibung = text.trim() || null
+      await setTourPublic(tour.id, true, {
+        autor: anzeigename ?? undefined,
+        beschreibung: beschreibung ?? undefined,
+      })
+      onGeteilt(tour.id, beschreibung)
+    } catch (e) {
+      onFehler((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Dialog offen={tour !== null} titel="Tour teilen" onClose={onClose}>
+      <p className="text-fliess leading-relaxed text-ink-300">
+        Sichtbar werden Name, Verlauf, Kenndaten und deine Beschreibung — als
+        {' '}<span className="font-medium text-ink-100">{anzeigename?.trim() || 'ohne Urheberangabe'}</span>.
+        Deine E-Mail-Adresse wird nie veröffentlicht. Zurücknehmen kannst du das jederzeit.
+      </p>
+
+      {!anzeigename && (
+        <Hinweis ton="warnung" className="mt-3">
+          Ohne Anzeigenamen erscheint die Tour anonym. Im Kontobereich lässt sich einer setzen.
+        </Hinweis>
       )}
-    </section>
+
+      <label className="mt-4 block">
+        <span className="mb-1.5 block text-mikro font-medium uppercase text-ink-500">
+          Beschreibung (optional)
+        </span>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={3}
+          maxLength={1000}
+          placeholder="Wo geht es lang, was sollte man wissen, wo hast du geschlafen?"
+          className="w-full resize-y rounded-mittel border border-kante bg-flaeche-1 px-3 py-2 text-fliess leading-relaxed text-ink-100 placeholder:text-ink-500 transition-colors duration-[160ms] hover:border-kante-stark focus:border-gletscher-500 focus:outline-none focus:ring-2 focus:ring-gletscher-500/25"
+        />
+      </label>
+
+      <div className="mt-4 flex flex-wrap justify-end gap-2">
+        <Button variante="geist" onClick={onClose}>Abbrechen</Button>
+        <Button variante="primaer" icon={Share2} onClick={teilen} disabled={busy}>
+          {busy ? 'Teilt …' : 'Jetzt teilen'}
+        </Button>
+      </div>
+    </Dialog>
+  )
+}
+
+function BearbeitenDialog({
+  tour, onClose, onGespeichert, onFehler,
+}: {
+  tour: Tour | null
+  onClose: () => void
+  onGespeichert: (id: string, name: string, beschreibung: string | null) => void
+  onFehler: (m: string) => void
+}) {
+  const [name, setName] = useState('')
+  const [text, setText] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => { setName(tour?.name ?? ''); setText(tour?.beschreibung ?? '') }, [tour])
+
+  const speichern = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!tour || !name.trim()) return
+    setBusy(true)
+    try {
+      const beschreibung = text.trim() || null
+      await aktualisiereTour(tour.id, { name: name.trim(), beschreibung })
+      onGespeichert(tour.id, name.trim(), beschreibung)
+    } catch (err) {
+      onFehler((err as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Dialog offen={tour !== null} titel="Tour bearbeiten" onClose={onClose}>
+      <form onSubmit={speichern}>
+        <label className="block">
+          <span className="mb-1.5 block text-mikro font-medium uppercase text-ink-500">Name</span>
+          <Eingabe value={name} onChange={(e) => setName(e.target.value)} maxLength={120} required />
+        </label>
+        <label className="mt-3 block">
+          <span className="mb-1.5 block text-mikro font-medium uppercase text-ink-500">Beschreibung</span>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={3}
+            maxLength={1000}
+            className="w-full resize-y rounded-mittel border border-kante bg-flaeche-1 px-3 py-2 text-fliess leading-relaxed text-ink-100 placeholder:text-ink-500 transition-colors duration-[160ms] hover:border-kante-stark focus:border-gletscher-500 focus:outline-none focus:ring-2 focus:ring-gletscher-500/25"
+          />
+        </label>
+        {tour?.is_public && (
+          <p className="mt-2 text-mikro normal-case tracking-normal text-ink-500">
+            Diese Tour ist geteilt — Änderungen sind sofort für alle sichtbar.
+          </p>
+        )}
+        <div className="mt-4 flex flex-wrap justify-end gap-2">
+          <Button variante="geist" onClick={onClose}>Abbrechen</Button>
+          <Button type="submit" variante="primaer" disabled={busy || !name.trim()}>
+            {busy ? 'Speichert …' : 'Speichern'}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
+  )
+}
+
+/**
+ * Löschen fragt nach. Eine gezeichnete Mehrtagestour ist Arbeit, und ein
+ * Fehlklick in einer Kartenfussleiste ist schnell passiert.
+ */
+function LoeschDialog({
+  tour, onClose, onBestaetigt,
+}: { tour: Tour | null; onClose: () => void; onBestaetigt: () => void }) {
+  return (
+    <Dialog offen={tour !== null} titel="Tour löschen" onClose={onClose}>
+      <p className="text-fliess leading-relaxed text-ink-300">
+        „{tour?.name}“ wird endgültig gelöscht — mit Verlauf, Kenndaten und, falls geteilt,
+        allen Likes und Kommentaren dazu. Das lässt sich nicht rückgängig machen.
+      </p>
+      <div className="mt-4 flex flex-wrap justify-end gap-2">
+        <Button variante="geist" onClick={onClose}>Abbrechen</Button>
+        <Button variante="gefahr" icon={Trash2} onClick={onBestaetigt}>Endgültig löschen</Button>
+      </div>
+    </Dialog>
   )
 }

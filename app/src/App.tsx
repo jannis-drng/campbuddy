@@ -6,7 +6,7 @@ import {
   verificationStats,
   type Ausschnitt,
 } from './data/legalData'
-import type { EigenerPunkt, MapFilters, NatureFeature, Peak, Point, Zone } from './data/types'
+import type { EigenerPunkt, MapFilters, NatureFeature, Peak, Point, TripParams, Zone } from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
@@ -17,7 +17,7 @@ import { CommunityPanel } from './components/CommunityPanel'
 import { TourDetailModal } from './components/TourDetailModal'
 import { RoutePanel } from './components/RoutePanel'
 import { analyseRoute } from './data/routeAnalysis'
-import type { Position } from './data/geo'
+import { lineLength, type Position } from './data/geo'
 import { parseGpx } from './services/gpx'
 import { loadElevationProfile, type ElevationPoint } from './services/elevation'
 import { analyseProfil, planeEtappen } from './data/hiking'
@@ -30,7 +30,7 @@ import { gemeindeAn, gemeindeRecht, gemeindenGeoJSON, setzeGemeinden } from './d
 import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
-import { linkErgebnisAuslesen, saveRoute, saveTrip, useSession, type LinkErgebnis } from './services/account'
+import { linkErgebnisAuslesen, saveTour, useSession, type LinkErgebnis } from './services/account'
 import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
 import { Auswahl, Button, Segmente } from './ui'
 
@@ -274,15 +274,29 @@ export default function App() {
     }
   }
 
-  // Nur angemeldet wird zum Speichern eingeladen — sonst wäre der Knopf eine Sackgasse.
-  const handleSaveRoute = session
-    ? async (name: string) => {
-        await saveRoute(name, regionCode, routeGeometry, gpxTrack ? [] : waypoints)
-      }
-    : null
+  /*
+    Nur angemeldet wird zum Speichern eingeladen — sonst wäre der Knopf eine
+    Sackgasse.
 
-  const handleSaveTrip = session
-    ? async (name: string, trip: Parameters<typeof saveTrip>[1]) => { await saveTrip(name, trip) }
+    Es gibt genau einen Speicherweg. Vorher waren es zwei („Route speichern"
+    und „Tour speichern"), die in zwei Tabellen führten und in der Übersicht
+    als zwei Listen wieder auftauchten. Gespeichert wird jetzt der Verlauf
+    zusammen mit den Eckdaten und den Kennzahlen, die die Auswertung ohnehin
+    schon berechnet hat — sonst müsste jede Karte in der Übersicht das
+    Höhenprofil neu abfragen.
+  */
+  const handleSaveTour = session
+    ? async (name: string, trip: TripParams) => {
+        await saveTour(
+          name, regionCode, routeGeometry, gpxTrack ? [] : waypoints,
+          {
+            ...trip,
+            distance_m: routeGeometry.length > 1 ? lineLength(routeGeometry) : null,
+            ascent_m: wanderStats?.ascent_m ?? null,
+            duration_s: wanderStats?.duration_s ?? null,
+          },
+        )
+      }
     : null
 
   const routeLaden = (geometry: Position[], wps: Position[]) => {
@@ -606,8 +620,7 @@ export default function App() {
         etappen={etappen}
         hoehenBusy={hoehenBusy}
         hoehenFehler={hoehenFehler}
-        onSaveRoute={handleSaveRoute}
-        onSaveTrip={handleSaveTrip}
+        onSaveTour={handleSaveTour}
       />
     </div>
   )

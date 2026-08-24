@@ -29,8 +29,13 @@ interface Props {
   etappen: Etappe[]
   hoehenBusy: boolean
   hoehenFehler: string | null
-  onSaveRoute: ((name: string) => Promise<void>) | null
-  onSaveTrip: ((name: string, trip: TripParams) => Promise<void>) | null
+  /**
+   * Speichert Verlauf und Eckdaten in einem Zug. Vorher standen hier zwei
+   * Formulare — „Route speichern" und „Tour speichern" — und niemand konnte
+   * sagen, was der Unterschied sein sollte. Seit Migration 0016 ist es eine
+   * Sache. null = kein Backend oder nicht angemeldet.
+   */
+  onSaveTour: ((name: string, trip: TripParams) => Promise<void>) | null
 }
 
 const formatKm = (m: number) =>
@@ -47,11 +52,14 @@ const SCHWIERIGKEIT_STUFE = {
 
 export function TourDetailModal({
   offen, onClose, region, analysis, stats, profil, etappen,
-  hoehenBusy, hoehenFehler, onSaveRoute, onSaveTrip,
+  hoehenBusy, hoehenFehler, onSaveTour,
 }: Props) {
   const [name, setName] = useState('')
   const [speicherStand, setSpeicherStand] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
   const [speicherFehler, setSpeicherFehler] = useState<string | null>(null)
+  // Die Eckdaten leben weiter im Planer; hier liegt nur die letzte Fassung,
+  // damit der eine Speicherknopf sie mitgeben kann.
+  const [trip, setTrip] = useState<TripParams | null>(null)
 
   // Escape schliesst — bei einem bildfüllenden Fenster erwartet man das.
   useEffect(() => {
@@ -88,10 +96,10 @@ export function TourDetailModal({
 
   const speichern = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!onSaveRoute || !name.trim()) return
+    if (!onSaveTour || !name.trim() || !trip) return
     setSpeicherStand('busy'); setSpeicherFehler(null)
     try {
-      await onSaveRoute(name.trim())
+      await onSaveTour(name.trim(), trip)
       setSpeicherStand('ok'); setName('')
     } catch (err) {
       setSpeicherStand('error'); setSpeicherFehler((err as Error).message)
@@ -232,19 +240,24 @@ export function TourDetailModal({
             <p className="mb-3 text-mikro leading-relaxed text-ink-500">
               Dauer und Schlafhöhe sind aus deiner Route übernommen und lassen sich anpassen.
             </p>
-            <TripPlanner region={region} onSave={onSaveTrip} initial={vorbelegung} />
+            <TripPlanner region={region} onTripChange={setTrip} initial={vorbelegung} />
           </section>
 
-          {/* ---- Route speichern ---- */}
-          {onSaveRoute && (
-            <section className="border-t border-kante pt-5">
-              <h3 className="mb-2 text-fliess font-semibold text-ink-200">Route speichern</h3>
+          {/* ---- Speichern: Verlauf und Eckdaten in einem Zug ---- */}
+          {onSaveTour && (
+            <section className="rounded-gross border border-kante bg-flaeche-1 p-4">
+              <h3 className="text-fliess font-semibold text-ink-100">Tour speichern</h3>
+              <p className="mb-3 mt-0.5 text-klein leading-relaxed text-ink-500">
+                Gespeichert wird beides zusammen: der Verlauf und die Eckdaten von oben.
+                Unter „Deine Touren“ kannst du die Tour später teilen.
+              </p>
               <form onSubmit={speichern} className="flex flex-wrap gap-2">
                 <Eingabe
                   value={name}
                   onChange={(e) => { setName(e.target.value); setSpeicherStand('idle') }}
-                  placeholder="Name der Route"
+                  placeholder="Name der Tour"
                   maxLength={120}
+                  aria-label="Name der Tour"
                   className="min-w-0 flex-1"
                 />
                 <Button type="submit" variante="primaer" groesse="gross"
@@ -252,8 +265,8 @@ export function TourDetailModal({
                   {speicherStand === 'busy' ? 'Speichere …' : 'Speichern'}
                 </Button>
                 {speicherStand === 'ok' && (
-                  <p className="w-full text-klein text-gletscher-300">
-                    Gespeichert. Unter „Deine Touren" kannst du sie veröffentlichen.
+                  <p className="w-full text-klein text-erlaubt-400">
+                    Gespeichert. Unter „Deine Touren“ kannst du sie teilen.
                   </p>
                 )}
                 {speicherStand === 'error' && <p className="w-full text-klein text-verboten-300">{speicherFehler}</p>}

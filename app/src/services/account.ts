@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import type { TripParams } from '../data/types'
-import { getSupabase, type PublicRoute, type StoredRoute, type StoredTrip } from './supabase'
+import { getSupabase, type PublicTour, type Tour } from './supabase'
 
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null)
@@ -142,9 +142,23 @@ export async function signOut(): Promise<void> {
   await getSupabase()?.auth.signOut()
 }
 
-/* ---------------- Routen (8.4) ---------------- */
+/* ---------------- Touren (8.4 + 8.6, zusammengelegt) ---------------- */
 
-export async function listRoutes(): Promise<StoredRoute[]> {
+/**
+ * Eine Tour ist der Weg *und* seine Eckdaten.
+ *
+ * Bis Migration 0016 waren das zwei Tabellen und zwei Speicherknöpfe. Wer
+ * eine Mehrtagestour plant, denkt aber nicht in „Route" und „Tour" — er denkt
+ * in einer Tour, die einen Verlauf hat. Die Trennung kostete zwei Listen in
+ * der Oberfläche und erklärte sich niemandem.
+ */
+export interface TourEckdaten extends Partial<TripParams> {
+  distance_m?: number | null
+  ascent_m?: number | null
+  duration_s?: number | null
+}
+
+export async function listTouren(): Promise<Tour[]> {
   const sb = getSupabase()
   if (!sb) return []
   const { data, error } = await sb
@@ -152,103 +166,102 @@ export async function listRoutes(): Promise<StoredRoute[]> {
     .select('*')
     .order('created_at', { ascending: false })
   if (error) throw new Error(error.message)
-  return (data ?? []) as StoredRoute[]
-}
-
-export async function saveRoute(
-  name: string,
-  region: string,
-  geometry: Position[],
-  waypoints: Position[],
-  optionen: { is_public?: boolean; beschreibung?: string; autor?: string } = {},
-): Promise<StoredRoute> {
-  const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
-  const { data: userData } = await sb.auth.getUser()
-  const user_id = userData.user?.id
-  if (!user_id) throw new Error('Nicht angemeldet')
-
-  // Die Community-Spalten kommen erst mit Migration 0005. Sie werden nur
-  // mitgeschickt, wenn sie auch gesetzt werden sollen — sonst schlüge das
-  // Speichern fehl, solange die Migration noch aussteht.
-  const zeile: Record<string, unknown> = {
-    user_id,
-    name,
-    region,
-    geometry: { type: 'LineString', coordinates: geometry },
-    waypoints: waypoints.length > 0 ? waypoints : null,
-  }
-  if (optionen.is_public !== undefined) zeile.is_public = optionen.is_public
-  if (optionen.beschreibung !== undefined) zeile.beschreibung = optionen.beschreibung
-  if (optionen.autor !== undefined) zeile.autor = optionen.autor
-
-  const { data, error } = await sb.from('routes').insert(zeile).select().single()
-  if (error) throw new Error(error.message)
-  return data as StoredRoute
-}
-
-export async function deleteRoute(id: string): Promise<void> {
-  const sb = getSupabase()
-  if (!sb) return
-  const { error } = await sb.from('routes').delete().eq('id', id)
-  if (error) throw new Error(error.message)
-}
-
-/* ---------------- Touren (8.6) ---------------- */
-
-export async function listTrips(): Promise<StoredTrip[]> {
-  const sb = getSupabase()
-  if (!sb) return []
-  const { data, error } = await sb
-    .from('trips')
-    .select('*')
-    .order('created_at', { ascending: false })
-  if (error) throw new Error(error.message)
-  return (data ?? []) as StoredTrip[]
+  return (data ?? []) as Tour[]
 }
 
 /**
  * Zahlenfeld auf den Bereich bringen, den die Tabelle zulässt.
  *
  * Der Client soll die Prüfung der Datenbank nicht ersetzen, aber ihr auch
- * nichts vorlegen, was sie zwangsläufig ablehnt. Fehlt ein Wert, gewinnt der
- * Ersatzwert — eine Tour ohne Höhenprofil ist ein normaler Fall und darf nicht
- * am Speichern scheitern.
+ * nichts vorlegen, was sie zwangsläufig ablehnt. Fehlt ein Wert, bleibt das
+ * Feld leer — eine Tour ohne geplantes Datum ist ein normaler Fall und darf
+ * nicht am Speichern scheitern.
  */
-function zahlImBereich(wert: unknown, min: number, max: number, ersatz: number): number {
+function zahlImBereich(wert: unknown, min: number, max: number): number | null {
+  if (wert === undefined || wert === null) return null
   const zahl = typeof wert === 'number' ? wert : Number(wert)
-  if (!Number.isFinite(zahl)) return ersatz
+  if (!Number.isFinite(zahl)) return null
   return Math.min(max, Math.max(min, Math.round(zahl)))
 }
 
-export async function saveTrip(name: string, trip: TripParams, routeId?: string): Promise<StoredTrip> {
+/** Die Eckdaten in die Form bringen, die die Tabelle akzeptiert. */
+function eckdatenZeile(eck: TourEckdaten | undefined): Record<string, unknown> {
+  if (!eck) return {}
+  const zeile: Record<string, unknown> = {}
+  if (eck.start_date) zeile.start_date = eck.start_date
+  if (eck.season) zeile.season = eck.season
+  if (eck.shelter) zeile.shelter = eck.shelter
+  const days = zahlImBereich(eck.days, 1, 60)
+  const persons = zahlImBereich(eck.persons, 1, 20)
+  const elevation = zahlImBereich(eck.elevation, 0, 5000)
+  if (days !== null) zeile.days = days
+  if (persons !== null) zeile.persons = persons
+  if (elevation !== null) zeile.elevation = elevation
+  // Kenngrössen dürfen 0 sein (Rundkurs ohne Aufstieg), deshalb hier
+  // ausdrücklich gegen null prüfen statt gegen falsy.
+  if (eck.distance_m != null) zeile.distance_m = Math.round(eck.distance_m)
+  if (eck.ascent_m != null) zeile.ascent_m = Math.round(eck.ascent_m)
+  if (eck.duration_s != null) zeile.duration_s = Math.round(eck.duration_s)
+  return zeile
+}
+
+export async function saveTour(
+  name: string,
+  region: string,
+  geometry: Position[],
+  waypoints: Position[],
+  eckdaten?: TourEckdaten,
+  optionen: { is_public?: boolean; beschreibung?: string; autor?: string } = {},
+): Promise<Tour> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
   const { data: userData } = await sb.auth.getUser()
   const user_id = userData.user?.id
   if (!user_id) throw new Error('Nicht angemeldet')
 
-  // Grenzen wie in Migration 0001. Sie stehen hier ein zweites Mal, damit ein
-  // fehlender Wert eine sinnvolle Tour ergibt statt einer rohen Postgres-Meldung.
-  const zeile = {
+  const zeile: Record<string, unknown> = {
     user_id,
-    route_id: routeId ?? null,
     name,
-    ...trip,
-    days: zahlImBereich(trip.days, 1, 60, 1),
-    persons: zahlImBereich(trip.persons, 1, 20, 1),
-    elevation: zahlImBereich(trip.elevation, 0, 5000, 2400),
+    region,
+    geometry: { type: 'LineString', coordinates: geometry },
+    waypoints: waypoints.length > 0 ? waypoints : null,
+    ...eckdatenZeile(eckdaten),
   }
+  if (optionen.is_public !== undefined) zeile.is_public = optionen.is_public
+  if (optionen.beschreibung !== undefined) zeile.beschreibung = optionen.beschreibung
+  if (optionen.autor !== undefined) zeile.autor = optionen.autor
 
-  const { data, error } = await sb.from('trips').insert(zeile).select().single()
+  const { data, error } = await sb.from('routes').insert(zeile).select().single()
   if (error) throw new Error(uebersetzeSpeicherfehler(error.message))
-  return data as StoredTrip
+  return data as Tour
+}
+
+/** Nachträglich ändern: Name, Beschreibung, Eckdaten. Nur eigene (RLS). */
+export async function aktualisiereTour(
+  id: string,
+  patch: { name?: string; beschreibung?: string | null } & TourEckdaten,
+): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  const zeile: Record<string, unknown> = eckdatenZeile(patch)
+  if (patch.name !== undefined) zeile.name = patch.name
+  if (patch.beschreibung !== undefined) zeile.beschreibung = patch.beschreibung
+  if (Object.keys(zeile).length === 0) return
+  const { error } = await sb.from('routes').update(zeile).eq('id', id)
+  if (error) throw new Error(uebersetzeSpeicherfehler(error.message))
+}
+
+export async function deleteTour(id: string): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) return
+  const { error } = await sb.from('routes').delete().eq('id', id)
+  if (error) throw new Error(error.message)
 }
 
 /** Datenbankmeldungen sind für Entwickler geschrieben, nicht für Wanderer. */
 function uebersetzeSpeicherfehler(meldung: string): string {
   if (/null value in column|violates not-null/i.test(meldung)) {
-    return 'Ein Feld der Tour war leer. Ergänze Dauer, Personen und Schlafhöhe und versuche es noch einmal.'
+    return 'Ein Pflichtfeld der Tour war leer. Gib ihr einen Namen und versuche es noch einmal.'
   }
   if (/violates check constraint/i.test(meldung)) {
     return 'Ein Wert liegt ausserhalb des zulässigen Bereichs — prüfe Dauer, Personenzahl und Schlafhöhe.'
@@ -256,61 +269,45 @@ function uebersetzeSpeicherfehler(meldung: string): string {
   if (/row-level security/i.test(meldung)) {
     return 'Dafür fehlt die Berechtigung — bist du noch angemeldet?'
   }
+  if (/column .* does not exist|schema cache/i.test(meldung)) {
+    return 'Die Datenbank kennt die Tour-Felder noch nicht — Migration 0016 ist noch nicht eingespielt.'
+  }
   return meldung
 }
 
-export async function deleteTrip(id: string): Promise<void> {
-  const sb = getSupabase()
-  if (!sb) return
-  const { error } = await sb.from('trips').delete().eq('id', id)
-  if (error) throw new Error(error.message)
-}
-
-/* ---------------- Community ---------------- */
+/* ---------------- Veröffentlichen ---------------- */
 
 /**
  * Fehlt die Tabelle oder Spalte, ist die zugehörige Migration schlicht noch
  * nicht eingespielt. Das ist ein Einrichtungszustand, kein Fehler des Nutzers —
  * eine rohe Postgres-Meldung gehört ihm nicht vor die Nase.
  */
-function istSchemaFehlt(error: { code?: string } | null): boolean {
+export function istSchemaFehlt(error: { code?: string } | null): boolean {
   return error?.code === '42703' || error?.code === 'PGRST205' || error?.code === '42P01'
 }
 
-/**
- * Öffentlich geteilte Routen. Braucht keine Anmeldung.
- *
- * Liest aus der View `oeffentliche_routen`, nicht aus der Tabelle: eine
- * Lese-Policy auf `routes` gäbe zwangsläufig die *ganze* Zeile frei — Row
- * Level Security filtert Zeilen, nicht Spalten — und damit die `user_id` des
- * Autors. Die View wählt die Spalten aus, die geteilt gehören. Wer eine Route
- * veröffentlicht, teilt damit seinen Verlauf, nicht sein Konto.
- */
-export async function listPublicRoutes(limit = 50): Promise<PublicRoute[]> {
-  const sb = getSupabase()
-  if (!sb) return []
-  const { data, error } = await sb
-    .from('oeffentliche_routen')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(limit)
-  if (istSchemaFehlt(error)) return []
-  if (error) throw new Error(error.message)
-  return (data ?? []) as PublicRoute[]
-}
-
-/** Veröffentlichen oder zurückziehen. Nur für eigene Routen (RLS). */
-export async function setRoutePublic(id: string, is_public: boolean, autor?: string): Promise<void> {
+/** Veröffentlichen oder zurückziehen. Nur für eigene Touren (RLS). */
+export async function setTourPublic(
+  id: string,
+  is_public: boolean,
+  zusatz: { autor?: string; beschreibung?: string } = {},
+): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
   const patch: Record<string, unknown> = { is_public }
-  if (autor !== undefined) patch.autor = autor
+  if (zusatz.autor !== undefined) patch.autor = zusatz.autor
+  if (zusatz.beschreibung !== undefined) patch.beschreibung = zusatz.beschreibung
   const { error } = await sb.from('routes').update(patch).eq('id', id)
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(uebersetzeSpeicherfehler(error.message))
 }
 
-/* ---------------- Favoriten ---------------- */
+/* ---------------- Favoriten (die eigene Merkliste) ---------------- */
 
+/**
+ * Bewusst getrennt von den Likes: ein Like ist ein Zuruf an die Urheberin und
+ * öffentlich gezählt, ein Favorit ist die eigene Merkliste und geht
+ * niemanden etwas an. Siehe Migration 0016.
+ */
 export async function listFavoriteIds(): Promise<Set<string>> {
   const sb = getSupabase()
   if (!sb) return new Set()
@@ -319,22 +316,32 @@ export async function listFavoriteIds(): Promise<Set<string>> {
   return new Set((data ?? []).map((r: { route_id: string }) => r.route_id))
 }
 
-/** Die favorisierten Routen selbst — für den Bereich "Deine Touren". */
-export async function listFavoriteRoutes(): Promise<StoredRoute[]> {
+/**
+ * Die gemerkten Touren selbst — für den Bereich "Deine Touren".
+ *
+ * Zwei Abfragen statt einer eingebetteten: die Merkliste steht in `favorites`,
+ * die Touren kommen aus der View `oeffentliche_routen`. PostgREST kann über
+ * eine View zwar oft einbetten, aber nur solange es die Beziehung aus der
+ * Basistabelle ableiten kann — das ist eine Zusicherung, auf die man eine
+ * Seite nicht bauen sollte. Zwei klare Abfragen halten immer.
+ *
+ * Wer eine Tour gemerkt hat, die inzwischen zurückgezogen wurde, sieht sie
+ * hier nicht mehr. Das ist richtig so: sie ist nicht mehr geteilt. Der Eintrag
+ * in `favorites` bleibt — wird sie wieder geteilt, ist sie wieder da.
+ */
+export async function listFavoriteTouren(): Promise<PublicTour[]> {
   const sb = getSupabase()
   if (!sb) return []
+  const ids = [...(await listFavoriteIds())]
+  if (ids.length === 0) return []
   const { data, error } = await sb
-    .from('favorites')
-    .select('route_id, routes(*)')
-    .order('created_at', { ascending: false })
+    .from('oeffentliche_routen')
+    .select('*')
+    .in('id', ids)
+    .order('veroeffentlicht_am', { ascending: false, nullsFirst: false })
   if (istSchemaFehlt(error)) return []
   if (error) throw new Error(error.message)
-  // Supabase typisiert eingebettete Relationen als Array, liefert bei einer
-  // 1:1-Beziehung aber ein Objekt. Beides abfangen.
-  return (data ?? [])
-    .flatMap((r: { routes: StoredRoute | StoredRoute[] | null }) =>
-      Array.isArray(r.routes) ? r.routes : r.routes ? [r.routes] : [],
-    )
+  return (data ?? []) as PublicTour[]
 }
 
 export async function addFavorite(routeId: string): Promise<void> {

@@ -9,7 +9,6 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ExternalLink } from 'lucide-react'
-import { Eingabe, Button } from '../ui'
 import type { Region, Season, TripParams } from '../data/types'
 import { buildPacklist, formatWeight } from '../affiliate/packlist'
 import { buildAffiliateUrl } from '../affiliate/affiliateConfig'
@@ -69,11 +68,15 @@ function seasonForDate(d: Date): Season {
 }
 
 export function TripPlanner({
-  region, onSave, initial,
+  region, onTripChange, initial,
 }: {
   region: Region
-  /** null = kein Backend oder nicht angemeldet. */
-  onSave: ((name: string, trip: TripParams) => Promise<void>) | null
+  /**
+   * Meldet die Eckdaten nach oben. Gespeichert wird nicht mehr hier: seit
+   * Migration 0016 ist die Tour eine Sache, und sie hat genau einen
+   * Speicherknopf — den der Auswertung.
+   */
+  onTripChange?: (trip: TripParams) => void
   /**
    * Vorbelegung aus einer gezeichneten Route: Dauer aus den Etappen, Schlafhöhe
    * aus dem Höhenprofil. Dadurch passt die Packliste zur konkreten Tour, statt
@@ -144,24 +147,13 @@ export function TripPlanner({
     }
   }, [derivedSeason, seasonTouched, trip.season])
 
-  const [saveName, setSaveName] = useState('')
-  const [saveState, setSaveState] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
-  const [saveError, setSaveError] = useState<string | null>(null)
-
-  const save = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!onSave || !saveName.trim()) return
-    setSaveState('busy'); setSaveError(null)
-    try {
-      await onSave(saveName.trim(), trip)
-      setSaveState('ok'); setSaveName('')
-    } catch (err) {
-      setSaveState('error'); setSaveError((err as Error).message)
-    }
-  }
 
   const set = <K extends keyof TripParams>(key: K, value: TripParams[K]) =>
     setTrip((t) => ({ ...t, [key]: value }))
+
+  // Die Eckdaten gehören zur Tour, nicht zum Planer. Wer speichert, speichert
+  // beides zusammen — deshalb wandern sie bei jeder Änderung nach oben.
+  useEffect(() => { onTripChange?.(trip) }, [trip, onTripChange])
 
   return (
     <div className="space-y-5">
@@ -311,24 +303,6 @@ export function TripPlanner({
           </p>
         </div>
       </section>
-
-      {onSave && (
-        <form onSubmit={save} className="flex flex-wrap gap-2">
-          <Eingabe
-            value={saveName}
-            onChange={(e) => { setSaveName(e.target.value); setSaveState('idle') }}
-            placeholder="Tour benennen und speichern"
-            maxLength={120}
-            className="min-w-0 flex-1"
-          />
-          <Button type="submit" variante="primaer" groesse="gross"
-                  disabled={!saveName.trim() || saveState === 'busy'}>
-            {saveState === 'busy' ? 'Speichere …' : 'Speichern'}
-          </Button>
-          {saveState === 'ok' && <p className="w-full text-klein text-gletscher-300">Tour gespeichert.</p>}
-          {saveState === 'error' && <p className="w-full text-klein text-verboten-300">{saveError}</p>}
-        </form>
-      )}
 
       <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
         Die Packliste ersetzt keine eigene Tourenplanung. Prüfe Wetterbericht, Lawinenlage und
