@@ -92,15 +92,19 @@ export type PublicTour = Omit<Tour, 'user_id'>
 export interface Kommentar {
   id: string
   route_id: string
-  /** Ursprung des Strangs. Null = eigenständiger Beitrag, sonst eine Antwort. */
+  /** Der Beitrag, auf den geantwortet wurde. Null = eigenständiger Beitrag. */
   eltern_id: string | null
+  /** Oberster Beitrag des Strangs. Null bei einem Ursprung selbst. */
+  wurzel_id: string | null
+  /** 0 = Ursprung, 1 = Antwort darauf, und so fort. Gedeckelt bei 6. */
+  tiefe: number
   autor: string | null
   text: string
   created_at: string
   likes_count: number
 }
 
-/** Ein Kommentar mit den Antworten darauf — genau eine Ebene tief. */
-export interface KommentarStrang extends Kommentar {
-  antworten: Kommentar[]
+/** Ein Kommentar samt der Antworten darunter — beliebig tief verschachtelt. */
+export interface KommentarKnoten extends Kommentar {
+  antworten: KommentarKnoten[]
 }

@@ -585,15 +585,21 @@ Namen noch einmal zu speichern löst die Sperre nicht aus.
 
 ### Kommentare
 
-Ein Strang ist **genau eine Ebene tief**. Eine Antwort auf eine Antwort wird nicht
-abgelehnt, sondern an denselben Ursprung gehängt: tiefer verschachtelte Stränge sind auf
-einem Telefon nicht mehr lesbar, und „worauf bezieht sich das?" beantwortet die erste
-Ebene bereits.
+Stränge sind **echt verschachtelt** (Migration 0019): eine Antwort hängt immer am
+tatsächlichen Beitrag, auf den geantwortet wurde. 0018 hatte das noch auf eine Ebene
+zusammengeschoben, was den Bezug zerstörte — wer zwei Beiträge später widersprach, sah
+aus, als widerspräche er dem Ursprung.
+
+Gedeckelt ist nur die **Einrückung**, bei sechs Ebenen. Danach hängt eine Antwort weiterhin
+am richtigen Elternteil, wird aber nicht weiter eingerückt: sonst wäre der Text auf einem
+Telefon irgendwann schmaler als ein Wort. Die Spalte `tiefe` trägt diesen gedeckelten Wert,
+`eltern_id` den echten Bezug.
 
 Seitenweise geladen wird über die **Ursprünge**, nicht über alle Beiträge — ein Strang
-gehört zusammen und darf nicht mitten in der Diskussion abgeschnitten werden. Die
-Antworten zu den geholten Ursprüngen kommen in *einer* zweiten Abfrage, nicht in einer pro
-Strang.
+gehört zusammen und darf nicht mitten in der Diskussion abgeschnitten werden. Der ganze
+Strang kommt dann in *einer* zweiten Abfrage über `wurzel_id`, unabhängig von seiner Tiefe.
+Ohne diese Spalte bräuchte man je Ebene eine weitere Abfrage — bei sechs Ebenen sieben
+statt zwei.
 
 Likes auf Kommentare sind gebaut wie die auf Touren: wer geliked hat, ist nicht abfragbar,
 öffentlich ist allein die Zahl in `kommentare.likes_count` (Trigger-gepflegt).
@@ -703,6 +709,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0016_touren_und_community.sql`](./supabase/migrations/0016_touren_und_community.sql) | Route und Tour werden **eine** Tour; Likes, Kommentare und gezählte Spalten |
 | [`0017_benutzernamen.sql`](./supabase/migrations/0017_benutzernamen.sql) | Eindeutiger Benutzername mit Sperrliste; Autorenangabe kommt aus dem Profil |
 | [`0018_kommentare_und_umbenennen.sql`](./supabase/migrations/0018_kommentare_und_umbenennen.sql) | Antworten und Likes auf Kommentare, Wortfilter für Texte, Umbenennen einmal im Monat |
+| [`0019_verschachtelte_antworten.sql`](./supabase/migrations/0019_verschachtelte_antworten.sql) | Antworten auf Antworten — echter Strangbezug statt einer Ebene |
 
 Die Dateien sind mehrfach ausführbar. Bricht 0016 mit `40P01: deadlock detected` oder mit
 einem Sperr-Zeitablauf ab, hat die Transaktion nichts hinterlassen — einfach noch einmal

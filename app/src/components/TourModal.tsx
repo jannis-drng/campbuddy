@@ -18,9 +18,9 @@ import {
 } from 'lucide-react'
 import type { Position } from '../data/geo'
 import { formatDauer } from '../data/hiking'
-import type { Kommentar, KommentarStrang, PublicTour } from '../services/supabase'
+import type { Kommentar, KommentarKnoten, PublicTour } from '../services/supabase'
 import {
-  eigeneKommentarIds, listKommentare, listKommentarLikeIds, loescheKommentar,
+  eigeneKommentarIds, flachKlopfen, listKommentare, listKommentarLikeIds, loescheKommentar,
   schreibeKommentar, setKommentarLike, type KommentarSortierung,
 } from '../services/community'
 import { Button, Hinweis, IconButton, Label, Segmente, Eingabe } from '../ui'
@@ -223,7 +223,7 @@ function Kommentare({
   onKommentarZahl: (routeId: string, delta: number) => void
   onMelden: (k: Kommentar) => void
 }) {
-  const [straenge, setStraenge] = useState<KommentarStrang[]>([])
+  const [straenge, setStraenge] = useState<KommentarKnoten[]>([])
   const [mehr, setMehr] = useState(false)
   const [seite, setSeite] = useState(0)
   const [sortierung, setSortierung] = useState<KommentarSortierung>('neu')
@@ -272,7 +272,7 @@ function Kommentare({
   }, [session, tour.id])
 
   // Eigene Likes nur für das, was gerade auf dem Schirm ist.
-  const sichtbareIds = straenge.flatMap((k) => [k.id, ...k.antworten.map((a: Kommentar) => a.id)])
+  const sichtbareIds = flachKlopfen(straenge).map((k) => k.id)
   const idSchluessel = sichtbareIds.join(',')
   useEffect(() => {
     if (!session || sichtbareIds.length === 0) { setLikes(new Set()); return }
@@ -304,9 +304,11 @@ function Kommentare({
   const loeschen = async (k: Kommentar) => {
     try {
       await loescheKommentar(k.id)
-      setStraenge((liste) => liste
-        .filter((x) => x.id !== k.id)
-        .map((x) => ({ ...x, antworten: x.antworten.filter((a: Kommentar) => a.id !== k.id) })))
+      // Rekursiv: der Beitrag kann auf jeder Ebene hängen. Seine eigenen
+      // Antworten verschwinden mit ihm — die Datenbank kaskadiert genauso.
+      const entfernen = (liste: KommentarKnoten[]): KommentarKnoten[] =>
+        liste.filter((x) => x.id !== k.id).map((x) => ({ ...x, antworten: entfernen(x.antworten) }))
+      setStraenge(entfernen)
       onKommentarZahl(tour.id, -1)
     } catch (err) {
       setFehler((err as Error).message)
@@ -320,50 +322,66 @@ function Kommentare({
   const likeUmschalten = async (k: Kommentar) => {
     if (!session) return
     const mag = !likes.has(k.id)
-    const anpassen = (x: Kommentar) =>
-      x.id === k.id ? { ...x, likes_count: Math.max(0, x.likes_count + (mag ? 1 : -1)) } : x
-    const anwenden = () => setStraenge((liste) => liste.map((st) => ({
-      ...anpassen(st) as KommentarStrang,
-      antworten: st.antworten.map(anpassen),
-    })))
+
+    /** Zahl an genau einem Knoten verschieben, egal wie tief er hängt. */
+    const verschieben = (um: number) => (liste: KommentarKnoten[]): KommentarKnoten[] =>
+      liste.map((x) => ({
+        ...x,
+        likes_count: x.id === k.id ? Math.max(0, x.likes_count + um) : x.likes_count,
+        antworten: verschieben(um)(x.antworten),
+      }))
+
     setLikes((l) => { const n = new Set(l); if (mag) n.add(k.id); else n.delete(k.id); return n })
-    anwenden()
+    setStraenge(verschieben(mag ? 1 : -1))
     try {
       await setKommentarLike(k.id, mag)
     } catch (err) {
       setFehler((err as Error).message)
       setLikes((l) => { const n = new Set(l); if (mag) n.delete(k.id); else n.add(k.id); return n })
-      setStraenge((liste) => liste.map((st) => ({
-        ...(st.id === k.id ? { ...st, likes_count: Math.max(0, st.likes_count + (mag ? -1 : 1)) } : st) as KommentarStrang,
-        antworten: st.antworten.map((a: Kommentar) =>
-          a.id === k.id ? { ...a, likes_count: Math.max(0, a.likes_count + (mag ? -1 : 1)) } : a),
-      })))
+      setStraenge(verschieben(mag ? -1 : 1))
     }
   }
 
   const anzahl = tour.kommentare_count
   const gefiltert = sucheAktiv.trim().length > 0
   const antwortZiel = antwortetAuf
-    ? straenge.find((k) => k.id === antwortetAuf) ?? null
+    ? flachKlopfen(straenge).find((k) => k.id === antwortetAuf) ?? null
     : null
 
-  const beitrag = (k: Kommentar, istAntwort: boolean) => (
-    <KommentarZeile
-      key={k.id}
-      kommentar={k}
-      istAntwort={istAntwort}
-      eigen={eigene.has(k.id)}
-      geliked={likes.has(k.id)}
-      kannHandeln={session !== null}
-      onLike={() => likeUmschalten(k)}
-      onAntworten={() => {
-        setAntwortetAuf(istAntwort ? k.eltern_id : k.id)
-        // Das Eingabefeld steht oben; ohne diesen Sprung tippt man ins Leere.
-        document.getElementById('kommentar-eingabe')?.focus()
-      }}
-      onLoeschen={() => loeschen(k)}
-      onMelden={() => onMelden(k)}
-    />
+  /**
+   * Einen Beitrag samt allem, was darunter hängt.
+   *
+   * Eingerückt wird nach `tiefe`, nicht nach der Rekursionstiefe: die Spalte
+   * ist in der Datenbank gedeckelt (Migration 0019). So bleibt der Bezug
+   * korrekt — eine Antwort hängt immer am echten Elternteil —, während die
+   * Einrückung nicht ins Uferlose läuft. Ohne Deckel wäre der Text auf einem
+   * Telefon nach sechs Ebenen schmaler als ein Wort.
+   */
+  const strang = (k: KommentarKnoten): React.ReactNode => (
+    <li key={k.id}>
+      <KommentarZeile
+        kommentar={k}
+        eigen={eigene.has(k.id)}
+        geliked={likes.has(k.id)}
+        kannHandeln={session !== null}
+        onLike={() => likeUmschalten(k)}
+        onAntworten={() => {
+          setAntwortetAuf(k.id)
+          // Das Eingabefeld steht oben; ohne diesen Sprung tippt man ins Leere.
+          document.getElementById('kommentar-eingabe')?.focus()
+        }}
+        onLoeschen={() => loeschen(k)}
+        onMelden={() => onMelden(k)}
+      />
+      {k.antworten.length > 0 && (
+        // Eingerückt mit einer Linie statt nur mit Abstand: bei zwei Antworten
+        // reicht Abstand, bei zehn sieht man ohne Linie nicht mehr, wo der
+        // Strang endet. Auf dem Telefon fällt die Einrückung kleiner aus.
+        <ul className="mt-2 space-y-2 border-l border-kante pl-2.5 sm:pl-4">
+          {k.antworten.map(strang)}
+        </ul>
+      )}
+    </li>
   )
 
   return (
@@ -464,19 +482,7 @@ function Kommentare({
       )}
 
       <ul className="space-y-2.5">
-        {straenge.map((k) => (
-          <li key={k.id}>
-            {beitrag(k, false)}
-            {k.antworten.length > 0 && (
-              // Eingerückt mit einer Linie statt nur mit Abstand: bei zwei
-              // Antworten reicht Abstand, bei zehn sieht man ohne Linie nicht
-              // mehr, wo der Strang endet.
-              <ul className="mt-2 space-y-2 border-l border-kante pl-3 sm:ml-4">
-                {k.antworten.map((a: Kommentar) => <li key={a.id}>{beitrag(a, true)}</li>)}
-              </ul>
-            )}
-          </li>
-        ))}
+        {straenge.map(strang)}
       </ul>
 
       {mehr && (
@@ -494,11 +500,10 @@ function Kommentare({
 
 /** Ein einzelner Beitrag — Ursprung wie Antwort, nur anders eingefasst. */
 function KommentarZeile({
-  kommentar: k, istAntwort, eigen, geliked, kannHandeln,
+  kommentar: k, eigen, geliked, kannHandeln,
   onLike, onAntworten, onLoeschen, onMelden,
 }: {
   kommentar: Kommentar
-  istAntwort: boolean
   eigen: boolean
   geliked: boolean
   kannHandeln: boolean
@@ -508,12 +513,12 @@ function KommentarZeile({
   onMelden: () => void
 }) {
   return (
-    <div className={`rounded-mittel p-3.5 ${istAntwort ? 'bg-flaeche-1/60' : 'bg-flaeche-1'}`}>
+    <div className={`rounded-mittel p-3.5 ${k.tiefe > 0 ? 'bg-flaeche-1/60' : 'bg-flaeche-1'}`}>
       <div className="flex items-start gap-2.5">
         <span
           aria-hidden
           className={`mt-0.5 inline-flex shrink-0 items-center justify-center rounded-full border border-kante bg-flaeche-3 font-semibold text-ink-300 ${
-            istAntwort ? 'h-6 w-6 text-[9px]' : 'h-7 w-7 text-[10px]'}`}
+            k.tiefe > 0 ? 'h-6 w-6 text-[9px]' : 'h-7 w-7 text-[10px]'}`}
         >
           {autorInitialen(k.autor)}
         </span>

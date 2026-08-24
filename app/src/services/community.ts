@@ -18,7 +18,7 @@
  *   - eine Seite fragt immer einen Eintrag mehr an, als sie zeigt. Daran
  *     erkennt sie, ob es weitergeht, ohne die Gesamtzahl zählen zu lassen.
  */
-import { getSupabase, type Kommentar, type KommentarStrang, type PublicTour } from './supabase'
+import { getSupabase, type Kommentar, type KommentarKnoten, type PublicTour } from './supabase'
 import { istSchemaFehlt } from './account'
 
 export type Sortierung = 'neu' | 'beliebt' | 'besprochen' | 'lang' | 'kurz'
@@ -174,18 +174,21 @@ export async function setLike(routeId: string, mag: boolean): Promise<void> {
 export type KommentarSortierung = 'neu' | 'alt'
 
 /**
- * Kommentare zu einer Tour, als Stränge.
+ * Kommentare zu einer Tour, als verschachtelte Stränge.
  *
  * Seitenweise wird über die **Ursprünge** gezählt, nicht über alle Beiträge:
  * ein Strang gehört zusammen und darf nicht mitten in der Diskussion
- * abgeschnitten werden. Die Antworten zu den geholten Ursprüngen kommen
- * anschliessend in einer einzigen zweiten Abfrage — nicht in einer pro Strang,
- * sonst wären es bei zehn Strängen elf Abfragen.
+ * abgeschnitten werden.
+ *
+ * Der ganze Strang kommt dann in *einer* zweiten Abfrage über `wurzel_id` —
+ * unabhängig davon, wie tief er ist. Genau dafür trägt jeder Beitrag seine
+ * Wurzel mit (Migration 0019): ohne sie bräuchte man je Ebene eine weitere
+ * Abfrage, und bei sechs Ebenen wären das sieben statt zwei.
  */
 export async function listKommentare(
   routeId: string,
   optionen: { sortierung?: KommentarSortierung; suche?: string; limit?: number; seite?: number } = {},
-): Promise<{ straenge: KommentarStrang[]; mehr: boolean }> {
+): Promise<{ straenge: KommentarKnoten[]; mehr: boolean }> {
   const sb = getSupabase()
   if (!sb) return { straenge: [], mehr: false }
   const limit = optionen.limit ?? 20
@@ -207,23 +210,55 @@ export async function listKommentare(
   const ursprunge = zeilen.slice(0, limit)
   if (ursprunge.length === 0) return { straenge: [], mehr: false }
 
-  const { data: antwortZeilen } = await sb
+  const { data: nachfahren } = await sb
     .from('oeffentliche_kommentare')
     .select('*')
-    .in('eltern_id', ursprunge.map((k) => k.id))
+    .in('wurzel_id', ursprunge.map((k) => k.id))
+    // Antworten immer aufsteigend: innerhalb eines Strangs liest man von oben
+    // nach unten, auch wenn die Ursprünge nach „neueste zuerst" sortiert sind.
     .order('created_at', { ascending: true })
 
-  const nachEltern = new Map<string, Kommentar[]>()
-  for (const a of (antwortZeilen ?? []) as Kommentar[]) {
-    const liste = nachEltern.get(a.eltern_id!) ?? []
-    liste.push(a)
-    nachEltern.set(a.eltern_id!, liste)
-  }
-
   return {
-    straenge: ursprunge.map((k) => ({ ...k, antworten: nachEltern.get(k.id) ?? [] })),
+    straenge: baumBauen(ursprunge, (nachfahren ?? []) as Kommentar[]),
     mehr: zeilen.length > limit,
   }
+}
+
+/**
+ * Aus flachen Zeilen einen Baum machen.
+ *
+ * In einem Durchgang über eine Map statt mit einer Suche je Beitrag: bei einem
+ * Strang mit hundert Antworten wäre das sonst quadratisch.
+ *
+ * Ein Beitrag, dessen Elternteil nicht in der Menge liegt, hängt sich an den
+ * Ursprung. Das kann passieren, wenn zwischen den beiden Abfragen jemand einen
+ * Kommentar löscht — dann soll die Antwort sichtbar bleiben statt still zu
+ * verschwinden.
+ */
+function baumBauen(ursprunge: Kommentar[], nachfahren: Kommentar[]): KommentarKnoten[] {
+  const knoten = new Map<string, KommentarKnoten>()
+  for (const k of [...ursprunge, ...nachfahren]) knoten.set(k.id, { ...k, antworten: [] })
+
+  for (const k of nachfahren) {
+    const selbst = knoten.get(k.id)!
+    const eltern = (k.eltern_id && knoten.get(k.eltern_id))
+      || (k.wurzel_id ? knoten.get(k.wurzel_id) : undefined)
+    if (eltern && eltern !== selbst) eltern.antworten.push(selbst)
+  }
+
+  return ursprunge.map((k) => knoten.get(k.id)!)
+}
+
+/** Alle Beiträge eines Strangs, flach — für Zähler und Like-Abfragen. */
+export function flachKlopfen(knoten: KommentarKnoten[]): Kommentar[] {
+  const raus: Kommentar[] = []
+  const stapel = [...knoten]
+  while (stapel.length > 0) {
+    const k = stapel.pop()!
+    raus.push(k)
+    stapel.push(...k.antworten)
+  }
+  return raus
 }
 
 export async function schreibeKommentar(
