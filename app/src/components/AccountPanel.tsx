@@ -33,7 +33,11 @@ const ANBIETER_NAMEN: Record<string, string> = {
   azure: 'Microsoft', discord: 'Discord', gitlab: 'GitLab', bitbucket: 'Bitbucket',
 }
 
-const MIN_PASSWORT = 8
+// Zwölf, nicht acht. Acht Zeichen sind für einen Angreifer mit einer
+// Grafikkarte keine Hürde mehr, und die Serverseite muss denselben Wert
+// tragen (Supabase -> Authentication -> Policies), sonst prüft nur der
+// Browser — und den umgeht, wer die API direkt anspricht.
+const MIN_PASSWORT = 12
 
 export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnisGelesen }: Props) {
   const [anbieter, setAnbieter] = useState<string[]>([])

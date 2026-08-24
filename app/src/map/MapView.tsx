@@ -30,7 +30,9 @@ import type {
 import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
 import type { Ausschnitt } from '../data/legalData'
 import { effectiveStatus } from '../data/legalData'
-import { ATTRIBUTION, BASEMAPS, STATUS_COLORS, TEXT_FONT, type BasemapKey } from './mapConfig'
+import {
+  ATTRIBUTION, BASEMAPS, GEMEINDE_COLORS, STATUS_COLORS, TEXT_FONT, type BasemapKey,
+} from './mapConfig'
 import { alpenGrenzen, MIN_ZOOM } from './alpenRahmen'
 import { symboleAnlegen } from './symbole'
 
@@ -581,6 +583,15 @@ const statusColor: ExpressionSpecification = [
   STATUS_COLORS.unknown,
 ]
 
+/** Wie die Gemeindeebene eingefärbt wird — tiefer als die Zonenfarben. */
+const gemeindeColor: ExpressionSpecification = [
+  'match', ['get', 'status'],
+  'allowed', GEMEINDE_COLORS.allowed,
+  'tolerated', GEMEINDE_COLORS.tolerated,
+  'forbidden', GEMEINDE_COLORS.forbidden,
+  GEMEINDE_COLORS.unknown,
+]
+
 /** Punktarten auf ihr Symbolbild abbilden. */
 const punktSymbol: ExpressionSpecification = ['concat', 'cb-', ['get', 'type']]
 
@@ -624,11 +635,24 @@ function addLayers(m: MlMap) {
   // ist die ehrlichere und die lesbarere Lösung — und je weiter die Recherche
   // kommt, desto mehr färbt sich die Karte. Man sieht dem Bild den Fortschritt an.
   m.addLayer({
+    id: 'gemeinden-grund',
+    type: 'fill',
+    source: 'gemeinden',
+    filter: ['!=', ['get', 'status'], 'unknown'],
+    paint: { 'fill-color': '#FFFFFF', 'fill-opacity': 0.58 },
+  })
+
+  // Die Statusfarbe sass vorher mit 32 % direkt auf der Grundkarte. Auf dem
+  // Reliefbild von OpenTopoMap heisst das: Rot auf Rotbraun — die wichtigste
+  // Aussage dieser Karte war ausgerechnet dort nicht zu erkennen, wo man sie
+  // braucht, im Gebirge. Der helle Grund darunter nimmt der Grundkarte so viel
+  // Sättigung, dass die Farbe wieder eine Farbe ist, statt eine Tönung.
+  m.addLayer({
     id: 'gemeinden-fill',
     type: 'fill',
     source: 'gemeinden',
     filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], true]],
-    paint: { 'fill-color': statusColor, 'fill-opacity': 0.32 },
+    paint: { 'fill-color': gemeindeColor, 'fill-opacity': 0.46 },
   })
 
   // Abgeleitet, aber nicht belegt: schraffiert statt voll. Der Prüfstand ist
@@ -665,6 +689,21 @@ function addLayers(m: MlMap) {
       'line-color': '#334155',
       'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 13, 1.1],
       'line-opacity': 0.75,
+    },
+  })
+
+  // Der Rand in der Statusfarbe. Er trägt die Aussage auch dort, wo die Fläche
+  // klein ist oder von Schutzgebieten überlagert wird — und er macht auf einen
+  // Blick sichtbar, wo eine Auskunft aufhört und die nächste anfängt.
+  m.addLayer({
+    id: 'gemeinden-rand',
+    type: 'line',
+    source: 'gemeinden',
+    filter: ['!=', ['get', 'status'], 'unknown'],
+    paint: {
+      'line-color': gemeindeColor,
+      'line-width': ['interpolate', ['linear'], ['zoom'], 7, 1.6, 11, 3, 14, 4],
+      'line-opacity': 1,
     },
   })
 
@@ -1023,7 +1062,7 @@ function addLayers(m: MlMap) {
 function schraffurenAnlegen(m: MlMap) {
   const kante = 8
   const dpr = 2
-  for (const [name, farbe] of Object.entries(STATUS_COLORS)) {
+  for (const [name, farbe] of Object.entries(GEMEINDE_COLORS)) {
     const id = `schraffur-${name}`
     if (m.hasImage(id)) continue
     const c = document.createElement('canvas')

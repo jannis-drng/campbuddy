@@ -105,6 +105,25 @@ export const ATTRIBUTION =
  * Farbcode der Legalitäts-Ebene. Grün/Gelb/Rot wie in der Spezifikation,
  * Grau für ungeprüft — damit "keine Angabe" nie wie "erlaubt" aussieht.
  */
+/**
+ * Eigene, tiefere Töne für die Gemeindeebene.
+ *
+ * Die Zonenfarben sind auf helle Flächen über der Grundkarte abgestimmt. Die
+ * Gemeindeflächen liegen dagegen auf einem hellen Grund, der der Grundkarte
+ * Sättigung nimmt — dort wirkt dasselbe Rot blass und die Aussage beiläufig.
+ * Diese Töne sind zwei Stufen dunkler und behaupten sich auch auf dem
+ * rotbraunen Reliefbild der Alpen, wo man sie am dringendsten braucht.
+ *
+ * Bewusst dieselben Farbfamilien wie oben: Grün, Gelb und Rot bleiben der
+ * Rechtslage vorbehalten, sonst müsste man die Karte zweimal lesen lernen.
+ */
+export const GEMEINDE_COLORS = {
+  allowed: '#15803D',
+  tolerated: '#B45309',
+  forbidden: '#B91C1C',
+  unknown: '#94A3B8',
+}
+
 export const STATUS_COLORS = {
   allowed: '#22c55e',
   tolerated: '#eab308',

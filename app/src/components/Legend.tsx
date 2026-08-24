@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { ChevronDown, Droplet, Eye, Layers, Star, Tent, Truck, Waves } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ActivityMode } from '../data/types'
-import { STATUS_COLORS } from '../map/mapConfig'
+import { GEMEINDE_COLORS, STATUS_COLORS } from '../map/mapConfig'
 import { SYMBOL_FARBEN } from '../map/symbole'
 import { Label } from '../ui'
 
@@ -47,10 +47,10 @@ const ZONEN = [
  * heisst.
  */
 const GEMEINDEN = [
-  ['Erlaubt', STATUS_COLORS.allowed, true],
-  ['Geduldet', STATUS_COLORS.tolerated, true],
-  ['Verboten', STATUS_COLORS.forbidden, true],
-  ['… schraffiert: unbestätigt', STATUS_COLORS.forbidden, false],
+  ['Erlaubt', GEMEINDE_COLORS.allowed, true],
+  ['Geduldet', GEMEINDE_COLORS.tolerated, true],
+  ['Verboten', GEMEINDE_COLORS.forbidden, true],
+  ['… schraffiert: unbestätigt', GEMEINDE_COLORS.forbidden, false],
 ] as const
 
 /** Dieselbe Schraffur wie auf der Karte, nur als Kachel im Kästchen. */

@@ -10,8 +10,9 @@ import type { Position } from '../data/geo'
 import { lineLength } from '../data/geo'
 import { isSupabaseConfigured, type PublicRoute } from '../services/supabase'
 import { addFavorite, listFavoriteIds, listPublicRoutes, removeFavorite } from '../services/account'
-import { Compass, Map as MapIcon, Star, TriangleAlert } from 'lucide-react'
-import { Button, Hinweis, Leer, Liste, Seite } from '../ui'
+import { MeldeDialog } from './MeldeDialog'
+import { Compass, Flag, Map as MapIcon, Star, TriangleAlert } from 'lucide-react'
+import { Button, Hinweis, IconButton, Leer, Liste, Seite } from '../ui'
 
 interface Props {
   session: Session | null
@@ -23,6 +24,8 @@ const formatKm = (m: number) =>
 
 export function CommunityPanel({ session, onLoadRoute }: Props) {
   const [routen, setRouten] = useState<PublicRoute[]>([])
+  // Welche Route gerade gemeldet wird — null heisst: kein Dialog offen.
+  const [meldet, setMeldet] = useState<{ id: string; name: string } | null>(null)
   const [favoriten, setFavoriten] = useState<Set<string>>(new Set())
   const [laedt, setLaedt] = useState(true)
   const [fehler, setFehler] = useState<string | null>(null)
@@ -128,6 +131,11 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
                       {istFavorit ? 'Gemerkt' : 'Merken'}
                     </Button>
                   ) : null}
+                  <IconButton
+                    icon={Flag}
+                    label={`${r.name} melden`}
+                    onClick={() => setMeldet({ id: r.id, name: r.name })}
+                  />
                 </div>
               </div>
               {r.beschreibung && (
@@ -149,6 +157,14 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
         Route zulässig ist, sagt dir die Legalitäts-Ebene auf der Karte — nicht die Tatsache,
         dass jemand die Route geteilt hat.
       </Hinweis>
+
+      <MeldeDialog
+        offen={meldet !== null}
+        zielArt="route"
+        zielId={meldet?.id ?? ''}
+        zielName={meldet?.name ?? ''}
+        onClose={() => setMeldet(null)}
+      />
     </Rahmen>
   )
 }
