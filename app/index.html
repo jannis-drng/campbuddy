@@ -29,8 +29,8 @@
       property="og:description"
       content="Die Karte zeigt flächenscharf, wo Übernachten in der Natur erlaubt, geduldet oder verboten ist — mit Quelle und Prüfstand an jeder Fläche."
     />
-    <meta property="og:url" content="https://jannis-drng.github.io/campbuddy/" />
-    <meta property="og:image" content="https://jannis-drng.github.io/campbuddy/og.jpg" />
+    <meta property="og:url" content="%ORIGIN%%BASIS%" />
+    <meta property="og:image" content="%ORIGIN%%BASIS%og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -38,6 +38,13 @@
       content="Ein beleuchtetes Zelt in der Dämmerung oberhalb der Waldgrenze, dahinter eine vergletscherte Bergkette."
     />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <!--
+      Während des Umzugs liegt dieselbe Seite unter zwei Adressen. Der Canonical
+      sagt Suchmaschinen, welche davon die richtige ist — sonst konkurrieren die
+      beiden gegeneinander und beide ranken schlechter.
+    -->
+    <link rel="canonical" href="%ORIGIN%%BASIS%" />
 
     <link rel="icon" type="image/svg+xml" href="./icon.svg" />
     <!-- iOS nimmt kein SVG als Haustürsymbol; Android und der Verlauf mögen ein PNG. -->

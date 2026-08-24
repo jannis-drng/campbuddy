@@ -4,8 +4,22 @@
     {
       "name": "campbuddy",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "app"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "app"
+      ],
       "port": 5173
+    },
+    {
+      "name": "campbuddy-kopfzeilen",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/vorschau-kopfzeilen.mjs"
+      ],
+      "cwd": "app",
+      "port": 4178
     }
   ]
 }

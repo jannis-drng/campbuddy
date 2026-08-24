@@ -44,6 +44,12 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   **Nicht Gemeinden einzeln einstufen, sondern Formulierungen** — viele Gemeinden nutzen
   wortgleiche Musterreglemente. Quelle ist immer das Reglement der jeweiligen Gemeinde.
 - `npm run deploy --prefix app` — baut und veröffentlicht auf GitHub Pages.
+- `node scripts/vorschau-kopfzeilen.mjs` — den Build mit den echten HTTP-Kopfzeilen
+  ansehen (`vite preview` ignoriert `_headers`). Pflichtschritt, bevor eine Änderung
+  an der Content-Security-Policy live geht: ein Verstoss zeigt sich nur so.
+- `app/_headers.vorlage` — Sicherheits-Kopfzeilen inkl. CSP. Kommt ein externer
+  Dienst dazu, muss er dort in `connect-src`/`img-src` eingetragen werden, sonst
+  blockiert ihn der Browser. Umzug auf Cloudflare: `UMZUG_CLOUDFLARE.md`.
 
 Live: https://jannis-drng.github.io/campbuddy/ · Repo: https://github.com/jannis-drng/campbuddy
 
