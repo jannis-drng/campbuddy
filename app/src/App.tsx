@@ -299,6 +299,18 @@ export default function App() {
       }
     : null
 
+  /**
+   * Eine gespeicherte oder geteilte Tour auf die Karte holen.
+   *
+   * Der Sprung auf ihren Ausschnitt gehört dazu: wer in der Community auf eine
+   * Tour klickt, hat gerade ihr Vorschaubild gesehen. Landete er danach auf
+   * dem zuletzt betrachteten Ausschnitt — womöglich am anderen Ende der Alpen
+   * —, müsste er die eben angesehene Tour erst suchen.
+   *
+   * Der Zähler unterscheidet zwei Klicks auf dieselbe Tour voneinander.
+   */
+  const [kameraZiel, setKameraZiel] = useState<{ geometry: Position[]; zaehler: number } | null>(null)
+
   const routeLaden = (geometry: Position[], wps: Position[]) => {
     setGpxTrack(geometry)
     setWaypoints(wps)
@@ -306,6 +318,9 @@ export default function App() {
     setView('karte')
     setRouteOpen(true)
     setAuswertungOffen(false)
+    if (geometry.length > 0) {
+      setKameraZiel((z) => ({ geometry, zaehler: (z?.zaehler ?? 0) + 1 }))
+    }
   }
 
   const clearRoute = () => {
@@ -443,6 +458,7 @@ export default function App() {
             visible={view === 'karte'}
             route={routeGeometry}
             waypoints={gpxTrack ? [] : waypoints}
+            kameraZiel={kameraZiel}
             drawing={drawing}
             markieren={markieren}
             onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}

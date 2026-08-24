@@ -45,16 +45,80 @@ function rueckkehrAdresse(): string {
 export async function signUpWithPassword(
   email: string,
   password: string,
+  benutzername: string,
 ): Promise<{ bestaetigungNoetig: boolean }> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
   const { data, error } = await sb.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: rueckkehrAdresse() },
+    // Der Name reist als Metadatum mit. Ihn erst nach der Anmeldung ins
+    // Profil zu schreiben, ginge nicht: solange die E-Mail unbestätigt ist,
+    // gibt es keine Sitzung — das Konto entstünde namenlos und bekäme seinen
+    // Namen erst Stunden später, wenn überhaupt. Der Trigger
+    // `handle_new_user` (Migration 0017) setzt ihn beim Anlegen.
+    options: { emailRedirectTo: rueckkehrAdresse(), data: { anzeigename: benutzername } },
   })
   if (error) throw new Error(uebersetzeFehler(error.message))
   return { bestaetigungNoetig: data.session == null }
+}
+
+/* ---------------- Benutzername ---------------- */
+
+export type NamensUrteil = {
+  ok: boolean
+  art: 'ok' | 'zu_kurz' | 'zu_lang' | 'zeichen' | 'gesperrt' | 'vergeben' | 'unbekannt'
+  meldung: string
+}
+
+/** Form und Länge, wie sie Migration 0017 als Constraint festhält. */
+export const NAME_MIN = 3
+export const NAME_MAX = 20
+const NAME_FORM = /^[a-zA-Z0-9][a-zA-Z0-9_.-]*$/
+
+/**
+ * Sofortige Rückmeldung ohne Netz — Form und Länge.
+ *
+ * Bewusst nur das: ob ein Name gesperrt oder vergeben ist, weiss allein die
+ * Datenbank. Die Sperrliste im Bundle mitzuliefern hiesse, eine Sammlung von
+ * Schimpfwörtern auszuliefern und sie zugleich als Umgehungsanleitung zu
+ * veröffentlichen.
+ */
+export function namensformPruefen(kandidat: string): NamensUrteil | null {
+  const n = kandidat.trim()
+  if (n.length === 0) return null
+  if (n.length < NAME_MIN) return { ok: false, art: 'zu_kurz', meldung: `Mindestens ${NAME_MIN} Zeichen.` }
+  if (n.length > NAME_MAX) return { ok: false, art: 'zu_lang', meldung: `Höchstens ${NAME_MAX} Zeichen.` }
+  if (!NAME_FORM.test(n)) {
+    return {
+      ok: false, art: 'zeichen',
+      meldung: 'Erlaubt sind Buchstaben, Ziffern, Punkt, Strich und Unterstrich — und das erste Zeichen muss ein Buchstabe oder eine Ziffer sein.',
+    }
+  }
+  return null
+}
+
+/**
+ * Die vollständige Prüfung: Form, Sperrliste und Verfügbarkeit, alles in der
+ * Datenbank. Dieselbe Funktion hängt dort am Trigger — es gibt also keine
+ * zweite, abweichende Wahrheit im Browser.
+ */
+export async function namePruefen(kandidat: string): Promise<NamensUrteil> {
+  const sofort = namensformPruefen(kandidat)
+  if (sofort) return sofort
+
+  const sb = getSupabase()
+  if (!sb) return { ok: true, art: 'ok', meldung: '' }
+  const { data, error } = await sb.rpc('name_pruefen', { kandidat: kandidat.trim() })
+  if (error) {
+    return {
+      ok: false, art: 'unbekannt',
+      meldung: /function .* does not exist|schema cache/i.test(error.message)
+        ? 'Die Datenbank kennt die Namensprüfung noch nicht — Migration 0017 ist noch nicht eingespielt.'
+        : error.message,
+    }
+  }
+  return data as NamensUrteil
 }
 
 export async function signInWithPassword(email: string, password: string): Promise<void> {
@@ -290,12 +354,14 @@ export function istSchemaFehlt(error: { code?: string } | null): boolean {
 export async function setTourPublic(
   id: string,
   is_public: boolean,
-  zusatz: { autor?: string; beschreibung?: string } = {},
+  zusatz: { beschreibung?: string } = {},
 ): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
+  // Kein `autor` mehr: den holt die View seit Migration 0017 live aus dem
+  // Profil. Mitkopiert hiesse, dass eine Umbenennung alte Touren unter dem
+  // alten Namen stehen lässt.
   const patch: Record<string, unknown> = { is_public }
-  if (zusatz.autor !== undefined) patch.autor = zusatz.autor
   if (zusatz.beschreibung !== undefined) patch.beschreibung = zusatz.beschreibung
   const { error } = await sb.from('routes').update(patch).eq('id', id)
   if (error) throw new Error(uebersetzeSpeicherfehler(error.message))
@@ -388,16 +454,28 @@ export async function ladeProfil(): Promise<Profil | null> {
   return (data as Profil) ?? { id, anzeigename: null, subscription_status: 'free', abo_bis: null }
 }
 
+/**
+ * Umbenennen.
+ *
+ * Kein Löschen mehr: seit Migration 0017 hat jedes Konto einen Namen, weil
+ * geteilte Touren sonst wieder namenlos dastünden. Die Meldungen des Triggers
+ * sind für Menschen geschrieben und werden unverändert durchgereicht.
+ */
 export async function speichereAnzeigename(anzeigename: string): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
+  const name = anzeigename.trim()
+  if (!name) throw new Error('Der Benutzername darf nicht leer sein.')
   const { data: userData } = await sb.auth.getUser()
   const id = userData.user?.id
   if (!id) throw new Error('Nicht angemeldet')
-  const { error } = await sb
-    .from('profiles')
-    .upsert({ id, anzeigename: anzeigename.trim() || null })
-  if (error) throw new Error(error.message)
+  const { error } = await sb.from('profiles').upsert({ id, anzeigename: name })
+  if (error) {
+    // 23505 = unique_violation. Die kommt vom Index, nicht vom Trigger, wenn
+    // zwei Umbenennungen im selben Moment auf denselben Namen zielen.
+    if (error.code === '23505') throw new Error('Dieser Name ist schon vergeben.')
+    throw new Error(error.message)
+  }
 }
 
 /**

@@ -546,6 +546,35 @@ Die Übersicht ist nicht auf die zwölf Touren des Anfangs gebaut:
   scrollt. **OpenTopoMap ist ein ehrenamtliches Projekt** — wird die Nutzung gross, gehört
   hier ein eigener Kachelserver hin, nicht mehr Last auf fremde Infrastruktur.
 
+### Der Benutzername
+
+Seit Migration 0017 hat jedes Konto einen Namen, und er ist die **einzige**
+öffentliche Kennung — die E-Mail-Adresse verlässt die Tabelle nie. Vorher war der
+Anzeigename Freitext und durfte fehlen; geteilte Touren standen dann als „ohne
+Urheberangabe" da.
+
+- **Eindeutig**, ohne Rücksicht auf Gross- und Kleinschreibung: „Jannis" und „jannis"
+  sind für einen Leser derselbe Name, und genau darauf zielt eine Nachahmung.
+- **3–20 Zeichen**, Buchstaben, Ziffern, Punkt, Strich, Unterstrich; das erste Zeichen
+  ein Buchstabe oder eine Ziffer.
+- **Wortfilter serverseitig**, als Trigger auf `profiles`. Geprüft wird gegen eine
+  normalisierte Fassung (klein, ohne Trennzeichen, Zahlendreher zurückgesetzt) — sonst
+  käme `4rschl0ch` ungehindert durch. Reservierte Namen wie `admin` treffen nur als
+  Ganzes, anstössige auch als Teilstring.
+- Die Sperrliste steht in `public.gesperrte_namen` und ist **nicht abfragbar** (keine
+  Lese-Policy): sie wäre sonst eine fertige Sammlung von Schimpfwörtern hinter einem
+  öffentlichen Schlüssel und zugleich eine Anleitung, was gerade noch durchgeht. Der
+  Browser fragt stattdessen `name_pruefen()`, die nur ja/nein antwortet — dieselbe
+  Funktion, die am Trigger hängt. Es gibt also keine zweite Wahrheit im Frontend.
+- Die Registrierung **scheitert nie am Namen**: wird jemand zwischen Prüfung und
+  Absenden überholt, legt der Trigger das Konto mit einem erzeugten Namen an, den man
+  danach ändern kann. Ein Konto, das wegen eines vergebenen Namens gar nicht erst
+  entsteht, ist der schlechtere Ausgang.
+
+Die Autorenangabe geteilter Touren und Kommentare kommt seit 0017 über einen Join aus
+`profiles`, nicht mehr aus einer beim Teilen mitkopierten Textspalte. Wer sich umbenennt,
+heisst damit überall neu — auch unter Touren, die er vor Jahren geteilt hat.
+
 ### Was Fremde von einem Konto sehen
 
 Nichts ausser dem, was jemand selbst hingeschrieben hat. Geteilte Touren kommen aus der
@@ -643,6 +672,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0006_konto.sql`](./supabase/migrations/0006_konto.sql) | Anzeigename, Abo-Platzhalter, Konto löschen |
 | [`0007_eigene_punkte.sql`](./supabase/migrations/0007_eigene_punkte.sql) | Selbst markierte Punkte und der private Fotospeicher |
 | [`0016_touren_und_community.sql`](./supabase/migrations/0016_touren_und_community.sql) | Route und Tour werden **eine** Tour; Likes, Kommentare und gezählte Spalten |
+| [`0017_benutzernamen.sql`](./supabase/migrations/0017_benutzernamen.sql) | Eindeutiger Benutzername mit Sperrliste; Autorenangabe kommt aus dem Profil |
 
 Die Dateien sind mehrfach ausführbar. Bricht 0016 mit `40P01: deadlock detected` oder mit
 einem Sperr-Zeitablauf ab, hat die Transaktion nichts hinterlassen — einfach noch einmal

@@ -17,7 +17,8 @@
  */
 import { useEffect, useRef } from 'react'
 import {
-  AttributionControl, GeolocateControl, GeoJSONSource, Map as MlMap, NavigationControl, ScaleControl,
+  AttributionControl, GeolocateControl, GeoJSONSource, LngLatBounds, Map as MlMap,
+  NavigationControl, ScaleControl,
 } from 'maplibre-gl'
 import type maplibregl from 'maplibre-gl'
 // maplibre-gl reicht die Expression-Typen nicht nach aussen durch; sie stammen
@@ -61,6 +62,16 @@ interface Props {
   route: Position[]
   /** Die vom Nutzer gesetzten Wegpunkte — nur diese bekommen einen Griff. */
   waypoints: Position[]
+  /**
+   * Ausschnitt, auf den die Karte springen soll — gesetzt, wenn eine
+   * gespeicherte oder geteilte Tour geöffnet wird.
+   *
+   * Der `zaehler` ist nötig, weil dieselbe Tour zweimal hintereinander
+   * geöffnet werden kann: an der Geometrie allein liesse sich der zweite Klick
+   * nicht vom ersten unterscheiden, und die Karte bliebe stehen, wo der Nutzer
+   * inzwischen hingescrollt hat.
+   */
+  kameraZiel: { geometry: Position[]; zaehler: number } | null
   /** Im Zeichenmodus setzt ein Kartenklick einen Wegpunkt statt eine Zone zu öffnen. */
   drawing: boolean
   /** Im Markiermodus setzt ein Kartenklick einen eigenen Punkt. */
@@ -89,7 +100,7 @@ interface Props {
 
 export function MapView({
   region, zones, points, peaks, nature, eigene, gemeinden, activity, basemap, visible,
-  route, waypoints, drawing, markieren,
+  route, waypoints, kameraZiel, drawing, markieren,
   onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
 }: Props) {
@@ -450,6 +461,53 @@ export function MapView({
     if (!m || !ready.current) return
     ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route, waypoints))
   }, [route, waypoints])
+
+  /**
+   * Auf eine geöffnete Tour springen.
+   *
+   * Wer in der Community auf eine Tour klickt, hat gerade ihr Vorschaubild
+   * angesehen — landet er danach auf dem zuletzt gewählten Ausschnitt, muss er
+   * seine eigene Tour erst suchen. Die Karte fährt deshalb auf denselben
+   * Rahmen wie das Vorschaubild.
+   *
+   * `resize()` vorweg, weil der Sprung meist im selben Zug mit dem
+   * Ansichtswechsel passiert: der Container hatte bis eben Breite 0, und
+   * `fitBounds` würde auf die alte Grösse rechnen und zu weit herauszoomen.
+   */
+  useEffect(() => {
+    const m = map.current
+    if (!m || !kameraZiel || kameraZiel.geometry.length === 0) return
+
+    const punkte = kameraZiel.geometry.filter(
+      ([lon, lat]) => Number.isFinite(lon) && Number.isFinite(lat),
+    )
+    if (punkte.length === 0) return
+
+    // Ohne requestAnimationFrame: Effekte laufen nach dem Commit, der
+    // Container hat seine Grösse also bereits. Ein Frame abzuwarten wäre nicht
+    // nur unnötig, sondern zerbrechlich — in einem Hintergrund-Tab feuert
+    // rAF gar nicht, und der Sprung bliebe aus.
+    //
+    // `resize()` trotzdem vorweg: die Karte war bis eben ausgeblendet und hat
+    // dann Breite 0 gemessen; `fitBounds` würde sonst auf die alte Grösse
+    // rechnen und zu weit herauszoomen.
+    m.resize()
+
+    const rahmen = punkte.reduce(
+      (b, p) => b.extend(p as [number, number]),
+      new LngLatBounds(punkte[0] as [number, number], punkte[0] as [number, number]),
+    )
+    // Links Platz für das Routenpanel, das beim Öffnen aufgeht; es liegt ab
+    // Tablet über der Karte und würde sonst den Anfang der Tour verdecken.
+    const breite = m.getContainer().clientWidth
+    const breit = breite >= 640
+    m.fitBounds(rahmen, {
+      padding: { top: 72, bottom: 72, left: breit ? 400 : 48, right: breit ? 88 : 48 },
+      // Eine einzelne Markierung würde sonst bis zum Maximum hineinzoomen.
+      maxZoom: 14,
+      duration: 900,
+    })
+  }, [kameraZiel])
 
   useEffect(() => {
     const m = map.current

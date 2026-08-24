@@ -18,19 +18,20 @@
  * Passwörter werden nirgends zwischengespeichert oder protokolliert; sie gehen
  * direkt an Supabase.
  */
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
-  BadgeCheck, Check, ChevronRight, Eye, EyeOff, KeyRound, Lock, LogOut, Mail, Map as MapIcon,
-  ShieldCheck, Sparkles, Trash2, TriangleAlert, UserRound, X,
+  AtSign, BadgeCheck, Check, ChevronRight, Eye, EyeOff, KeyRound, Loader2, Lock, LogOut, Mail,
+  Map as MapIcon, ShieldCheck, Sparkles, Trash2, TriangleAlert, UserRound, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Badge, Button, Card, Eingabe, Hinweis, Label, Leer, Segmente, Seite, Stufen } from '../ui'
 import { isSupabaseConfigured } from '../services/supabase'
 import {
-  kontoLoeschen, ladeProfil, passwortAendern, passwortZuruecksetzen, signInWithEmail,
-  signInWithPassword, signInWithProvider, signOut, signUpWithPassword, speichereAnzeigename,
-  verfuegbareAnbieter, type LinkErgebnis, type Profil,
+  kontoLoeschen, ladeProfil, namePruefen, namensformPruefen, passwortAendern,
+  passwortZuruecksetzen, signInWithEmail, signInWithPassword, signInWithProvider, signOut,
+  signUpWithPassword, speichereAnzeigename, verfuegbareAnbieter,
+  NAME_MAX, NAME_MIN, type LinkErgebnis, type NamensUrteil, type Profil,
 } from '../services/account'
 
 interface Props {
@@ -290,10 +291,109 @@ function AnbieterZeichen({ anbieter }: { anbieter: string }) {
   return <KeyRound size={17} strokeWidth={2} className="shrink-0" aria-hidden />
 }
 
+/**
+ * Benutzername mit Prüfung, während getippt wird.
+ *
+ * Zwei Stufen: Form und Länge beantwortet der Browser sofort, alles Weitere
+ * (Sperrliste, Verfügbarkeit) die Datenbank — entprellt, damit nicht jeder
+ * Tastenanschlag eine Abfrage auslöst. Die Sperrliste bleibt dort, wo sie
+ * hingehört; sie im Bundle mitzuliefern hiesse, eine Sammlung von
+ * Schimpfwörtern auszuliefern und zugleich zu verraten, was gerade noch
+ * durchgeht.
+ *
+ * `onUrteil` meldet nach oben, ob abgeschickt werden darf.
+ */
+function Namensfeld({
+  wert, onAendern, onUrteil, label = 'Benutzername', hinweis, autoFocus,
+}: {
+  wert: string
+  onAendern: (w: string) => void
+  onUrteil: (u: NamensUrteil | null) => void
+  label?: string
+  hinweis?: React.ReactNode
+  autoFocus?: boolean
+}) {
+  const [urteil, setUrteil] = useState<NamensUrteil | null>(null)
+  const [prueft, setPrueft] = useState(false)
+  const laufendeAnfrage = useRef(0)
+
+  useEffect(() => {
+    const n = wert.trim()
+    if (n.length === 0) { setUrteil(null); onUrteil(null); setPrueft(false); return }
+
+    // Formfehler sofort zeigen — dafür braucht es kein Netz.
+    const sofort = namensformPruefen(n)
+    if (sofort) { setUrteil(sofort); onUrteil(sofort); setPrueft(false); return }
+
+    setPrueft(true)
+    const marke = ++laufendeAnfrage.current
+    const t = setTimeout(async () => {
+      const u = await namePruefen(n)
+      // Eine langsame Antwort auf eine ältere Eingabe darf die neuere nicht
+      // überschreiben.
+      if (marke !== laufendeAnfrage.current) return
+      setUrteil(u); onUrteil(u); setPrueft(false)
+    }, 400)
+    return () => clearTimeout(t)
+  }, [wert, onUrteil])
+
+  const zustand = urteil?.ok ? 'ok' : urteil ? 'fehler' : null
+
+  return (
+    <div>
+      <Label className="mb-1.5">{label}</Label>
+      <div className="relative">
+        <AtSign
+          size={15} strokeWidth={2} aria-hidden
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-500"
+        />
+        <Eingabe
+          value={wert}
+          onChange={(e) => onAendern(e.target.value)}
+          autoComplete="username"
+          autoCapitalize="none"
+          spellCheck={false}
+          maxLength={NAME_MAX}
+          required
+          autoFocus={autoFocus}
+          aria-invalid={zustand === 'fehler'}
+          placeholder="z.B. bergziege"
+          className={`pl-9 pr-9 ${
+            zustand === 'ok' ? 'border-erlaubt-500/50'
+            : zustand === 'fehler' ? 'border-verboten-500/50'
+            : ''}`}
+        />
+        <span className="absolute right-3 top-1/2 -translate-y-1/2">
+          {prueft && <Loader2 size={15} className="animate-spin text-ink-500" aria-hidden />}
+          {!prueft && zustand === 'ok' && (
+            <Check size={15} strokeWidth={2.5} className="text-erlaubt-400" aria-hidden />
+          )}
+          {!prueft && zustand === 'fehler' && (
+            <X size={15} strokeWidth={2.5} className="text-verboten-400" aria-hidden />
+          )}
+        </span>
+      </div>
+      <p
+        role="status"
+        className={`mt-1.5 text-mikro normal-case leading-relaxed tracking-normal ${
+          zustand === 'ok' ? 'text-erlaubt-400'
+          : zustand === 'fehler' ? 'text-verboten-400'
+          : 'text-ink-500'}`}
+      >
+        {prueft ? 'Wird geprüft …'
+          : urteil ? (urteil.ok ? 'Der Name ist frei.' : urteil.meldung)
+          : hinweis ?? `${NAME_MIN}–${NAME_MAX} Zeichen. Unter diesem Namen erscheinen deine geteilten Touren.`}
+      </p>
+    </div>
+  )
+}
+
 function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: React.ReactNode }) {
   const [modus, setModus] = useState<'anmelden' | 'registrieren'>('anmelden')
   const [email, setEmail] = useState('')
   const [passwort, setPasswort] = useState('')
+  const [name, setName] = useState('')
+  const [nameUrteil, setNameUrteil] = useState<NamensUrteil | null>(null)
   const [busy, setBusy] = useState(false)
   const [fehler, setFehler] = useState<string | null>(null)
   const [hinweis, setHinweis] = useState<string | null>(null)
@@ -301,14 +401,19 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
   const registrieren = modus === 'registrieren'
   const zuKurz = registrieren && passwort.length > 0 && passwort.length < MIN_PASSWORT
   const staerke = passwortStaerke(passwort)
+  // Ohne freigegebenen Namen kein Konto: er ist ab Migration 0017 die einzige
+  // öffentliche Kennung, und ein Konto ohne ihn wäre wieder „ohne Urheber".
+  const nameOk = !registrieren || nameUrteil?.ok === true
+  // In einem Callback, damit das Namensfeld nicht bei jeder Neuzeichnung neu prüft.
+  const urteilUebernehmen = useCallback((u: NamensUrteil | null) => setNameUrteil(u), [])
 
   const absenden = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (zuKurz) return
+    if (zuKurz || !nameOk) return
     setBusy(true); setFehler(null); setHinweis(null)
     try {
       if (registrieren) {
-        const { bestaetigungNoetig } = await signUpWithPassword(email.trim(), passwort)
+        const { bestaetigungNoetig } = await signUpWithPassword(email.trim(), passwort, name.trim())
         setHinweis(bestaetigungNoetig
           ? 'Fast fertig — bestätige den Link in deiner E-Mail, dann kannst du dich anmelden.'
           : 'Konto angelegt.')
@@ -369,7 +474,7 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
         <Segmente
           ariaLabel="Anmelden oder registrieren"
           wert={modus}
-          onWaehlen={(m) => { setModus(m); setFehler(null); setHinweis(null) }}
+          onWaehlen={(m) => { setModus(m); setFehler(null); setHinweis(null); setNameUrteil(null) }}
           className="w-full [&>button]:flex-1"
           optionen={[
             { wert: 'anmelden' as const, label: 'Anmelden' },
@@ -400,6 +505,10 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
         )}
 
         <form onSubmit={absenden} className="space-y-3.5">
+          {registrieren && (
+            <Namensfeld wert={name} onAendern={setName} onUrteil={urteilUebernehmen} />
+          )}
+
           <div>
             <Label className="mb-1.5">E-Mail</Label>
             <Eingabe
@@ -429,7 +538,7 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
             )}
           </div>
 
-          <Button type="submit" variante="primaer" groesse="gross" breit disabled={busy || zuKurz}>
+          <Button type="submit" variante="primaer" groesse="gross" breit disabled={busy || zuKurz || !nameOk}>
             {busy ? 'Moment …' : registrieren ? 'Konto anlegen' : 'Anmelden'}
           </Button>
         </form>
@@ -502,6 +611,8 @@ function AngemeldeteAnsicht({
   const [profil, setProfil] = useState<Profil | null>(null)
   const [name, setName] = useState('')
   const [nameStand, setNameStand] = useState<'idle' | 'busy' | 'ok'>('idle')
+  const [nameUrteil, setNameUrteil] = useState<NamensUrteil | null>(null)
+  const urteilUebernehmen = useCallback((u: NamensUrteil | null) => setNameUrteil(u), [])
   const [neuesPasswort, setNeuesPasswort] = useState('')
   const [pwStand, setPwStand] = useState<'idle' | 'busy' | 'ok'>('idle')
   const [loeschOffen, setLoeschOffen] = useState(false)
@@ -537,6 +648,9 @@ function AngemeldeteAnsicht({
   }
 
   const bezahlt = profil?.subscription_status === 'paid'
+  // Umbenennen nur, wenn der Name geprüft *und* wirklich ein anderer ist —
+  // sonst schickt der Knopf eine Änderung, die keine ist.
+  const nameAenderbar = nameUrteil?.ok === true && name.trim() !== (profil?.anzeigename ?? '')
   const provider = session.user.app_metadata?.provider ?? ''
   const providerName = provider === 'email' ? 'E-Mail' : ANBIETER_NAMEN[provider] ?? provider
   const seit = session.user.created_at
@@ -597,28 +711,31 @@ function AngemeldeteAnsicht({
         </button>
       </Card>
 
-      {/* ---- Anzeigename ---- */}
+      {/* ---- Benutzername ---- */}
       <Feldkarte
         icon={UserRound}
-        titel="Anzeigename"
-        beschreibung="Steht an Routen, die du veröffentlichst. Ohne ihn erscheinen geteilte Routen ohne Urheberangabe — deine E-Mail-Adresse wird nie veröffentlicht."
+        titel="Benutzername"
+        beschreibung="Dein Name in der Community: er steht an jeder Tour, die du teilst, und an jedem Kommentar. Deine E-Mail-Adresse wird nie veröffentlicht."
       >
-        <form onSubmit={nameSpeichern} className="flex flex-wrap items-center gap-2">
-          <Eingabe
-            value={name} onChange={(e) => { setName(e.target.value); setNameStand('idle') }}
-            maxLength={40} placeholder="z.B. Jannis"
-            aria-label="Anzeigename"
-            className="min-w-0 flex-1"
+        <form onSubmit={nameSpeichern} className="space-y-3">
+          <Namensfeld
+            wert={name}
+            onAendern={(w) => { setName(w); setNameStand('idle') }}
+            onUrteil={urteilUebernehmen}
+            label="Name"
+            hinweis={`${NAME_MIN}–${NAME_MAX} Zeichen. Eine Umbenennung wirkt sofort auf alle deine geteilten Touren.`}
           />
-          <Button type="submit" variante="sekundaer" groesse="gross"
-                  disabled={nameStand === 'busy' || name.trim() === (profil?.anzeigename ?? '').trim()}>
-            {nameStand === 'busy' ? 'Speichere …' : 'Speichern'}
-          </Button>
-          {nameStand === 'ok' && (
-            <p className="flex w-full items-center gap-1.5 text-klein text-erlaubt-400">
-              <Check size={13} strokeWidth={2.5} aria-hidden />Gespeichert.
-            </p>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            <Button type="submit" variante="sekundaer" groesse="gross"
+                    disabled={nameStand === 'busy' || !nameAenderbar}>
+              {nameStand === 'busy' ? 'Speichere …' : 'Umbenennen'}
+            </Button>
+            {nameStand === 'ok' && (
+              <p className="flex items-center gap-1.5 text-klein text-erlaubt-400">
+                <Check size={13} strokeWidth={2.5} aria-hidden />Gespeichert.
+              </p>
+            )}
+          </div>
         </form>
       </Feldkarte>
 

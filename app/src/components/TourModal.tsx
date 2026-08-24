@@ -350,9 +350,7 @@ function Kommentare({
                 onChange={(e) => setText(e.target.value)}
                 rows={2}
                 maxLength={2000}
-                placeholder={anzeigename
-                  ? 'Warst du dort? Schreib, was andere wissen sollten.'
-                  : 'Schreib etwas … (ohne Anzeigename erscheint dein Beitrag anonym)'}
+                placeholder="Warst du dort? Schreib, was andere wissen sollten."
                 className="w-full resize-y rounded-mittel border border-kante bg-flaeche-1 px-3 py-2 text-fliess leading-relaxed text-ink-100 placeholder:text-ink-500 transition-colors duration-[160ms] hover:border-kante-stark focus:border-gletscher-500 focus:outline-none focus:ring-2 focus:ring-gletscher-500/25"
               />
               <div className="mt-1.5 flex items-center justify-between gap-3">
@@ -400,7 +398,7 @@ function Kommentare({
               </span>
               <div className="min-w-0 flex-1">
                 <p className="flex flex-wrap items-baseline gap-x-2 text-klein">
-                  <span className="font-medium text-ink-100">{k.autor?.trim() || 'Ohne Namen'}</span>
+                  <span className="font-medium text-ink-100">{k.autor?.trim() || 'gelöschtes Konto'}</span>
                   <span className="text-ink-600">{seitdem(k.created_at)}</span>
                 </p>
                 <p className="mt-1 whitespace-pre-line break-words text-fliess leading-relaxed text-ink-200">

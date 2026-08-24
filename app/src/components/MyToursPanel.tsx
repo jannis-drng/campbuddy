@@ -97,7 +97,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
   }
 
   const liste = stapel === 'eigene' ? eigene : gemerkt
-  const geteilteOhneNamen = eigene.some((t) => t.is_public) && !anzeigename
 
   return (
     <Seite
@@ -135,13 +134,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
               ]}
             />
           </div>
-
-          {geteilteOhneNamen && (
-            <Hinweis ton="warnung" icon={TriangleAlert}>
-              Du hast Touren geteilt, aber keinen Anzeigenamen gesetzt — sie erscheinen ohne
-              Urheberangabe. Im Kontobereich lässt sich einer eintragen.
-            </Hinweis>
-          )}
 
           {laedt && <p className="text-klein text-ink-500">Wird geladen …</p>}
 
@@ -323,10 +315,7 @@ function TeilenDialog({
     setBusy(true)
     try {
       const beschreibung = text.trim() || null
-      await setTourPublic(tour.id, true, {
-        autor: anzeigename ?? undefined,
-        beschreibung: beschreibung ?? undefined,
-      })
+      await setTourPublic(tour.id, true, { beschreibung: beschreibung ?? undefined })
       onGeteilt(tour.id, beschreibung)
     } catch (e) {
       onFehler((e as Error).message)
@@ -339,15 +328,9 @@ function TeilenDialog({
     <Dialog offen={tour !== null} titel="Tour teilen" onClose={onClose}>
       <p className="text-fliess leading-relaxed text-ink-300">
         Sichtbar werden Name, Verlauf, Kenndaten und deine Beschreibung — als
-        {' '}<span className="font-medium text-ink-100">{anzeigename?.trim() || 'ohne Urheberangabe'}</span>.
+        {' '}<span className="font-medium text-ink-100">{anzeigename?.trim() || 'dein Benutzername'}</span>.
         Deine E-Mail-Adresse wird nie veröffentlicht. Zurücknehmen kannst du das jederzeit.
       </p>
-
-      {!anzeigename && (
-        <Hinweis ton="warnung" className="mt-3">
-          Ohne Anzeigenamen erscheint die Tour anonym. Im Kontobereich lässt sich einer setzen.
-        </Hinweis>
-      )}
 
       <label className="mt-4 block">
         <span className="mb-1.5 block text-mikro font-medium uppercase text-ink-500">

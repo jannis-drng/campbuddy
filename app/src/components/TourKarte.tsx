@@ -60,8 +60,14 @@ export function AutorZeile({
       >
         {autorInitialen(autor)}
       </span>
+      {/*
+        Seit Migration 0017 hat jedes Konto einen Benutzernamen, und die View
+        holt ihn live aus dem Profil — „ohne Urheberangabe" kann es nicht mehr
+        geben. Der Rückfall steht nur noch für Zeilen aus der Zeit davor, deren
+        Konto gelöscht wurde.
+      */}
       <span className="min-w-0 truncate text-klein text-ink-400">
-        {autor?.trim() || 'ohne Urheberangabe'}
+        {autor?.trim() || 'gelöschtes Konto'}
         {zeit && <span className="text-ink-600"> · {seitdem(zeit)}</span>}
       </span>
     </div>
