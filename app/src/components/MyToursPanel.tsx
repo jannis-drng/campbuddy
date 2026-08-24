@@ -23,7 +23,7 @@ import {
   setTourPublic,
 } from '../services/account'
 import { Badge, Button, Eingabe, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
-import { AufKarteKnopf, TourKarte, ZaehlerKnopf } from './TourKarte'
+import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
 
 interface Props {
   session: Session | null
@@ -193,7 +193,7 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                                       onClick={() => setBearbeitet(t)} />
                           <IconButton icon={Trash2} groesse="klein" label={`„${t.name}" löschen`}
                                       onClick={() => setLoescht(t)} />
-                          <AufKarteKnopf onClick={() => aufKarte(t)} />
+                          <AufKarteKnopf onClick={() => aufKarte(t)} disabled={!hatWeg(t)} />
                         </>
                       }
                     />
@@ -211,7 +211,7 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                                         label={`${t.kommentare_count} Kommentare`} />
                           <ZaehlerKnopf icon={Bookmark} aktiv label={`„${t.name}" nicht mehr merken`}
                                         onClick={() => vergessen(t)} />
-                          <AufKarteKnopf onClick={() => aufKarte(t)} />
+                          <AufKarteKnopf onClick={() => aufKarte(t)} disabled={!hatWeg(t)} />
                         </>
                       }
                     />

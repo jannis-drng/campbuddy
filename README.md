@@ -573,7 +573,36 @@ Urheberangabe" da.
 
 Die Autorenangabe geteilter Touren und Kommentare kommt seit 0017 über einen Join aus
 `profiles`, nicht mehr aus einer beim Teilen mitkopierten Textspalte. Wer sich umbenennt,
-heisst damit überall neu — auch unter Touren, die er vor Jahren geteilt hat.
+heisst damit überall neu — auch unter Touren, die er vor Jahren geteilt hat. Genau deshalb
+braucht eine Umbenennung keinen Nachlauf: es gibt keine Zweitfassung, die nachgezogen
+werden müsste.
+
+**Umbenennen geht einmal im Monat** (Migration 0018). Der Name ist die einzige öffentliche
+Kennung; wer ihn beliebig oft wechseln kann, kann sich einen Ruf anlesen und ihn dann
+abstreifen, und die Zuschreibung wird wertlos. Der allererste Wechsel nach der
+Registrierung ist frei — ein einmal gewählter Name muss korrigierbar bleiben. Denselben
+Namen noch einmal zu speichern löst die Sperre nicht aus.
+
+### Kommentare
+
+Ein Strang ist **genau eine Ebene tief**. Eine Antwort auf eine Antwort wird nicht
+abgelehnt, sondern an denselben Ursprung gehängt: tiefer verschachtelte Stränge sind auf
+einem Telefon nicht mehr lesbar, und „worauf bezieht sich das?" beantwortet die erste
+Ebene bereits.
+
+Seitenweise geladen wird über die **Ursprünge**, nicht über alle Beiträge — ein Strang
+gehört zusammen und darf nicht mitten in der Diskussion abgeschnitten werden. Die
+Antworten zu den geholten Ursprüngen kommen in *einer* zweiten Abfrage, nicht in einer pro
+Strang.
+
+Likes auf Kommentare sind gebaut wie die auf Touren: wer geliked hat, ist nicht abfragbar,
+öffentlich ist allein die Zahl in `kommentare.likes_count` (Trigger-gepflegt).
+
+Der **Wortfilter** benutzt dieselbe Sperrliste wie die Benutzernamen, wendet sie aber
+anders an: ein Name ist ein Wort, ein Kommentar ist Fliesstext. Geprüft wird deshalb Wort
+für Wort — sonst würde ein harmloser Satz abgelehnt, weil quer über zwei Wortgrenzen
+zufällig ein Muster entsteht. Reservierte Namen (`admin`, `team`) sind hier ohne Belang:
+dass jemand das Wort „Team" schreibt, ist kein Missbrauch.
 
 ### Was Fremde von einem Konto sehen
 
@@ -673,6 +702,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0007_eigene_punkte.sql`](./supabase/migrations/0007_eigene_punkte.sql) | Selbst markierte Punkte und der private Fotospeicher |
 | [`0016_touren_und_community.sql`](./supabase/migrations/0016_touren_und_community.sql) | Route und Tour werden **eine** Tour; Likes, Kommentare und gezählte Spalten |
 | [`0017_benutzernamen.sql`](./supabase/migrations/0017_benutzernamen.sql) | Eindeutiger Benutzername mit Sperrliste; Autorenangabe kommt aus dem Profil |
+| [`0018_kommentare_und_umbenennen.sql`](./supabase/migrations/0018_kommentare_und_umbenennen.sql) | Antworten und Likes auf Kommentare, Wortfilter für Texte, Umbenennen einmal im Monat |
 
 Die Dateien sind mehrfach ausführbar. Bricht 0016 mit `40P01: deadlock detected` oder mit
 einem Sperr-Zeitablauf ab, hat die Transaktion nichts hinterlassen — einfach noch einmal

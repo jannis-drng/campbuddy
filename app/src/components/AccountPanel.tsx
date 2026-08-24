@@ -30,8 +30,9 @@ import { isSupabaseConfigured } from '../services/supabase'
 import {
   kontoLoeschen, ladeProfil, namePruefen, namensformPruefen, passwortAendern,
   passwortZuruecksetzen, signInWithEmail, signInWithPassword, signInWithProvider, signOut,
-  signUpWithPassword, speichereAnzeigename, verfuegbareAnbieter,
-  NAME_MAX, NAME_MIN, type LinkErgebnis, type NamensUrteil, type Profil,
+  signUpWithPassword, speichereAnzeigename, umbenennenFreiAb, verfuegbareAnbieter,
+  NAME_MAX, NAME_MIN, UMBENENNEN_SPERRE_TAGE,
+  type LinkErgebnis, type NamensUrteil, type Profil,
 } from '../services/account'
 
 interface Props {
@@ -629,6 +630,9 @@ function AngemeldeteAnsicht({
     try {
       await speichereAnzeigename(name)
       setNameStand('ok')
+      // Neu laden, damit die Sperrfrist sofort steht statt erst beim nächsten
+      // Seitenaufruf.
+      ladeProfil().then((p) => p && setProfil(p)).catch(() => {})
     } catch (err) { setFehler((err as Error).message); setNameStand('idle') }
   }
 
@@ -651,6 +655,9 @@ function AngemeldeteAnsicht({
   // Umbenennen nur, wenn der Name geprüft *und* wirklich ein anderer ist —
   // sonst schickt der Knopf eine Änderung, die keine ist.
   const nameAenderbar = nameUrteil?.ok === true && name.trim() !== (profil?.anzeigename ?? '')
+  // Serverseitig steht dieselbe Sperre (Migration 0018). Hier steht sie, damit
+  // der Knopf nicht erst nach einem Fehlschlag verrät, dass er nichts tut.
+  const gesperrtBis = umbenennenFreiAb(profil)
   const provider = session.user.app_metadata?.provider ?? ''
   const providerName = provider === 'email' ? 'E-Mail' : ANBIETER_NAMEN[provider] ?? provider
   const seit = session.user.created_at
@@ -717,26 +724,37 @@ function AngemeldeteAnsicht({
         titel="Benutzername"
         beschreibung="Dein Name in der Community: er steht an jeder Tour, die du teilst, und an jedem Kommentar. Deine E-Mail-Adresse wird nie veröffentlicht."
       >
-        <form onSubmit={nameSpeichern} className="space-y-3">
-          <Namensfeld
-            wert={name}
-            onAendern={(w) => { setName(w); setNameStand('idle') }}
-            onUrteil={urteilUebernehmen}
-            label="Name"
-            hinweis={`${NAME_MIN}–${NAME_MAX} Zeichen. Eine Umbenennung wirkt sofort auf alle deine geteilten Touren.`}
-          />
-          <div className="flex flex-wrap items-center gap-2">
-            <Button type="submit" variante="sekundaer" groesse="gross"
-                    disabled={nameStand === 'busy' || !nameAenderbar}>
-              {nameStand === 'busy' ? 'Speichere …' : 'Umbenennen'}
-            </Button>
-            {nameStand === 'ok' && (
-              <p className="flex items-center gap-1.5 text-klein text-erlaubt-400">
-                <Check size={13} strokeWidth={2.5} aria-hidden />Gespeichert.
-              </p>
-            )}
-          </div>
-        </form>
+        {gesperrtBis ? (
+          <Hinweis ton="info" icon={Lock}>
+            Du hast dich kürzlich umbenannt. Der nächste Wechsel ist ab{' '}
+            <span className="font-medium text-ink-100">
+              {gesperrtBis.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
+            </span>{' '}
+            möglich. Dein Name ist die einzige öffentliche Kennung deines Kontos — wer ihn
+            beliebig oft wechseln kann, bei dem sagt er nichts mehr aus.
+          </Hinweis>
+        ) : (
+          <form onSubmit={nameSpeichern} className="space-y-3">
+            <Namensfeld
+              wert={name}
+              onAendern={(w) => { setName(w); setNameStand('idle') }}
+              onUrteil={urteilUebernehmen}
+              label="Name"
+              hinweis={`${NAME_MIN}–${NAME_MAX} Zeichen. Eine Umbenennung wirkt sofort auf alle deine geteilten Touren und Kommentare — und ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`}
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              <Button type="submit" variante="sekundaer" groesse="gross"
+                      disabled={nameStand === 'busy' || !nameAenderbar}>
+                {nameStand === 'busy' ? 'Speichere …' : 'Umbenennen'}
+              </Button>
+              {nameStand === 'ok' && (
+                <p className="flex items-center gap-1.5 text-klein text-erlaubt-400">
+                  <Check size={13} strokeWidth={2.5} aria-hidden />Gespeichert.
+                </p>
+              )}
+            </div>
+          </form>
+        )}
       </Feldkarte>
 
       {/* ---- Abo (Platzhalter) ---- */}

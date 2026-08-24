@@ -34,7 +34,7 @@ import {
   type CommunityFilter, type Laengenklasse, type Sortierung,
 } from '../services/community'
 import { Auswahl, Button, Eingabe, Hinweis, Leer, Seite, Segmente } from '../ui'
-import { AufKarteKnopf, TourKarte, ZaehlerKnopf } from './TourKarte'
+import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
 import { TourModal } from './TourModal'
 
 interface Props {
@@ -337,7 +337,7 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
                         : 'Zum Merken anmelden'}
                       onClick={() => merkenUmschalten(t)}
                     />
-                    <AufKarteKnopf onClick={() => aufKarte(t)} />
+                    <AufKarteKnopf onClick={() => aufKarte(t)} disabled={!hatWeg(t)} />
                   </>
                 }
               />

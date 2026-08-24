@@ -467,46 +467,70 @@ export function MapView({
    *
    * Wer in der Community auf eine Tour klickt, hat gerade ihr Vorschaubild
    * angesehen — landet er danach auf dem zuletzt gewählten Ausschnitt, muss er
-   * seine eigene Tour erst suchen. Die Karte fährt deshalb auf denselben
-   * Rahmen wie das Vorschaubild.
+   * seine eigene Tour erst suchen.
    *
-   * `resize()` vorweg, weil der Sprung meist im selben Zug mit dem
-   * Ansichtswechsel passiert: der Container hatte bis eben Breite 0, und
-   * `fitBounds` würde auf die alte Grösse rechnen und zu weit herauszoomen.
+   * Der Sprung wird bewusst selbst gerechnet statt `fitBounds` zu überlassen.
+   * `fitBounds` tut nämlich *nichts*, wenn die Polsterung nicht in den
+   * Container passt — kein Fehler, keine Meldung, die Karte bleibt einfach
+   * stehen. Genau das passiert bei einem schmalen Fenster, sobald links die
+   * Breite des Routenpanels reserviert wird: bei 700 px Fensterbreite blieben
+   * von 700 abzüglich 400 + 88 noch 212 px, und je nach Tourlänge sieht das
+   * Ergebnis dann aus wie „gar nicht gezoomt".
    */
   useEffect(() => {
     const m = map.current
     if (!m || !kameraZiel || kameraZiel.geometry.length === 0) return
 
     const punkte = kameraZiel.geometry.filter(
-      ([lon, lat]) => Number.isFinite(lon) && Number.isFinite(lat),
+      ([lon, lat]) => Number.isFinite(lon) && Number.isFinite(lat) && Math.abs(lat) <= 85,
     )
     if (punkte.length === 0) return
 
-    // Ohne requestAnimationFrame: Effekte laufen nach dem Commit, der
-    // Container hat seine Grösse also bereits. Ein Frame abzuwarten wäre nicht
-    // nur unnötig, sondern zerbrechlich — in einem Hintergrund-Tab feuert
-    // rAF gar nicht, und der Sprung bliebe aus.
-    //
-    // `resize()` trotzdem vorweg: die Karte war bis eben ausgeblendet und hat
-    // dann Breite 0 gemessen; `fitBounds` würde sonst auf die alte Grösse
-    // rechnen und zu weit herauszoomen.
-    m.resize()
+    const anfliegen = () => {
+      // `resize()` vorweg: die Karte war bis eben ausgeblendet und hat dann
+      // Breite 0 gemessen. Ohne das rechnet der Sprung auf die alte Grösse.
+      m.resize()
+      const breite = m.getContainer().clientWidth
+      const hoehe = m.getContainer().clientHeight
+      if (breite === 0 || hoehe === 0) return
 
-    const rahmen = punkte.reduce(
-      (b, p) => b.extend(p as [number, number]),
-      new LngLatBounds(punkte[0] as [number, number], punkte[0] as [number, number]),
-    )
-    // Links Platz für das Routenpanel, das beim Öffnen aufgeht; es liegt ab
-    // Tablet über der Karte und würde sonst den Anfang der Tour verdecken.
-    const breite = m.getContainer().clientWidth
-    const breit = breite >= 640
-    m.fitBounds(rahmen, {
-      padding: { top: 72, bottom: 72, left: breit ? 400 : 48, right: breit ? 88 : 48 },
-      // Eine einzelne Markierung würde sonst bis zum Maximum hineinzoomen.
-      maxZoom: 14,
-      duration: 900,
-    })
+      const rahmen = punkte.reduce(
+        (b, p) => b.extend(p as [number, number]),
+        new LngLatBounds(punkte[0] as [number, number], punkte[0] as [number, number]),
+      )
+
+      // Links Platz für das Routenpanel, das beim Öffnen aufgeht — aber nie so
+      // viel, dass vom Bild nichts übrig bleibt. Die Polsterung darf zusammen
+      // höchstens die Hälfte der jeweiligen Kante belegen.
+      const panel = breite >= 640 ? Math.min(400, breite * 0.32) : 0
+      const seitlich = Math.max(24, Math.min(breite * 0.12, 72))
+      const padding = {
+        left: Math.round(panel > 0 ? panel + 24 : seitlich),
+        right: Math.round(breite >= 640 ? 88 : seitlich),
+        top: Math.round(Math.max(24, Math.min(hoehe * 0.12, 72))),
+        bottom: Math.round(Math.max(24, Math.min(hoehe * 0.12, 72))),
+      }
+
+      // Selbst rechnen, um zu sehen, ob überhaupt etwas herauskommt. Kommt
+      // nichts, war die Polsterung zu gross — dann lieber ohne als gar nicht.
+      const ziel =
+        m.cameraForBounds(rahmen, { padding, maxZoom: 14 }) ??
+        m.cameraForBounds(rahmen, { padding: 24, maxZoom: 14 })
+      if (!ziel || !ziel.center || !Number.isFinite(ziel.zoom)) return
+
+      m.easeTo({ center: ziel.center, zoom: ziel.zoom, duration: 900 })
+    }
+
+    // Direkt anfliegen. Bewusst ohne Prüfung auf `m.loaded()`: das meldet
+    // auch dann `false`, wenn nur noch Kacheln nachladen — und `once('load')`
+    // feuert nur ein einziges Mal beim ersten Laden. Wer darauf wartet,
+    // wartet nach dem ersten Kachelnachschub für immer. Gerechnet wird
+    // ohnehin auf dem Transform, und den gibt es ab dem Konstruktor.
+    anfliegen()
+
+    // Einzige Ausnahme: ein Container ohne Grösse. Den gibt es, wenn die Karte
+    // noch nie sichtbar war — dann nachholen, sobald sie zur Ruhe kommt.
+    if (m.getContainer().clientWidth === 0) m.once('idle', anfliegen)
   }, [kameraZiel])
 
   useEffect(() => {

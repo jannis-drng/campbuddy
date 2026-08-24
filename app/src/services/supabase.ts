@@ -92,7 +92,15 @@ export type PublicTour = Omit<Tour, 'user_id'>
 export interface Kommentar {
   id: string
   route_id: string
+  /** Ursprung des Strangs. Null = eigenständiger Beitrag, sonst eine Antwort. */
+  eltern_id: string | null
   autor: string | null
   text: string
   created_at: string
+  likes_count: number
+}
+
+/** Ein Kommentar mit den Antworten darauf — genau eine Ebene tief. */
+export interface KommentarStrang extends Kommentar {
+  antworten: Kommentar[]
 }

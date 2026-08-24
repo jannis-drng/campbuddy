@@ -231,13 +231,29 @@ export function ZaehlerKnopf({
   )
 }
 
+/**
+ * Hat diese Tour einen gezeichneten Verlauf?
+ *
+ * Touren, die aus der alten `trips`-Tabelle stammen, haben keinen (Migration
+ * 0016 hat sie mit leerer Linie übernommen). „Auf Karte" führte bei ihnen ins
+ * Nichts: die Karte öffnete sich, sprang aber nirgendwohin, weil es nichts
+ * anzuspringen gab. Das sah aus wie ein kaputter Zoom.
+ */
+export function hatWeg(tour: PublicTour | Tour): boolean {
+  return (tour.geometry?.coordinates?.length ?? 0) >= 2
+}
+
 /** Der Weg von der Karte zurück auf die Karte. */
-export function AufKarteKnopf({ onClick, label = 'Auf Karte' }: { onClick: () => void; label?: string }) {
+export function AufKarteKnopf({
+  onClick, label = 'Auf Karte', disabled,
+}: { onClick: () => void; label?: string; disabled?: boolean }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-mittel px-2.5 text-klein font-medium text-gletscher-300 transition-colors duration-[160ms] hover:bg-gletscher-500/15"
+      disabled={disabled}
+      title={disabled ? 'Diese Tour hat keinen gezeichneten Verlauf.' : undefined}
+      className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-mittel px-2.5 text-klein font-medium text-gletscher-300 transition-colors duration-[160ms] hover:bg-gletscher-500/15 disabled:cursor-not-allowed disabled:text-ink-600 disabled:hover:bg-transparent"
     >
       {label}
       <ArrowUpRight size={14} strokeWidth={2.5} aria-hidden />

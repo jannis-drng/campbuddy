@@ -18,7 +18,7 @@
  *   - eine Seite fragt immer einen Eintrag mehr an, als sie zeigt. Daran
  *     erkennt sie, ob es weitergeht, ohne die Gesamtzahl zählen zu lassen.
  */
-import { getSupabase, type Kommentar, type PublicTour } from './supabase'
+import { getSupabase, type Kommentar, type KommentarStrang, type PublicTour } from './supabase'
 import { istSchemaFehlt } from './account'
 
 export type Sortierung = 'neu' | 'beliebt' | 'besprochen' | 'lang' | 'kurz'
@@ -174,36 +174,60 @@ export async function setLike(routeId: string, mag: boolean): Promise<void> {
 export type KommentarSortierung = 'neu' | 'alt'
 
 /**
- * Kommentare zu einer Tour.
+ * Kommentare zu einer Tour, als Stränge.
  *
- * Auch hier seitenweise: unter einer beliebten Tour stehen irgendwann
- * hunderte, und die dürfen den Aufschlag der Detailansicht nicht bremsen.
+ * Seitenweise wird über die **Ursprünge** gezählt, nicht über alle Beiträge:
+ * ein Strang gehört zusammen und darf nicht mitten in der Diskussion
+ * abgeschnitten werden. Die Antworten zu den geholten Ursprüngen kommen
+ * anschliessend in einer einzigen zweiten Abfrage — nicht in einer pro Strang,
+ * sonst wären es bei zehn Strängen elf Abfragen.
  */
 export async function listKommentare(
   routeId: string,
   optionen: { sortierung?: KommentarSortierung; suche?: string; limit?: number; seite?: number } = {},
-): Promise<{ kommentare: Kommentar[]; mehr: boolean }> {
+): Promise<{ straenge: KommentarStrang[]; mehr: boolean }> {
   const sb = getSupabase()
-  if (!sb) return { kommentare: [], mehr: false }
+  if (!sb) return { straenge: [], mehr: false }
   const limit = optionen.limit ?? 20
   const seite = optionen.seite ?? 0
 
-  let q = sb.from('oeffentliche_kommentare').select('*').eq('route_id', routeId)
+  let q = sb.from('oeffentliche_kommentare').select('*')
+    .eq('route_id', routeId)
+    .is('eltern_id', null)
   const suche = optionen.suche?.trim()
   if (suche) q = q.ilike('text', `%${suche.replace(/[,()]/g, ' ')}%`)
   q = q.order('created_at', { ascending: optionen.sortierung === 'alt' })
 
   const von = seite * limit
   const { data, error } = await q.range(von, von + limit)
-  if (istSchemaFehlt(error)) return { kommentare: [], mehr: false }
+  if (istSchemaFehlt(error)) return { straenge: [], mehr: false }
   if (error) throw new Error(error.message)
 
   const zeilen = (data ?? []) as Kommentar[]
-  return { kommentare: zeilen.slice(0, limit), mehr: zeilen.length > limit }
+  const ursprunge = zeilen.slice(0, limit)
+  if (ursprunge.length === 0) return { straenge: [], mehr: false }
+
+  const { data: antwortZeilen } = await sb
+    .from('oeffentliche_kommentare')
+    .select('*')
+    .in('eltern_id', ursprunge.map((k) => k.id))
+    .order('created_at', { ascending: true })
+
+  const nachEltern = new Map<string, Kommentar[]>()
+  for (const a of (antwortZeilen ?? []) as Kommentar[]) {
+    const liste = nachEltern.get(a.eltern_id!) ?? []
+    liste.push(a)
+    nachEltern.set(a.eltern_id!, liste)
+  }
+
+  return {
+    straenge: ursprunge.map((k) => ({ ...k, antworten: nachEltern.get(k.id) ?? [] })),
+    mehr: zeilen.length > limit,
+  }
 }
 
 export async function schreibeKommentar(
-  routeId: string, text: string, autor: string | null,
+  routeId: string, text: string, autor: string | null, elternId?: string | null,
 ): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Kein Backend konfiguriert')
@@ -212,8 +236,45 @@ export async function schreibeKommentar(
   if (!user_id) throw new Error('Nicht angemeldet')
   const { error } = await sb.from('kommentare').insert({
     route_id: routeId, user_id, text: text.trim(), autor: autor?.trim() || null,
+    eltern_id: elternId ?? null,
   })
   if (error) throw new Error(uebersetze(error.message))
+}
+
+/* ------------------------------------------------- Likes auf Kommentare */
+
+/**
+ * Welche der gezeigten Kommentare habe ich geliked?
+ *
+ * Mit den sichtbaren IDs eingeschränkt statt „alle meine Likes": wer viel
+ * kommentiert, hätte sonst mit jeder geöffneten Tour seine gesamte
+ * Like-Geschichte im Gepäck.
+ */
+export async function listKommentarLikeIds(kommentarIds: string[]): Promise<Set<string>> {
+  const sb = getSupabase()
+  if (!sb || kommentarIds.length === 0) return new Set()
+  const { data, error } = await sb
+    .from('kommentar_likes')
+    .select('kommentar_id')
+    .in('kommentar_id', kommentarIds)
+  if (error) return new Set()
+  return new Set((data ?? []).map((r: { kommentar_id: string }) => r.kommentar_id))
+}
+
+export async function setKommentarLike(kommentarId: string, mag: boolean): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (mag) {
+    const { data: userData } = await sb.auth.getUser()
+    const user_id = userData.user?.id
+    if (!user_id) throw new Error('Nicht angemeldet')
+    const { error } = await sb.from('kommentar_likes').insert({ user_id, kommentar_id: kommentarId })
+    // Zweimal geliked ist kein Fehler, sondern ein Doppelklick.
+    if (error && error.code !== '23505') throw new Error(uebersetze(error.message))
+  } else {
+    const { error } = await sb.from('kommentar_likes').delete().eq('kommentar_id', kommentarId)
+    if (error) throw new Error(uebersetze(error.message))
+  }
 }
 
 export async function loescheKommentar(id: string): Promise<void> {
@@ -244,7 +305,7 @@ function uebersetze(meldung: string): string {
     return 'Dafür fehlt die Berechtigung — bist du noch angemeldet, und ist die Tour noch geteilt?'
   }
   if (/relation .* does not exist|schema cache|column .* does not exist/i.test(meldung)) {
-    return 'Die Datenbank kennt Likes und Kommentare noch nicht — Migration 0016 ist noch nicht eingespielt.'
+    return 'Die Datenbank kennt diesen Teil noch nicht — Migration 0016 oder 0018 ist noch nicht eingespielt.'
   }
   return meldung
 }

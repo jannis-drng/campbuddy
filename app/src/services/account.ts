@@ -434,6 +434,24 @@ export interface Profil {
   anzeigename: string | null
   subscription_status: 'free' | 'paid'
   abo_bis: string | null
+  /** Wann zuletzt umbenannt. Null = noch nie, dann ist der nächste Wechsel frei. */
+  umbenannt_am: string | null
+}
+
+/** Sperrfrist fürs Umbenennen — derselbe Wert wie in Migration 0018. */
+export const UMBENENNEN_SPERRE_TAGE = 30
+
+/**
+ * Ab wann darf wieder umbenannt werden? Null = jetzt.
+ *
+ * Der Wert wird auch serverseitig geprüft; hier steht er, damit der Knopf
+ * nicht erst nach einem Fehlschlag verrät, dass er nichts tut.
+ */
+export function umbenennenFreiAb(profil: Profil | null): Date | null {
+  if (!profil?.umbenannt_am) return null
+  const frei = new Date(profil.umbenannt_am)
+  frei.setDate(frei.getDate() + UMBENENNEN_SPERRE_TAGE)
+  return frei > new Date() ? frei : null
 }
 
 export async function ladeProfil(): Promise<Profil | null> {
@@ -445,13 +463,16 @@ export async function ladeProfil(): Promise<Profil | null> {
 
   const { data, error } = await sb
     .from('profiles')
-    .select('id, anzeigename, subscription_status, abo_bis')
+    .select('id, anzeigename, subscription_status, abo_bis, umbenannt_am')
     .eq('id', id)
     .maybeSingle()
   // Fehlt die Spalte, ist Migration 0006 noch nicht eingespielt — kein Grund,
   // die Kontoseite unbrauchbar zu machen.
-  if (error) return { id, anzeigename: null, subscription_status: 'free', abo_bis: null }
-  return (data as Profil) ?? { id, anzeigename: null, subscription_status: 'free', abo_bis: null }
+  const leer: Profil = {
+    id, anzeigename: null, subscription_status: 'free', abo_bis: null, umbenannt_am: null,
+  }
+  if (error) return leer
+  return (data as Profil) ?? leer
 }
 
 /**
