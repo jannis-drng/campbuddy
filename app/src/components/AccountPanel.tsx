@@ -33,11 +33,15 @@ const ANBIETER_NAMEN: Record<string, string> = {
   azure: 'Microsoft', discord: 'Discord', gitlab: 'GitLab', bitbucket: 'Bitbucket',
 }
 
-// Zwölf, nicht acht. Acht Zeichen sind für einen Angreifer mit einer
-// Grafikkarte keine Hürde mehr, und die Serverseite muss denselben Wert
-// tragen (Supabase -> Authentication -> Policies), sonst prüft nur der
-// Browser — und den umgeht, wer die API direkt anspricht.
-const MIN_PASSWORT = 12
+// Acht Zeichen — bewusst niedrig gehalten, damit die Registrierung nicht an
+// der Hürde scheitert. Das Gewicht trägt dafür die Leak-Prüfung auf der
+// Serverseite (Supabase -> Authentication -> Policies): ein Passwort aus einem
+// bekannten Leak fällt bei jedem Angriff zuerst, egal wie lang es ist, und ein
+// nicht geleaktes mit acht Zeichen hält länger als ein geleaktes mit sechzehn.
+//
+// Dieser Wert prüft nur im Browser. Wer die API direkt anspricht, umgeht ihn —
+// die Serverseite muss denselben Wert tragen, sonst ist er Zierde.
+const MIN_PASSWORT = 8
 
 export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnisGelesen }: Props) {
   const [anbieter, setAnbieter] = useState<string[]>([])
