@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -17,8 +17,19 @@ const HIER = fileURLToPath(new URL('.', import.meta.url))
  * Cloudflare Pages:  VITE_BASE=/  VITE_ORIGIN=https://<domain>
  * GitHub Pages:      nichts setzen — die Vorgaben unten passen.
  */
-const BASIS = process.env.VITE_BASE ?? '/campbuddy/'
-const ORIGIN = (process.env.VITE_ORIGIN ?? 'https://jannis-drng.github.io').replace(/\/+$/, '')
+/**
+ * `loadEnv` statt `process.env`: Vite reicht Werte aus `.env.local` nur an den
+ * Anwendungscode weiter, nicht an diese Konfigurationsdatei. Über
+ * `process.env` gelesen wäre die Supabase-Adresse beim gewöhnlichen
+ * `npm run build` also leer — und die CSP fiele still auf ein Platzhalter-
+ * zeichen zurück. Die lokale Prüfung träfe dann auf eine schwächere Regel als
+ * die ausgelieferte, was eine Prüfung wertlos macht. `loadEnv` liest beides:
+ * die Dateien hier und die echten Umgebungsvariablen des Bau-Servers.
+ */
+const umgebung = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), 'VITE_')
+
+const BASIS = umgebung.VITE_BASE ?? '/campbuddy/'
+const ORIGIN = (umgebung.VITE_ORIGIN ?? 'https://jannis-drng.github.io').replace(/\/+$/, '')
 
 /**
  * Die Herkunft des Supabase-Projekts für die CSP.
@@ -30,7 +41,7 @@ const ORIGIN = (process.env.VITE_ORIGIN ?? 'https://jannis-drng.github.io').repl
  * funktionsfähig; der Regelfall ist die exakte Adresse aus der Umgebung.
  */
 function supabaseHerkunft(): string {
-  const roh = process.env.VITE_SUPABASE_URL?.trim()
+  const roh = umgebung.VITE_SUPABASE_URL?.trim()
   if (!roh) return 'https://*.supabase.co'
   try {
     return new URL(roh).origin
