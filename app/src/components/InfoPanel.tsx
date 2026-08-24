@@ -5,16 +5,22 @@
  * gilt, dann unter welchen Bedingungen, dann woher die Angabe stammt und wie
  * gut sie belegt ist. Die Quelle steht unten, aber sie steht immer da.
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Landmark,
   Lock, Mail, MapPin, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users,
-  Waves, X,
+  Route as RouteIcon, Waves, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type {
-  EigenerPunkt, Gemeinde, GemeindeRecht, Kanton, KantonRecht, NatureFeature, Point, Region, Zone,
+  EigenerPunkt, Gemeinde, GemeindeRecht, Kanton, KantonRecht, NatureFeature, Peak, Point, Region,
+  Zone,
 } from '../data/types'
+import type { Position } from '../data/geo'
+import type { PublicTour } from '../services/supabase'
+import { listTourenBei, ORT_UMKREIS_M } from '../services/community'
+import { formatKm, hatWeg, seitdem } from './TourKarte'
+import { RoutenVorschau } from './RoutenVorschau'
 import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
 import { PermissionRow, ReviewBadge, STATUS_LABEL, StatusBadge } from './ui'
 import { GearHint } from '../affiliate/GearHint'
@@ -46,6 +52,7 @@ export type Selection =
   | { kind: 'point'; point: Point }
   | { kind: 'natur'; feature: NatureFeature }
   | { kind: 'eigen'; punkt: EigenerPunkt }
+  | { kind: 'peak'; peak: Peak }
   | null
 
 const NATUR_ART: Record<NatureFeature['type'], { label: string; icon: LucideIcon }> = {
@@ -70,6 +77,26 @@ const PUNKT_ART: Record<Point['type'], { label: string; icon: LucideIcon }> = {
   vehicle_spot: { label: 'Stellplatz', icon: Truck },
 }
 
+/**
+ * Wo liegt das Angetippte? Nur Punkte haben einen Ort, an dem eine Tour
+ * vorbeikommen kann — eine Zone ist eine Fläche, und der Rechtsrahmen einer
+ * Region gar kein Ort.
+ */
+function ortDerAuswahl(selection: NonNullable<Selection>): { name: string; position: Position } | null {
+  switch (selection.kind) {
+    case 'point':
+      return { name: selection.point.name, position: [selection.point.lng, selection.point.lat] }
+    case 'natur':
+      return { name: selection.feature.name, position: [selection.feature.lng, selection.feature.lat] }
+    case 'eigen':
+      return { name: selection.punkt.name, position: [selection.punkt.lng, selection.punkt.lat] }
+    case 'peak':
+      return { name: selection.peak.name, position: [selection.peak.lng, selection.peak.lat] }
+    default:
+      return null
+  }
+}
+
 interface InfoPanelProps {
   selection: Selection
   onClose: () => void
@@ -78,6 +105,10 @@ interface InfoPanelProps {
   nutzerId?: string | null
   onPunktBearbeiten?: (punkt: EigenerPunkt) => void
   onPunktLoeschen?: (punkt: EigenerPunkt) => void
+  /** Lädt eine geteilte Tour auf die Karte. */
+  onTourOeffnen?: (tour: PublicTour) => void
+  /** Wechselt in die Community und sucht dort ab diesem Ort. */
+  onAlleTouren?: (name: string, position: Position) => void
 }
 
 function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: LucideIcon; titel: string } {
@@ -106,16 +137,20 @@ function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: Luci
         icon: EIGEN_ART[selection.punkt.typ].icon,
         titel: selection.punkt.name,
       }
+    case 'peak':
+      return { art: `Gipfel · ${selection.peak.elevation} m`, icon: Mountain, titel: selection.peak.name }
   }
 }
 
 export function InfoPanel({
   selection, onClose, onOpenPlanner, nutzerId, onPunktBearbeiten, onPunktLoeschen,
+  onTourOeffnen, onAlleTouren,
 }: InfoPanelProps) {
   if (!selection) return null
 
   const kopf = kopfDaten(selection)
   const KopfIcon = kopf.icon
+  const ort = ortDerAuswahl(selection)
 
   return (
     <aside
@@ -158,6 +193,15 @@ export function InfoPanel({
             onBearbeiten={onPunktBearbeiten}
             onLoeschen={onPunktLoeschen}
           />
+        )}
+        {selection.kind === 'peak' && <PeakBody peak={selection.peak} />}
+
+        {/*
+          Zuletzt: was der Ort für die Planung hergibt. Die Auskunft über den
+          Ort selbst steht darüber — sie ist der Grund, warum jemand getippt hat.
+        */}
+        {ort && (
+          <TourenHier ort={ort} onTourOeffnen={onTourOeffnen} onAlleTouren={onAlleTouren} />
         )}
       </div>
     </aside>
@@ -651,5 +695,129 @@ function QuellenBlock({
         Eigene Prüfung: {lastVerified ?? 'noch nicht erfolgt'}
       </p>
     </section>
+  )
+}
+
+/* ---------------------------------------------------------------- */
+/* Touren, die hier vorbeikommen                                      */
+/* ---------------------------------------------------------------- */
+
+/**
+ * Wer auf eine Hütte, einen Gipfel oder eine Quelle tippt, will oft nicht die
+ * Rechtslage wissen, sondern: geht da jemand lang?
+ *
+ * Geladen wird erst, wenn ein Ort ausgewählt ist, und höchstens vier Einträge —
+ * das hier ist ein Fingerzeig in die Community, keine zweite Übersicht. Wer
+ * mehr sehen will, geht über den Knopf darunter dorthin.
+ */
+function TourenHier({
+  ort, onTourOeffnen, onAlleTouren,
+}: {
+  ort: { name: string; position: Position }
+  onTourOeffnen?: (tour: PublicTour) => void
+  onAlleTouren?: (name: string, position: Position) => void
+}) {
+  const [touren, setTouren] = useState<PublicTour[] | null>(null)
+  const [fehler, setFehler] = useState(false)
+
+  const [lon, lat] = ort.position
+  useEffect(() => {
+    let abgemeldet = false
+    setTouren(null); setFehler(false)
+    listTourenBei([lon, lat], ORT_UMKREIS_M, 4)
+      .then((t) => { if (!abgemeldet) setTouren(t) })
+      .catch(() => { if (!abgemeldet) { setFehler(true); setTouren([]) } })
+    return () => { abgemeldet = true }
+  }, [lon, lat])
+
+  // Solange nichts da ist, nimmt der Abschnitt auch keinen Platz weg: eine
+  // Überschrift über einer leeren Liste sieht aus wie ein Fehler.
+  if (fehler) return null
+  if (touren !== null && touren.length === 0) return null
+
+  return (
+    <section className="border-t border-kante px-5 py-4">
+      <div className="mb-2.5 flex items-baseline justify-between gap-3">
+        <h3 className="flex items-center gap-1.5 text-mikro font-medium uppercase text-ink-500">
+          <RouteIcon size={12} strokeWidth={2} aria-hidden />
+          Touren hier vorbei
+        </h3>
+        <span className="text-mikro normal-case tracking-normal text-ink-600">
+          {ORT_UMKREIS_M / 1000} km Umkreis
+        </span>
+      </div>
+
+      {touren === null ? (
+        <div className="space-y-1.5" aria-label="Touren werden gesucht">
+          {[0, 1].map((i) => <div key={i} className="h-12 animate-pulse rounded-mittel bg-flaeche-1" />)}
+        </div>
+      ) : (
+        <ul className="space-y-1.5">
+          {touren.map((t) => (
+            <li key={t.id}>
+              <button
+                onClick={() => onTourOeffnen?.(t)}
+                disabled={!hatWeg(t) || !onTourOeffnen}
+                className="flex w-full items-center gap-2.5 rounded-mittel bg-flaeche-1 p-2 text-left transition-colors duration-[160ms] hover:bg-flaeche-3 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <RoutenVorschau
+                  geometry={(t.geometry?.coordinates ?? []) as Position[]}
+                  breite={160} hoehe={100} rund="alle" linie={2}
+                  className="w-16 shrink-0"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-klein font-medium text-ink-100">{t.name}</span>
+                  <span className="block truncate text-mikro normal-case tracking-normal text-ink-500">
+                    {t.autor ?? 'gelöschtes Konto'}
+                    {t.distance_m != null && ` · ${formatKm(t.distance_m)}`}
+                    {` · ${seitdem(t.veroeffentlicht_am ?? t.created_at)}`}
+                  </span>
+                </span>
+                <ChevronRight size={15} strokeWidth={2} className="shrink-0 text-ink-600" aria-hidden />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {onAlleTouren && touren !== null && (
+        <Button
+          variante="sekundaer" breit className="mt-2.5"
+          onClick={() => onAlleTouren(ort.name, ort.position)}
+        >
+          Alle Touren bei {ort.name}
+        </Button>
+      )}
+    </section>
+  )
+}
+
+/**
+ * Ein Gipfel. Wenig zu sagen — Höhe und Herkunft —, aber der Klick lohnt sich
+ * trotzdem: darunter steht, wer hier vorbeigeht.
+ */
+function PeakBody({ peak }: { peak: Peak }) {
+  return (
+    <div className="space-y-3 px-5 py-4">
+      <div className="flex items-baseline gap-2">
+        <span className="text-display font-semibold text-ink-50">{peak.elevation}</span>
+        <span className="text-fliess text-ink-400">m ü. M.</span>
+      </div>
+      <p className="text-klein leading-relaxed text-ink-400">
+        Gipfel aus OpenStreetMap. Ob in der Nähe übernachtet werden darf, sagt die
+        Legalitäts-Ebene — ein Gipfel ist keine Erlaubnis.
+      </p>
+      {peak.source_url && (
+        <a
+          href={peak.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-klein text-gletscher-400 underline underline-offset-2 hover:text-gletscher-300"
+        >
+          Bei OpenStreetMap ansehen
+          <ExternalLink size={12} strokeWidth={2} aria-hidden />
+        </a>
+      )}
+    </div>
   )
 }

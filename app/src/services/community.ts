@@ -18,6 +18,7 @@
  *   - eine Seite fragt immer einen Eintrag mehr an, als sie zeigt. Daran
  *     erkennt sie, ob es weitergeht, ohne die Gesamtzahl zählen zu lassen.
  */
+import type { Position } from '../data/geo'
 import { getSupabase, type Kommentar, type KommentarKnoten, type PublicTour } from './supabase'
 import { istSchemaFehlt } from './account'
 
@@ -41,6 +42,13 @@ export const LAENGENKLASSEN: { wert: Laengenklasse; label: string; von: number; 
   { wert: 'lang', label: 'ab 30 km', von: 30_000, bis: Number.POSITIVE_INFINITY },
 ]
 
+/** Ein Ort, an dem gesucht wird — angetippt auf der Karte. */
+export interface Ortsfilter {
+  name: string
+  position: Position
+  umkreisM: number
+}
+
 export interface CommunityFilter {
   suche: string
   /** Regionscode, oder null für „alle Regionen". */
@@ -49,10 +57,16 @@ export interface CommunityFilter {
   /** Nur Touren mit gezeichnetem Verlauf — die ohne haben kein Kartenbild. */
   nurMitWeg: boolean
   sortierung: Sortierung
+  /**
+   * Gesetzt, wenn von einem angetippten Ort aus gesucht wird. Dann entscheidet
+   * die Entfernung über Auswahl und Reihenfolge — Sortierung und Längenklasse
+   * treten zurück, weil „nächstgelegene zuerst" die eigentliche Frage ist.
+   */
+  ort: Ortsfilter | null
 }
 
 export const STANDARD_FILTER: CommunityFilter = {
-  suche: '', region: null, laenge: 'alle', nurMitWeg: false, sortierung: 'neu',
+  suche: '', region: null, laenge: 'alle', nurMitWeg: false, sortierung: 'neu', ort: null,
 }
 
 /** Wie viele Karten eine Seite trägt. Drei Spalten × vier Reihen. */
@@ -80,6 +94,25 @@ export async function listCommunityTouren(
 ): Promise<Seitenergebnis> {
   const sb = getSupabase()
   if (!sb) return { touren: [], mehr: false, gesamt: 0 }
+
+  /*
+    Ortssuche geht einen anderen Weg: die Auswahl trifft `touren_bei` in der
+    Datenbank, sortiert nach Entfernung. Eine Seitenaufteilung gibt es dort
+    nicht — wer nach „Touren an dieser Hütte" fragt, will die nächsten
+    zwanzig sehen, nicht Seite vier. Die Suche im Namen wird darüber noch
+    angewandt, damit sich beides kombinieren lässt.
+  */
+  if (filter.ort) {
+    const nah = await listTourenBei(filter.ort.position, filter.ort.umkreisM, 24)
+    const suchbegriff = filter.suche.trim().toLowerCase()
+    const gefiltert = nah.filter((t) => {
+      if (filter.region && t.region !== filter.region) return false
+      if (filter.nurMitWeg && t.distance_m == null) return false
+      if (!suchbegriff) return true
+      return `${t.name} ${t.beschreibung ?? ''}`.toLowerCase().includes(suchbegriff)
+    })
+    return { touren: gefiltert, mehr: false, gesamt: gefiltert.length }
+  }
 
   let q = sb.from('oeffentliche_routen').select('*', { count: 'estimated' })
 
@@ -332,6 +365,36 @@ export async function eigeneKommentarIds(routeId: string): Promise<Set<string>> 
   const { data, error } = await sb.from('eigene_kommentar_ids').select('id').eq('route_id', routeId)
   if (error) return new Set()
   return new Set((data ?? []).map((r: { id: string }) => r.id))
+}
+
+/* ------------------------------------------------- Touren an einem Ort */
+
+/** Standard-Umkreis: so weit, wie man von einer Tour aus noch hinläuft. */
+export const ORT_UMKREIS_M = 3000
+
+/**
+ * Geteilte Touren, die an einem Ort vorbeikommen — nächstgelegene zuerst.
+ *
+ * Gerechnet wird in der Datenbank (`touren_bei`, Migration 0020): erst eine
+ * Vorauswahl über das Umgebungsrechteck jeder Tour, dann die echte Entfernung
+ * zum Verlauf. Im Browser wäre beides nicht machbar, ohne vorher alle
+ * geteilten Touren zu laden.
+ */
+export async function listTourenBei(
+  position: Position,
+  umkreisM = ORT_UMKREIS_M,
+  maxAnzahl = 12,
+): Promise<PublicTour[]> {
+  const sb = getSupabase()
+  if (!sb) return []
+  const { data, error } = await sb.rpc('touren_bei', {
+    lon: position[0], lat: position[1], umkreis_m: umkreisM, max_anzahl: maxAnzahl,
+  })
+  if (error) {
+    if (istSchemaFehlt(error) || /function .* does not exist|schema cache/i.test(error.message)) return []
+    throw new Error(error.message)
+  }
+  return (data ?? []) as PublicTour[]
 }
 
 /** Postgres-Meldungen sind für Entwickler geschrieben, nicht für Wanderer. */

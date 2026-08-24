@@ -79,6 +79,7 @@ interface Props {
   onZoneClick: (zone: Zone) => void
   onPointClick: (point: Point) => void
   onNatureClick: (feature: NatureFeature) => void
+  onPeakClick: (peak: Peak) => void
   onEigenClick: (punkt: EigenerPunkt) => void
   /**
    * Klick auf freie Fläche. Dort ist keine Zone eingezeichnet, also entscheidet,
@@ -101,7 +102,7 @@ interface Props {
 export function MapView({
   region, zones, points, peaks, nature, eigene, gemeinden, activity, basemap, visible,
   route, waypoints, kameraZiel, drawing, markieren,
-  onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
+  onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
@@ -114,12 +115,12 @@ export function MapView({
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
   const latest = useRef({
     zones, points, peaks, nature, eigene, gemeinden, activity, drawing, markieren, waypoints,
-    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
+    onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   })
   latest.current = {
     zones, points, peaks, nature, eigene, gemeinden, activity, drawing, markieren, waypoints,
-    onZoneClick, onPointClick, onNatureClick, onEigenClick, onLeerClick, onAusschnitt,
+    onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   }
 
@@ -363,14 +364,16 @@ export function MapView({
         // die Symbol-Layer — siehe `trefferKreis` in addLayers.
         // queryRenderedFeatures wirft, wenn ein genannter Layer fehlt.
         const layers = [
-          'eigene-treffer', 'points-treffer', 'natur-treffer', 'natur-see-treffer', 'zones-fill',
+          'eigene-treffer', 'points-treffer', 'peaks-hoch-treffer', 'peaks-mittel-treffer',
+          'peaks-niedrig-treffer', 'natur-treffer', 'natur-see-treffer', 'zones-fill',
         ].filter((id) => m.getLayer(id))
         const hits = layers.length ? m.queryRenderedFeatures(e.point, { layers }) : []
 
         // Beim Zeichnen wird ein angeklickter Ort zum Wegpunkt statt zur
         // Infokarte: „Route über diese Hütte" ist beim Planen das, was man will.
         if (latest.current.drawing) {
-          const ort = hits.find((f) => f.layer.id.startsWith('points-') || f.layer.id.startsWith('natur-'))
+          const ort = hits.find((f) => f.layer.id.startsWith('points-')
+            || f.layer.id.startsWith('natur-') || f.layer.id.startsWith('peaks-'))
           const koordinaten = ort?.geometry.type === 'Point'
             ? (ort.geometry.coordinates as Position)
             : position
@@ -389,6 +392,11 @@ export function MapView({
         if (hitPoint) {
           const p = latest.current.points.find((x) => x.id === hitPoint.properties?.id)
           if (p) { latest.current.onPointClick(p); return }
+        }
+        const hitPeak = hits.find((f) => f.layer.id.startsWith('peaks-'))
+        if (hitPeak) {
+          const p = latest.current.peaks.find((x) => x.id === hitPeak.properties?.id)
+          if (p) { latest.current.onPeakClick(p); return }
         }
         const hitNatur = hits.find((f) => f.layer.id.startsWith('natur-'))
         if (hitNatur) {
@@ -410,7 +418,9 @@ export function MapView({
 
       // Im Zeichenmodus bleibt das Fadenkreuz stehen — sonst würde der Cursor
       // über Zonen fälschlich Anklickbarkeit signalisieren.
-      for (const layer of ['points-treffer', 'natur-treffer', 'natur-see-treffer', 'eigene-treffer', 'zones-fill']) {
+      for (const layer of ['points-treffer', 'natur-treffer', 'natur-see-treffer', 'eigene-treffer',
+                           'peaks-hoch-treffer', 'peaks-mittel-treffer', 'peaks-niedrig-treffer',
+                           'zones-fill']) {
         m.on('mouseenter', layer, () => {
           if (!latest.current.drawing && !latest.current.markieren) setzeCursor('pointer')
         })
@@ -626,7 +636,10 @@ function peaksToGeoJson(peaks: Peak[]): GeoJSON.FeatureCollection {
     type: 'FeatureCollection',
     features: peaks.map((p) => ({
       type: 'Feature',
-      properties: { name: p.name, elevation: p.elevation },
+      // `id` muss mit: der Klick sucht den Gipfel damit in der Prop-Liste
+      // wieder. Ohne sie fiele jeder Gipfelklick auf die Rechtslage der
+      // Region durch — die Ebene traf, die Zuordnung nicht.
+      properties: { id: p.id, name: p.name, elevation: p.elevation },
       geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
     })),
   }
@@ -977,6 +990,24 @@ function addLayers(m: MlMap) {
     minzoom: 12.5,
     filter: ['!=', ['get', 'type'], 'lake'],
   })
+
+  /*
+    Gipfel anklickbar machen. Der Trefferkreis sitzt etwas höher als der
+    Ankerpunkt, weil das Gipfelsymbol nach oben aus dem Punkt herauswächst
+    (`icon-anchor: bottom`) — ohne Versatz träfe man daneben.
+
+    Derselbe Stufenfilter wie bei der Darstellung: was nicht gezeichnet ist,
+    darf auch nicht getroffen werden, sonst klickt man auf einen unsichtbaren
+    Gipfel.
+  */
+  for (const [id, minzoom, filter] of peakTiers) {
+    m.addLayer({
+      ...trefferKreis(`${id}-treffer`, 'peaks',
+        ['interpolate', ['linear'], ['zoom'], 8, 8, 15, 12], [0, -6]),
+      minzoom,
+      filter,
+    })
+  }
 
   m.addLayer({
     id: 'points-icon',

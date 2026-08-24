@@ -583,6 +583,26 @@ abstreifen, und die Zuschreibung wird wertlos. Der allererste Wechsel nach der
 Registrierung ist frei — ein einmal gewählter Name muss korrigierbar bleiben. Denselben
 Namen noch einmal zu speichern löst die Sperre nicht aus.
 
+### Touren an einem Ort
+
+Ein Tippen auf eine Hütte, einen Gipfel, eine Quelle oder eine eigene Markierung zeigt
+unter der Auskunft zum Ort auch, **welche geteilten Touren dort vorbeikommen** — und führt
+von dort in die Community, die dann nach diesem Ort filtert statt nach einem Namen.
+
+Gerechnet wird in der Datenbank (`touren_bei`, Migration 0020), in zwei Stufen:
+
+1. **Umgebungsrechteck.** Jede Tour trägt ihr Bounding-Box als `box` — ein eingebauter
+   PostgreSQL-Typ, GiST-indizierbar, ohne PostGIS. Damit fällt in Millisekunden alles weg,
+   was gar nicht in die Nähe kommt.
+2. **Echte Entfernung.** Das Rechteck allein lügt: eine Tour quer durchs Wallis hat ein
+   Rechteck über den halben Kanton, kommt aber an einer Hütte im Norden nie vorbei. Auf den
+   Kandidaten wird deshalb die tatsächliche Entfernung zum Verlauf gerechnet und danach
+   sortiert — nächstgelegene zuerst.
+
+Gemessen wird zu den Stützpunkten des Verlaufs, nicht zu den Strecken dazwischen. Das
+reicht: gespeicherte Verläufe kommen aus dem Routing und haben dichte Stützpunkte, der
+Fehler liegt weit unter dem Umkreis, nach dem gefragt wird.
+
 ### Kommentare
 
 Stränge sind **echt verschachtelt** (Migration 0019): eine Antwort hängt immer am
@@ -710,6 +730,7 @@ Im Supabase-Projekt unter *SQL Editor* der Reihe nach ausführen:
 | [`0017_benutzernamen.sql`](./supabase/migrations/0017_benutzernamen.sql) | Eindeutiger Benutzername mit Sperrliste; Autorenangabe kommt aus dem Profil |
 | [`0018_kommentare_und_umbenennen.sql`](./supabase/migrations/0018_kommentare_und_umbenennen.sql) | Antworten und Likes auf Kommentare, Wortfilter für Texte, Umbenennen einmal im Monat |
 | [`0019_verschachtelte_antworten.sql`](./supabase/migrations/0019_verschachtelte_antworten.sql) | Antworten auf Antworten — echter Strangbezug statt einer Ebene |
+| [`0020_touren_in_der_naehe.sql`](./supabase/migrations/0020_touren_in_der_naehe.sql) | „Welche Touren kommen hier vorbei?" — Umgebungsrechteck plus echte Entfernung |
 
 Die Dateien sind mehrfach ausführbar. Bricht 0016 mit `40P01: deadlock detected` oder mit
 einem Sperr-Zeitablauf ab, hat die Transaktion nichts hinterlassen — einfach noch einmal

@@ -22,7 +22,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
-  Bookmark, Compass, Heart, MessageCircle, Search, SlidersHorizontal, TriangleAlert, X,
+  Bookmark, Compass, Heart, MapPin, MessageCircle, Search, SlidersHorizontal, TriangleAlert, X,
 } from 'lucide-react'
 import type { Position } from '../data/geo'
 import { REGIONS } from '../data/regions'
@@ -31,7 +31,7 @@ import { addFavorite, ladeProfil, listFavoriteIds, removeFavorite } from '../ser
 import {
   listCommunityTouren, listLikeIds, setLike, verfuegbareRegionen,
   LAENGENKLASSEN, SORTIERUNGEN, STANDARD_FILTER,
-  type CommunityFilter, type Laengenklasse, type Sortierung,
+  type CommunityFilter, type Laengenklasse, type Ortsfilter, type Sortierung,
 } from '../services/community'
 import { Auswahl, Button, Eingabe, Hinweis, Leer, Seite, Segmente } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
@@ -40,9 +40,15 @@ import { TourModal } from './TourModal'
 interface Props {
   session: Session | null
   onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
+  /**
+   * Ein von der Karte mitgebrachter Ort — gesetzt, wenn jemand auf ein Symbol
+   * getippt und „Alle Touren hier" gewählt hat.
+   */
+  ort?: Ortsfilter | null
+  onOrtLoesen?: () => void
 }
 
-export function CommunityPanel({ session, onLoadRoute }: Props) {
+export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props) {
   const [filter, setFilter] = useState<CommunityFilter>(STANDARD_FILTER)
   const [sucheRoh, setSucheRoh] = useState('')
   const [touren, setTouren] = useState<PublicTour[]>([])
@@ -59,6 +65,11 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
   const [offen, setOffen] = useState<PublicTour | null>(null)
   const [filterOffen, setFilterOffen] = useState(false)
 
+  // Ein von der Karte mitgebrachter Ort ersetzt den bisherigen Ortsfilter.
+  useEffect(() => {
+    setFilter((f) => (f.ort?.name === (ort?.name ?? null) ? f : { ...f, ort: ort ?? null }))
+  }, [ort])
+
   /*
     Getippte Suche entprellen: sonst geht pro Tastenanschlag eine Abfrage
     hinaus. Bei zehn Zeichen sind das zehn Abfragen für ein Ergebnis.
@@ -71,18 +82,31 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
     return () => clearTimeout(t)
   }, [sucheRoh])
 
+  /*
+    Jede Abfrage bekommt eine Marke, und nur die jüngste darf schreiben.
+
+    Ohne das gewinnt die *langsamste* Antwort, nicht die neueste: wer einen
+    Filter setzt, während die vorige Abfrage noch läuft, sieht danach wieder
+    das alte Ergebnis — mit der neuen Filterzeile darüber. Genau so ist es
+    beim Wechsel von der Gesamtliste auf eine Ortssuche aufgetreten.
+  */
+  const laufendeAnfrage = useRef(0)
+
   const laden = useCallback(async (s: number, anhaengen: boolean) => {
+    const marke = ++laufendeAnfrage.current
     setLaedt(true)
     try {
       const ergebnis = await listCommunityTouren(filter, s)
+      if (marke !== laufendeAnfrage.current) return
       setTouren((alt) => (anhaengen ? [...alt, ...ergebnis.touren] : ergebnis.touren))
       setMehr(ergebnis.mehr)
       setGesamt(ergebnis.gesamt)
       setFehler(null)
     } catch (e) {
+      if (marke !== laufendeAnfrage.current) return
       setFehler((e as Error).message)
     } finally {
-      setLaedt(false)
+      if (marke === laufendeAnfrage.current) setLaedt(false)
     }
   }, [filter])
 
@@ -156,7 +180,13 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
   }
 
   const filterAktiv =
-    filter.suche !== '' || filter.region !== null || filter.laenge !== 'alle' || filter.nurMitWeg
+    filter.suche !== '' || filter.region !== null || filter.laenge !== 'alle'
+    || filter.nurMitWeg || filter.ort !== null
+
+  const ortLoesen = () => {
+    setFilter((f) => ({ ...f, ort: null }))
+    onOrtLoesen?.()
+  }
 
   if (!isSupabaseConfigured) {
     return (
@@ -178,6 +208,26 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
     >
       {/* ---- Suche und Filter ---- */}
       <div className="space-y-3">
+        {/*
+          Der Ort steht über der Suche, nicht in der Filterzeile: er ist keine
+          Verfeinerung, sondern bestimmt, was hier überhaupt gezeigt wird.
+        */}
+        {filter.ort && (
+          <div className="flex flex-wrap items-center gap-2 rounded-mittel border border-gletscher-500/25 bg-gletscher-500/10 px-3 py-2.5">
+            <MapPin size={14} strokeWidth={2} className="shrink-0 text-gletscher-300" aria-hidden />
+            <p className="min-w-0 flex-1 text-klein text-ink-200">
+              Touren bei <span className="font-medium text-ink-50">{filter.ort.name}</span>
+              <span className="text-ink-500"> · {filter.ort.umkreisM / 1000} km Umkreis, nächstgelegene zuerst</span>
+            </p>
+            <button
+              onClick={ortLoesen}
+              className="inline-flex h-7 items-center gap-1 rounded-klein px-2 text-klein text-ink-400 transition-colors duration-[160ms] hover:bg-flaeche-3 hover:text-ink-100"
+            >
+              Aufheben
+              <X size={13} strokeWidth={2.5} aria-hidden />
+            </button>
+          </div>
+        )}
         <div className="flex gap-2">
           <div className="relative min-w-0 flex-1">
             <Search
@@ -251,7 +301,11 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
               // Fünf Optionen passen auf dem Telefon nicht nebeneinander. Sie
               // brechen aber auch nicht um — dann wären die Felder verschieden
               // hoch. Stattdessen schiebbar.
-              className="max-w-full overflow-x-auto [&>button]:shrink-0 [&>button]:whitespace-nowrap"
+              //
+              // Bei einer Ortssuche ausgegraut: dort entscheidet die Entfernung
+              // über die Reihenfolge, eine zweite Sortierung wäre eine Lüge.
+              className={`max-w-full overflow-x-auto [&>button]:shrink-0 [&>button]:whitespace-nowrap${
+                filter.ort ? ' pointer-events-none opacity-40' : ''}`}
             />
           </div>
         </div>
@@ -260,14 +314,16 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
           <p className="text-klein text-ink-500" role="status">
             {laedt && touren.length === 0
               ? 'Wird geladen …'
-              : gesamt != null
-                ? `${gesamt.toLocaleString('de-DE')} ${gesamt === 1 ? 'geteilte Tour' : 'geteilte Touren'}`
-                : `${touren.length} geteilte Touren`}
+              : filter.ort
+                ? `${touren.length} ${touren.length === 1 ? 'Tour' : 'Touren'} in der Nähe`
+                : gesamt != null
+                  ? `${gesamt.toLocaleString('de-DE')} ${gesamt === 1 ? 'geteilte Tour' : 'geteilte Touren'}`
+                  : `${touren.length} geteilte Touren`}
           </p>
           {filterAktiv && (
             <Button
               variante="geist" groesse="klein"
-              onClick={() => { setSucheRoh(''); setFilter(STANDARD_FILTER) }}
+              onClick={() => { setSucheRoh(''); setFilter(STANDARD_FILTER); onOrtLoesen?.() }}
             >
               Filter zurücksetzen
             </Button>
@@ -281,7 +337,14 @@ export function CommunityPanel({ session, onLoadRoute }: Props) {
       {laedt && touren.length === 0 && <Platzhalter />}
 
       {!laedt && touren.length === 0 && !fehler && (
-        filterAktiv ? (
+        filter.ort ? (
+          <Leer
+            icon={MapPin}
+            titel={`Noch keine Tour bei ${filter.ort.name}`}
+            text={`Im Umkreis von ${filter.ort.umkreisM / 1000} km hat noch niemand eine Tour geteilt. Plane eine auf der Karte — dann steht hier deine.`}
+            aktion={<Button variante="sekundaer" onClick={ortLoesen}>Alle Touren zeigen</Button>}
+          />
+        ) : filterAktiv ? (
           <Leer
             icon={Search}
             titel="Nichts gefunden"

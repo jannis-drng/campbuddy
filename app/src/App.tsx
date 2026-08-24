@@ -31,6 +31,7 @@ import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
 import { linkErgebnisAuslesen, saveTour, useSession, type LinkErgebnis } from './services/account'
+import { ORT_UMKREIS_M, type Ortsfilter } from './services/community'
 import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
 import { Auswahl, Button, Segmente } from './ui'
 
@@ -311,6 +312,21 @@ export default function App() {
    */
   const [kameraZiel, setKameraZiel] = useState<{ geometry: Position[]; zaehler: number } | null>(null)
 
+  /**
+   * Von der Karte in die Community mitgenommener Ort.
+   *
+   * Wer auf eine Huette tippt und dort „Alle Touren hier" waehlt, sucht nicht
+   * nach einem Namen, sondern nach einer Stelle. Der Filter lebt deshalb hier
+   * und nicht im Community-Panel: er entsteht auf der Karte.
+   */
+  const [ortsfilter, setOrtsfilter] = useState<Ortsfilter | null>(null)
+
+  const tourenBeiOrt = (name: string, position: Position) => {
+    setOrtsfilter({ name, position, umkreisM: ORT_UMKREIS_M })
+    setSelection(null)
+    setView('community')
+  }
+
   const routeLaden = (geometry: Position[], wps: Position[]) => {
     setGpxTrack(geometry)
     setWaypoints(wps)
@@ -464,6 +480,7 @@ export default function App() {
             onZoneClick={(zone) => setSelection({ kind: 'zone', zone })}
             onPointClick={(point) => setSelection({ kind: 'point', point })}
             onNatureClick={(feature) => setSelection({ kind: 'natur', feature })}
+            onPeakClick={(peak) => setSelection({ kind: 'peak', peak })}
             onEigenClick={(punkt) => setSelection({ kind: 'eigen', punkt })}
             onLeerClick={(position) => {
               // Wer an dieser Stelle zuständig ist, entscheidet die Auskunft —
@@ -551,6 +568,14 @@ export default function App() {
             nutzerId={session?.user.id}
             onPunktBearbeiten={(punkt) => { setDialogPosition(null); setDialogPunkt(punkt) }}
             onPunktLoeschen={(punkt) => void punktEntfernen(punkt)}
+            onTourOeffnen={(tour) => {
+              setSelection(null)
+              routeLaden(
+                (tour.geometry?.coordinates ?? []) as Position[],
+                (tour.waypoints ?? []) as Position[],
+              )
+            }}
+            onAlleTouren={tourenBeiOrt}
           />
         </main>
       </div>
@@ -571,7 +596,12 @@ export default function App() {
 
       {view === 'community' && (
         <main className="flex-1 overflow-y-auto">
-          <CommunityPanel session={session} onLoadRoute={routeLaden} />
+          <CommunityPanel
+            session={session}
+            onLoadRoute={routeLaden}
+            ort={ortsfilter}
+            onOrtLoesen={() => setOrtsfilter(null)}
+          />
         </main>
       )}
 
