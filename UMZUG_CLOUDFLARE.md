@@ -18,6 +18,7 @@ Diese Punkte stecken bereits im Repo, es ist nichts mehr daran zu tun:
 | Was | Wo |
 |---|---|
 | Sicherheits-Kopfzeilen samt strenger CSP | `app/_headers.vorlage` → wird beim Build zu `dist/_headers` |
+| Welcher Ordner ausgeliefert wird | `app/wrangler.jsonc` |
 | Basispfad an einer einzigen Stelle, für beide Hoster | `app/vite.config.ts` (`VITE_BASE`) |
 | Social-Media-Adressen und Canonical ziehen mit | `app/index.html` (`%ORIGIN%%BASIS%`) |
 | 404-Seite verlinkt richtig, egal unter welchem Pfad | `app/public/404.html` (`%BASIS%`) |
@@ -31,48 +32,74 @@ fehlerfrei. Der GitHub-Pages-Build bleibt Byte-für-Byte wie vorher.
 
 ## Schritt 1 — Cloudflare-Konto und Projekt anlegen
 
+Cloudflare führt neue Projekte inzwischen auf **Workers mit statischen
+Dateien** statt auf klassische Pages-Projekte. Beides funktioniert; diese
+Anleitung beschreibt den Workers-Weg, weil er der ist, den das Dashboard
+anbietet.
+
 1. Konto auf <https://dash.cloudflare.com/sign-up> anlegen (kostenlos, keine
    Kreditkarte).
-2. Im Dashboard: **Workers & Pages → Create → Pages → Connect to Git**.
-3. GitHub verbinden und `jannis-drng/campbuddy` auswählen.
-4. Im Formular **Set up builds and deployments** genau das eintragen:
+2. **Compute (Workers) → Create → Import a repository**, dann
+   `jannis-drng/campbuddy` auswählen.
+3. Bei den Bau-Einstellungen eintragen:
 
    | Feld | Wert |
    |---|---|
-   | Production branch | `main` |
-   | Framework preset | `None` |
    | Build command | `npm run build` |
-   | Build output directory | `dist` |
-   | Root directory (advanced) | `app` |
+   | Deploy command | `npx wrangler deploy` (Vorgabe) |
+   | Root directory | `app` |
 
-   Das `Root directory: app` ist wichtig — die Web-App liegt nicht im
+   `Root directory: app` ist wichtig — die Web-App liegt nicht im
    Wurzelverzeichnis des Repos.
 
-## Schritt 2 — Umgebungsvariablen setzen
+**Ein Feld „Build output directory" gibt es hier nicht.** Welcher Ordner
+ausgeliefert wird, steht in `app/wrangler.jsonc` (`assets.directory`). Ohne
+diese Datei rät Cloudflare und liefert das Quellverzeichnis aus — dessen
+`index.html` verweist auf `/src/main.tsx`, das es im Bau nicht gibt, und die
+Seite bleibt **weiss**. Die Datei liegt im Repo; prüfe nur, dass `name` darin
+genauso heisst wie dein Worker im Dashboard. Bei einem abweichenden Namen legt
+`wrangler deploy` klammheimlich einen zweiten Worker an.
 
-Noch im selben Formular unter **Environment variables**, für *Production*
-**und** *Preview* (sonst bauen die Vorschau-Deploys kaputt):
+## Schritt 2 — Bau-Variablen setzen
+
+**Nicht** unter *Variables and Secrets* bei den Laufzeit-Einstellungen. Ein
+Worker, der nur statische Dateien ausliefert, hat keine Laufzeit-Variablen —
+das Dashboard antwortet dort mit „Variables cannot be added to a Worker that
+only has static assets".
+
+Unsere Werte sind **Bau**-Variablen: Vite schreibt sie beim Bauen fest ins
+Bundle, danach spielen sie keine Rolle mehr. Sie gehören nach
+
+**Settings → Build → Build Variables and Secrets**
 
 | Name | Wert |
 |---|---|
 | `VITE_BASE` | `/` |
-| `VITE_ORIGIN` | `https://<deine-domain>` — vorerst die pages.dev-Adresse |
+| `VITE_ORIGIN` | `https://<deine-domain>` — vorerst die workers.dev-Adresse |
 | `VITE_SUPABASE_URL` | derselbe Wert wie in `app/.env.local` |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | derselbe Wert wie in `app/.env.local` |
 | `NODE_VERSION` | `22` |
 
-Der publishable key darf hier stehen — er gehört ins Bundle und ist dafür
-gemacht. Der Schutz kommt aus Row Level Security, nicht aus Geheimhaltung.
-Ein `sb_secret_…`-Schlüssel gehört **niemals** hierher.
+Alle als **Plaintext**, keine als Secret: alle vier `VITE_`-Werte landen
+ohnehin im ausgelieferten JavaScript und sind für jeden Besucher lesbar — das
+Präfix `VITE_` *bedeutet* „geht in den Browser". Der Schutz bei Supabase kommt
+aus Row Level Security, nicht aus Geheimhaltung. Als Secret markierte Werte
+kannst du später nur überschreiben, nicht mehr auslesen.
+
+Was wirklich geheim bleiben muss — etwa ein `sb_secret_…`-Schlüssel oder
+später ein Affiliate-Token — bekommt **kein** `VITE_`-Präfix, wird nie im
+Frontend gelesen und gehört in Worker-Code. *Dort* ist Secret richtig.
 
 `VITE_BASE=/` ist der eigentliche Unterschied zu GitHub Pages: dort liegt die
 App unter `/campbuddy/`, auf einer eigenen Domain unter der Wurzel.
 
-Dann **Save and Deploy**. Der erste Build dauert ein bis zwei Minuten.
+**Variablen wirken erst beim nächsten Bau.** Nachträglich eingetragene Werte
+ändern nichts am bereits ausgelieferten Stand — danach unter *Deployments*
+einen neuen Bau anstossen.
 
-## Schritt 3 — Auf der pages.dev-Adresse prüfen
+## Schritt 3 — Auf der Cloudflare-Adresse prüfen
 
-Cloudflare vergibt eine Adresse wie `campbuddy-abc.pages.dev`. Die ist sofort
+Cloudflare vergibt eine Adresse wie `campbuddy.<konto>.workers.dev`. Die ist sofort
 live, öffentlich, und stört die bestehende Seite nicht. Dort durchgehen:
 
 - Karte lädt, Kacheln erscheinen, Zonen sind eingefärbt.
@@ -86,7 +113,7 @@ live, öffentlich, und stört die bestehende Seite nicht. Dort durchgehen:
 Gegenprobe, dass die Kopfzeilen wirklich ankommen:
 
 ```bash
-curl -sI https://<deine-adresse>.pages.dev | grep -i "content-security-policy\|x-frame\|strict-transport"
+curl -sI https://<deine-adresse> | grep -i "content-security-policy\|x-frame\|strict-transport"
 ```
 
 ## Schritt 4 — Supabase auf die neue Adresse hinweisen
@@ -99,7 +126,7 @@ Supabase-Projekt → **Authentication → URL Configuration**:
 
 - **Site URL**: die künftige Hauptadresse.
 - **Redirect URLs**: alle Adressen eintragen, die es geben soll —
-  `https://<deine-domain>/**`, `https://<projekt>.pages.dev/**` und
+  `https://<deine-domain>/**`, `https://<projekt>.<konto>.workers.dev/**` und
   vorerst weiterhin `https://jannis-drng.github.io/campbuddy/**`.
 
 Die Liste eng halten: jede Adresse hier ist eine Adresse, auf die ein
@@ -111,7 +138,7 @@ Ohne eigene Domain bleibt es bei `*.pages.dev` — funktioniert, wirkt aber
 nicht wie ein Produkt.
 
 **Domain bei Cloudflare gekauft oder schon dort verwaltet:** Pages-Projekt →
-**Custom domains → Set up a domain**, Domain eintragen, fertig. Cloudflare
+**Settings → Domains & Routes → Add → Custom domain**, Domain eintragen, fertig. Cloudflare
 legt den DNS-Eintrag selbst an und stellt das Zertifikat aus.
 
 **Domain bei einem anderen Anbieter:** Cloudflare zeigt einen `CNAME`-Eintrag
@@ -120,7 +147,7 @@ wenige Stunden warten, bis die Änderung durchgereicht ist.
 
 Danach `VITE_ORIGIN` in den Cloudflare-Variablen auf die endgültige Domain
 setzen und einmal neu deployen — sonst zeigen Social-Media-Vorschau und
-Canonical noch auf die pages.dev-Adresse.
+Canonical noch auf die workers.dev-Adresse.
 
 ## Schritt 6 — Umschalten
 
@@ -142,7 +169,7 @@ Repo.
 
 ## Danach
 
-- **Zugriffszahlen:** Pages-Projekt → **Analytics → Web Analytics**
+- **Zugriffszahlen:** Worker → **Analytics → Web Analytics**
   einschalten. Cloudflare misst serverseitig, setzt keine Cookies und braucht
   deshalb kein Einwilligungsbanner. Das passt zur Datensparsamkeit aus der
   Spezifikation, Abschnitt 9.

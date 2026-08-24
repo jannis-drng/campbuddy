@@ -49,7 +49,8 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   an der Content-Security-Policy live geht: ein Verstoss zeigt sich nur so.
 - `app/_headers.vorlage` — Sicherheits-Kopfzeilen inkl. CSP. Kommt ein externer
   Dienst dazu, muss er dort in `connect-src`/`img-src` eingetragen werden, sonst
-  blockiert ihn der Browser. Umzug auf Cloudflare: `UMZUG_CLOUDFLARE.md`.
+  blockiert ihn der Browser. Umzug auf Cloudflare: `UMZUG_CLOUDFLARE.md`;
+  ausgeliefertes Verzeichnis: `app/wrangler.jsonc`.
 
 Live: https://jannis-drng.github.io/campbuddy/ · Repo: https://github.com/jannis-drng/campbuddy
 

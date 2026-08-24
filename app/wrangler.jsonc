@@ -1,0 +1,28 @@
+// Auslieferung auf Cloudflare Workers (statische Dateien).
+//
+// Ohne diese Datei rät Cloudflare beim Deploy, welcher Ordner ausgeliefert
+// werden soll — und liegt falsch: es landet das Quellverzeichnis im Netz, wo
+// `index.html` noch auf `/src/main.tsx` zeigt. Diese Datei gibt es nur im
+// Entwicklungsbetrieb, also lädt nichts und die Seite bleibt weiss.
+//
+// ACHTUNG: `name` muss exakt so heissen wie der bereits angelegte Worker im
+// Cloudflare-Dashboard. Steht hier ein anderer Name, legt `wrangler deploy`
+// stillschweigend einen zweiten Worker an, und du suchst den Fehler an einer
+// Seite, die gar nicht mehr die ist, die du aufrufst.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "campbuddy",
+  "compatibility_date": "2026-08-01",
+
+  "assets": {
+    // Relativ zu dieser Datei: app/dist — das Ergebnis von `npm run build`.
+    "directory": "./dist",
+
+    // Unbekannte Adressen bekommen unsere eigene 404-Seite, nicht die
+    // Startseite. Die Alternative "single-page-application" würde für jeden
+    // Pfad `index.html` ausliefern — und damit genau die Auskunft
+    // verschlucken, dass die Adresse falsch war. CampBuddy routet über
+    // Rautenpfade (`#/karte`), braucht also keine Umschreibung auf die App.
+    "not_found_handling": "404-page"
+  }
+}
