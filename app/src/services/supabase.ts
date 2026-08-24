@@ -48,6 +48,15 @@ export interface StoredRoute {
   created_at: string
 }
 
+/**
+ * Eine geteilte Route, wie sie Fremde zu sehen bekommen.
+ *
+ * Bewusst ohne `user_id`: die View `oeffentliche_routen` gibt sie nicht heraus.
+ * Der Typ hält das fest, damit niemand versehentlich wieder danach greift und
+ * die Spalte zurückholt.
+ */
+export type PublicRoute = Omit<StoredRoute, 'user_id'>
+
 /** Eine gespeicherte Tour (Abschnitt 8.6). */
 export interface StoredTrip {
   id: string

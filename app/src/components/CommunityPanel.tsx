@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import { lineLength } from '../data/geo'
-import { isSupabaseConfigured, type StoredRoute } from '../services/supabase'
+import { isSupabaseConfigured, type PublicRoute } from '../services/supabase'
 import { addFavorite, listFavoriteIds, listPublicRoutes, removeFavorite } from '../services/account'
 import { Compass, Map as MapIcon, Star, TriangleAlert } from 'lucide-react'
 import { Button, Hinweis, Leer, Liste, Seite } from '../ui'
@@ -22,7 +22,7 @@ const formatKm = (m: number) =>
   m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
 
 export function CommunityPanel({ session, onLoadRoute }: Props) {
-  const [routen, setRouten] = useState<StoredRoute[]>([])
+  const [routen, setRouten] = useState<PublicRoute[]>([])
   const [favoriten, setFavoriten] = useState<Set<string>>(new Set())
   const [laedt, setLaedt] = useState(true)
   const [fehler, setFehler] = useState<string | null>(null)

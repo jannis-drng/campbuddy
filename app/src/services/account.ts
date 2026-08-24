@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import type { TripParams } from '../data/types'
-import { getSupabase, type StoredRoute, type StoredTrip } from './supabase'
+import { getSupabase, type PublicRoute, type StoredRoute, type StoredTrip } from './supabase'
 
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null)
@@ -278,21 +278,25 @@ function istSchemaFehlt(error: { code?: string } | null): boolean {
 }
 
 /**
- * Öffentlich geteilte Routen. Braucht keine Anmeldung — die Lese-Policy gibt
- * ausschliesslich als `is_public` markierte Zeilen frei.
+ * Öffentlich geteilte Routen. Braucht keine Anmeldung.
+ *
+ * Liest aus der View `oeffentliche_routen`, nicht aus der Tabelle: eine
+ * Lese-Policy auf `routes` gäbe zwangsläufig die *ganze* Zeile frei — Row
+ * Level Security filtert Zeilen, nicht Spalten — und damit die `user_id` des
+ * Autors. Die View wählt die Spalten aus, die geteilt gehören. Wer eine Route
+ * veröffentlicht, teilt damit seinen Verlauf, nicht sein Konto.
  */
-export async function listPublicRoutes(limit = 50): Promise<StoredRoute[]> {
+export async function listPublicRoutes(limit = 50): Promise<PublicRoute[]> {
   const sb = getSupabase()
   if (!sb) return []
   const { data, error } = await sb
-    .from('routes')
+    .from('oeffentliche_routen')
     .select('*')
-    .eq('is_public', true)
     .order('created_at', { ascending: false })
     .limit(limit)
   if (istSchemaFehlt(error)) return []
   if (error) throw new Error(error.message)
-  return (data ?? []) as StoredRoute[]
+  return (data ?? []) as PublicRoute[]
 }
 
 /** Veröffentlichen oder zurückziehen. Nur für eigene Routen (RLS). */
