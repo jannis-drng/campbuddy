@@ -8,14 +8,15 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import type { Position } from '../data/geo'
-import type { Region, TripParams } from '../data/types'
+import type { Peak, Point, Region, TripParams, Wegpunkt } from '../data/types'
+import { tournameVorschlaege } from '../data/tourname'
 import { NEARBY_RADIUS_M, summarise, type RouteAnalysis } from '../data/routeAnalysis'
 import { formatDauer, STUNDEN_PRO_TAG, type Etappe, type HikingStats } from '../data/hiking'
 import type { ElevationPoint } from '../services/elevation'
 import { ElevationProfile } from './ElevationProfile'
 import { TripPlanner } from './TripPlanner'
-import { X } from 'lucide-react'
-import { Button, Eingabe, IconButton, Stufen } from '../ui'
+import { Shuffle, X } from 'lucide-react'
+import { Button, IconButton, Stufen } from '../ui'
 import { StatusBadge } from './ui'
 
 interface Props {
@@ -29,6 +30,10 @@ interface Props {
   etappen: Etappe[]
   hoehenBusy: boolean
   hoehenFehler: string | null
+  /** Die gesetzten Wegpunkte — Grundlage für den Namensvorschlag. */
+  wegpunkte: Wegpunkt[]
+  points: Point[]
+  peaks: Peak[]
   /**
    * Speichert Verlauf und Eckdaten in einem Zug. Vorher standen hier zwei
    * Formulare — „Route speichern" und „Tour speichern" — und niemand konnte
@@ -52,14 +57,31 @@ const SCHWIERIGKEIT_STUFE = {
 
 export function TourDetailModal({
   offen, onClose, region, analysis, stats, profil, etappen,
-  hoehenBusy, hoehenFehler, onSaveTour,
+  hoehenBusy, hoehenFehler, wegpunkte, points, peaks, onSaveTour, route,
 }: Props) {
-  const [name, setName] = useState('')
   const [speicherStand, setSpeicherStand] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
   const [speicherFehler, setSpeicherFehler] = useState<string | null>(null)
   // Die Eckdaten leben weiter im Planer; hier liegt nur die letzte Fassung,
   // damit der eine Speicherknopf sie mitgeben kann.
   const [trip, setTrip] = useState<TripParams | null>(null)
+  /** Welcher der Vorschläge gerade steht. */
+  const [vorschlagNr, setVorschlagNr] = useState(0)
+  /** Nur gesetzt, wenn jemand den Namen von Hand angefasst hat. */
+  const [eigenerName, setEigenerName] = useState<string | null>(null)
+
+  /*
+    Der Name entsteht aus der Tour selbst — aus den angetippten Orten, dem
+    höchsten Gipfel am Weg und der durchquerten Zone. Einen Titel zu erfinden
+    war die letzte Hürde vor dem Speichern und die unnötigste: die Tour weiss
+    selbst, wo sie langgeht.
+  */
+  const vorschlaege = useMemo(
+    () => tournameVorschlaege({
+      wegpunkte, route, points, peaks, crossed: analysis.crossed, etappen,
+    }),
+    [wegpunkte, route, points, peaks, analysis.crossed, etappen],
+  )
+  const name = eigenerName ?? vorschlaege[vorschlagNr % vorschlaege.length] ?? ''
 
   // Escape schliesst — bei einem bildfüllenden Fenster erwartet man das.
   useEffect(() => {
@@ -100,7 +122,7 @@ export function TourDetailModal({
     setSpeicherStand('busy'); setSpeicherFehler(null)
     try {
       await onSaveTour(name.trim(), trip)
-      setSpeicherStand('ok'); setName('')
+      setSpeicherStand('ok')
     } catch (err) {
       setSpeicherStand('error'); setSpeicherFehler((err as Error).message)
     }
@@ -248,18 +270,39 @@ export function TourDetailModal({
             <section className="rounded-gross border border-kante bg-flaeche-1 p-4">
               <h3 className="text-fliess font-semibold text-ink-100">Tour speichern</h3>
               <p className="mb-3 mt-0.5 text-klein leading-relaxed text-ink-500">
-                Gespeichert wird beides zusammen: der Verlauf und die Eckdaten von oben.
-                Unter „Deine Touren“ kannst du die Tour später teilen.
+                Der Name kommt aus der Tour selbst — aus den Orten am Weg. Überschreiben
+                geht jederzeit. Gespeichert wird beides zusammen: der Verlauf und die
+                Eckdaten von oben; unter „Deine Touren“ kannst du die Tour später teilen.
               </p>
               <form onSubmit={speichern} className="flex flex-wrap gap-2">
-                <Eingabe
-                  value={name}
-                  onChange={(e) => { setName(e.target.value); setSpeicherStand('idle') }}
-                  placeholder="Name der Tour"
-                  maxLength={120}
-                  aria-label="Name der Tour"
-                  className="min-w-0 flex-1"
-                />
+                <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-mittel border
+                                border-kante bg-flaeche-2 pr-1 focus-within:border-gletscher-500
+                                focus-within:ring-2 focus-within:ring-gletscher-500/25">
+                  <input
+                    value={name}
+                    onChange={(e) => { setEigenerName(e.target.value); setSpeicherStand('idle') }}
+                    maxLength={120}
+                    aria-label="Name der Tour"
+                    className="h-10 min-w-0 flex-1 bg-transparent px-3 text-fliess text-ink-100
+                               placeholder:text-ink-500 focus:outline-none"
+                  />
+                  {/*
+                    Nur wenn es überhaupt etwas zu wechseln gibt. Ein Knopf, der
+                    denselben Namen noch einmal vorschlägt, ist ein kaputter Knopf.
+                  */}
+                  {vorschlaege.length > 1 && (
+                    <IconButton
+                      icon={Shuffle}
+                      groesse="klein"
+                      label="Anderen Namen vorschlagen"
+                      onClick={() => {
+                        setEigenerName(null)
+                        setVorschlagNr((n) => n + 1)
+                        setSpeicherStand('idle')
+                      }}
+                    />
+                  )}
+                </div>
                 <Button type="submit" variante="primaer" groesse="gross"
                         disabled={!name.trim() || speicherStand === 'busy'}>
                   {speicherStand === 'busy' ? 'Speichere …' : 'Speichern'}

@@ -583,6 +583,26 @@ abstreifen, und die Zuschreibung wird wertlos. Der allererste Wechsel nach der
 Registrierung ist frei — ein einmal gewählter Name muss korrigierbar bleiben. Denselben
 Namen noch einmal zu speichern löst die Sperre nicht aus.
 
+### Der Name kommt aus der Tour
+
+Beim Speichern steht der Name schon da — gebaut aus dem, was die Tour selbst hergibt
+(`app/src/data/tourname.ts`): den angetippten Orten, dem höchsten Gipfel am Weg, der
+durchquerten Zone, sonst Dauer und Länge. Der Knopf daneben schaltet auf einen anderen
+Vorschlag, überschreiben geht jederzeit.
+
+Zwei Regeln haben die Form bestimmt:
+
+- **Keine Artikel, keine Präpositionen mit Geschlecht.** „im Wallis" geht, „im Schweiz"
+  nicht, und ob eine Zone der, die oder das ist, weiss dort niemand. Deshalb
+  Gedankenstrich und Zusammensetzungen: „Moiry – Zermatt", „Parrotspitze-Runde".
+  Mehrteilige Namen bekommen die getrennte Form („Rundtour über Pigne de la Le"), weil ein
+  Bindestrich nur das letzte Wort bindet.
+- **Nichts erfinden.** Jeder Bestandteil kommt aus echten Daten. Gibt es nichts davon,
+  sagt der Vorschlag nur Dauer und Länge — das stimmt immer.
+
+Ein Gipfel am Weg wird mit „über" angehängt, nicht mit Gedankenstrich: „Moiry – Grand
+Cornier" behauptete ein Ziel, das nur eine Station ist.
+
 ### Symbole beim Zeichnen
 
 Im Zeichenmodus wird ein angetipptes Symbol — Hütte, Campingplatz, Stellplatz, Gipfel,

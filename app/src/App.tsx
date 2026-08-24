@@ -688,6 +688,9 @@ export default function App() {
         etappen={etappen}
         hoehenBusy={hoehenBusy}
         hoehenFehler={hoehenFehler}
+        wegpunkte={gpxTrack ? [] : waypoints}
+        points={allPoints}
+        peaks={allPeaks}
         onSaveTour={handleSaveTour}
       />
     </div>
