@@ -254,6 +254,14 @@ Repo.
   einschalten. Cloudflare misst serverseitig, setzt keine Cookies und braucht
   deshalb kein Einwilligungsbanner. Das passt zur Datensparsamkeit aus der
   Spezifikation, Abschnitt 9.
+
+  Nicht ganz serverseitig ist es allerdings: Cloudflare hängt der Seite beim
+  Ausliefern ein Beacon-Skript von `static.cloudflareinsights.com` an, das die
+  Ladezeiten im Browser misst. Die CSP muss diesen Host in `script-src` und
+  `cloudflareinsights.com` in `connect-src` führen — beides steht in
+  `app/_headers.vorlage`. Ohne die Einträge blockiert der Browser das Skript,
+  die Messung bleibt leer, und in der Konsole steht ein CSP-Verstoss. Wer die
+  Messung wieder abschaltet, streicht die beiden Hosts dort besser mit.
 - **HSTS-Preload:** in `app/_headers.vorlage` bewusst *nicht* gesetzt. Erst
   erwägen, wenn die Domain samt allen Subdomains dauerhaft auf HTTPS läuft —
   der Eintrag ist praktisch nicht zurückzunehmen.

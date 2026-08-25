@@ -30,13 +30,22 @@
   # inline, damit sie auch dann steht, wenn das Bundle kaputt ist. Bei Styles
   # ist das vertretbar — Stil kann keine Daten versenden.
   #
+  # Die einzige fremde Skriptquelle ist das Beacon von Cloudflare Web
+  # Analytics. Cloudflare fügt es der Seite beim Ausliefern selbst hinzu —
+  # ohne diesen Eintrag verweigert der Browser es, und die Messung erhebt
+  # nichts. Es setzt keine Cookies und meldet an
+  # `https://cloudflareinsights.com/cdn-cgi/rum`, deshalb steht dieser Host
+  # auch in `connect-src`. Wer die Messung nicht will, schaltet sie im
+  # Cloudflare-Dashboard ab (Web Analytics) und streicht beide Einträge
+  # hier wieder — die Seite braucht sie nicht.
+  #
   # Alles Übrige ist die Liste der Dienste, die die Karte tatsächlich lädt:
   # Kartenkacheln (OpenTopoMap, swisstopo, OpenFreeMap), Schriften für die
   # Kartenbeschriftung (openmaptiles), Wetter (Open-Meteo), Routing (Valhalla,
   # OSRM, ORS, GraphHopper) und Supabase. Kommt ein Dienst dazu, muss er hier
   # eingetragen werden — sonst blockiert der Browser ihn, und die Konsole sagt
   # auch genau das.
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org https://wmts.geo.admin.ch https://tiles.openfreemap.org %SUPABASE%; connect-src 'self' %SUPABASE% https://api.open-meteo.com https://valhalla1.openstreetmap.de https://routing.openstreetmap.de https://api.openrouteservice.org https://graphhopper.com https://tiles.openfreemap.org https://fonts.openmaptiles.org https://wmts.geo.admin.ch https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org; worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org https://wmts.geo.admin.ch https://tiles.openfreemap.org %SUPABASE%; connect-src 'self' %SUPABASE% https://cloudflareinsights.com https://api.open-meteo.com https://valhalla1.openstreetmap.de https://routing.openstreetmap.de https://api.openrouteservice.org https://graphhopper.com https://tiles.openfreemap.org https://fonts.openmaptiles.org https://wmts.geo.admin.ch https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org; worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
 
   # --- Einbettung und Sniffing -------------------------------------------
   # frame-ancestors oben erledigt das für heutige Browser; X-Frame-Options ist
