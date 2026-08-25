@@ -30,6 +30,46 @@ fehlerfrei. Der GitHub-Pages-Build bleibt Byte-für-Byte wie vorher.
 
 ---
 
+## Schritt 0 — DNS für camping-map.com zu Cloudflare holen
+
+Die Domain ist bei **IONOS** registriert und benutzt deren Nameserver
+(`ns10xx.ui-dns.*`). Sie **bleibt dort registriert** — gewechselt wird nur, wer
+die DNS-Einträge beantwortet. Ein echter Registrar-Umzug ist ohnehin gesperrt:
+ICANN verbietet ihn in den ersten 60 Tagen nach der Registrierung. Nötig ist er
+auch nicht; DNS-Betrieb bei Cloudflare ist kostenlos und vom Registrar
+unabhängig.
+
+Warum überhaupt umstellen, statt bei IONOS einfach einen CNAME zu setzen:
+`camping-map.com` **ohne** `www` ist der Zonen-Apex, und dort verbietet der
+DNS-Standard einen CNAME. Ein `A`-Eintrag scheidet aus, weil Cloudflare Workers
+keine festen IP-Adressen haben, die man eintragen könnte. Cloudflare löst das
+mit CNAME-Flattening — aber nur, wenn Cloudflare die Zone selbst hält.
+
+1. <https://dash.cloudflare.com> → **Add a site** → `camping-map.com` → **Free**.
+2. Cloudflare liest die vorhandenen Einträge ein. Bei einer frischen Domain ist
+   das höchstens die IONOS-Parkseite — die darf weg.
+3. Cloudflare nennt zwei Nameserver, etwa `xyz.ns.cloudflare.com`. Die Namen
+   sind kontospezifisch; nimm die aus deinem Dashboard, nicht die aus einer
+   Anleitung.
+4. Bei IONOS: **Domains & SSL → camping-map.com → Nameserver → Nameserver
+   ändern → Eigene Nameserver verwenden**. Beide Cloudflare-Adressen eintragen,
+   die IONOS-Einträge ersetzen, speichern.
+5. Warten, bis Cloudflare die Zone als **Active** meldet — meist Minuten, laut
+   IONOS bis zu 24 Stunden.
+
+Gegenprobe:
+
+```bash
+dig +short NS camping-map.com @1.1.1.1
+```
+
+Solange dort `ui-dns` steht, ist die Umstellung noch nicht durch.
+
+**E-Mail beachten:** Gibt es zu dieser Domain ein IONOS-Postfach, müssen dessen
+`MX`- und `TXT`-Einträge nach dem Wechsel in Cloudflare stehen — sonst kommt
+keine Post mehr an. Bei einer frisch gekauften Domain ohne Postfach ist nichts
+zu tun.
+
 ## Schritt 1 — Cloudflare-Konto und Projekt anlegen
 
 Cloudflare führt neue Projekte inzwischen auf **Workers mit statischen
@@ -75,7 +115,7 @@ Bundle, danach spielen sie keine Rolle mehr. Sie gehören nach
 | Name | Wert |
 |---|---|
 | `VITE_BASE` | `/` |
-| `VITE_ORIGIN` | `https://<deine-domain>` — vorerst die workers.dev-Adresse |
+| `VITE_ORIGIN` | `https://camping-map.com` — bis Schritt 5 durch ist, die workers.dev-Adresse |
 | `VITE_SUPABASE_URL` | derselbe Wert wie in `app/.env.local` |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | derselbe Wert wie in `app/.env.local` |
 | `NODE_VERSION` | `22` |
@@ -124,30 +164,48 @@ wenn die Adresse auf der Liste steht.
 
 Supabase-Projekt → **Authentication → URL Configuration**:
 
-- **Site URL**: die künftige Hauptadresse.
+- **Site URL**: `https://camping-map.com`
 - **Redirect URLs**: alle Adressen eintragen, die es geben soll —
-  `https://<deine-domain>/**`, `https://<projekt>.<konto>.workers.dev/**` und
-  vorerst weiterhin `https://jannis-drng.github.io/campbuddy/**`.
+  `https://camping-map.com/**`, `https://www.camping-map.com/**`,
+  `https://<projekt>.<konto>.workers.dev/**` und vorerst weiterhin
+  `https://jannis-drng.github.io/campbuddy/**`.
 
 Die Liste eng halten: jede Adresse hier ist eine Adresse, auf die ein
 Anmelde-Token weitergereicht werden kann.
 
-## Schritt 5 — Eigene Domain verbinden (optional, aber empfohlen)
+## Schritt 5 — camping-map.com auf den Worker binden
 
-Ohne eigene Domain bleibt es bei `*.pages.dev` — funktioniert, wirkt aber
-nicht wie ein Produkt.
+Voraussetzung: Schritt 0 ist durch, die Zone steht in Cloudflare auf *Active*.
 
-**Domain bei Cloudflare gekauft oder schon dort verwaltet:** Pages-Projekt →
-**Settings → Domains & Routes → Add → Custom domain**, Domain eintragen, fertig. Cloudflare
-legt den DNS-Eintrag selbst an und stellt das Zertifikat aus.
+Worker → **Settings → Domains & Routes → Add → Custom domain**. Zweimal
+eintragen:
 
-**Domain bei einem anderen Anbieter:** Cloudflare zeigt einen `CNAME`-Eintrag
-an, der beim bisherigen Anbieter einzutragen ist. Danach ein paar Minuten bis
-wenige Stunden warten, bis die Änderung durchgereicht ist.
+- `camping-map.com`
+- `www.camping-map.com`
 
-Danach `VITE_ORIGIN` in den Cloudflare-Variablen auf die endgültige Domain
-setzen und einmal neu deployen — sonst zeigen Social-Media-Vorschau und
-Canonical noch auf die workers.dev-Adresse.
+Cloudflare legt die DNS-Einträge selbst an und stellt das Zertifikat aus; ein
+CNAME von Hand ist nicht nötig. Nach wenigen Minuten sind beide Adressen live.
+
+Damit nicht zwei gleichwertige Adressen nebeneinander stehen — Suchmaschinen
+werten das ab, und die Anmelde-Rücksprünge werden unnötig verzweigt — eine
+davon zur Hauptadresse machen. Empfehlung: **ohne `www`**, weil kürzer und weil
+`VITE_ORIGIN` ohnehin so gesetzt ist. Die andere leitet um über **Rules →
+Redirect Rules → Create rule**:
+
+| Feld | Wert |
+|---|---|
+| Wenn | `Hostname` `equals` `www.camping-map.com` |
+| Ziel-URL | *Dynamic*: `concat("https://camping-map.com", http.request.uri.path)` |
+| Status | `301` |
+
+Danach `VITE_ORIGIN` auf `https://camping-map.com` setzen (Schritt 2) und einmal
+neu deployen — sonst zeigen Social-Media-Vorschau und Canonical weiterhin auf
+die workers.dev-Adresse.
+
+**Schreibweise durchhalten:** `campingmap.com` ohne Bindestrich gehört seit 2001
+jemand anderem und ist aktiv. Wer den Namen ohne Bindestrich tippt, landet nicht
+bei dir. In Profilen, Videos und Beschriftungen deshalb immer `camping-map.com`
+schreiben — nie „campingmap" sagen, ohne den Bindestrich mitzunennen.
 
 ## Schritt 6 — Umschalten
 
