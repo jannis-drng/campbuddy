@@ -248,6 +248,16 @@ h1, h2, h3 { font-variant-numeric: normal; }
   .karte.karte-panel-links { --karte-links: 23rem; }
   .karte.karte-panel-rechts { --karte-rechts: 26rem; }
 }
+/*
+  Zwischen Tablet und kleinem Notebook ist nur für ein Seitenpanel Platz:
+  23 rem plus 26 rem sind 784 px, und darunter bliebe kein Streifen Karte
+  übrig. Dort tritt das Routenpanel zurück (siehe `verdeckt` in RoutePanel) —
+  dann darf sein Rand auch nicht mehr als belegt gelten, sonst schöbe er
+  Zoomstufen und Massstab ins Leere.
+*/
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .karte.karte-panel-links.karte-panel-rechts { --karte-links: 0px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .karte .maplibregl-ctrl-bottom-left,
   .karte .maplibregl-ctrl-top-left,

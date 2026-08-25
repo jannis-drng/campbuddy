@@ -62,7 +62,7 @@ export async function signUpWithPassword(
     // `handle_new_user` (Migration 0017) setzt ihn beim Anlegen.
     options: { emailRedirectTo: rueckkehrAdresse(), data: { anzeigename: benutzername } },
   })
-  if (error) throw new Error(uebersetzeFehler(error.message))
+  if (error) throw new Error(uebersetzeFehler(error))
   return { bestaetigungNoetig: data.session == null }
 }
 
@@ -128,7 +128,7 @@ export async function signInWithPassword(email: string, password: string): Promi
   const sb = getSupabase()
   if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.signInWithPassword({ email, password })
-  if (error) throw new Error(uebersetzeFehler(error.message))
+  if (error) throw new Error(uebersetzeFehler(error))
 }
 
 /** Anmeldung über einen externen Anbieter (Google, Apple, …). */
@@ -139,7 +139,7 @@ export async function signInWithProvider(provider: string): Promise<void> {
     provider: provider as Parameters<typeof sb.auth.signInWithOAuth>[0]['provider'],
     options: { redirectTo: rueckkehrAdresse() },
   })
-  if (error) throw new Error(uebersetzeFehler(error.message))
+  if (error) throw new Error(uebersetzeFehler(error))
 }
 
 /**
@@ -171,7 +171,7 @@ export async function passwortZuruecksetzen(email: string): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: rueckkehrAdresse() })
-  if (error) throw new Error(uebersetzeFehler(error.message))
+  if (error) throw new Error(uebersetzeFehler(error))
 }
 
 /** Passwort ändern — setzt eine bestehende Anmeldung voraus. */
@@ -179,17 +179,67 @@ export async function passwortAendern(neu: string): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.updateUser({ password: neu })
-  if (error) throw new Error(uebersetzeFehler(error.message))
+  if (error) throw new Error(uebersetzeFehler(error))
 }
 
-/** Supabase antwortet auf Englisch; die häufigen Fälle übersetzt. */
-function uebersetzeFehler(nachricht: string): string {
+/**
+ * Supabase antwortet auf Englisch — übersetzt, so gut es geht.
+ *
+ * Zuerst über `error.code`, erst danach über den Text. Der Code ist die
+ * verlässlichere Auskunft: die englischen Sätze ändern sich zwischen
+ * Auth-Versionen, die Codes nicht. Vorher hing alles am Text, und genau die
+ * Fälle, die einem beim Registrieren und beim Passwortwechsel tatsächlich
+ * begegnen (Status 422 — schwaches Passwort, unzulässige Adresse, gleiches
+ * Passwort wie bisher), fielen durch und standen unübersetzt im Formular.
+ */
+function uebersetzeFehler(fehler: { message: string; code?: string } | string): string {
+  const nachricht = typeof fehler === 'string' ? fehler : fehler.message
+  const code = typeof fehler === 'string' ? '' : fehler.code ?? ''
+
+  switch (code) {
+    case 'invalid_credentials':
+      return 'E-Mail oder Passwort stimmt nicht.'
+    case 'email_not_confirmed':
+      return 'Bitte bestätige zuerst den Link in deiner E-Mail.'
+    case 'user_already_exists':
+      return 'Für diese Adresse gibt es schon ein Konto. Melde dich an oder setze das Passwort zurück.'
+    // Die Regel steht im Auth-Dienst, nicht hier — deshalb den Originalsatz
+    // anhängen: nur er sagt, ob es an der Länge, an den Zeichenarten oder
+    // daran liegt, dass das Passwort in einem Leak auftaucht.
+    case 'weak_password':
+      return `Dieses Passwort lässt der Anmeldedienst nicht zu. ${nachricht}`
+    case 'same_password':
+      return 'Das ist dein bisheriges Passwort. Wähle ein anderes.'
+    case 'email_address_invalid':
+      return 'Diese E-Mail-Adresse akzeptiert der Anmeldedienst nicht. Wegwerf- und Testdomains (example.com, test.com) sind gesperrt.'
+    case 'email_address_not_authorized':
+      return 'An diese Adresse darf gerade keine E-Mail verschickt werden. Nimm eine andere Adresse.'
+    case 'signup_disabled':
+    case 'email_provider_disabled':
+      return 'Neue Konten lassen sich gerade nicht anlegen.'
+    case 'provider_disabled':
+      return 'Dieser Anmeldeweg steht hier nicht zur Verfügung.'
+    case 'session_not_found':
+    case 'no_authorization':
+      return 'Deine Anmeldung ist abgelaufen. Melde dich neu an und versuch es noch einmal.'
+    case 'over_email_send_rate_limit':
+      return 'Zu viele E-Mails in kurzer Zeit. Warte ein paar Minuten.'
+    case 'over_request_rate_limit':
+      return 'Zu viele Versuche. Warte einen Moment.'
+    case 'validation_failed':
+      return `Die Eingabe hat der Anmeldedienst abgelehnt. ${nachricht}`
+  }
+
+  // Ältere Auth-Versionen liefern keinen Code — dann bleibt der Text.
   const m = nachricht.toLowerCase()
   if (m.includes('invalid login credentials')) return 'E-Mail oder Passwort stimmt nicht.'
   if (m.includes('email not confirmed')) return 'Bitte bestätige zuerst den Link in deiner E-Mail.'
   if (m.includes('user already registered')) return 'Für diese Adresse gibt es schon ein Konto. Melde dich an oder setze das Passwort zurück.'
   if (m.includes('password should be at least')) return 'Das Passwort ist zu kurz.'
+  if (m.includes('should be different from the old password')) return 'Das ist dein bisheriges Passwort. Wähle ein anderes.'
+  if (m.includes('is invalid') && m.includes('email')) return 'Diese E-Mail-Adresse akzeptiert der Anmeldedienst nicht.'
   if (m.includes('provider is not enabled')) return 'Dieser Anmeldeweg steht hier nicht zur Verfügung.'
+  if (m.includes('api key')) return 'Die Verbindung zum Anmeldedienst ist nicht richtig eingerichtet.'
   if (m.includes('rate limit') || m.includes('too many')) return 'Zu viele Versuche. Warte einen Moment.'
   return nachricht
 }
@@ -202,7 +252,7 @@ export async function signInWithEmail(email: string): Promise<void> {
     email,
     options: { emailRedirectTo: window.location.href.split('?')[0] },
   })
-  if (error) throw new Error(uebersetzeFehler(error.message))
+  if (error) throw new Error(uebersetzeFehler(error))
 }
 
 export async function signOut(): Promise<void> {

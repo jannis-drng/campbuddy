@@ -66,9 +66,13 @@ interface Props {
   markieren: boolean
   onToggleMarkieren: (() => void) | null
   /**
-   * Auf dem Telefon liegt die Infokarte an derselben Stelle. Statt beide
-   * Blätter übereinanderzustapeln, tritt dieses zurück, solange etwas
-   * ausgewählt ist — offen bleibt es trotzdem.
+   * Tritt zurück, solange etwas ausgewählt ist — offen bleibt das Panel.
+   *
+   * Auf dem Telefon liegen Routenpanel und Infokarte als Blätter an derselben
+   * Stelle. Aber auch auf dem Tablet ist kein Platz für beide: 23 rem plus
+   * 26 rem sind 784 px, und bei 768 px überlappten sie sich nicht nur, es
+   * blieb kein Streifen Karte mehr übrig. Erst ab 1024 px passen beide
+   * nebeneinander und lassen noch Karte dazwischen.
    */
   verdeckt?: boolean
 }
@@ -116,7 +120,7 @@ export function RoutePanel({
       className={`absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col overflow-y-auto rounded-t-riesig border
                  border-kante bg-flaeche-2/97 shadow-[var(--shadow-4)] backdrop-blur-md
                  sm:inset-y-0 sm:right-auto sm:left-0 sm:max-h-none sm:w-[23rem]
-                 sm:rounded-none sm:rounded-r-gross ${verdeckt ? 'hidden sm:flex' : ''}`}
+                 sm:rounded-none sm:rounded-r-gross ${verdeckt ? 'hidden lg:flex' : ''}`}
       aria-label="Route"
     >
       <header className="flex shrink-0 items-start justify-between gap-3 border-b border-kante px-5 py-4">

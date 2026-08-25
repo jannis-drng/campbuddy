@@ -89,27 +89,40 @@ export function PacklisteModal({ tour, onClose, onAufKarte }: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
+  const standSetzen = useCallback((id: string, wert: PackStand | null) => {
+    setStaende((alt) => {
+      const neu = { ...alt }
+      if (wert) neu[id] = wert
+      else delete neu[id]
+      return neu
+    })
+  }, [])
+
   /*
-    Gespeichert wird verzögert.
+    Gespeichert wird verzögert und als Folge der Änderung, nicht im
+    Klick-Handler.
 
     Wer eine Liste durchgeht, tippt zehnmal in zwanzig Sekunden. Jeder Tipp
-    ein Schreibvorgang wäre zehn Anfragen für eine einzige Entscheidung —
-    und die letzte könnte vor der vorletzten ankommen. Eine Sekunde Ruhe
-    genügt, um daraus eine zu machen.
-  */
-  const timer = useRef<number | null>(null)
-  const letzte = useRef<PackStaende>(staende)
-  useEffect(() => () => { if (timer.current) window.clearTimeout(timer.current) }, [])
+    ein Schreibvorgang wäre zehn Anfragen für eine einzige Entscheidung — und
+    die letzte könnte vor der vorletzten ankommen. Eine Sekunde Ruhe genügt,
+    um daraus eine zu machen.
 
-  const sichern = useCallback((neu: PackStaende) => {
-    letzte.current = neu
-    if (timer.current) window.clearTimeout(timer.current)
+    Verglichen wird mit dem zuletzt *gespeicherten* Stand, nicht mit einem
+    „erster Durchlauf"-Merker: React ruft Effekte im Entwicklungsmodus
+    absichtlich doppelt auf, und ein solcher Merker war beim zweiten Aufruf
+    schon verbraucht — das Fenster schrieb dann beim blossen Öffnen.
+  */
+  const gespeichert = useRef(abdruck(staende))
+  useEffect(() => {
+    const jetzt = abdruck(staende)
+    if (jetzt === gespeichert.current) return
     setStand('speichert')
-    timer.current = window.setTimeout(async () => {
+    const timer = window.setTimeout(async () => {
       try {
         await aktualisiereTour(tour.id, {
-          packliste: Object.keys(letzte.current).length > 0 ? letzte.current : null,
+          packliste: Object.keys(staende).length > 0 ? staende : null,
         })
+        gespeichert.current = jetzt
         setStand('gespeichert')
         setFehler(null)
       } catch (e) {
@@ -117,17 +130,8 @@ export function PacklisteModal({ tour, onClose, onAufKarte }: Props) {
         setFehler((e as Error).message)
       }
     }, 1000)
-  }, [tour.id])
-
-  const standSetzen = useCallback((id: string, wert: PackStand | null) => {
-    setStaende((alt) => {
-      const neu = { ...alt }
-      if (wert) neu[id] = wert
-      else delete neu[id]
-      sichern(neu)
-      return neu
-    })
-  }, [sichern])
+    return () => window.clearTimeout(timer)
+  }, [staende, tour.id])
 
   return (
     <div
@@ -260,4 +264,15 @@ function Eckwert({
       </div>
     </div>
   )
+}
+
+/**
+ * Vergleichbarer Abdruck eines Stands.
+ *
+ * Sortiert, weil die Schlüsselreihenfolge eines Objekts von der Reihenfolge
+ * der Klicks abhängt — ohne Sortierung wäre derselbe Stand je nach Weg dorthin
+ * ein anderer String und löste ein Speichern ohne Änderung aus.
+ */
+function abdruck(staende: PackStaende): string {
+  return Object.keys(staende).sort().map((k) => `${k}=${staende[k]}`).join(',')
 }
