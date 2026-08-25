@@ -20,6 +20,7 @@
  */
 import type { Position } from '../data/geo'
 import { getSupabase, type Kommentar, type KommentarKnoten, type PublicTour } from './supabase'
+import { alleZeilen } from './deckel'
 import { istSchemaFehlt } from './account'
 
 export type Sortierung = 'neu' | 'beliebt' | 'besprochen' | 'lang' | 'kurz'
@@ -181,9 +182,13 @@ export async function verfuegbareRegionen(): Promise<string[]> {
 export async function listLikeIds(): Promise<Set<string>> {
   const sb = getSupabase()
   if (!sb) return new Set()
-  const { data, error } = await sb.from('likes').select('route_id')
-  if (error) return new Set()
-  return new Set((data ?? []).map((r: { route_id: string }) => r.route_id))
+  try {
+    const zeilen = await alleZeilen<{ route_id: string }>((von, bis) =>
+      sb.from('likes').select('route_id').range(von, bis))
+    return new Set(zeilen.map((r) => r.route_id))
+  } catch {
+    return new Set()
+  }
 }
 
 export async function setLike(routeId: string, mag: boolean): Promise<void> {

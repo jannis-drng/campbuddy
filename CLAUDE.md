@@ -27,6 +27,19 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
 - `app/src/data/` — **Schicht 1**, die Legalitäts-Daten. Geometrie (`*.osm.json`, importiert)
   und rechtliche Einstufung (`*.legal.json`, manuell gepflegt) sind getrennte Dateien, damit
   ein Neu-Import die Rechtspflege nicht überschreibt.
+- **Kartendaten sind statische Dateien, keine Datenbankabfragen.** `npm run snapshot --prefix app`
+  (läuft automatisch vor `dev` und `build`) erzeugt aus `app/import/<REGION>/` das Verzeichnis
+  `app/src/data/snapshot/` — nicht im Git, nicht von Hand pflegen. Vite gibt jeder Datei einen
+  Inhalts-Hash, sie liegen danach unbegrenzt im Browser-Cache. Grosse Ebenen sind zweistufig:
+  eine vereinfachte Übersicht fürs ganze Land plus Detailkacheln im 0,25°-Gitter, die nur der
+  sichtbare Ausschnitt nachlädt (`app/src/data/snapshot.ts`).
+  **Supabase ist ausschliesslich für Nutzerbezogenes zuständig** — Konten, Touren, Kommentare,
+  Meldungen, eigene Punkte. Wer Kartendaten wieder aus der Datenbank holt, holt sich beides
+  zurück: Egress-Kosten pro Besuch und den 1000-Zeilen-Deckel.
+- **PostgREST liefert höchstens 1000 Zeilen, stillschweigend.** Genau daran fehlten live über
+  tausend Gemeinden und mehrere hundert Schutzgebiete, monatelang, ohne Fehlermeldung. Jede
+  Abfrage, die mehr als eine Handvoll Zeilen erwarten kann, geht über `alleZeilen` aus
+  `app/src/services/deckel.ts`.
 - **Drei Zuständigkeitsebenen, feinste gewinnt:** Schutzgebiet (`zones`) → Gemeinde
   (`gemeinden.legal.json`, Schlüssel = BFS-Nummer) → Kanton (`kantone.legal.json`) →
   landesweiter Rahmen. Ausserhalb der Schutzgebiete entscheidet in der Schweiz fast immer
@@ -47,6 +60,14 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
 - `node scripts/vorschau-kopfzeilen.mjs` — den Build mit den echten HTTP-Kopfzeilen
   ansehen (`vite preview` ignoriert `_headers`). Pflichtschritt, bevor eine Änderung
   an der Content-Security-Policy live geht: ein Verstoss zeigt sich nur so.
+- `npm run budget --prefix app` — Grössenbudget prüfen. Läuft nach jedem Build und **lässt
+  ihn scheitern**, wenn eine Grenze reisst (`scripts/groessen-budget.mjs`). Grenze bewusst
+  hochsetzen ist in Ordnung; sie unbemerkt zu reissen nicht.
+- `node scripts/kaltstart-messen.mjs` — misst mit echtem Chrome, was ein Besuch tatsächlich
+  über die Leitung holt, kalt und warm. `NETZ=3g` drosselt auf 400 kbit/s.
+- Ein **Service Worker** (`app/public/sw.js`) hält die App-Hülle und die Kerndaten vor. Ohne
+  ihn kostete jeder Wiederbesuch dasselbe wie der erste. Die Liste der vorzuwärmenden Dateien
+  entsteht beim Bauen (`kernAssets` in `vite.config.ts`), weil ihre Namen einen Hash tragen.
 - `app/_headers.vorlage` — Sicherheits-Kopfzeilen inkl. CSP. Kommt ein externer
   Dienst dazu, muss er dort in `connect-src`/`img-src` eingetragen werden, sonst
   blockiert ihn der Browser. Umzug auf Cloudflare: `UMZUG_CLOUDFLARE.md`;

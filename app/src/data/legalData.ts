@@ -2,114 +2,86 @@
  * SCHICHT 1 — ZUGRIFFS-API auf die Legalitäts-Daten.
  *
  * Das ist die einzige Stelle, an der die UI an die Rechtsdaten kommt.
- * Heute: statisches JSON, gebündelt ins Frontend (kostenlos, kein Backend).
- * Später: dieselben Funktionen gegen Supabase/PostGIS implementieren —
- * die UI bleibt unverändert, weil sie nur diese Signaturen kennt.
+ *
+ * Woher sie kommen, hat sich geändert und die UI hat es nicht gemerkt —
+ * genau dafür gibt es diese Schicht. Früher lagen die Daten doppelt vor:
+ * gebündelt im JavaScript (die Fokusregion) und zusätzlich aus Supabase
+ * nachgeladen (der Rest). Das kostete jeden Besucher rund 630 KB Datenbank-
+ * Egress und war obendrein falsch — PostgREST liefert höchstens 1000 Zeilen,
+ * die Abfragen paginierten nicht, und so fehlten still über tausend Gemeinden
+ * und mehrere hundert Schutzgebiete.
+ *
+ * Jetzt kommen sie aus statischen Snapshot-Dateien mit Inhalts-Hash
+ * (`snapshot.ts`, erzeugt von `scripts/snapshot-daten.mjs`): vollständig,
+ * unbegrenzt cachebar, ohne Datenbank. Supabase ist weiterhin da — für das,
+ * was tatsächlich pro Nutzer verschieden ist: Konten, Touren, Kommentare,
+ * Meldungen, eigene Punkte.
  */
 import type {
-  ActivityMode, Gemeinde, LegalStatus, MapFilters, NatureFeature, Peak, Permission, Point,
-  RegionCode, ReviewStatus, Zone,
+  ActivityMode, Ausschnitt, LegalStatus, MapFilters, NatureFeature, Peak, Permission, Point,
+  RegionCode, Zone,
 } from './types'
 import { REGIONS } from './regions'
-import { getSupabase } from '../services/supabase'
+import { kachelLader, ladeJson, ohneDoppelte } from './snapshot'
 
-import osmZonesVS from './zones/CH-VS.osm.json'
-import legalVS from './zones/CH-VS.legal.json'
-import pointsVS from './points/CH-VS.json'
-import peaksVS from './peaks/CH-VS.json'
-import natureVS from './nature/CH-VS.json'
+/**
+ * Die Zonen einer Region.
+ *
+ * Bewusst in einem Stück und in voller Auflösung, anders als die
+ * Gemeindeflächen: jede Zone ist anklickbar und trägt eine Aussage darüber,
+ * was dort gilt. Wo eine Kante die Grenze zwischen „erlaubt" und „verboten"
+ * ist, wird sie nicht zugunsten der Dateigrösse verschoben — und die
+ * Routenanalyse (`analyseRoute`) braucht ohnehin alle Flächen, nicht nur die
+ * im Bild, weil eine Route über den Bildrand hinausgeht.
+ *
+ * Das kostet einmalig 343 KB gepackt. Danach nie wieder: die Datei trägt
+ * einen Inhalts-Hash und liegt unbegrenzt im Browser-Cache.
+ */
+export const ladeZonen = (region: RegionCode) => ladeJson<Zone[]>(`zonen.${region}.json`)
 
-interface LegalEntry {
-  status: LegalStatus
-  tent_allowed: Permission
-  vehicle_allowed: Permission
-  fire_allowed: Permission
-  conditions: string | null
-  notes: string | null
-  review_status: ReviewStatus
-  last_verified: string | null
-}
+export const ladePunkte = (region: RegionCode) => ladeJson<Point[]>(`punkte.${region}.json`)
 
-interface OsmFeature {
-  id: string
-  properties: { name: string; source: string; source_url: string; [k: string]: unknown }
-  geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
+/**
+ * Gipfel und Naturobjekte nach Ausschnitt.
+ *
+ * Landesweit sind das 7274 beziehungsweise 23 753 Objekte. Sie liegen deshalb
+ * in einem Gradgitter, und der Lader merkt sich, welche Kacheln schon da sind
+ * — zurück über eine bekannte Gegend zu scrollen kostet nichts mehr.
+ */
+const GIPFEL_LADER: Partial<Record<RegionCode, ReturnType<typeof kachelLader<Peak>>>> = {}
+const NATUR_LADER: Partial<Record<RegionCode, ReturnType<typeof kachelLader<NatureFeature>>>> = {}
+
+/**
+ * Die hohen Gipfel — eine kleine Datei statt achtzig Kacheln.
+ *
+ * Bei Zoom 8 zeichnet die Karte nur, was über 3500 m liegt; der Ausschnitt
+ * deckt dort aber fast das Land ab. Diese 291 Gipfel wiegen 8 KB und tragen
+ * alles bis Zoom 11. Erst darüber lohnt das Gitter.
+ */
+const GIPFEL_HOCH: Partial<Record<RegionCode, Peak[]>> = {}
+
+export async function ladeGipfelUebersicht(region: RegionCode): Promise<Peak[]> {
+  GIPFEL_HOCH[region] ??= await ladeJson<Peak[]>(`gipfel.hoch.${region}.json`)
+  return GIPFEL_HOCH[region]!
 }
 
 /**
- * Die gebündelte Fassung — bewusst nur das Wallis.
+ * Die Gipfel des Ausschnitts, zusammen mit der Übersicht.
  *
- * Sie ist die Sofortanzeige: sichtbar, bevor irgendetwas über die Leitung
- * geht, und die einzige Fassung, die auch ohne Backend steht. Die ganze
- * Schweiz hier hineinzulegen hiesse, jedem Besucher megabyteweise Daten
- * aufzuladen, die er meist nicht braucht — sie kommt deshalb aus der
- * Datenbank und ersetzt diese Fassung, sobald sie da ist (siehe `fetchRemote*`
- * und `datenquelle` in App.tsx).
- *
- * Dass hier unter 'CH' nur ein Kanton liegt, ist kein Versehen: es ist ein
- * Ausschnitt, und die Oberfläche weist offen aus, welche Fassung sie zeigt.
+ * Die hohen sind in beiden Beständen — deshalb `ohneDoppelte`. Sie
+ * herauszurechnen wäre die andere Möglichkeit, aber dann hinge die Richtigkeit
+ * der Kacheln an einer Höhenschwelle, die an zwei Stellen gleich sein muss.
  */
-const GEOMETRY_SOURCES: Record<RegionCode, { features: OsmFeature[] }> = {
-  CH: osmZonesVS as unknown as { features: OsmFeature[] },
+export async function ladeGipfel(region: RegionCode, a: Ausschnitt): Promise<Peak[] | null> {
+  GIPFEL_LADER[region] ??= kachelLader<Peak>('gipfel', `gipfel.${region}.json`)
+  const neu = await GIPFEL_LADER[region]!.laden(a)
+  if (!neu) return null
+  return ohneDoppelte([...(GIPFEL_HOCH[region] ?? []), ...neu])
 }
 
-const LEGAL_SOURCES: Record<RegionCode, { zones: Record<string, LegalEntry> }> = {
-  CH: legalVS as unknown as { zones: Record<string, LegalEntry> },
-}
-
-const POINT_SOURCES: Record<RegionCode, Point[]> = {
-  CH: pointsVS as unknown as Point[],
-}
-
-const PEAK_SOURCES: Record<RegionCode, Peak[]> = {
-  CH: peaksVS as unknown as Peak[],
-}
-
-const NATURE_SOURCES: Record<RegionCode, NatureFeature[]> = {
-  CH: natureVS as unknown as NatureFeature[],
-}
-
-/**
- * Setzt Geometrie (OSM) und rechtliche Bewertung (eigene Pflege) zusammen.
- * Flächen ohne Bewertung erscheinen bewusst als 'unknown' statt zu verschwinden —
- * eine ungeprüfte Fläche ist eine Information, keine Lücke.
- */
-export function getZones(region: RegionCode): Zone[] {
-  const geo = GEOMETRY_SOURCES[region]
-  const legal = LEGAL_SOURCES[region]
-  if (!geo) return []
-
-  return geo.features.map((f): Zone => {
-    const entry = legal?.zones[f.id]
-    return {
-      id: f.id,
-      region,
-      name: f.properties.name,
-      status: entry?.status ?? 'unknown',
-      tent_allowed: entry?.tent_allowed ?? 'unknown',
-      vehicle_allowed: entry?.vehicle_allowed ?? 'unknown',
-      fire_allowed: entry?.fire_allowed ?? 'unknown',
-      conditions: entry?.conditions ?? null,
-      source: f.properties.source,
-      source_url: f.properties.source_url,
-      last_verified: entry?.last_verified ?? null,
-      review_status: entry?.review_status ?? 'entwurf',
-      notes: entry?.notes ?? null,
-      geometry: f.geometry,
-    }
-  })
-}
-
-export function getPoints(region: RegionCode): Point[] {
-  return POINT_SOURCES[region] ?? []
-}
-
-export function getPeaks(region: RegionCode): Peak[] {
-  return PEAK_SOURCES[region] ?? []
-}
-
-export function getNature(region: RegionCode): NatureFeature[] {
-  return NATURE_SOURCES[region] ?? []
+export function ladeNatur(region: RegionCode, a: Ausschnitt): Promise<NatureFeature[] | null> {
+  NATUR_LADER[region] ??= kachelLader<NatureFeature>('natur', `natur.${region}.json`)
+  return NATUR_LADER[region]!.laden(a)
 }
 
 /**
@@ -168,149 +140,4 @@ export function verificationStats(zones: Zone[]) {
     quelle: zones.filter((z) => z.review_status === 'quelle').length,
     vorOrt: zones.filter((z) => z.review_status === 'vor-ort').length,
   }
-}
-
-/* ---------------- Daten aus dem Backend ---------------- */
-
-/**
- * Der sichtbare Kartenausschnitt.
- *
- * Gipfel und Natur-Objekte werden nicht regionsweit geladen, sondern immer nur
- * für das, was gerade auf dem Schirm ist. Landesweit sind das zusammen
- * Zehntausende Zeilen und mehrere Megabyte — für Ebenen, die ohnehin erst ab
- * Zoom 9,5 beziehungsweise 12,5 gezeichnet werden. Wer die Schweiz als Ganzes
- * ansieht, braucht keinen einzigen Brunnen.
- */
-export interface Ausschnitt {
-  west: number
-  sued: number
-  ost: number
-  nord: number
-}
-
-/**
- * Obergrenzen pro Abfrage.
- *
- * Nicht nur wegen der Datenmenge: PostgREST liefert ohnehin höchstens 1000
- * Zeilen, und eine stillschweigend abgeschnittene Antwort wäre schlimmer als
- * eine bewusst begrenzte. Bei den Zoomstufen, auf denen diese Ebenen sichtbar
- * sind, reicht das mit Abstand.
- */
-const GRENZE_GIPFEL = 600
-const GRENZE_NATUR = 900
-
-/** Gipfel im Ausschnitt, die höchsten zuerst — bei Gedränge zählt Prominenz. */
-export async function fetchRemotePeaks(
-  region: RegionCode, a: Ausschnitt,
-): Promise<Peak[] | null> {
-  const sb = getSupabase()
-  if (!sb) return null
-  const { data, error } = await sb
-    .from('peaks')
-    .select('id, region, name, lat, lng, elevation, source_url')
-    .eq('region', region)
-    .gte('lng', a.west).lte('lng', a.ost)
-    .gte('lat', a.sued).lte('lat', a.nord)
-    .order('elevation', { ascending: false })
-    .limit(GRENZE_GIPFEL)
-  if (error || !data || data.length === 0) return null
-  return data as Peak[]
-}
-
-export async function fetchRemoteNature(
-  region: RegionCode, a: Ausschnitt,
-): Promise<NatureFeature[] | null> {
-  const sb = getSupabase()
-  if (!sb) return null
-  const { data, error } = await sb
-    .from('nature')
-    .select('id, region, type, name, benannt, lat, lng, elevation, source_url')
-    .eq('region', region)
-    .gte('lng', a.west).lte('lng', a.ost)
-    .gte('lat', a.sued).lte('lat', a.nord)
-    .limit(GRENZE_NATUR)
-  if (error || !data || data.length === 0) return null
-  return data as NatureFeature[]
-}
-
-/**
- * Holt Zonen und Punkte aus Supabase, falls konfiguriert.
- *
- * Warum beides — gebündelt UND aus der Datenbank? Die gebündelten Dateien sind
- * sofort da, kosten nichts und funktionieren ohne Netz (Voraussetzung für die
- * Offline-Karte [SPÄTER]). Die Datenbank ist dafür aktuell: eine korrigierte
- * Rechtseinstufung wirkt sofort, ohne die Seite neu zu bauen. Deshalb rendert
- * die App zuerst die gebündelte Fassung und ersetzt sie, sobald die frische da
- * ist. Schlägt das fehl, bleibt es bei der gebündelten — nie ein leerer Zustand.
- */
-export async function fetchRemoteZones(region: RegionCode): Promise<Zone[] | null> {
-  const sb = getSupabase()
-  if (!sb) return null
-  const { data, error } = await sb.from('zones').select('*').eq('region', region)
-  if (error || !data || data.length === 0) return null
-
-  return data.map((row): Zone => ({
-    id: row.id,
-    region: row.region,
-    name: row.name,
-    status: row.status,
-    tent_allowed: row.tent_allowed,
-    vehicle_allowed: row.vehicle_allowed,
-    fire_allowed: row.fire_allowed,
-    conditions: row.conditions,
-    source: row.source,
-    source_url: row.source_url,
-    last_verified: row.last_verified,
-    review_status: row.review_status,
-    notes: row.notes,
-    geometry: row.geometry,
-  }))
-}
-
-/**
- * Die Gemeindeflächen aus der Datenbank.
- *
- * Gebündelt liegt nur die Fokusregion; die ganze Schweiz sind 2119 Flächen und
- * gut 700 KB gepackt. Ohne diesen Weg endet die Gemeindeauskunft an der
- * Kantonsgrenze — und damit die Antwort, auf die es ankommt.
- */
-export async function fetchRemoteGemeinden(): Promise<Gemeinde[] | null> {
-  const sb = getSupabase()
-  if (!sb) return null
-  const { data, error } = await sb
-    .from('gemeinden')
-    .select('id, bfs, name, kanton, website, email, source_url, geometry')
-  if (error || !data || data.length === 0) return null
-
-  return data.map((row): Gemeinde => ({
-    id: row.id,
-    bfs: row.bfs,
-    name: row.name,
-    kanton: row.kanton,
-    website: row.website,
-    email: row.email,
-    source_url: row.source_url,
-    geometry: row.geometry,
-  }))
-}
-
-export async function fetchRemotePoints(region: RegionCode): Promise<Point[] | null> {
-  const sb = getSupabase()
-  if (!sb) return null
-  const { data, error } = await sb.from('points').select('*').eq('region', region)
-  if (error || !data || data.length === 0) return null
-
-  return data.map((row): Point => ({
-    id: row.id,
-    region: row.region,
-    type: row.type,
-    name: row.name,
-    lat: row.lat,
-    lng: row.lng,
-    elevation: row.elevation,
-    info: row.info ?? {},
-    source: row.source,
-    source_url: row.source_url,
-    last_verified: row.last_verified,
-  }))
 }

@@ -9,14 +9,15 @@
  * erst, wenn jemand den Import laufen lässt, und genau das steht als `stand`
  * dabei.
  *
- * Die Beispiel-Infokarte zieht weiterhin eine echte Fläche aus den gebündelten
- * Walliser Daten. Die liegt auch in der Datenbank; sie ist hier nur die eine,
- * die ohne Netz schon da ist.
+ * Die Beispiel-Infokarte zieht eine echte Fläche aus `snapshot/beispiel.CH.json`
+ * — einer Datei von einem Kilobyte, die das Snapshot-Skript beim Bauen
+ * aussucht. Vorher lag dafür die komplette Walliser Zonen-Datei im
+ * Einstiegsbündel: 66 KB gepackt, für einen Namen und sechs Felder, auf der
+ * Seite, die ein neuer Besucher als allererstes lädt.
  */
 import type { LegalStatus, Permission, ReviewStatus } from '../data/types'
 import bestandRoh from '../data/bestand.json'
-import legalVS from '../data/zones/CH-VS.legal.json'
-import osmVS from '../data/zones/CH-VS.osm.json'
+import beispielRoh from '../data/snapshot/beispiel.CH.json'
 
 interface Bestand {
   region: string
@@ -91,24 +92,9 @@ interface Eintrag {
   last_verified: string | null
 }
 
-const eintraege = (legalVS as unknown as { zones: Record<string, Eintrag> }).zones
-const namen = new Map(
-  (osmVS as unknown as { features: { id: string; properties: { name: string } }[] }).features
-    .map((f) => [f.id, f.properties.name] as const),
-)
-
-/**
- * Eine echte Fläche als Beispiel für die Infokarte. Bevorzugt der Aletschwald,
- * weil er die Aussage am deutlichsten trägt; fällt sonst auf die erste
- * verbotene Fläche zurück, damit das Beispiel nie leer bleibt.
- */
-function waehleBeispiel() {
-  const ids = Object.keys(eintraege)
-  const id = ids.find((i) => i === 'osm-way-38781889')
-    ?? ids.find((i) => eintraege[i].status === 'forbidden')
-    ?? ids[0]
-  if (!id) return null
-  return { id, name: namen.get(id) ?? id, ...eintraege[id] }
+interface Beispiel extends Eintrag {
+  id: string
+  name: string
 }
 
-export const beispielZone = waehleBeispiel()
+export const beispielZone = beispielRoh as unknown as Beispiel

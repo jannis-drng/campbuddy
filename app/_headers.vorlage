@@ -20,6 +20,11 @@
   # keine Inline-Skripte (geprüft: alle <script> tragen ein src), deshalb
   # kostet uns diese Strenge nichts.
   #
+  # Seit Inter selbst ausgeliefert wird, steht in `font-src` und `style-src`
+  # kein fremder Host mehr. Das ist nicht nur eine Zeile weniger: eine Schrift
+  # von einem Drittanbieter verrät diesem jeden Seitenaufruf, und das
+  # Stylesheet dafür blockierte das Rendern.
+  #
   # `style-src` braucht 'unsafe-inline': MapLibre positioniert Marker über
   # style-Attribute, React setzt style={{…}}, und die 404-Seite trägt ihr CSS
   # inline, damit sie auch dann steht, wenn das Bundle kaputt ist. Bei Styles
@@ -31,7 +36,7 @@
   # OSRM, ORS, GraphHopper) und Supabase. Kommt ein Dienst dazu, muss er hier
   # eingetragen werden — sonst blockiert der Browser ihn, und die Konsole sagt
   # auch genau das.
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org https://wmts.geo.admin.ch https://tiles.openfreemap.org %SUPABASE%; connect-src 'self' %SUPABASE% https://api.open-meteo.com https://valhalla1.openstreetmap.de https://routing.openstreetmap.de https://api.openrouteservice.org https://graphhopper.com https://tiles.openfreemap.org https://fonts.openmaptiles.org https://wmts.geo.admin.ch https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org; worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org https://wmts.geo.admin.ch https://tiles.openfreemap.org %SUPABASE%; connect-src 'self' %SUPABASE% https://api.open-meteo.com https://valhalla1.openstreetmap.de https://routing.openstreetmap.de https://api.openrouteservice.org https://graphhopper.com https://tiles.openfreemap.org https://fonts.openmaptiles.org https://wmts.geo.admin.ch https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org; worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
 
   # --- Einbettung und Sniffing -------------------------------------------
   # frame-ancestors oben erledigt das für heutige Browser; X-Frame-Options ist
@@ -74,4 +79,13 @@
 # Das Einstiegsdokument dagegen nie cachen, sonst zeigt ein Wiederbesuch nach
 # einem Deploy die alten Asset-Namen und die Seite bleibt weiss.
 /index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Der Service Worker ebenso wenig — und aus demselben Grund, nur schärfer.
+# Er trägt die Liste der vorzuwärmenden Dateien und den Cache-Namen des
+# jeweiligen Builds. Eine gecachte alte Fassung hiesse: der Browser hält an
+# einem Cache fest, den es nicht mehr gibt, und liefert nach einem Deploy
+# beliebig alte Dateien aus. Browser behandeln sw.js von sich aus vorsichtig,
+# aber darauf soll sich diese Auslieferung nicht verlassen müssen.
+/sw.js
   Cache-Control: public, max-age=0, must-revalidate

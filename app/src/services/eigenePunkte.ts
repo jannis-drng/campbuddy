@@ -13,6 +13,7 @@
  */
 import type { EigenerPunkt, EigenerPunktTyp, RegionCode } from '../data/types'
 import { getSupabase } from './supabase'
+import { alleZeilen } from './deckel'
 
 const TABELLE = 'eigene_punkte'
 const BUCKET = 'punkt-fotos'
@@ -37,15 +38,18 @@ export interface PunktEntwurf {
 export async function ladeEigenePunkte(region: RegionCode): Promise<EigenerPunkt[]> {
   const sb = getSupabase()
   if (!sb) return []
-  const { data, error } = await sb
-    .from(TABELLE)
-    .select('*')
-    .eq('region', region)
-    .order('created_at', { ascending: false })
   // Fehler werden bewusst geschluckt: fehlt die Migration noch, soll die Karte
   // trotzdem stehen. Der einzige Verlust sind die eigenen Markierungen.
-  if (error) return []
-  return (data ?? []) as EigenerPunkt[]
+  try {
+    return await alleZeilen<EigenerPunkt>((von, bis) => sb
+      .from(TABELLE)
+      .select('*')
+      .eq('region', region)
+      .order('created_at', { ascending: false })
+      .range(von, bis))
+  } catch {
+    return []
+  }
 }
 
 export async function punktAnlegen(entwurf: PunktEntwurf): Promise<EigenerPunkt> {

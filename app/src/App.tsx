@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import {
-  fetchRemoteGemeinden, fetchRemoteNature, fetchRemotePeaks, fetchRemotePoints, fetchRemoteZones,
-  filterNature, filterPoints, getNature, getPeaks, getPoints, getRegion, getZones,
-  verificationStats,
-  type Ausschnitt,
+  filterNature, filterPoints, getRegion, ladeGipfel, ladeGipfelUebersicht, ladeNatur, ladePunkte,
+  ladeZonen, verificationStats,
 } from './data/legalData'
 import type {
-  EigenerPunkt, MapFilters, NatureFeature, Peak, Point, TripParams, Wegpunkt, Zone,
+  Ausschnitt, EigenerPunkt, MapFilters, NatureFeature, Peak, Point, TripParams, Wegpunkt, Zone,
 } from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
@@ -27,10 +25,12 @@ import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/rout
 import { AccountPanel } from './components/AccountPanel'
 import { PunktDialog } from './components/PunktDialog'
 import { ladeEigenePunkte, punktLoeschen } from './services/eigenePunkte'
-import { kantonAn, kantonGrundlagen, kantonRecht } from './data/kantone'
-import { gemeindeAn, gemeindeRecht, gemeindenGeoJSON, setzeGemeinden } from './data/gemeinden'
+import { kantonAn, kantonGrundlagen, kantonRecht, ladeKantone } from './data/kantone'
+import {
+  gemeindeAn, gemeindeRecht, gemeindenGeoJSON, ladeGemeindenDetail, ladeGemeindenUebersicht,
+} from './data/gemeinden'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
-import { DEFAULT_BASEMAP, type BasemapKey } from './map/mapConfig'
+import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
 import { linkErgebnisAuslesen, saveTour, useSession, type LinkErgebnis } from './services/account'
 import { ORT_UMKREIS_M, type Ortsfilter } from './services/community'
@@ -129,27 +129,40 @@ export default function App() {
   }, [view, session])
 
   const region = getRegion(regionCode)
-  // Gebündelte Fassung als Startanzeige …
-  const bundledZones = useMemo(() => getZones(regionCode), [regionCode])
-  const bundledPoints = useMemo(() => getPoints(regionCode), [regionCode])
-  const bundledPeaks = useMemo(() => getPeaks(regionCode), [regionCode])
-  const bundledNature = useMemo(() => getNature(regionCode), [regionCode])
-  // … die durch die Datenbankfassung ersetzt wird, sobald sie da ist.
-  const [remoteZones, setRemoteZones] = useState<Zone[] | null>(null)
-  const [remotePoints, setRemotePoints] = useState<Point[] | null>(null)
-  // Gipfel und Natur hängen am Ausschnitt, nicht an der Region: landesweit
-  // wären es Zehntausende, sichtbar ist immer nur ein Bruchteil davon.
+
+  /*
+   * Die Kartendaten kommen aus statischen Snapshot-Dateien, nicht mehr aus der
+   * Datenbank. Was das ändert, steht ausführlich in `data/snapshot.ts`; kurz:
+   * jede Datei trägt einen Inhalts-Hash, liegt danach unbegrenzt im Cache, und
+   * ein Wiederbesuch lädt keinen einzigen Byte davon neu.
+   *
+   * Zonen und Punkte gelten landesweit und kommen in einem Stück. Gipfel und
+   * Naturobjekte hängen am Ausschnitt: landesweit wären es einunddreissigtausend
+   * Objekte für Ebenen, die erst ab Zoom 9,5 beziehungsweise 12,5 gezeichnet
+   * werden.
+   */
+  const [allZones, setAllZones] = useState<Zone[]>([])
+  const [allPoints, setAllPoints] = useState<Point[]>([])
   const [ausschnitt, setAusschnitt] = useState<Ausschnitt | null>(null)
-  const [remotePeaks, setRemotePeaks] = useState<Peak[] | null>(null)
-  const [remoteNature, setRemoteNature] = useState<NatureFeature[] | null>(null)
+  const [allPeaks, setAllPeaks] = useState<Peak[]>([])
+  const [allNature, setAllNature] = useState<NatureFeature[]>([])
+  const [datenFehler, setDatenFehler] = useState(false)
 
   useEffect(() => {
     let aktuell = true
-    setRemoteZones(null); setRemotePoints(null)
-    // Fehler werden bewusst verschluckt: die gebündelte Fassung ist bereits
-    // sichtbar, ein Backend-Ausfall darf die Karte nicht beeinträchtigen.
-    fetchRemoteZones(regionCode).then((z) => { if (aktuell && z) setRemoteZones(z) }).catch(() => {})
-    fetchRemotePoints(regionCode).then((p) => { if (aktuell && p) setRemotePoints(p) }).catch(() => {})
+    setAllZones([]); setAllPoints([]); setDatenFehler(false)
+    // Zonen sind der Kern: bleiben sie aus, ist die Karte keine Legalitätskarte
+    // mehr und muss das sagen, statt leer und zuversichtlich auszusehen.
+    ladeZonen(regionCode)
+      .then((z) => { if (aktuell) setAllZones(z) })
+      .catch(() => { if (aktuell) setDatenFehler(true) })
+    ladePunkte(regionCode)
+      .then((p) => { if (aktuell) setAllPoints(p) })
+      .catch(() => {})
+    ladeKantone(regionCode).catch(() => {})
+    ladeGipfelUebersicht(regionCode)
+      .then((g) => { if (aktuell) setAllPeaks((bisher) => (bisher.length > g.length ? bisher : g)) })
+      .catch(() => {})
     return () => { aktuell = false }
   }, [regionCode])
 
@@ -169,26 +182,27 @@ export default function App() {
   useEffect(() => {
     if (!ausschnitt) return
     let aktuell = true
-    if (filters.showPeaks) {
-      fetchRemotePeaks(regionCode, ausschnitt)
-        .then((p) => { if (aktuell && p) setRemotePeaks(p) })
+    // Die Lader liefern null, wenn der Ausschnitt keine neue Kachel berührt —
+    // beim blossen Verschieben passiert dann gar nichts. Genau das war vorher
+    // das Leck: jede Kartenbewegung ging als frische Abfrage an die Datenbank.
+    // Die Zoomschwelle ist kein Feinschliff, sondern der Unterschied zwischen
+    // zwei und hundert Kacheln: in der Landesansicht deckt der Ausschnitt fast
+    // die ganze Schweiz ab, gezeichnet wird von diesen Ebenen dort aber nichts.
+    if (filters.showPeaks && ausschnitt.zoom >= ZOOM_AB.gipfelKacheln) {
+      ladeGipfel(regionCode, ausschnitt)
+        .then((p) => { if (aktuell && p) setAllPeaks(p) })
         .catch(() => {})
     }
-    if (filters.showWater || filters.showViewpoints) {
-      fetchRemoteNature(regionCode, ausschnitt)
-        .then((n) => { if (aktuell && n) setRemoteNature(n) })
+    if ((filters.showWater || filters.showViewpoints) && ausschnitt.zoom >= ZOOM_AB.natur) {
+      ladeNatur(regionCode, ausschnitt)
+        .then((n) => { if (aktuell && n) setAllNature(n) })
         .catch(() => {})
     }
     return () => { aktuell = false }
   }, [regionCode, ausschnitt, filters.showPeaks, filters.showWater, filters.showViewpoints])
 
-  const allZones = remoteZones ?? bundledZones
-  const allPoints = remotePoints ?? bundledPoints
-  const datenquelle = remoteZones ? 'datenbank' : 'gebündelt'
   // Zonen werden nie gefiltert — nur umgefärbt (siehe effectiveStatus).
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters])
-  const allPeaks = remotePeaks ?? bundledPeaks
-  const allNature = remoteNature ?? bundledNature
   const nature = useMemo(() => filterNature(allNature, filters), [allNature, filters])
   const sichtbareEigene = useMemo(
     () => (filters.showEigene ? eigenePunkte : []),
@@ -197,29 +211,50 @@ export default function App() {
   const stats = useMemo(() => verificationStats(allZones), [allZones])
 
   /*
-   * Die Gemeindeflächen der ganzen Schweiz nachladen.
+   * Die Gemeindeflächen in zwei Auflösungen.
    *
-   * Gebündelt ist nur die Fokusregion — ohne diesen Schritt endet die
-   * Gemeindeauskunft an deren Grenze und die Karte fiele auf die gröbere
-   * kantonale Ebene zurück. Kommt nichts, bleibt es bei der gebündelten
-   * Fassung; ein Backend-Ausfall darf die Karte nicht leeren.
+   * Die Übersicht kommt einmal und färbt sofort das ganze Land; die genauen
+   * Grenzen kommen kachelweise nach, sobald jemand hineinzoomt. Warum das
+   * beides braucht, steht in `data/gemeinden.ts` — kurz: die 2119 Grenzen sind
+   * in voller Auflösung der grösste Einzelposten der Anwendung, beim Zeichnen
+   * tragen sie aber nur Farbe, und die Frage „in welcher Gemeinde stehe ich"
+   * wird erst beim Hineinzoomen gestellt.
    */
-  const [gemeindenStand, setGemeindenStand] = useState(0)
+  const [gemeindenUebersichtStand, setGemeindenUebersichtStand] = useState(0)
+  const [gemeindenDetailStand, setGemeindenDetailStand] = useState(0)
+
   useEffect(() => {
     let aktuell = true
-    fetchRemoteGemeinden()
-      .then((g) => {
-        if (!aktuell || !g) return
-        setzeGemeinden(g)
-        setGemeindenStand((n) => n + 1)
-      })
+    ladeGemeindenUebersicht(regionCode)
+      .then(() => { if (aktuell) setGemeindenUebersichtStand((n) => n + 1) })
       .catch(() => {})
     return () => { aktuell = false }
-  }, [])
+  }, [regionCode])
 
-  // Nur neu bauen, wenn tatsächlich andere Flächen vorliegen: 2119 Polygone bei
-  // jedem Rendern durchzurechnen wäre reine Verschwendung.
-  const gemeindenGeo = useMemo(() => gemeindenGeoJSON(), [gemeindenStand])
+  useEffect(() => {
+    // Unterhalb der Umschaltstufe zeichnet die Karte ohnehin die Übersicht;
+    // die genauen Flächen dort zu holen hiesse, 617 KB in Scheiben zu laden,
+    // um sie nicht anzuzeigen.
+    if (!ausschnitt || ausschnitt.zoom < ZOOM_AB.gemeindenGenau) return
+    let aktuell = true
+    ladeGemeindenDetail(ausschnitt)
+      .then((neu) => { if (aktuell && neu) setGemeindenDetailStand((n) => n + 1) })
+      .catch(() => {})
+    return () => { aktuell = false }
+  }, [ausschnitt])
+
+  // Nur neu bauen, wenn tatsächlich andere Flächen vorliegen: zweitausend
+  // Polygone bei jedem Rendern durchzurechnen wäre reine Verschwendung.
+  const gemeindenFern = useMemo(
+    () => gemeindenGeoJSON('uebersicht'),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gemeindenUebersichtStand],
+  )
+  const gemeindenGeo = useMemo(
+    () => gemeindenGeoJSON('genau'),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gemeindenDetailStand],
+  )
   // Die Analyse läuft über alle Punkte, nicht die gefilterten: eine ausgeblendete
   // Hütte ist trotzdem eine Schlafmöglichkeit an der Route.
   // Eine importierte Spur folgt bereits realen Wegen und wird nicht neu geroutet.
@@ -480,6 +515,7 @@ export default function App() {
             nature={nature}
             eigene={sichtbareEigene}
             gemeinden={gemeindenGeo}
+            gemeindenFern={gemeindenFern}
             activity={filters.activity}
             basemap={basemap}
             visible={view === 'karte'}
@@ -499,7 +535,7 @@ export default function App() {
               const kanton = kantonAn(position)
               const gemeinde = gemeindeAn(position)
               setSelection({
-                kind: 'region', region, stats, quelle: datenquelle,
+                kind: 'region', region, stats, datenFehler,
                 kanton,
                 kantonRecht: kantonRecht(kanton),
                 kantonGrundlagen: kantonGrundlagen(kanton),

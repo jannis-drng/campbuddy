@@ -29,10 +29,10 @@ import type {
   ActivityMode, EigenerPunkt, NatureFeature, Peak, Point, Region, Wegpunkt, Zone,
 } from '../data/types'
 import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
-import type { Ausschnitt } from '../data/legalData'
+import type { Ausschnitt } from '../data/types'
 import { effectiveStatus } from '../data/legalData'
 import {
-  ATTRIBUTION, BASEMAPS, GEMEINDE_COLORS, STATUS_COLORS, TEXT_FONT, type BasemapKey,
+  ATTRIBUTION, BASEMAPS, GEMEINDE_COLORS, STATUS_COLORS, TEXT_FONT, ZOOM_AB, type BasemapKey,
 } from './mapConfig'
 import { alpenGrenzen, MIN_ZOOM } from './alpenRahmen'
 import { symboleAnlegen } from './symbole'
@@ -49,6 +49,8 @@ interface Props {
    * ausserhalb der Schutzgebiete tatsächlich entschieden wird.
    */
   gemeinden: GeoJSON.FeatureCollection
+  /** Die landesweite Übersichtsfassung — zeichnet unterhalb von Zoom 9,5. */
+  gemeindenFern: GeoJSON.FeatureCollection
   /** Steuert nur die Einfärbung — es werden nie Zonen ausgeblendet. */
   activity: ActivityMode
   basemap: BasemapKey
@@ -100,7 +102,7 @@ interface Props {
 }
 
 export function MapView({
-  region, zones, points, peaks, nature, eigene, gemeinden, activity, basemap, visible,
+  region, zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, basemap, visible,
   route, waypoints, kameraZiel, drawing, markieren,
   onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
@@ -114,12 +116,12 @@ export function MapView({
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
   const latest = useRef({
-    zones, points, peaks, nature, eigene, gemeinden, activity, drawing, markieren, waypoints,
+    zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, drawing, markieren, waypoints,
     onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   })
   latest.current = {
-    zones, points, peaks, nature, eigene, gemeinden, activity, drawing, markieren, waypoints,
+    zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, drawing, markieren, waypoints,
     onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   }
@@ -171,6 +173,7 @@ export function MapView({
       ;(m.getSource('natur') as GeoJSONSource | undefined)?.setData(natureToGeoJson(latest.current.nature))
       ;(m.getSource('eigene') as GeoJSONSource | undefined)?.setData(eigeneToGeoJson(latest.current.eigene))
       ;(m.getSource('gemeinden') as GeoJSONSource | undefined)?.setData(latest.current.gemeinden)
+      ;(m.getSource('gemeinden-fern') as GeoJSONSource | undefined)?.setData(latest.current.gemeindenFern)
       ;(m.getSource('route') as GeoJSONSource | undefined)
         ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
       ready.current = true
@@ -193,6 +196,7 @@ export function MapView({
         const b = m.getBounds()
         latest.current.onAusschnitt({
           west: b.getWest(), sued: b.getSouth(), ost: b.getEast(), nord: b.getNorth(),
+          zoom: m.getZoom(),
         })
       }, 350)
     }
@@ -491,6 +495,13 @@ export function MapView({
 
   useEffect(() => {
     const m = map.current
+    if (m && ready.current) {
+      ;(m.getSource('gemeinden-fern') as GeoJSONSource | undefined)?.setData(gemeindenFern)
+    }
+  }, [gemeindenFern])
+
+  useEffect(() => {
+    const m = map.current
     if (!m || !ready.current) return
     ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route, waypoints))
   }, [route, waypoints])
@@ -727,6 +738,106 @@ const eigenSymbol: ExpressionSpecification = [
   'cb-eigen',
 ]
 
+/**
+ * Ab welcher Zoomstufe die genauen Gemeindegrenzen die Übersicht ablösen.
+ *
+ * Bei Zoom 8 misst ein Bildpunkt auf Schweizer Breite rund 420 m; die
+ * Übersichtsfassung ist auf 550 m ausgedünnt, ihre Abweichung bleibt also
+ * unter zwei Pixeln. Ab 9,5 wäre sie sichtbar — dort liegen die genauen
+ * Kacheln des Ausschnitts längst vor.
+ */
+const GEMEINDE_UMSCHALT = ZOOM_AB.gemeindenGenau
+
+/**
+ * Der Ebenensatz der Gemeindedarstellung, einmal je Auflösung.
+ *
+ * Sechs Ebenen zweimal von Hand hinzuschreiben hiesse, sechs Paare von
+ * Farbwerten und Linienbreiten synchron halten zu müssen — und das erste, was
+ * bei einer Änderung auseinanderliefe, wäre die Farbe an der Zoomschwelle.
+ */
+function gemeindeEbenen(m: MlMap, quelle: string, zoom: { minzoom?: number; maxzoom?: number }) {
+  const id = (name: string) => (quelle === 'gemeinden' ? name : `${name}-fern`)
+
+  m.addLayer({
+    ...zoom,
+    id: id('gemeinden-grund'),
+    type: 'fill',
+    source: quelle,
+    filter: ['!=', ['get', 'status'], 'unknown'],
+    paint: { 'fill-color': '#FFFFFF', 'fill-opacity': 0.58 },
+  })
+
+  // Die Statusfarbe sass vorher mit 32 % direkt auf der Grundkarte. Auf einem
+  // Reliefbild heisst das: Rot auf Rotbraun — die wichtigste Aussage dieser
+  // Karte war ausgerechnet dort nicht zu erkennen, wo man sie braucht, im
+  // Gebirge. Der helle Grund darunter nimmt der Grundkarte so viel Sättigung,
+  // dass die Farbe wieder eine Farbe ist, statt eine Tönung.
+  m.addLayer({
+    ...zoom,
+    id: id('gemeinden-fill'),
+    type: 'fill',
+    source: quelle,
+    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], true]],
+    paint: { 'fill-color': gemeindeColor, 'fill-opacity': 0.46 },
+  })
+
+  // Abgeleitet, aber nicht belegt: schraffiert statt voll. Der Prüfstand ist
+  // damit Teil des Kartenbilds und nicht bloss eine Fussnote im Infofeld.
+  m.addLayer({
+    ...zoom,
+    id: id('gemeinden-fill-unbestaetigt'),
+    type: 'fill',
+    source: quelle,
+    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], false]],
+    paint: { 'fill-pattern': schraffurBild, 'fill-opacity': 0.5 },
+  })
+
+  // Zwei Linien übereinander: eine helle Kasche, darauf die dunkle Grenze.
+  // Die Grundkarte lässt sich umschalten und reicht von hellem Papier bis zu
+  // dunklem Relief — eine einzelne graue Linie verschwindet auf der einen oder
+  // der anderen. Die Gemeindegrenze ist nach der Rechtslage die zweitwichtigste
+  // Linie auf dieser Karte; sie darf nicht von der Grundkarte abhängen.
+  m.addLayer({
+    ...zoom,
+    id: id('gemeinden-outline-kasche'),
+    type: 'line',
+    source: quelle,
+    minzoom: Math.max(8, zoom.minzoom ?? 0),
+    paint: {
+      'line-color': 'rgba(255,255,255,0.75)',
+      'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1.6, 13, 2.8],
+    },
+  })
+  m.addLayer({
+    ...zoom,
+    id: id('gemeinden-outline'),
+    type: 'line',
+    source: quelle,
+    minzoom: Math.max(8, zoom.minzoom ?? 0),
+    paint: {
+      'line-color': '#334155',
+      'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 13, 1.1],
+      'line-opacity': 0.75,
+    },
+  })
+
+  // Der Rand in der Statusfarbe. Er trägt die Aussage auch dort, wo die Fläche
+  // klein ist oder von Schutzgebieten überlagert wird — und er macht auf einen
+  // Blick sichtbar, wo eine Auskunft aufhört und die nächste anfängt.
+  m.addLayer({
+    ...zoom,
+    id: id('gemeinden-rand'),
+    type: 'line',
+    source: quelle,
+    filter: ['!=', ['get', 'status'], 'unknown'],
+    paint: {
+      'line-color': gemeindeColor,
+      'line-width': ['interpolate', ['linear'], ['zoom'], 7, 1.6, 11, 3, 14, 4],
+      'line-opacity': 1,
+    },
+  })
+}
+
 function addLayers(m: MlMap) {
   const empty: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
 
@@ -738,6 +849,7 @@ function addLayers(m: MlMap) {
   m.addSource('route-griff', { type: 'geojson', data: empty })
   m.addSource('peaks', { type: 'geojson', data: empty })
   m.addSource('gemeinden', { type: 'geojson', data: empty })
+  m.addSource('gemeinden-fern', { type: 'geojson', data: empty })
 
   schraffurenAnlegen(m)
 
@@ -752,78 +864,16 @@ function addLayers(m: MlMap) {
   // der ganzen Schweiz und würde die Grundkarte vermatschen. Die leere Fläche
   // ist die ehrlichere und die lesbarere Lösung — und je weiter die Recherche
   // kommt, desto mehr färbt sich die Karte. Man sieht dem Bild den Fortschritt an.
-  m.addLayer({
-    id: 'gemeinden-grund',
-    type: 'fill',
-    source: 'gemeinden',
-    filter: ['!=', ['get', 'status'], 'unknown'],
-    paint: { 'fill-color': '#FFFFFF', 'fill-opacity': 0.58 },
-  })
-
-  // Die Statusfarbe sass vorher mit 32 % direkt auf der Grundkarte. Auf dem
-  // Reliefbild von OpenTopoMap heisst das: Rot auf Rotbraun — die wichtigste
-  // Aussage dieser Karte war ausgerechnet dort nicht zu erkennen, wo man sie
-  // braucht, im Gebirge. Der helle Grund darunter nimmt der Grundkarte so viel
-  // Sättigung, dass die Farbe wieder eine Farbe ist, statt eine Tönung.
-  m.addLayer({
-    id: 'gemeinden-fill',
-    type: 'fill',
-    source: 'gemeinden',
-    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], true]],
-    paint: { 'fill-color': gemeindeColor, 'fill-opacity': 0.46 },
-  })
-
-  // Abgeleitet, aber nicht belegt: schraffiert statt voll. Der Prüfstand ist
-  // damit Teil des Kartenbilds und nicht bloss eine Fussnote im Infofeld.
-  m.addLayer({
-    id: 'gemeinden-fill-unbestaetigt',
-    type: 'fill',
-    source: 'gemeinden',
-    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], false]],
-    paint: { 'fill-pattern': schraffurBild, 'fill-opacity': 0.5 },
-  })
-
-  // Zwei Linien übereinander: eine helle Kasche, darauf die dunkle Grenze.
-  // Die Grundkarte lässt sich umschalten und reicht von hellem Papier bis zu
-  // dunklem Relief — eine einzelne graue Linie verschwindet auf der einen oder
-  // der anderen. Die Gemeindegrenze ist nach der Rechtslage die zweitwichtigste
-  // Linie auf dieser Karte; sie darf nicht von der Grundkarte abhängen.
-  m.addLayer({
-    id: 'gemeinden-outline-kasche',
-    type: 'line',
-    source: 'gemeinden',
-    minzoom: 8,
-    paint: {
-      'line-color': 'rgba(255,255,255,0.75)',
-      'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1.6, 13, 2.8],
-    },
-  })
-  m.addLayer({
-    id: 'gemeinden-outline',
-    type: 'line',
-    source: 'gemeinden',
-    minzoom: 8,
-    paint: {
-      'line-color': '#334155',
-      'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 13, 1.1],
-      'line-opacity': 0.75,
-    },
-  })
-
-  // Der Rand in der Statusfarbe. Er trägt die Aussage auch dort, wo die Fläche
-  // klein ist oder von Schutzgebieten überlagert wird — und er macht auf einen
-  // Blick sichtbar, wo eine Auskunft aufhört und die nächste anfängt.
-  m.addLayer({
-    id: 'gemeinden-rand',
-    type: 'line',
-    source: 'gemeinden',
-    filter: ['!=', ['get', 'status'], 'unknown'],
-    paint: {
-      'line-color': gemeindeColor,
-      'line-width': ['interpolate', ['linear'], ['zoom'], 7, 1.6, 11, 3, 14, 4],
-      'line-opacity': 1,
-    },
-  })
+  //
+  // Es gibt sie zweimal, aus zwei Quellen: `gemeinden-fern` trägt die
+  // landesweite, grob vereinfachte Übersicht und zeichnet bis Zoom 9,5;
+  // `gemeinden` trägt die genauen Flächen des Ausschnitts und übernimmt
+  // darüber. Der Grund ist nicht Kosmetik, sondern Gewicht — in voller
+  // Auflösung sind die 2119 Grenzen 617 KB gepackt, der grösste Einzelposten
+  // der ganzen Anwendung. Wer über die Karte fliegt, braucht davon nichts;
+  // wer eine Gemeinde wirklich ansieht, bekommt sie exakt.
+  gemeindeEbenen(m, 'gemeinden-fern', { maxzoom: GEMEINDE_UMSCHALT })
+  gemeindeEbenen(m, 'gemeinden', { minzoom: GEMEINDE_UMSCHALT })
 
   m.addLayer({
     id: 'gemeinden-label',

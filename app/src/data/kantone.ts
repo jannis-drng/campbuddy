@@ -15,7 +15,7 @@
 import type { Kanton, KantonRecht } from './types'
 import type { Position } from './geo'
 import { pointInGeometry } from './geo'
-import kantoneCH from './kantone/CH.json'
+import { ladeJson } from './snapshot'
 import rechtRoh from './kantone.legal.json'
 import grundlagenRoh from './kantone.grundlagen.json'
 
@@ -27,15 +27,33 @@ interface KantonDatei {
   }[]
 }
 
-const datei = kantoneCH as unknown as KantonDatei
+/**
+ * Die Kantonsflächen kommen als eigene Datei, nicht mehr aus dem Bündel.
+ *
+ * 45 KB gepackt klingt nach wenig, aber sie lagen im JavaScript-Bündel: sie
+ * mussten durch den Parser, bevor irgendetwas auf dem Schirm war, und jede
+ * Änderung an ihnen machte das ganze Bündel ungültig. Als eigene Datei mit
+ * Inhalts-Hash laden sie parallel und liegen danach unbegrenzt im Cache.
+ *
+ * Die Rechtsschicht (`kantone.legal.json`, 284 Bytes) und die Erlass-Grundlagen
+ * (8,9 KB) bleiben dagegen im Bündel — sie sind klein genug, dass eine eigene
+ * Anfrage mehr kostet als sie spart.
+ */
+let KANTONE: Kanton[] = []
 
-export const KANTONE: Kanton[] = datei.features.map((f) => ({
-  id: f.id,
-  code: f.properties.code,
-  name: f.properties.name,
-  source_url: f.properties.source_url,
-  geometry: f.geometry,
-}))
+export async function ladeKantone(region: string): Promise<number> {
+  const datei = await ladeJson<KantonDatei>(`kantone.${region}.json`)
+  KANTONE = datei.features.map((f) => ({
+    id: f.id,
+    code: f.properties.code,
+    name: f.properties.name,
+    source_url: f.properties.source_url,
+    geometry: f.geometry,
+  }))
+  return KANTONE.length
+}
+
+export const alleKantone = (): Kanton[] => KANTONE
 
 const RECHT = (rechtRoh as unknown as { kantone: Record<string, KantonRecht> }).kantone
 

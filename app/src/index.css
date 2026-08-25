@@ -58,7 +58,7 @@
      Inter für die Oberfläche. Entscheidend für dieses Produkt: Ziffern laufen
      tabellarisch (siehe body unten) — die App zeigt fast nur Zahlen, und
      springende Ziffernbreiten in Distanz- und Höhenangaben wirken unruhig. */
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   /* Sechs Stufen mit echtem Kontrast statt zehn Zufallsgrössen. */
   --text-display: 2rem;

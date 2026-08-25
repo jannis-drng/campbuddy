@@ -13,10 +13,10 @@
  * Nachbarn oder vom Kanton ab. Genau diese Zurückhaltung ist der Grund, warum
  * man der Karte dort glauben kann, wo sie etwas behauptet.
  */
-import type { Gemeinde, GemeindeRecht, LegalStatus, ReviewStatus } from './types'
+import type { Ausschnitt, Gemeinde, GemeindeRecht, LegalStatus, ReviewStatus } from './types'
 import type { Position } from './geo'
 import { pointInGeometry } from './geo'
-import gemeindenVS from './gemeinden/CH-VS.json'
+import { kachelLader, ladeJson, ohneDoppelte } from './snapshot'
 import rechtRoh from './gemeinden.legal.json'
 
 interface GemeindeDatei {
@@ -48,45 +48,69 @@ function ausDatei(datei: GemeindeDatei): Gemeinde[] {
 }
 
 /**
- * Die gebündelte Fassung — bewusst nur das Wallis.
+ * Zwei Auflösungen derselben Flächen — und warum das kein Luxus ist.
  *
- * Alle 2119 Schweizer Gemeinden wären gut 700 KB gepackt, die jeder Besucher
- * vorab lädt. Die Fokusregion steht dafür sofort und auch ohne Netz; der Rest
- * kommt aus der Datenbank und ersetzt sie (siehe `setzeGemeinden`). Dasselbe
- * Verfahren wie bei Zonen, Gipfeln und Natur.
+ * Die 2119 Gemeindegrenzen sind mit 617 KB gepackt der grösste Einzelposten
+ * der ganzen Anwendung. Beim Zeichnen tragen sie aber nur Farbe: was in einer
+ * Gemeinde gilt, steht in `gemeinden.legal.json` (12 KB) und hängt an der
+ * BFS-Nummer, nicht an der Geometrie.
+ *
+ * Also: eine grob vereinfachte Übersicht (148 KB) färbt sofort das ganze Land,
+ * und die genauen Grenzen kommen kachelweise nach, sobald jemand hineinzoomt.
+ * Wer über die Karte fliegt, lädt ein Viertel; wer eine Gemeinde wirklich
+ * ansieht, bekommt sie exakt.
+ *
+ * Die Genauigkeit ist dort nicht verhandelbar: `gemeindeAn` beantwortet die
+ * Frage „in welcher Gemeinde stehe ich" und damit, welches Reglement gilt. An
+ * einer Grenze die falsche Gemeinde zu nennen wäre dieselbe Sorte Fehler wie
+ * eine kantonale Auskunft, wo die kommunale zählt. Deshalb fragt sie zuerst
+ * die genauen Flächen und erst danach die Übersicht.
  */
-const GEBUENDELT = ausDatei(gemeindenVS as unknown as GemeindeDatei)
+let UEBERSICHT: Gemeinde[] = []
+let GENAU: Gemeinde[] = []
 
-let AKTUELL: Gemeinde[] = GEBUENDELT
+const DETAIL_LADER = kachelLader<GemeindeDatei['features'][number]>('gemeinden', 'gemeinden.CH.json')
+
+/** Die landesweite Übersicht — einmal pro Sitzung, danach aus dem Cache. */
+export async function ladeGemeindenUebersicht(region: string): Promise<number> {
+  UEBERSICHT = ausDatei(await ladeJson<GemeindeDatei>(`gemeinden.uebersicht.${region}.json`))
+  return UEBERSICHT.length
+}
 
 /**
- * Die Fassung aus der Datenbank dazunehmen — ergänzend, nicht ersetzend.
+ * Die genauen Flächen des Ausschnitts nachladen.
  *
- * Ersetzen war ein Fehler. Ins Bundle kommt genau das, was recherchiert ist
- * (siehe `bundleNachziehen` in scripts/gemeinden-einstufen.mjs), und es ist
- * per Konstruktion mit der Rechtspflege im selben Commit synchron. Die
- * Datenbank wird von Hand nachgeführt und hinkt deshalb hinterher. Wer sie
- * das Bundle überschreiben lässt, verliert genau die Gemeinden, für die
- * jemand die Arbeit gemacht hat — sie fallen ohne Fehlermeldung von der Karte.
- *
- * Also: das Bundle bleibt massgeblich für die Flächen, die es führt, und die
- * Datenbank füllt den grossen Rest der Schweiz auf.
+ * Gibt zurück, ob etwas Neues dazugekommen ist — nur dann muss die Karte ihre
+ * Daten neu aufbauen. Beim blossen Verschieben innerhalb schon geladener
+ * Kacheln passiert nichts, und das ist der Punkt: vorher ging jede
+ * Kartenbewegung als frische Abfrage an die Datenbank.
  */
-export function setzeGemeinden(gemeinden: Gemeinde[]) {
-  if (gemeinden.length === 0) { AKTUELL = GEBUENDELT; return }
-  const gebuendelt = new Set(GEBUENDELT.map((g) => g.id))
-  AKTUELL = [...GEBUENDELT, ...gemeinden.filter((g) => !gebuendelt.has(g.id))]
+export async function ladeGemeindenDetail(a: Ausschnitt): Promise<boolean> {
+  const features = await DETAIL_LADER.laden(a)
+  if (!features) return false
+  GENAU = ohneDoppelte(ausDatei({ features }))
+  return true
 }
 
 export function alleGemeinden(): Gemeinde[] {
-  return AKTUELL
+  return GENAU.length > 0 ? GENAU : UEBERSICHT
 }
 
 const RECHT = (rechtRoh as unknown as { gemeinden: Record<string, GemeindeRecht> }).gemeinden
 
-/** Welche Gemeinde liegt unter diesem Punkt? null ausserhalb der geladenen Flächen. */
+/**
+ * Welche Gemeinde liegt unter diesem Punkt? null ausserhalb der geladenen Flächen.
+ *
+ * Erst die genauen Kacheln, dann die Übersicht. Die Reihenfolge ist die
+ * Aussage: wer weit genug hineingezoomt hat, um zu tippen, hat die genaue
+ * Fläche längst geladen; die vereinfachte Übersicht ist nur der Rückfall für
+ * einen Tipp aus der Landesansicht, wo eine Abweichung von einem halben
+ * Kilometer unter dem Fingerkuppendurchmesser liegt.
+ */
 export function gemeindeAn(position: Position): Gemeinde | null {
-  return AKTUELL.find((g) => pointInGeometry(position, g.geometry)) ?? null
+  return GENAU.find((g) => pointInGeometry(position, g.geometry))
+    ?? UEBERSICHT.find((g) => pointInGeometry(position, g.geometry))
+    ?? null
 }
 
 /**
@@ -130,10 +154,10 @@ export function gemeindeAnzeige(recht: GemeindeRecht | null): GemeindeAnzeige {
  * 2119 Flächen einzeln durch die Komponentenschicht zu schicken wäre
  * verschwendet.
  */
-export function gemeindenGeoJSON(): GeoJSON.FeatureCollection {
+export function gemeindenGeoJSON(welche: 'uebersicht' | 'genau'): GeoJSON.FeatureCollection {
   return {
     type: 'FeatureCollection',
-    features: AKTUELL.map((g) => {
+    features: (welche === 'genau' ? GENAU : UEBERSICHT).map((g) => {
       const anzeige = gemeindeAnzeige(gemeindeRecht(g))
       return {
         type: 'Feature' as const,
@@ -155,7 +179,7 @@ export function gemeindenGeoJSON(): GeoJSON.FeatureCollection {
 export function gemeindeStand() {
   const belegt = Object.values(RECHT).filter((r) => r.review_status !== 'entwurf').length
   return {
-    geladen: AKTUELL.length,
+    geladen: UEBERSICHT.length,
     recherchiert: Object.keys(RECHT).length,
     belegt,
   }

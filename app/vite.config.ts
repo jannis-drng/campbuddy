@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 const HIER = fileURLToPath(new URL('.', import.meta.url))
@@ -29,6 +29,16 @@ const HIER = fileURLToPath(new URL('.', import.meta.url))
 const umgebung = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), 'VITE_')
 
 const BASIS = umgebung.VITE_BASE ?? '/campbuddy/'
+
+/**
+ * Ein Stempel je Build, für den Cache-Namen des Service Workers.
+ *
+ * Er entscheidet, wann alte Einträge weggeräumt werden. Dass dabei auch
+ * unveränderte Dateien aus dem Cache fliegen, kostet nichts: sie tragen einen
+ * Inhalts-Hash und liegen unbegrenzt im HTTP-Cache des Browsers — sie kommen
+ * von dort zurück, nicht aus dem Netz.
+ */
+const BAU = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14)
 const ORIGIN = (umgebung.VITE_ORIGIN ?? 'https://jannis-drng.github.io').replace(/\/+$/, '')
 
 /**
@@ -55,20 +65,50 @@ function supabaseHerkunft(): string {
  * sonst unangetastet liesse: die 404-Seite (liegt in public/ und wird roh
  * kopiert) und die Kopfzeilen-Vorlage für Cloudflare.
  */
+/**
+ * Welche Dateien der Service Worker beim Einrichten mitnehmen soll.
+ *
+ * Er kann sie nicht selbst kennen: ihre Namen tragen einen Inhalts-Hash und
+ * stehen erst nach dem Bauen fest. Ohne diese Liste cachte er nur, was nach
+ * seiner Übernahme noch angefragt wird — und weil er sich erst nach `load`
+ * anmeldet, war das beim ersten Besuch nichts. Offline stand dann die Hülle
+ * ohne eine einzige Zone darin.
+ *
+ * Bewusst nur der Kern: die Bündel, die vier Datendateien, die beim Öffnen
+ * gebraucht werden, die Kachelverzeichnisse und die lateinische Schrift. Die
+ * Kacheln selbst bleiben draussen — es sind über dreihundert, und welche
+ * jemand braucht, hängt davon ab, wo er hinsieht. Sie landen im Cache, wenn
+ * sie zum ersten Mal geholt werden.
+ */
+function kernAssets(): string[] {
+  const verzeichnis = fileURLToPath(new URL('dist/assets/', `file://${HIER}`))
+  const muster = [
+    /^index-.*\.(js|css)$/, /^App-.*\.(js|css)$/,
+    /^zonen\./, /^punkte\./, /^gemeinden\.uebersicht\./, /^kantone\./, /^gipfel\.hoch\./,
+    /^(gipfel|natur|gemeinden)\.CH-/,
+    /^inter-latin-opsz-normal-.*\.woff2$/,
+  ]
+  return readdirSync(verzeichnis)
+    .filter((n) => muster.some((m) => m.test(n)))
+    .map((n) => `${BASIS}assets/${n}`)
+}
+
 function adressenEinsetzen(): Plugin {
   const ersetzen = (text: string) =>
     text
       .replaceAll('%BASIS%', BASIS)
       .replaceAll('%ORIGIN%', ORIGIN)
       .replaceAll('%SUPABASE%', supabaseHerkunft())
+      .replaceAll('%BUILD%', BAU)
 
   return {
     name: 'campbuddy-adressen',
     transformIndexHtml: { order: 'pre', handler: ersetzen },
     closeBundle() {
       const dist = (datei: string) => new URL(`dist/${datei}`, `file://${HIER}`)
-      const seite = dist('404.html')
-      writeFileSync(seite, ersetzen(readFileSync(seite, 'utf8')))
+      writeFileSync(dist('404.html'), ersetzen(readFileSync(dist('404.html'), 'utf8')))
+      const sw = ersetzen(readFileSync(dist('sw.js'), 'utf8'))
+      writeFileSync(dist('sw.js'), sw.replace('"%PRECACHE%"', JSON.stringify(kernAssets())))
       writeFileSync(dist('_headers'), ersetzen(readFileSync(`${HIER}_headers.vorlage`, 'utf8')))
     },
   }
@@ -77,5 +117,22 @@ function adressenEinsetzen(): Plugin {
 export default defineConfig({
   base: BASIS,
   plugins: [react(), tailwindcss(), adressenEinsetzen()],
-  build: { outDir: 'dist' },
+  build: {
+    outDir: 'dist',
+    /**
+     * Snapshot-Dateien werden nie eingebettet.
+     *
+     * Vite steckt Assets unter 4 KB als `data:`-URI ins JavaScript. Für ein
+     * Symbolbild ist das richtig — für unsere Datendateien war es doppelt
+     * falsch: die kleinen Kachelverzeichnisse landeten im Bündel (also genau
+     * dort, wo sie nicht hinsollen), und ein `fetch` darauf scheiterte an der
+     * eigenen Content-Security-Policy, weil `connect-src` kein `data:` erlaubt.
+     *
+     * Das Ergebnis war ein Fehler ohne Fehlermeldung: die Kachelebenen blieben
+     * einfach leer. Genau deshalb steht diese Regel hier und nicht als
+     * Ausnahme in `connect-src` — eingebettete Datendateien wollen wir gar
+     * nicht, unabhängig davon, ob man sie laden könnte.
+     */
+    assetsInlineLimit: (datei) => (datei.includes('/data/snapshot/') ? false : undefined),
+  },
 })

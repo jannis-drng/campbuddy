@@ -36,7 +36,7 @@ export type Selection =
       kind: 'region'
       region: Region
       stats: { total: number; entwurf: number }
-      quelle: 'gebündelt' | 'datenbank'
+      datenFehler: boolean
       /** Wer an der angetippten Stelle zuständig ist — null ausserhalb der Schweiz. */
       kanton: Kanton | null
       /** Dessen recherchierte Regelung — null heisst „noch nicht recherchiert". */
@@ -212,7 +212,7 @@ export function InfoPanel({
           <RegionBody
             region={selection.region}
             stats={selection.stats}
-            quelle={selection.quelle}
+            datenFehler={selection.datenFehler}
             kanton={selection.kanton}
             recht={selection.kantonRecht}
             grundlagen={selection.kantonGrundlagen}
@@ -255,11 +255,11 @@ export function InfoPanel({
  * der allgemeine Rahmen die einzige Auskunft ist, die es gibt.
  */
 function RegionBody({
-  region, stats, quelle, kanton, recht, grundlagen, gemeinde, gemeindeRecht,
+  region, stats, datenFehler, kanton, recht, grundlagen, gemeinde, gemeindeRecht,
 }: {
   region: Region
   stats: { total: number; entwurf: number }
-  quelle: 'gebündelt' | 'datenbank'
+  datenFehler: boolean
   kanton: Kanton | null
   recht: KantonRecht | null
   grundlagen: { grundlagen: { text: string; zonen: number }[]; quelle: string; stand: string } | null
@@ -471,11 +471,25 @@ function RegionBody({
         )}
       </div>
 
-      <Hinweis ton="warnung" icon={FileWarning}>
-        {stats.total} Flächen erfasst, davon <strong className="font-semibold">{stats.entwurf} ungeprüft</strong>.
-        Ungeprüfte Flächen haben auf der Karte einen gestrichelten Rand.
-        {quelle === 'datenbank' && ' Aktuelle Fassung aus der Datenbank.'}
-      </Hinweis>
+      {/*
+        Wenn die Zonendatei nicht ankommt, sieht die Karte aus wie eine Karte
+        ohne Schutzgebiete — also wie „hier gilt nichts". Das ist die eine
+        Verwechslung, die diese Anwendung sich nicht leisten darf, und deshalb
+        steht sie hier ausdrücklich da, statt sich hinter einer leeren Fläche
+        zu verstecken.
+      */}
+      {datenFehler ? (
+        <Hinweis ton="warnung" icon={FileWarning}>
+          <strong className="font-semibold">Die Schutzgebiete konnten nicht geladen werden.</strong>{' '}
+          Was du siehst, ist deshalb unvollständig — eine leere Fläche heisst hier
+          nicht, dass dort nichts gilt. Lade die Seite neu, sobald du wieder Netz hast.
+        </Hinweis>
+      ) : (
+        <Hinweis ton="warnung" icon={FileWarning}>
+          {stats.total} Flächen erfasst, davon <strong className="font-semibold">{stats.entwurf} ungeprüft</strong>.
+          Ungeprüfte Flächen haben auf der Karte einen gestrichelten Rand.
+        </Hinweis>
+      )}
 
       <p className="rounded-mittel border border-geduldet-500/20 bg-geduldet-500/[0.07] px-3 py-2.5
                     text-mikro normal-case leading-relaxed tracking-normal text-geduldet-400/90">

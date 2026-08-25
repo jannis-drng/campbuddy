@@ -59,12 +59,34 @@ function regelnLesen() {
 
 const REGELN = regelnLesen()
 
+/**
+ * Unter welchem Pfad der Build ausgeliefert werden will.
+ *
+ * GitHub Pages liefert unter /<repo>/, eine eigene Domain unter /. Der Build
+ * schreibt den Pfad fest in die Asset-Adressen, und dieser Server lieferte
+ * bisher stur ab dist/ — ein Build mit `/campbuddy/` liess sich damit gar
+ * nicht ansehen, alle Anfragen liefen in die 404. Statt den Pfad hier ein
+ * zweites Mal zu konfigurieren, wird er aus index.html abgelesen: dort steht
+ * er, und dort stimmt er per Konstruktion.
+ */
+function basisLesen() {
+  const pfad = join(DIST, 'index.html')
+  if (!existsSync(pfad)) return '/'
+  const treffer = readFileSync(pfad, 'utf8').match(/(?:src|href)="(\/[^"]*?\/)assets\//)
+  return treffer ? treffer[1] : '/'
+}
+
+const BASIS = basisLesen()
+
 const passt = (muster, pfad) =>
   muster.endsWith('*') ? pfad.startsWith(muster.slice(0, -1)) : muster === pfad
 
 createServer(async (anfrage, antwort) => {
   const pfad = decodeURIComponent(new URL(anfrage.url, 'http://x').pathname)
-  const sicher = normalize(pfad).replace(/^(\.\.[/\\])+/, '')
+  // Den Basispfad abstreifen, bevor im Verzeichnis gesucht wird — die Regeln
+  // aus _headers gelten dagegen für den ungekürzten Pfad, so wie beim CDN.
+  const ohneBasis = BASIS !== '/' && pfad.startsWith(BASIS) ? pfad.slice(BASIS.length - 1) : pfad
+  const sicher = normalize(ohneBasis).replace(/^(\.\.[/\\])+/, '')
   let datei = join(DIST, sicher.endsWith('/') ? `${sicher}index.html` : sicher)
 
   let inhalt
@@ -83,6 +105,6 @@ createServer(async (anfrage, antwort) => {
   antwort.setHeader('Content-Type', TYPEN[extname(datei)] ?? 'application/octet-stream')
   antwort.end(inhalt)
 }).listen(PORT, () => {
-  console.log(`Vorschau mit Kopfzeilen: http://localhost:${PORT}/`)
+  console.log(`Vorschau mit Kopfzeilen: http://localhost:${PORT}${BASIS}`)
   console.log(`${REGELN.length} Regel(n) aus dist/_headers übernommen.`)
 })

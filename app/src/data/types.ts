@@ -297,3 +297,28 @@ export interface Wegpunkt {
   position: Position
   ort?: { name: string; art: WegpunktArt }
 }
+
+/**
+ * Der sichtbare Kartenausschnitt.
+ *
+ * Gipfel, Naturobjekte und die genauen Gemeindeflächen werden nicht
+ * landesweit geladen, sondern immer nur für das, was gerade auf dem Schirm
+ * ist. Landesweit sind das zusammen über dreissigtausend Objekte und mehrere
+ * Megabyte — für Ebenen, die ohnehin erst ab Zoom 9,5 beziehungsweise 12,5
+ * gezeichnet werden. Wer die Schweiz als Ganzes ansieht, braucht keinen
+ * einzigen Brunnen.
+ */
+export interface Ausschnitt {
+  west: number
+  sued: number
+  ost: number
+  nord: number
+  /**
+   * Die Zoomstufe gehört dazu, weil sonst Kacheln geladen werden, die niemand
+   * sieht. Bei der Landesansicht deckt der Ausschnitt über hundert Kacheln ab
+   * — für Ebenen, die dort gar nicht gezeichnet werden. Ohne diesen Wert wäre
+   * das Kacheln ein Rückschritt gegenüber den Datenbankabfragen gewesen, nicht
+   * ein Fortschritt.
+   */
+  zoom: number
+}

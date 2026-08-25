@@ -64,11 +64,24 @@ export const BASEMAPS: Record<BasemapKey, Basemap> = {
       17,
     ),
   },
+  /*
+   * Die amtliche Schweizer Karte — und die leichtere von beiden.
+   *
+   * Gemessen bei Zoom 12: sechs Kacheln OpenTopoMap sind 305 KB, dieselben
+   * sechs von swisstopo 142 KB. Bei gleichem Inhalt für diesen Zweck
+   * (Wanderwege, Höhenlinien, Hütten) und von einem Bundes-CDN statt von
+   * einem ehrenamtlichen Server. Für schlechtes Netz ist das die bessere Wahl.
+   *
+   * Sie stand vorher nur im Wallis zur Verfügung — ohne Grund: swisstopo deckt
+   * die ganze Schweiz ab, und die Schweiz ist die Fokusregion dieses Projekts.
+   * Standard bleibt OpenTopoMap, weil es alpenweit trägt und weil das
+   * Kartenbild sich nicht ungefragt ändern soll.
+   */
   landeskarte: {
     key: 'landeskarte',
     label: 'Landeskarte',
-    hint: 'amtliche Schweizer Karte (swisstopo)',
-    regions: ['CH-VS'],
+    hint: 'amtliche Schweizer Karte, leichter zu laden',
+    regions: ['CH', 'CH-VS'],
     style: rasterStyle(
       ['https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg'],
       '© <a href="https://www.swisstopo.admin.ch/">swisstopo</a>',
@@ -164,4 +177,31 @@ export const ROUTING = {
     openrouteservice: 'https://api.openrouteservice.org/v2/directions/foot-hiking/geojson',
     graphhopper: 'https://graphhopper.com/api/1/route',
   },
+} as const
+
+/**
+ * Ab welcher Zoomstufe eine Ebene überhaupt gezeichnet wird.
+ *
+ * Sie stehen hier und nicht bei den Layer-Definitionen, weil zwei Stellen sie
+ * brauchen: die Karte, um zu zeichnen, und die Datenschicht, um zu entscheiden,
+ * ob sich das Nachladen lohnt. Liefen die beiden auseinander, wäre der Fehler
+ * unsichtbar — die Karte sähe richtig aus und lüde im Hintergrund Daten, die
+ * sie nie zeigt.
+ */
+export const ZOOM_AB = {
+  /** Die höchsten Gipfel erscheinen zuerst (peaks-hoch) — aus der Übersicht. */
+  gipfel: 8,
+  /**
+   * Ab hier lohnt das Kachelgitter für Gipfel.
+   *
+   * Nicht schon ab 8: dort deckt der Ausschnitt über achtzig Kacheln ab, für
+   * eine Handvoll Dreitausender-Namen. Bis 11 reicht die Übersichtsdatei mit
+   * den 291 Gipfeln über 3500 m (8 KB); ab 11 setzt peaks-mittel ein, und der
+   * Ausschnitt ist auf zwei Kacheln geschrumpft.
+   */
+  gipfelKacheln: 11,
+  /** Seen zuerst, das übrige Naturzeug erst ab 12,5 (natur-see / natur-icon). */
+  natur: 9.5,
+  /** Ab hier lösen die genauen Gemeindegrenzen die Übersicht ab. */
+  gemeindenGenau: 9.5,
 } as const

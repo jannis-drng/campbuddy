@@ -13,6 +13,7 @@ import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import type { TripParams } from '../data/types'
 import { getSupabase, type PublicTour, type Tour } from './supabase'
+import { alleZeilen } from './deckel'
 
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null)
@@ -225,12 +226,13 @@ export interface TourEckdaten extends Partial<TripParams> {
 export async function listTouren(): Promise<Tour[]> {
   const sb = getSupabase()
   if (!sb) return []
-  const { data, error } = await sb
+  // Geblättert, nicht abgeschnitten: PostgREST hört von sich aus bei 1000
+  // Zeilen auf, ohne das zu sagen (siehe deckel.ts).
+  return alleZeilen<Tour>((von, bis) => sb
     .from('routes')
     .select('*')
     .order('created_at', { ascending: false })
-  if (error) throw new Error(error.message)
-  return (data ?? []) as Tour[]
+    .range(von, bis))
 }
 
 /**
@@ -377,9 +379,13 @@ export async function setTourPublic(
 export async function listFavoriteIds(): Promise<Set<string>> {
   const sb = getSupabase()
   if (!sb) return new Set()
-  const { data, error } = await sb.from('favorites').select('route_id')
-  if (error) return new Set()
-  return new Set((data ?? []).map((r: { route_id: string }) => r.route_id))
+  try {
+    const zeilen = await alleZeilen<{ route_id: string }>((von, bis) =>
+      sb.from('favorites').select('route_id').range(von, bis))
+    return new Set(zeilen.map((r) => r.route_id))
+  } catch {
+    return new Set()
+  }
 }
 
 /**

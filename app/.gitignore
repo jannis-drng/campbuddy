@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Erzeugt aus import/ durch scripts/snapshot-daten.mjs (läuft vor dev und build).
+# Nicht von Hand pflegen — die Quellen sind import/<REGION>/ und src/data/*.legal.json.
+src/data/snapshot/
