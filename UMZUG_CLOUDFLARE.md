@@ -28,6 +28,29 @@ Geprüft wurde damit lokal: Karte, Kacheln, Zonen, Symbole, Supabase-Daten,
 Wetter, Routing, Startseite und 404-Seite laufen unter der vollen CSP
 fehlerfrei. Der GitHub-Pages-Build bleibt Byte-für-Byte wie vorher.
 
+### Was der Umzug tatsächlich bringt — messbar
+
+Nicht nur Kosmetik: **GitHub Pages ignoriert `_headers` vollständig.** Es liefert
+alles mit `cache-control: max-age=600` aus, also zehn Minuten. Die Kartendaten
+tragen aber einen Inhalts-Hash im Namen und sollen unbegrenzt liegen bleiben —
+genau das steht in `_headers` und wirkt heute nirgends.
+
+Nachprüfbar mit einer Zeile:
+
+```bash
+curl -sI https://jannis-drng.github.io/campbuddy/ | grep -i cache-control
+```
+
+Praktisch trägt derzeit der Service Worker die Last: er hält die Dateien in
+seinem eigenen Cache und fragt den Hoster gar nicht erst. Der Wiederbesuch ist
+deshalb schon jetzt kostenlos. Was fehlt, ist die zweite Verteidigungslinie —
+wer den Service Worker abgeschaltet hat oder ihn verliert, holt nach zehn
+Minuten wieder alles. Auf Cloudflare greift `immutable`, und dieser Fall
+verschwindet.
+
+Was GitHub Pages richtig macht: komprimieren. Die Zonendatei geht mit 360 KB
+statt 2,2 MB über die Leitung — das ist nicht der Grund für den Umzug.
+
 ---
 
 ## Schritt 0 — DNS für camping-map.com zu Cloudflare holen
