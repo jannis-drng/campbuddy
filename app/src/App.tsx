@@ -18,6 +18,7 @@ import { TourDetailModal } from './components/TourDetailModal'
 import { RoutePanel } from './components/RoutePanel'
 import { analyseRoute } from './data/routeAnalysis'
 import { lineLength, type Position } from './data/geo'
+import { umkehren, verschieben, wegpunktName } from './data/wegpunkte'
 import { parseGpx } from './services/gpx'
 import { loadElevationProfile, type ElevationPoint } from './services/elevation'
 import { analyseProfil, planeEtappen } from './data/hiking'
@@ -89,6 +90,11 @@ export default function App() {
 
   /** Nur die Koordinaten — für Routing, Karte und Speichern. */
   const wegpunktOrte = useMemo(() => waypoints.map((w) => w.position), [waypoints])
+  /** Was an ihnen steht — für die Beschriftung auf der Karte. */
+  const wegpunktBeschriftungen = useMemo(
+    () => waypoints.map((w, i) => wegpunktName(w, i, waypoints.length)),
+    [waypoints],
+  )
   // … das Ergebnis des Weg-Routings dazwischen …
   const [routed, setRouted] = useState<RoutedPath | null>(null)
   const [routingBusy, setRoutingBusy] = useState(false)
@@ -513,7 +519,17 @@ export default function App() {
           onChange={setFilters}
           counts={{ zones: allZones.length, points: points.length }}
         />
-        <main className="relative flex-1">
+        {/*
+          Die beiden Klassen sagen den Kartenbedienelementen, wie viel Rand
+          gerade von einem Panel belegt ist (siehe `.karte` in index.css).
+          Ohne sie liegen Massstab, Zoomstufen und Herkunftsangabe unter dem
+          Routenpanel beziehungsweise der Infokarte.
+        */}
+        <main
+          className={`karte relative flex-1
+                      ${routeOpen ? 'karte-panel-links' : ''}
+                      ${selection ? 'karte-panel-rechts' : ''}`}
+        >
           <MapView
             region={region}
             zones={allZones}
@@ -528,6 +544,7 @@ export default function App() {
             visible={view === 'karte'}
             route={routeGeometry}
             waypoints={gpxTrack ? [] : wegpunktOrte}
+            waypointLabels={gpxTrack ? [] : wegpunktBeschriftungen}
             kameraZiel={kameraZiel}
             drawing={drawing}
             markieren={markieren}
@@ -577,10 +594,23 @@ export default function App() {
           />
           {routeOpen ? (
             <RoutePanel
+              /*
+                Auf dem Telefon sind Routenpanel und Infokarte beide Blätter
+                von unten. Standen beide offen, lagen sie deckungsgleich
+                übereinander und man bediente blind das obere. Solange etwas
+                ausgewählt ist, tritt das Routenpanel dort zurück; es bleibt
+                offen und kommt beim Schliessen der Infokarte wieder.
+              */
+              verdeckt={selection != null}
               route={routeGeometry}
               waypoints={gpxTrack ? [] : waypoints}
               waypointCount={gpxTrack ? 0 : waypoints.length}
               onRemoveWaypoint={(index) => setWaypoints((w) => w.filter((_, i) => i !== index))}
+              onMoveWaypointTo={(von, nach) => setWaypoints((w) => verschieben(w, von, nach))}
+              onReverseWaypoints={() => setWaypoints((w) => umkehren(w))}
+              onRenameWaypoint={(index, name) =>
+                setWaypoints((w) => w.map((p, i) => (i === index ? { ...p, name: name.trim() || undefined } : p)))
+              }
               routed={routed}
               routingBusy={routingBusy}
               stats={wanderStats}

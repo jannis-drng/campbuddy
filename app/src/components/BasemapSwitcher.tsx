@@ -18,10 +18,17 @@ export function BasemapSwitcher({ region, value, onChange }: Props) {
     <div
       role="group"
       aria-label="Hintergrundkarte"
-      // Auf dem Telefon unten rechts: oben teilt sich der Platz mit der
-      // Rechtslage-Pille, und 375 px reichen nicht für beides.
-      className="absolute bottom-20 right-3 z-10 flex overflow-hidden rounded-mittel border
+      /*
+        Auf dem Telefon unten rechts: oben teilt sich der Platz mit der
+        Rechtslage-Pille, und 375 px reichen nicht für beides. Ab Tablet oben
+        rechts — die Zoomstufen von MapLibre rücken dafür nach unten (siehe
+        `.maplibregl-ctrl-top-right` in index.css). Weicht wie die Legende
+        einer offenen Infokarte aus.
+      */
+      style={{ right: 'calc(var(--karte-rechts, 0px) + 0.75rem)' }}
+      className="absolute bottom-20 z-10 flex overflow-hidden rounded-mittel border
                  border-kante bg-flaeche-2/92 shadow-[var(--shadow-2)] backdrop-blur-md
+                 transition-[right] duration-200 ease-[var(--ease-heraus)]
                  sm:bottom-auto sm:top-3"
     >
       {optionen.map((b, i) => (

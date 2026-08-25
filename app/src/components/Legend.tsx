@@ -79,9 +79,22 @@ export function Legend({ activity }: { activity: ActivityMode }) {
   const [offen, setOffen] = useState(true)
 
   return (
-    <div className="pointer-events-auto absolute bottom-9 right-3 z-10 hidden max-h-[70vh] w-48 overflow-y-auto
-                    rounded-gross border border-kante bg-flaeche-2/92 shadow-[var(--shadow-3)]
-                    backdrop-blur-md sm:block">
+    /*
+      Rechts unten, aber oberhalb der Herkunftsangabe (ⓘ, 24 px plus Rand) und
+      links neben einer offenen Infokarte — deren Breite steht in
+      `--karte-rechts`. Vorher lag beides übereinander: die Legende verdeckte
+      die Herkunft, und sobald die Infokarte aufging, verschwand die Legende
+      unter ihr.
+
+      Die Höhe begrenzt der Kartenbereich, nicht das Fenster: `vh` rechnet
+      Kopfzeile, Haftungsstreifen und Filterleiste nicht mit.
+    */
+    <div
+      style={{ right: 'calc(var(--karte-rechts, 0px) + 0.75rem)' }}
+      className="pointer-events-auto absolute bottom-11 z-10 hidden max-h-[calc(100%-7rem)] w-48
+                 overflow-y-auto rounded-gross border border-kante bg-flaeche-2/92
+                 shadow-[var(--shadow-3)] backdrop-blur-md transition-[right] duration-200
+                 ease-[var(--ease-heraus)] sm:block">
       <button
         onClick={() => setOffen((v) => !v)}
         aria-expanded={offen}

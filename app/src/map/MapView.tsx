@@ -65,6 +65,15 @@ interface Props {
   /** Die vom Nutzer gesetzten Wegpunkte — nur diese bekommen einen Griff. */
   waypoints: Position[]
   /**
+   * Was an den Wegpunkten steht, in derselben Reihenfolge.
+   *
+   * Getrennt von den Koordinaten, weil das Ziehen auf der Karte mit reinen
+   * Positionen rechnet — ein Vorschaubild beim Ziehen soll keine Namen
+   * mitschleppen müssen. Fehlt ein Eintrag, beschriftet die Karte wie bisher
+   * mit Start, Ziel und Nummer.
+   */
+  waypointLabels?: string[]
+  /**
    * Ausschnitt, auf den die Karte springen soll — gesetzt, wenn eine
    * gespeicherte oder geteilte Tour geöffnet wird.
    *
@@ -103,15 +112,15 @@ interface Props {
 
 export function MapView({
   region, zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, basemap, visible,
-  route, waypoints, kameraZiel, drawing, markieren,
+  route, waypoints, waypointLabels, kameraZiel, drawing, markieren,
   onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MlMap | null>(null)
   const ready = useRef(false)
-  const routeRef = useRef({ route, waypoints })
-  routeRef.current = { route, waypoints }
+  const routeRef = useRef({ route, waypoints, waypointLabels })
+  routeRef.current = { route, waypoints, waypointLabels }
 
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
@@ -150,11 +159,36 @@ export function MapView({
     map.current = m
     if (import.meta.env.DEV) (window as unknown as { __map?: unknown }).__map = m
 
-    m.addControl(new AttributionControl({ compact: true, customAttribution: ATTRIBUTION }))
-    m.addControl(new NavigationControl({ showCompass: false }), 'top-right')
+    /*
+      Die Herkunftsangabe muss dastehen — OpenStreetMap steht unter der ODbL,
+      OpenTopoMap unter CC-BY-SA, beide verlangen die Nennung. Sie muss aber
+      nicht ausgeklappt über der Karte liegen: ausgeschrieben war sie ein
+      Textband quer über die untere Kante, das Legende und Massstab
+      überlagerte.
+
+      `compact` allein genügt dafür nicht. MapLibre baut das Element als
+      `<details open>` und setzt `maplibregl-compact-show` — die Kurzform ist
+      angelegt, startet aber aufgeklappt. Ein Griff danach beim Anlegen macht
+      aus ihr das, was sie sein soll: ein ⓘ, das auf Antippen alles zeigt.
+    */
+    const herkunft = new AttributionControl({ compact: true, customAttribution: ATTRIBUTION })
+    m.addControl(herkunft)
+    const herkunftEl = m.getContainer().querySelector<HTMLDetailsElement>('.maplibregl-ctrl-attrib')
+    if (herkunftEl) {
+      herkunftEl.open = false
+      herkunftEl.classList.remove('maplibregl-compact-show')
+    }
+    /*
+      Zoom und Standort links oben, nicht rechts. Rechts ist die Kante schon
+      dreifach belegt — Kartenwahl oben, Legende unten, Infokarte über die
+      ganze Höhe; die Zoomstufen verschwanden dort zuverlässig hinter der
+      Legende. Links steht ausser dem Routenpanel nichts, und dem weichen sie
+      über `--karte-links` aus.
+    */
+    m.addControl(new NavigationControl({ showCompass: false }), 'top-left')
     m.addControl(
       new GeolocateControl({ trackUserLocation: true, positionOptions: { enableHighAccuracy: true } }),
-      'top-right',
+      'top-left',
     )
     m.addControl(new ScaleControl({ unit: 'metric' }), 'bottom-left')
 
@@ -175,7 +209,7 @@ export function MapView({
       ;(m.getSource('gemeinden') as GeoJSONSource | undefined)?.setData(latest.current.gemeinden)
       ;(m.getSource('gemeinden-fern') as GeoJSONSource | undefined)?.setData(latest.current.gemeindenFern)
       ;(m.getSource('route') as GeoJSONSource | undefined)
-        ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
+        ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints, routeRef.current.waypointLabels))
       ready.current = true
     }
 
@@ -238,7 +272,7 @@ export function MapView({
       if (zieht.art === 'verschieben') wp[zieht.index] = position
       else wp.splice(zieht.index, 0, position)
       ;(m.getSource('route') as GeoJSONSource | undefined)
-        ?.setData(routeToGeoJson(routeRef.current.route, wp))
+        ?.setData(routeToGeoJson(routeRef.current.route, wp, routeRef.current.waypointLabels))
       geist(position)
     }
 
@@ -297,7 +331,7 @@ export function MapView({
         // Angefasst, aber nicht bewegt: die Route unverändert lassen und den
         // Vorschau-Zustand zurücknehmen.
         ;(m.getSource('route') as GeoJSONSource | undefined)
-          ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints))
+          ?.setData(routeToGeoJson(routeRef.current.route, routeRef.current.waypoints, routeRef.current.waypointLabels))
         return
       }
       if (aktion.art === 'verschieben') latest.current.onMoveWaypoint(aktion.index, position)
@@ -503,8 +537,9 @@ export function MapView({
   useEffect(() => {
     const m = map.current
     if (!m || !ready.current) return
-    ;(m.getSource('route') as GeoJSONSource | undefined)?.setData(routeToGeoJson(route, waypoints))
-  }, [route, waypoints])
+    ;(m.getSource('route') as GeoJSONSource | undefined)
+      ?.setData(routeToGeoJson(route, waypoints, waypointLabels))
+  }, [route, waypoints, waypointLabels])
 
   /**
    * Auf eine geöffnete Tour springen.
@@ -679,7 +714,19 @@ function peaksToGeoJson(peaks: Peak[]): GeoJSON.FeatureCollection {
   }
 }
 
-function routeToGeoJson(route: Position[], waypoints: Position[]): GeoJSON.FeatureCollection {
+/**
+ * Ab wann ein Stopp sichtbar neben dem Weg liegt.
+ *
+ * Darunter ist der Abstand Rundungsrauschen des Routers und eine
+ * Anschlusslinie wäre ein Strich von null Länge. Darüber ist er eine echte
+ * Auskunft: die Hütte steht fünfzig Meter oberhalb des Wegs, und diese fünfzig
+ * Meter gehen zu Fuss über die Wiese — kein erfasster Pfad führt hin.
+ */
+const ANSCHLUSS_AB_M = 20
+
+function routeToGeoJson(
+  route: Position[], waypoints: Position[], labels?: string[],
+): GeoJSON.FeatureCollection {
   // Nur die gesetzten Wegpunkte bekommen einen Griff — eine gerasterte Route
   // hat hunderte Stützpunkte, die niemand als Punkte sehen will.
   const features: GeoJSON.Feature[] = waypoints.map((p, i) => ({
@@ -687,8 +734,9 @@ function routeToGeoJson(route: Position[], waypoints: Position[]): GeoJSON.Featu
     properties: {
       index: i,
       rolle: i === 0 ? 'start' : i === waypoints.length - 1 ? 'ziel' : 'zwischen',
-      // Start und Ziel tragen ihren Namen, Zwischenstopps ihre Nummer.
-      beschriftung: i === 0 ? 'Start' : i === waypoints.length - 1 ? 'Ziel' : String(i),
+      // Der eigene Name schlägt die Rolle; ohne ihn Start, Ziel oder Nummer.
+      beschriftung: labels?.[i]
+        ?? (i === 0 ? 'Start' : i === waypoints.length - 1 ? 'Ziel' : String(i)),
     },
     geometry: { type: 'Point', coordinates: p },
   }))
@@ -698,6 +746,25 @@ function routeToGeoJson(route: Position[], waypoints: Position[]): GeoJSON.Featu
       properties: {},
       geometry: { type: 'LineString', coordinates: route },
     })
+
+    /*
+      Anschlusslinien: der Weg vom Weg zum Punkt.
+
+      Ein Stopp, den der Router auf den nächsten erfassten Weg zieht, lag
+      vorher stumm neben der Linie — die Route führte scheinbar daran vorbei,
+      und niemand konnte sehen, dass die letzten hundert Meter querfeldein
+      gehen. Die gestrichelte Gerade sagt genau das: hier ist kein Weg
+      erfasst, hier gehst du selbst hin.
+    */
+    for (const [i, p] of waypoints.entries()) {
+      const anschluss = naechsterPunktAufLinie(p, route)
+      if (!anschluss || anschluss.distance_m < ANSCHLUSS_AB_M) continue
+      features.push({
+        type: 'Feature',
+        properties: { index: i, anschluss: true },
+        geometry: { type: 'LineString', coordinates: [anschluss.position, p] },
+      })
+    }
   }
   return { type: 'FeatureCollection', features }
 }
@@ -1125,7 +1192,7 @@ function addLayers(m: MlMap) {
     id: 'route-casing',
     type: 'line',
     source: 'route',
-    filter: ['==', ['geometry-type'], 'LineString'],
+    filter: ['all', ['==', ['geometry-type'], 'LineString'], ['!', ['has', 'anschluss']]],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': '#0f172a', 'line-width': 7, 'line-opacity': 0.5 },
   })
@@ -1133,7 +1200,7 @@ function addLayers(m: MlMap) {
     id: 'route-line',
     type: 'line',
     source: 'route',
-    filter: ['==', ['geometry-type'], 'LineString'],
+    filter: ['all', ['==', ['geometry-type'], 'LineString'], ['!', ['has', 'anschluss']]],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: {
       'line-color': '#f8fafc',
@@ -1147,9 +1214,41 @@ function addLayers(m: MlMap) {
     id: 'route-treffer',
     type: 'line',
     source: 'route',
-    filter: ['==', ['geometry-type'], 'LineString'],
+    filter: ['all', ['==', ['geometry-type'], 'LineString'], ['!', ['has', 'anschluss']]],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': '#000000', 'line-opacity': 0, 'line-width': 22 },
+  })
+  /*
+    Die letzten Meter zum Punkt.
+
+    Gestrichelt und dünner als die Route, weil sie etwas anderes ist: kein
+    erfasster Weg, sondern die Luftlinie dorthin. Wer sie sieht, weiss, dass er
+    diesen Abschnitt selbst findet — und wie weit er ist.
+  */
+  m.addLayer({
+    id: 'route-anschluss-casing',
+    type: 'line',
+    source: 'route',
+    filter: ['all', ['==', ['geometry-type'], 'LineString'], ['has', 'anschluss']],
+    layout: { 'line-cap': 'round' },
+    paint: {
+      'line-color': '#0f172a',
+      'line-width': 4.5,
+      'line-opacity': 0.45,
+      'line-dasharray': [1, 1.6],
+    },
+  })
+  m.addLayer({
+    id: 'route-anschluss',
+    type: 'line',
+    source: 'route',
+    filter: ['all', ['==', ['geometry-type'], 'LineString'], ['has', 'anschluss']],
+    layout: { 'line-cap': 'round' },
+    paint: {
+      'line-color': '#f8fafc',
+      'line-width': 2,
+      'line-dasharray': [1, 1.8],
+    },
   })
   m.addLayer({
     id: 'route-griff',

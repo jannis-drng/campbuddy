@@ -296,6 +296,13 @@ export type WegpunktArt = 'hut' | 'campsite' | 'vehicle_spot' | 'peak' | 'wasser
 export interface Wegpunkt {
   position: Position
   ort?: { name: string; art: WegpunktArt }
+  /**
+   * Selbst vergebener Name, zum Beispiel „Schlafplatz" oder „Wasser holen".
+   *
+   * Schlägt den Namen des übernommenen Ortes: wer eine Hütte antippt und sie
+   * „Nacht 2" nennt, meint das auch so. Siehe `data/wegpunkte.ts`.
+   */
+  name?: string
 }
 
 /**

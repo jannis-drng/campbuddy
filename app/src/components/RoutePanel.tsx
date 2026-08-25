@@ -10,15 +10,16 @@
  * primäre Aktion, Rückgängig und Löschen liegen daneben, Import und Export
  * als leiseste Stufe darunter.
  */
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
-  ArrowRight, Bike, Building2, Camera, Car, Droplet, Eye, Flag, Footprints, MapPin,
-  MountainSnow, MousePointerClick, Pencil, PencilOff, Star, Tent, Trash2, TriangleAlert, Truck,
-  Undo2, Upload, X,
+  ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, Bike, Building2, Camera, Car, Check, Droplet,
+  Eye, Flag, Footprints, MapPin, MountainSnow, MousePointerClick, Pencil, PencilOff, Star,
+  Tag, Tent, Trash2, TriangleAlert, Truck, Undo2, Upload, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { lineLength, type Position } from '../data/geo'
 import type { Wegpunkt, WegpunktArt } from '../data/types'
+import { rolleVon, wegpunktName } from '../data/wegpunkte'
 
 /** Symbol je Art des uebernommenen Ortes — dieselben wie auf der Karte. */
 const WEGPUNKT_ICON: Record<WegpunktArt, LucideIcon> = {
@@ -52,12 +53,24 @@ interface Props {
   onUndo: () => void
   onClear: () => void
   onRemoveWaypoint: (index: number) => void
+  /** Einen Stopp an eine andere Stelle der Reihenfolge setzen. */
+  onMoveWaypointTo: (von: number, nach: number) => void
+  /** Aus Start wird Ziel — dieselbe Strecke andersherum. */
+  onReverseWaypoints: () => void
+  /** Freier Name für einen Stopp; leer setzt ihn zurück. */
+  onRenameWaypoint: (index: number, name: string) => void
   onImportGpx: (file: File) => void
   onAuswerten: () => void
   onClose: () => void
   /** Markiermodus für eigene Punkte und Fotos — null, wenn kein Konto da ist. */
   markieren: boolean
   onToggleMarkieren: (() => void) | null
+  /**
+   * Auf dem Telefon liegt die Infokarte an derselben Stelle. Statt beide
+   * Blätter übereinanderzustapeln, tritt dieses zurück, solange etwas
+   * ausgewählt ist — offen bleibt es trotzdem.
+   */
+  verdeckt?: boolean
 }
 
 const formatKm = (m: number) =>
@@ -67,8 +80,9 @@ const PROFILE_ICONS = { foot: Footprints, bike: Bike, car: Car } as const
 
 export function RoutePanel({
   route, waypoints, waypointCount, routed, routingBusy, profile, isImported,
-  stats, hoehenBusy, drawing, error, markieren,
+  stats, hoehenBusy, drawing, error, markieren, verdeckt = false,
   onProfileChange, onToggleDrawing, onUndo, onClear, onRemoveWaypoint,
+  onMoveWaypointTo, onReverseWaypoints, onRenameWaypoint,
   onImportGpx, onAuswerten, onClose, onToggleMarkieren,
 }: Props) {
   const fileInput = useRef<HTMLInputElement>(null)
@@ -99,10 +113,10 @@ export function RoutePanel({
         aus dem Bild. Im Normalfall greift es nie, weil der innere Bereich
         vorher nachgibt.
       */
-      className="absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col overflow-y-auto rounded-t-riesig border
+      className={`absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col overflow-y-auto rounded-t-riesig border
                  border-kante bg-flaeche-2/97 shadow-[var(--shadow-4)] backdrop-blur-md
                  sm:inset-y-0 sm:right-auto sm:left-0 sm:max-h-none sm:w-[23rem]
-                 sm:rounded-none sm:rounded-r-gross"
+                 sm:rounded-none sm:rounded-r-gross ${verdeckt ? 'hidden sm:flex' : ''}`}
       aria-label="Route"
     >
       <header className="flex shrink-0 items-start justify-between gap-3 border-b border-kante px-5 py-4">
@@ -182,7 +196,7 @@ export function RoutePanel({
         {/* ---- Zustände ---- */}
         {drawing && (
           <Hinweis ton="info" icon={MousePointerClick}>
-            <strong className="font-semibold">Tippen</strong> hängt hinten einen Wegpunkt an ·{' '}
+            <strong className="font-semibold">Tippen</strong> hängt hinten einen Stopp an ·{' '}
             <strong className="font-semibold">Punkt ziehen</strong> verschiebt ihn ·{' '}
             <strong className="font-semibold">Linie ziehen</strong> baut an dieser Stelle einen
             Umweg ein. Dazwischen wird auf reale Wege geroutet.
@@ -203,79 +217,55 @@ export function RoutePanel({
         )}
         {routed?.snapped && routed.snapDistance_m != null && routed.snapDistance_m > SNAP_WARN_M && (
           <Hinweis ton="warnung" icon={TriangleAlert}>
-            Ein Wegpunkt wurde {formatKm(routed.snapDistance_m)} auf den nächsten erfassten Weg
+            Ein Stopp wurde {formatKm(routed.snapDistance_m)} auf den nächsten erfassten Weg
             verschoben. Die Auswertung gilt für die verschobene Strecke.
           </Hinweis>
         )}
         {routed && !routed.snapped && waypointCount >= 2 && (
           <Hinweis ton="warnung" icon={TriangleAlert}>
-            Kein Weg-Routing möglich ({routed.fallbackReason}). Die Wegpunkte sind nur gerade
+            Kein Weg-Routing möglich ({routed.fallbackReason}). Die Stopps sind nur gerade
             verbunden — Länge und Auswertung sind dadurch ungenau.
           </Hinweis>
         )}
         {error && <Hinweis ton="fehler" icon={TriangleAlert}>{error}</Hinweis>}
 
-        {/* ---- Wegpunkte ---- */}
+        {/* ---- Stopps ---- */}
         {waypoints.length > 0 && (
           <section>
-            <Label className="mb-1.5">Wegpunkte ({waypoints.length})</Label>
+            <div className="mb-1.5 flex items-center justify-between gap-2">
+              <Label>Stopps ({waypoints.length})</Label>
+              {waypoints.length >= 2 && (
+                <button
+                  onClick={onReverseWaypoints}
+                  className="flex items-center gap-1 rounded-klein px-1.5 py-0.5 text-mikro
+                             font-medium normal-case tracking-normal text-ink-400 transition-colors
+                             duration-[160ms] hover:bg-flaeche-3 hover:text-ink-100"
+                >
+                  <ArrowUpDown size={12} strokeWidth={2.25} aria-hidden />
+                  Richtung umkehren
+                </button>
+              )}
+            </div>
             <ul className="divide-y divide-kante overflow-hidden rounded-mittel border border-kante bg-flaeche-1">
-              {waypoints.map((w, i) => {
-                const start = i === 0
-                const ziel = i === waypoints.length - 1
-                const rolle = start ? 'Start' : ziel ? 'Ziel' : `Zwischenstopp ${i}`
-                const Symbol = start ? MapPin : ziel ? Flag : null
-                const OrtIcon = w.ort ? WEGPUNKT_ICON[w.ort.art] : null
-                return (
-                  <li key={i} className="group flex items-center gap-2.5 px-2.5 py-2">
-                    {Symbol ? (
-                      <Symbol
-                        size={14} strokeWidth={2.25} aria-hidden
-                        className={start ? 'text-erlaubt-400' : 'text-verboten-400'}
-                      />
-                    ) : (
-                      <span className="flex h-4 w-4 items-center justify-center rounded-full border
-                                       border-ink-500 text-mikro font-semibold tracking-normal
-                                       text-ink-400" aria-hidden>
-                        {i}
-                      </span>
-                    )}
-                    {/*
-                      Hat der Wegpunkt einen Namen, steht er vorn und die Rolle
-                      dahinter: „Cabane de Moiry · Start" liest sich als Ort,
-                      „Start · Cabane de Moiry" als Formularfeld.
-                    */}
-                    <span className="flex min-w-0 flex-1 items-center gap-1.5">
-                      {OrtIcon && (
-                        <OrtIcon size={12} strokeWidth={2} className="shrink-0 text-ink-500" aria-hidden />
-                      )}
-                      <span className="min-w-0 truncate text-klein text-ink-200">
-                        {w.ort ? w.ort.name : rolle}
-                      </span>
-                      {w.ort && (
-                        <span className="shrink-0 text-mikro normal-case tracking-normal text-ink-600">
-                          {rolle}
-                        </span>
-                      )}
-                    </span>
-                    <button
-                      onClick={() => onRemoveWaypoint(i)}
-                      aria-label={`${rolle} entfernen`}
-                      className="shrink-0 rounded-klein p-1 text-ink-600 opacity-0 transition-all
-                                 duration-[160ms] hover:bg-verboten-500/12 hover:text-verboten-400
-                                 focus-visible:opacity-100 group-hover:opacity-100"
-                    >
-                      <X size={13} strokeWidth={2.5} aria-hidden />
-                    </button>
-                  </li>
-                )
-              })}
+              {waypoints.map((w, i) => (
+                <StoppZeile
+                  key={i}
+                  wegpunkt={w}
+                  index={i}
+                  anzahl={waypoints.length}
+                  onHoch={() => onMoveWaypointTo(i, i - 1)}
+                  onRunter={() => onMoveWaypointTo(i, i + 1)}
+                  onUmbenennen={(name) => onRenameWaypoint(i, name)}
+                  onEntfernen={() => onRemoveWaypoint(i)}
+                />
+              ))}
             </ul>
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
               Ein Tippen auf eine Hütte, einen Gipfel, eine Quelle oder eine eigene Markierung
-              übernimmt sie als Wegpunkt — mit Namen. Wegpunkte lassen sich auf der Karte
-              verschieben, Rechtsklick entfernt sie. Um einen Umweg einzubauen, die Linie an
-              der gewünschten Stelle anfassen und ziehen.
+              übernimmt sie als Stopp — mit Namen. Über das Schild lässt sich jeder Stopp frei
+              benennen („Schlafplatz", „Mittag"), mit den Pfeilen umsortieren. Auf der Karte
+              lassen sie sich verschieben, Rechtsklick entfernt sie; für einen Umweg die Linie
+              an der gewünschten Stelle anfassen und ziehen.
             </p>
           </section>
         )}
@@ -318,5 +308,137 @@ export function RoutePanel({
         </div>
       )}
     </aside>
+  )
+}
+
+/* ---------------------------------------------------------------- Stopps */
+
+/**
+ * Eine Zeile der Stopp-Liste.
+ *
+ * Zwei Dinge, die vorher fehlten und ohne die eine Mehrtagestour nicht zu
+ * planen war: die Reihenfolge ändern und einem Punkt einen eigenen Namen
+ * geben. Beides direkt in der Zeile — ein Dialog für „heisst jetzt
+ * Schlafplatz" wäre mehr Weg als Nutzen.
+ *
+ * Die Knöpfe sind auf dem Telefon immer sichtbar und werden am Zeiger erst
+ * beim Überfahren deutlich: mit dem Finger gibt es kein Überfahren, und ein
+ * Knopf, den man nicht sieht, existiert dort nicht.
+ */
+function StoppZeile({
+  wegpunkt, index, anzahl, onHoch, onRunter, onUmbenennen, onEntfernen,
+}: {
+  wegpunkt: Wegpunkt
+  index: number
+  anzahl: number
+  onHoch: () => void
+  onRunter: () => void
+  onUmbenennen: (name: string) => void
+  onEntfernen: () => void
+}) {
+  const [bearbeitet, setBearbeitet] = useState(false)
+  const [entwurf, setEntwurf] = useState('')
+  const feld = useRef<HTMLInputElement>(null)
+
+  useEffect(() => { if (bearbeitet) feld.current?.select() }, [bearbeitet])
+
+  const start = index === 0
+  const ziel = index === anzahl - 1
+  const rolle = rolleVon(index, anzahl)
+  const titel = wegpunktName(wegpunkt, index, anzahl)
+  const Symbol = start ? MapPin : ziel ? Flag : null
+  const OrtIcon = wegpunkt.ort ? WEGPUNKT_ICON[wegpunkt.ort.art] : null
+
+  const uebernehmen = () => { onUmbenennen(entwurf); setBearbeitet(false) }
+
+  if (bearbeitet) {
+    return (
+      <li className="flex items-center gap-1.5 px-2.5 py-2">
+        <input
+          ref={feld}
+          value={entwurf}
+          onChange={(e) => setEntwurf(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') uebernehmen()
+            if (e.key === 'Escape') setBearbeitet(false)
+          }}
+          maxLength={60}
+          placeholder={wegpunkt.ort?.name ?? rolle}
+          aria-label={`Name für ${rolle}`}
+          className="h-8 min-w-0 flex-1 rounded-klein border border-gletscher-500 bg-flaeche-2 px-2
+                     text-klein text-ink-100 placeholder:text-ink-600 focus:outline-none
+                     focus:ring-2 focus:ring-gletscher-500/25"
+        />
+        <IconButton icon={Check} groesse="klein" label="Namen übernehmen" onClick={uebernehmen} />
+        <IconButton icon={X} groesse="klein" label="Abbrechen" onClick={() => setBearbeitet(false)} />
+      </li>
+    )
+  }
+
+  return (
+    <li className="group flex items-center gap-2 px-2.5 py-1.5">
+      {Symbol ? (
+        <Symbol
+          size={14} strokeWidth={2.25} aria-hidden
+          className={`shrink-0 ${start ? 'text-erlaubt-400' : 'text-verboten-400'}`}
+        />
+      ) : (
+        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border
+                         border-ink-500 text-mikro font-semibold tracking-normal
+                         text-ink-400" aria-hidden>
+          {index}
+        </span>
+      )}
+
+      {/*
+        Hat der Stopp einen Namen, steht er vorn und die Rolle dahinter:
+        „Cabane de Moiry · Start" liest sich als Ort, „Start · Cabane de
+        Moiry" als Formularfeld.
+      */}
+      <span className="flex min-w-0 flex-1 items-center gap-1.5">
+        {OrtIcon && !wegpunkt.name && (
+          <OrtIcon size={12} strokeWidth={2} className="shrink-0 text-ink-500" aria-hidden />
+        )}
+        <span className="min-w-0 truncate text-klein text-ink-200">{titel}</span>
+        {titel !== rolle && (
+          <span className="shrink-0 text-mikro normal-case tracking-normal text-ink-600">{rolle}</span>
+        )}
+      </span>
+
+      <div className="flex shrink-0 items-center opacity-100 transition-opacity duration-[160ms]
+                      sm:opacity-0 sm:focus-within:opacity-100 sm:group-hover:opacity-100">
+        <ZeilenKnopf icon={ArrowUp} label={`${rolle} nach oben`} onClick={onHoch} disabled={index === 0} />
+        <ZeilenKnopf icon={ArrowDown} label={`${rolle} nach unten`} onClick={onRunter}
+                     disabled={index === anzahl - 1} />
+        <ZeilenKnopf
+          icon={Tag}
+          label={`${rolle} benennen`}
+          onClick={() => { setEntwurf(wegpunkt.name ?? ''); setBearbeitet(true) }}
+        />
+        <ZeilenKnopf icon={X} label={`${rolle} entfernen`} onClick={onEntfernen} gefahr />
+      </div>
+    </li>
+  )
+}
+
+function ZeilenKnopf({
+  icon: Icon, label, onClick, disabled, gefahr,
+}: {
+  icon: LucideIcon; label: string; onClick: () => void; disabled?: boolean; gefahr?: boolean
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      title={label}
+      className={`rounded-klein p-1 text-ink-500 transition-colors duration-[160ms]
+                  disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-ink-500
+                  ${gefahr
+                    ? 'hover:bg-verboten-500/12 hover:text-verboten-400'
+                    : 'hover:bg-flaeche-3 hover:text-ink-100'}`}
+    >
+      <Icon size={13} strokeWidth={2.5} aria-hidden />
+    </button>
   )
 }

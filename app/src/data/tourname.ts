@@ -125,7 +125,9 @@ function ortAm(daten: TournameDaten, index: number): string | null {
 
   const amAnfang = index === 0
   const wegpunkt = amAnfang ? wegpunkte[0] : wegpunkte[wegpunkte.length - 1]
-  if (wegpunkt?.ort) return wegpunkt.ort.name
+  // Der selbst vergebene Name geht vor: er ist die jüngste Entscheidung.
+  const eigener = wegpunkt?.name?.trim() || wegpunkt?.ort?.name
+  if (eigener) return eigener
 
   const stelle = route[index]
   if (!stelle) return null

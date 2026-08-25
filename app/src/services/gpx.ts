@@ -84,11 +84,15 @@ const escapeXml = (s: string) =>
 export function toGpx(points: Position[], name = 'CampBuddy-Route', wegpunkte: Wegpunkt[] = []): string {
   const escaped = escapeXml(name)
   const seg = points.map(([lng, lat]) => `      <trkpt lat="${lat}" lon="${lng}" />`).join('\n')
+  // Ein selbst vergebener Name zählt genauso wie der eines übernommenen Ortes:
+  // wer eine Stelle „Schlafplatz" genannt hat, will sie auf dem Gerät
+  // wiederfinden. Ohne Symbol im Datensatz nimmt sie die blaue Fahne.
   const wpts = wegpunkte
-    .filter((w) => w.ort)
-    .map((w) => `  <wpt lat="${w.position[1]}" lon="${w.position[0]}">
-    <name>${escapeXml(w.ort!.name)}</name>
-    <sym>${WEGPUNKT_SYMBOL[w.ort!.art]}</sym>
+    .map((w) => ({ w, name: w.name?.trim() || w.ort?.name }))
+    .filter((e): e is { w: Wegpunkt; name: string } => Boolean(e.name))
+    .map(({ w, name }) => `  <wpt lat="${w.position[1]}" lon="${w.position[0]}">
+    <name>${escapeXml(name)}</name>
+    <sym>${WEGPUNKT_SYMBOL[w.ort?.art ?? 'eigen']}</sym>
   </wpt>`)
     .join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>

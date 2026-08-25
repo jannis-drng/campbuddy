@@ -194,14 +194,63 @@ h1, h2, h3 { font-variant-numeric: normal; }
 .maplibregl-ctrl-group button span { filter: invert(1) opacity(0.75); }
 .maplibregl-ctrl-attrib {
   font-size: 10px;
-  background: color-mix(in srgb, var(--color-flaeche-1) 82%, transparent) !important;
+  background: color-mix(in srgb, var(--color-flaeche-1) 88%, transparent) !important;
   border-radius: var(--radius-klein) !important;
+  color: var(--color-ink-400) !important;
 }
 .maplibregl-ctrl-attrib a { color: var(--color-ink-400) !important; }
+/* Das ⓘ ist von MapLibre schwarz auf hell — auf dunklem Grund unsichtbar. */
+.maplibregl-ctrl-attrib-button { filter: invert(1) opacity(0.65); }
+.maplibregl-ctrl-attrib-button:hover { filter: invert(1) opacity(0.9); }
 .maplibregl-ctrl-scale {
   background: color-mix(in srgb, var(--color-flaeche-1) 82%, transparent) !important;
   border-color: var(--color-kante) !important;
   color: var(--color-ink-300) !important;
   border-radius: var(--radius-klein);
   font-size: 10px;
+}
+
+/*
+  Wo die Kartenbedienelemente stehen dürfen.
+
+  Über der Karte liegen bis zu vier eigene Flächen: das Routenpanel links, die
+  Infokarte rechts, der Knopf „Route planen" unten links und die Legende unten
+  rechts. MapLibre kennt keine davon und legt seine Elemente stur in die Ecken
+  — Massstab unter den Knopf, Zoomstufen unter die Kartenwahl, Herkunft unter
+  die Legende. Die beiden Variablen sagen ihm, wie viel Rand belegt ist; die
+  Panels setzen sie, wenn sie sich öffnen (siehe App.tsx).
+*/
+.karte {
+  --karte-links: 0px;
+  --karte-rechts: 0px;
+}
+/*
+  Doppelte Klasse mit Absicht: `maplibre-gl.css` wird erst mit der
+  Kartenkomponente nachgeladen und steht damit *nach* dieser Datei im
+  Dokument. Bei gleicher Gewichtung gewinnt das spätere Blatt — ein einfaches
+  `.maplibregl-ctrl-top-left` wäre wirkungslos geblieben.
+*/
+.karte .maplibregl-ctrl-bottom-left,
+.karte .maplibregl-ctrl-top-left {
+  left: var(--karte-links);
+  transition: left 200ms var(--ease-heraus);
+}
+/* Platz für „Route planen"; ohne ihn liegt der Massstab hinter dem Knopf. */
+.karte .maplibregl-ctrl-bottom-left { padding-bottom: 3.75rem; }
+.karte .maplibregl-ctrl-bottom-right,
+.karte .maplibregl-ctrl-top-right {
+  right: var(--karte-rechts);
+  transition: right 200ms var(--ease-heraus);
+}
+/* Ab Tablet sitzt die Kartenwahl oben rechts — die Zoomstufen darunter. */
+@media (min-width: 640px) {
+  .karte .maplibregl-ctrl-top-right { padding-top: 3.25rem; }
+  .karte.karte-panel-links { --karte-links: 23rem; }
+  .karte.karte-panel-rechts { --karte-rechts: 26rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .karte .maplibregl-ctrl-bottom-left,
+  .karte .maplibregl-ctrl-top-left,
+  .karte .maplibregl-ctrl-bottom-right,
+  .karte .maplibregl-ctrl-top-right { transition: none; }
 }
