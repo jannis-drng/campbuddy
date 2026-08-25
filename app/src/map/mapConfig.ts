@@ -57,13 +57,25 @@ export interface Basemap {
   style: StyleSpecification | string
 }
 
-/** Baut einen Style aus einer einzelnen Rasterquelle. */
-function rasterStyle(tiles: string[], attribution: string, maxzoom: number): StyleSpecification {
+/**
+ * Baut einen Style aus einer einzelnen Rasterquelle.
+ *
+ * `bounds` ist optional und meint die Fläche, die der Kachelserver überhaupt
+ * kennt. Ohne die Angabe fragt MapLibre den gesamten sichtbaren Ausschnitt an —
+ * bei einer Landeskarte also auch Kacheln über Frankreich oder Ungarn, die es
+ * dort nie gab.
+ */
+function rasterStyle(
+  tiles: string[],
+  attribution: string,
+  maxzoom: number,
+  bounds?: [number, number, number, number],
+): StyleSpecification {
   return {
     version: 8,
     glyphs: GLYPHS,
     sources: {
-      base: { type: 'raster', tiles, tileSize: 256, maxzoom, attribution },
+      base: { type: 'raster', tiles, tileSize: 256, maxzoom, attribution, ...(bounds ? { bounds } : {}) },
     },
     layers: [
       { id: 'hintergrund', type: 'background', paint: { 'background-color': '#f2efe9' } },
@@ -118,6 +130,18 @@ export const BASEMAPS: Record<BasemapKey, Basemap> = {
       ['https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg'],
       '© <a href="https://www.swisstopo.admin.ch/">swisstopo</a>',
       18,
+      /*
+       * Die Fläche, die swisstopo ausliefert — aus den WMTS-Capabilities des
+       * Layers (WGS84BoundingBox), nicht geschätzt. Sie reicht von Lyon bis
+       * Salzburg, deckt also den Alpenbogen um die Schweiz mit ab.
+       *
+       * Ohne diese Grenze antwortete der Server auf jede Kachel ausserhalb mit
+       * 400, und zwar auf jeder Zoomstufe: beim Herauszoomen auf die Alpen
+       * gingen zweistellig viele Anfragen ins Leere, jede mit einer roten Zeile
+       * in der Konsole. MapLibre fragt Kacheln ausserhalb von `bounds` gar
+       * nicht erst an.
+       */
+      [5.140242, 45.398181, 11.47757, 48.230651],
     ),
   },
   standard: {
