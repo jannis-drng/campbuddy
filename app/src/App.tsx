@@ -31,6 +31,7 @@ import {
   gemeindeAn, gemeindeRecht, gemeindenGeoJSON, ladeGemeindenDetail, ladeGemeindenUebersicht,
 } from './data/gemeinden'
 import { BasemapSwitcher } from './components/BasemapSwitcher'
+import { Marke } from './components/Marke'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
 import { serviceWorkerVorwaermen } from './services/sw'
@@ -466,13 +467,9 @@ export default function App() {
     */
     <div className="flex h-dvh flex-col overflow-hidden bg-flaeche-1 text-ink-100">
       <header className="flex h-14 shrink-0 items-center gap-4 border-b border-kante bg-flaeche-2 px-4">
-        {/* Wortmarke: das Zelt-Dreieck als Form, nicht als Emoji. */}
+        {/* Wortmarke: das Zelt als Form, nicht als Emoji. */}
         <a href="./" className="flex min-w-0 items-center gap-2.5" aria-label="CampBuddy, Startseite">
-          <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden>
-            <path d="M12 3.5 3 20h18L12 3.5Z" fill="none"
-                  stroke="var(--color-gletscher-400)" strokeWidth="1.75" strokeLinejoin="round" />
-            <path d="M12 10.5 17 20H7l5-9.5Z" fill="var(--color-gletscher-400)" opacity="0.28" />
-          </svg>
+          <Marke className="h-7 w-7 shrink-0" />
           <span className="hidden text-ueberschrift font-semibold tracking-tight text-ink-50 sm:block">
             CampBuddy
           </span>

@@ -24,7 +24,8 @@ import { DEFAULT_REGION, REGIONS } from '../data/regions'
 import { Badge, Button, Card, IconButton } from '../ui'
 import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
 import { Einblenden } from './Einblenden'
-import { KartenSchema, Zeltmarke } from './Grafiken'
+import { KartenSchema } from './Grafiken'
+import { Marke } from '../components/Marke'
 import {
   beispielZone, gemeindenGesamt, gipfelGesamt, punkteGesamt, punkteJeArt, zonenGesamt,
 } from './zahlen'
@@ -154,7 +155,7 @@ function Kopfzeile({ onStart }: { onStart: () => void }) {
     <header className="sticky top-0 z-40 border-b border-kante/70 bg-flaeche-1/80 backdrop-blur-lg">
       <div className={`${BREITE} flex h-16 items-center gap-4`}>
         <a href="#inhalt" className="flex shrink-0 items-center gap-2.5" aria-label="CampBuddy, Seitenanfang">
-          <Zeltmarke className="h-7 w-7" />
+          <Marke className="h-8 w-8" />
           <span className="text-ueberschrift font-semibold tracking-tight text-ink-50">CampBuddy</span>
         </a>
 
@@ -866,7 +867,7 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
       <div className={`${BREITE} grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4`}>
         <div>
           <div className="flex items-center gap-2.5">
-            <Zeltmarke className="h-6 w-6" />
+            <Marke className="h-7 w-7" />
             <span className="text-ueberschrift font-semibold tracking-tight text-ink-50">CampBuddy</span>
           </div>
           <p className="mt-3 max-w-xs text-klein leading-relaxed text-ink-400">

@@ -57,6 +57,9 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   **Nicht Gemeinden einzeln einstufen, sondern Formulierungen** — viele Gemeinden nutzen
   wortgleiche Musterreglemente. Quelle ist immer das Reglement der jeweiligen Gemeinde.
 - `npm run deploy --prefix app` — baut und veröffentlicht auf GitHub Pages.
+- `npm run icons --prefix app` — App-Icon und Favicons aus der Bildmarke erzeugen.
+  Die Marke liegt zweimal: als Komponente in `app/src/components/Marke.tsx` (Oberfläche)
+  und als Geometrie in `scripts/icons-bauen.mjs` (Dateien). Wer eine ändert, ändert beide.
 - `node scripts/vorschau-kopfzeilen.mjs` — den Build mit den echten HTTP-Kopfzeilen
   ansehen (`vite preview` ignoriert `_headers`). Pflichtschritt, bevor eine Änderung
   an der Content-Security-Policy live geht: ein Verstoss zeigt sich nur so.

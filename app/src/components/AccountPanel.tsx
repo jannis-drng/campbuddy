@@ -34,6 +34,7 @@ import {
   NAME_MAX, NAME_MIN, UMBENENNEN_SPERRE_TAGE,
   type LinkErgebnis, type NamensUrteil, type Profil,
 } from '../services/account'
+import { Marke } from './Marke'
 
 interface Props {
   session: Session | null
@@ -123,18 +124,14 @@ function LinkMeldung({ ergebnis, onSchliessen }: { ergebnis: LinkErgebnis; onSch
 /* Bausteine, die beide Ansichten teilen                              */
 /* ---------------------------------------------------------------- */
 
-/** Das Zelt-Dreieck der Wortmarke, gross und auf einer erhöhten Fläche. */
-function Zeltmarke() {
+/** Die Bildmarke, gross und auf einer erhöhten Fläche. */
+function Markenfeld() {
   return (
     <span
       aria-hidden
       className="inline-flex h-14 w-14 items-center justify-center rounded-riesig border border-kante bg-flaeche-2 shadow-[var(--shadow-2)]"
     >
-      <svg viewBox="0 0 24 24" className="h-8 w-8">
-        <path d="M12 3.5 3 20h18L12 3.5Z" fill="none"
-              stroke="var(--color-gletscher-400)" strokeWidth="1.75" strokeLinejoin="round" />
-        <path d="M12 10.5 17 20H7l5-9.5Z" fill="var(--color-gletscher-400)" opacity="0.28" />
-      </svg>
+      <Marke className="h-9 w-9" />
     </span>
   )
 }
@@ -458,7 +455,7 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
   return (
     <div className="mx-auto w-full max-w-md px-4 py-10 pb-20 sm:px-6">
       <header className="mb-7 text-center">
-        <Zeltmarke />
+        <Markenfeld />
         <h1 className="mt-4 text-display font-semibold text-ink-50">
           {registrieren ? 'Konto anlegen' : 'Willkommen zurück'}
         </h1>

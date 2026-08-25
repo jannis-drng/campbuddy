@@ -15,7 +15,8 @@
     "prebuild": "npm run snapshot",
     "budget": "node scripts/groessen-budget.mjs",
     "postbuild": "npm run budget",
-    "messen": "node scripts/kaltstart-messen.mjs"
+    "messen": "node scripts/kaltstart-messen.mjs",
+    "icons": "node scripts/icons-bauen.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
