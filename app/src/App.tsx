@@ -34,7 +34,11 @@ import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
 import { serviceWorkerVorwaermen } from './services/sw'
-import { linkErgebnisAuslesen, saveTour, useSession, type LinkErgebnis } from './services/account'
+import {
+  linkErgebnisAuslesen, saveTour, useSession,
+  type GespeicherteEtappe, type LinkErgebnis,
+} from './services/account'
+import type { PackStaende } from './affiliate/packlist'
 import { ORT_UMKREIS_M, type Ortsfilter } from './services/community'
 import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
 import { Auswahl, Button, Segmente } from './ui'
@@ -346,7 +350,12 @@ export default function App() {
     Höhenprofil neu abfragen.
   */
   const handleSaveTour = session
-    ? async (name: string, trip: TripParams) => {
+    ? async (
+        name: string,
+        trip: TripParams,
+        packliste: PackStaende,
+        etappen: GespeicherteEtappe[] | null,
+      ) => {
         await saveTour(
           name, regionCode, routeGeometry, gpxTrack ? [] : wegpunktOrte,
           {
@@ -354,6 +363,10 @@ export default function App() {
             distance_m: routeGeometry.length > 1 ? lineLength(routeGeometry) : null,
             ascent_m: wanderStats?.ascent_m ?? null,
             duration_s: wanderStats?.duration_s ?? null,
+            // Ein leerer Stand ist keine Angabe — dann bleibt die Spalte leer,
+            // statt ein leeres Objekt in jede Zeile zu schreiben.
+            packliste: Object.keys(packliste).length > 0 ? packliste : null,
+            etappen,
           },
         )
       }

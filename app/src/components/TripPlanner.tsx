@@ -1,62 +1,43 @@
 /**
- * Ausrüstungs- und Verpflegungsgenerator mit Wetter (Abschnitte 4.3 und 4.5).
+ * Ausrüstungs-, Verpflegungs- und Wetterteil der Tour-Auswertung
+ * (Abschnitte 4.3 und 4.5).
  *
- * Wird ausschliesslich in die Tour-Auswertung eingebettet — dort liegen die
- * Eckdaten, aus denen die Liste entsteht.
- * Führt Tour-Eckdaten, Wettervorhersage und generierte Packliste zusammen.
- * Die Affiliate-Ebene ist eingebunden, aber weiterhin unangebunden: solange
- * keine Partner-ID konfiguriert ist, steht am Produkt "Kauf-Link bald verfügbar".
+ * Hier wird nur noch gefragt, was die Tour nicht schon weiss.
+ *
+ * Vorher standen fünf Felder nebeneinander — Datum, Tage, Personen,
+ * Schlafhöhe, Jahreszeit — und vier davon waren bereits entschieden: die Tage
+ * stehen in den Etappen, die Schlafhöhe im Höhenprofil, die Jahreszeit im
+ * Startdatum, und ob es eine Hüttentour wird, hat man beim Wählen der
+ * Nachtlager festgelegt. Wer sie trotzdem einzeln setzen musste, konnte sie
+ * auch gegen die eigene Route stellen: „7 Tage" bei einer Etappenplanung über
+ * drei, „Sommer" bei einem Dezembertermin. Abgeleitete Werte stehen jetzt als
+ * Angabe da, nicht als Eingabefeld.
+ *
+ * Übrig bleiben die zwei echten Fragen: wann geht es los, und mit wie vielen.
+ * Dazu die eine, die die Route nicht beantwortet — Biwaksack oder Zelt.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ExternalLink } from 'lucide-react'
+import { CalendarDays, Mountain, Thermometer } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import type { Region, Season, TripParams } from '../data/types'
-import { buildPacklist, formatWeight } from '../affiliate/packlist'
-import { buildAffiliateUrl } from '../affiliate/affiliateConfig'
+import { buildPacklist, formatWeight, type PackStand, type PackStaende } from '../affiliate/packlist'
 import {
   coldestNight, daysFromToday, loadForecast, MAX_FORECAST_DAYS, sliceToTrip, type Forecast,
 } from '../services/weather'
 import { WeatherPanel } from './WeatherPanel'
-
-const SEASONS: { key: Season; label: string }[] = [
-  { key: 'sommer', label: 'Sommer' },
-  { key: 'uebergang', label: 'Übergang' },
-  { key: 'winter', label: 'Winter' },
-]
+import { Packliste } from './Packliste'
+import { Eingabe, Feld, Label } from '../ui'
 
 const SHELTERS: { key: TripParams['shelter']; label: string; hint: string }[] = [
   { key: 'biwak', label: 'Biwak', hint: 'ohne Zelt, nur Biwaksack' },
   { key: 'zelt', label: 'Zelt', hint: 'nur wo erlaubt oder geduldet' },
-  { key: 'huette', label: 'Hütte', hint: 'bewirtschaftete Übernachtung' },
 ]
 
-function defaultTrip(): TripParams {
-  return {
-    start_date: new Date().toISOString().slice(0, 10),
-    days: 3,
-    persons: 2,
-    elevation: 2400,
-    season: seasonForDate(new Date()),
-    shelter: 'biwak',
-  }
-}
+const HUETTE: { key: TripParams['shelter']; label: string; hint: string } =
+  { key: 'huette', label: 'Hütte', hint: 'bewirtschaftete Übernachtung' }
 
-/**
- * Vorbelegung über die Eckdaten legen — aber nur, wo tatsächlich ein Wert steht.
- *
- * `{ ...vorgabe, ...teil }` wirkt harmlos, überschreibt aber auch dann, wenn
- * ein Schlüssel mit dem Wert `undefined` dabei ist. Eine Route ohne Höhenprofil
- * hat so schon die Schlafhöhe geleert; das Feld stand danach leer da und die
- * Tour liess sich nicht mehr speichern.
- */
-function mitVorbelegung(basis: TripParams, teil: Partial<TripParams> | undefined): TripParams {
-  if (!teil) return basis
-  const zusammen = { ...basis }
-  for (const [schluessel, wert] of Object.entries(teil)) {
-    if (wert === undefined || wert === null) continue
-    if (typeof wert === 'number' && !Number.isFinite(wert)) continue
-    ;(zusammen as Record<string, unknown>)[schluessel] = wert
-  }
-  return zusammen
+const SEASON_LABEL: Record<Season, string> = {
+  sommer: 'Sommer', uebergang: 'Übergangszeit', winter: 'Winter',
 }
 
 /** Grobe Zuordnung Monat → Jahreszeit für die Alpen. */
@@ -67,38 +48,62 @@ function seasonForDate(d: Date): Season {
   return 'uebergang'
 }
 
-export function TripPlanner({
-  region, onTripChange, initial,
-}: {
-  region: Region
-  /**
-   * Meldet die Eckdaten nach oben. Gespeichert wird nicht mehr hier: seit
-   * Migration 0016 ist die Tour eine Sache, und sie hat genau einen
-   * Speicherknopf — den der Auswertung.
-   */
-  onTripChange?: (trip: TripParams) => void
-  /**
-   * Vorbelegung aus einer gezeichneten Route: Dauer aus den Etappen, Schlafhöhe
-   * aus dem Höhenprofil. Dadurch passt die Packliste zur konkreten Tour, statt
-   * bei Standardwerten zu beginnen.
-   */
-  initial?: Partial<TripParams>
-}) {
-  const [trip, setTrip] = useState<TripParams>(() => mitVorbelegung(defaultTrip(), initial))
+const heute = () => new Date().toISOString().slice(0, 10)
 
-  // Ändert sich die Route, sollen Dauer und Höhe der Packliste folgen — es sei
-  // denn, der Nutzer hat den Wert inzwischen selbst gesetzt.
-  const initialSchluessel = JSON.stringify(initial ?? {})
-  const letzteVorbelegung = useRef(initialSchluessel)
+export interface Abgeleitet {
+  /** Anzahl Tage — aus den Etappen. */
+  days: number
+  /** Höchste Nacht in Metern — aus dem Höhenprofil. */
+  elevation: number
+  /** Enden alle Nächte an einer Hütte? Dann ist es eine Hüttentour. */
+  huettenTour: boolean
+}
+
+interface Props {
+  region: Region
+  /** Was die Route bereits festlegt. Ändert sie sich, ändert sich das hier mit. */
+  abgeleitet: Abgeleitet
+  /** Meldet die vollständigen Eckdaten nach oben — gespeichert wird eine Ebene höher. */
+  onTripChange?: (trip: TripParams) => void
+  /** Vorbelegung aus einer gespeicherten Tour. */
+  initial?: { start_date?: string | null; persons?: number | null; shelter?: TripParams['shelter'] | null }
+  staende: PackStaende
+  onStand: (id: string, stand: PackStand | null) => void
+}
+
+export function TripPlanner({
+  region, abgeleitet, onTripChange, initial, staende, onStand,
+}: Props) {
+  const [startDatum, setStartDatum] = useState(initial?.start_date || heute())
+  const [personen, setPersonen] = useState(initial?.persons ?? 2)
+  const [shelter, setShelter] = useState<TripParams['shelter']>(
+    initial?.shelter ?? (abgeleitet.huettenTour ? 'huette' : 'biwak'),
+  )
+
+  /*
+    Die Übernachtungsart folgt den gewählten Nachtlagern, bis jemand sie
+    einmal selbst gesetzt hat. Wer alle Nächte auf Hütten legt, will keine
+    Zeltstangen in der Packliste — wer danach ausdrücklich „Biwak" wählt,
+    schon, und dann soll die nächste Etappenänderung ihm das nicht wieder
+    wegnehmen.
+  */
+  const shelterSelbst = useRef(initial?.shelter != null)
   useEffect(() => {
-    if (!initial || initialSchluessel === letzteVorbelegung.current) return
-    letzteVorbelegung.current = initialSchluessel
-    setTrip((t) => mitVorbelegung(t, initial))
-  }, [initial, initialSchluessel])
-  // Die Jahreszeit folgt dem Startdatum, bis sie einmal von Hand gesetzt wurde.
-  // Sonst stünde bei einem Dezember-Termin weiter "Sommer" und die
-  // Temperaturschätzung wäre um Größenordnungen daneben.
-  const [seasonTouched, setSeasonTouched] = useState(false)
+    if (shelterSelbst.current) return
+    setShelter(abgeleitet.huettenTour ? 'huette' : 'biwak')
+  }, [abgeleitet.huettenTour])
+
+  const season = seasonForDate(new Date(startDatum + 'T12:00:00'))
+
+  const trip = useMemo<TripParams>(() => ({
+    start_date: startDatum,
+    days: abgeleitet.days,
+    persons: personen,
+    elevation: abgeleitet.elevation,
+    season,
+    shelter,
+  }), [startDatum, personen, shelter, season, abgeleitet.days, abgeleitet.elevation])
+
   const [fullForecast, setFullForecast] = useState<Forecast | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -140,70 +145,67 @@ export function TripPlanner({
   )
   const packlist = useMemo(() => buildPacklist(trip, nightTemp), [trip, nightTemp])
 
-  const derivedSeason = seasonForDate(new Date(trip.start_date + 'T12:00:00'))
-  useEffect(() => {
-    if (!seasonTouched && derivedSeason !== trip.season) {
-      setTrip((t) => ({ ...t, season: derivedSeason }))
-    }
-  }, [derivedSeason, seasonTouched, trip.season])
-
-
-  const set = <K extends keyof TripParams>(key: K, value: TripParams[K]) =>
-    setTrip((t) => ({ ...t, [key]: value }))
-
   // Die Eckdaten gehören zur Tour, nicht zum Planer. Wer speichert, speichert
   // beides zusammen — deshalb wandern sie bei jeder Änderung nach oben.
   useEffect(() => { onTripChange?.(trip) }, [trip, onTripChange])
 
+  const optionen = abgeleitet.huettenTour ? [HUETTE, ...SHELTERS] : SHELTERS
+
   return (
     <div className="space-y-5">
 
-      {/* ---- Eckdaten ---- */}
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Field label="Start">
-          <input
+      {/* ---- Was die Route offen lässt ---- */}
+      <section className="grid gap-3 sm:grid-cols-2">
+        <Feld label="Start">
+          <Eingabe
             type="date"
-            value={trip.start_date}
-            onChange={(e) => set('start_date', e.target.value)}
-            className=""
+            value={startDatum}
+            onChange={(e) => setStartDatum(e.target.value || heute())}
           />
-        </Field>
-        <Field label="Tage">
-          <input
-            type="number" min={1} max={30} value={trip.days}
-            onChange={(e) => set('days', clamp(Number(e.target.value), 1, 30))}
-            className=""
-          />
-        </Field>
-        <Field label="Personen">
-          <input
-            type="number" min={1} max={12} value={trip.persons}
-            onChange={(e) => set('persons', clamp(Number(e.target.value), 1, 12))}
-            className=""
-          />
-        </Field>
-        <Field label="Schlafhöhe (m)">
-          <input
-            type="number" min={200} max={4000} step={100} value={trip.elevation}
+        </Feld>
+        <Feld label="Personen">
+          <Eingabe
+            type="number" min={1} max={12} value={personen}
             onChange={(e) => {
-              // Ein leeres Feld ergibt NaN. Ungeprüft übernommen stünde später
-              // „NaN m" in der Packliste und beim Speichern nichts in der Höhe.
+              // Ein leeres Feld ergibt NaN; ungeprüft übernommen stünde später
+              // „NaN kcal" in der Verpflegung.
               const zahl = Number(e.target.value)
-              set('elevation', Number.isFinite(zahl) ? clamp(zahl, 200, 4000) : 200)
+              setPersonen(Number.isFinite(zahl) ? Math.min(12, Math.max(1, Math.round(zahl))) : 1)
             }}
-            className=""
           />
-        </Field>
+        </Feld>
       </section>
 
-      <section className="flex flex-wrap gap-x-6 gap-y-3">
-        <Choice
-          label="Jahreszeit"
-          options={SEASONS}
-          value={trip.season}
-          onChange={(v) => { setSeasonTouched(true); set('season', v) }}
-        />
-        <Choice label="Übernachtung" options={SHELTERS} value={trip.shelter} onChange={(v) => set('shelter', v)} />
+      <section>
+        <Label className="mb-1">Übernachtung</Label>
+        <div className="flex flex-wrap gap-1.5">
+          {optionen.map((o) => (
+            <button
+              key={o.key}
+              onClick={() => { shelterSelbst.current = true; setShelter(o.key) }}
+              aria-pressed={shelter === o.key}
+              title={o.hint}
+              className={`min-h-9 rounded-full px-3 py-1.5 text-fliess transition ${
+                shelter === o.key
+                  ? 'bg-gletscher-500/20 text-gletscher-200 ring-1 ring-gletscher-500/40'
+                  : 'bg-flaeche-1 text-ink-400 ring-1 ring-kante hover:bg-flaeche-3'
+              }`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* ---- Was die Route bereits entschieden hat ---- */}
+      <section className="flex flex-wrap gap-x-6 gap-y-2 rounded-mittel bg-flaeche-1 px-3 py-2.5">
+        <Abgelesen icon={CalendarDays} label="Dauer"
+                   wert={`${trip.days} ${trip.days === 1 ? 'Tag' : 'Tage'}`}
+                   woher="aus den Etappen" />
+        <Abgelesen icon={Mountain} label="Höchste Nacht" wert={`${trip.elevation} m`}
+                   woher="aus dem Höhenprofil" />
+        <Abgelesen icon={Thermometer} label="Jahreszeit" wert={SEASON_LABEL[season]}
+                   woher="aus dem Startdatum" />
       </section>
 
       {/* ---- Wetter ---- */}
@@ -234,60 +236,7 @@ export function TripPlanner({
         </p>
       </section>
 
-      {/* ---- Packliste ---- */}
-      <section>
-        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-fliess font-semibold text-ink-200">Packliste</h3>
-          <span className="text-klein text-ink-500">
-            Ausrüstung gesamt ca. {formatWeight(packlist.totalWeight_g)} für {trip.persons}{' '}
-            {trip.persons === 1 ? 'Person' : 'Personen'}
-          </span>
-        </div>
-
-        <div className="space-y-4">
-          {packlist.categories.map(({ category, entries }) => (
-            <div key={category}>
-              <h4 className="mb-1 text-mikro uppercase text-ink-500">{category}</h4>
-              <ul className="divide-y divide-kante rounded-mittel border border-kante">
-                {entries.map(({ item, quantity, weight_g }) => {
-                  const url = buildAffiliateUrl(item.vendor, item.affiliate_url)
-                  return (
-                    <li key={item.id} className="p-3">
-                      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                        <span className="font-medium text-ink-50">
-                          {quantity > 1 && <span className="text-ink-400">{quantity}× </span>}
-                          {item.name}
-                          {item.essential && (
-                            <span className="ml-2 rounded bg-geduldet-500/15 px-1.5 py-0.5 text-mikro text-geduldet-300">
-                              wichtig
-                            </span>
-                          )}
-                        </span>
-                        <span className="shrink-0 text-klein text-ink-500">
-                          {weight_g != null && `${formatWeight(weight_g)} · `}
-                          {item.price_hint ?? '—'}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-klein leading-relaxed text-ink-400">{item.rationale}</p>
-                      {/*
-                        Ohne hinterlegten Händler steht hier nichts. Ein
-                        abgeschaltetes „bald verfügbar" ist für den, der gerade
-                        packt, keine Auskunft — nur ein Blick in die Werkstatt.
-                      */}
-                      {url && (
-                        <a href={url} target="_blank" rel="noreferrer noopener sponsored"
-                           className="mt-1.5 inline-block text-klein text-gletscher-400 hover:underline">
-                          Zum Produkt <ExternalLink size={11} strokeWidth={2.5} className="inline" aria-hidden />
-                        </a>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Packliste packlist={packlist} staende={staende} onStand={onStand} personen={trip.persons} />
 
       {/* ---- Verpflegung ---- */}
       <section>
@@ -315,45 +264,17 @@ export function TripPlanner({
 
 /* ---------------- kleine Bausteine ---------------- */
 
-const clamp = (n: number, min: number, max: number) =>
-  Number.isFinite(n) ? Math.min(Math.max(n, min), max) : min
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+/** Ein Wert, den die Route selbst hergibt — mit der Quelle darunter. */
+function Abgelesen({
+  icon: Icon, label, wert, woher,
+}: { icon: LucideIcon; label: string; wert: string; woher: string }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-mikro uppercase text-ink-500">{label}</span>
-      {children}
-    </label>
-  )
-}
-
-function Choice<T extends string>({
-  label, options, value, onChange,
-}: {
-  label: string
-  options: { key: T; label: string; hint?: string }[]
-  value: T
-  onChange: (v: T) => void
-}) {
-  return (
-    <div>
-      <span className="mb-1 block text-mikro uppercase text-ink-500">{label}</span>
-      <div className="flex flex-wrap gap-1.5">
-        {options.map((o) => (
-          <button
-            key={o.key}
-            onClick={() => onChange(o.key)}
-            aria-pressed={value === o.key}
-            title={o.hint}
-            className={`min-h-9 rounded-full px-3 py-1.5 text-fliess transition ${
-              value === o.key
-                ? 'bg-gletscher-500/20 text-gletscher-200 ring-1 ring-gletscher-500/40'
-                : 'bg-flaeche-1 text-ink-400 ring-1 ring-kante hover:bg-flaeche-3'
-            }`}
-          >
-            {o.label}
-          </button>
-        ))}
+    <div className="flex items-start gap-2">
+      <Icon size={15} strokeWidth={1.9} className="mt-0.5 shrink-0 text-ink-500" aria-hidden />
+      <div>
+        <p className="text-mikro uppercase text-ink-500">{label}</p>
+        <p className="text-fliess font-semibold text-ink-50">{wert}</p>
+        <p className="text-mikro normal-case tracking-normal text-ink-600">{woher}</p>
       </div>
     </div>
   )

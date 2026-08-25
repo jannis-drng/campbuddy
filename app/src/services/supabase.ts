@@ -77,6 +77,12 @@ export interface Tour {
   /* --- Community-Zähler, von Triggern gepflegt (Migration 0016) --- */
   likes_count: number
   kommentare_count: number
+
+  /* --- Rein persönlich, nicht in der öffentlichen View (Migration 0021) --- */
+  /** Stand der Checkliste: Ausrüstungs-ID → habe / brauche / weglassen. */
+  packliste: unknown
+  /** Selbst gewählte Nachtlager. Null = automatischer Etappenvorschlag. */
+  etappen: unknown
 }
 
 /**
@@ -86,7 +92,7 @@ export interface Tour {
  * Der Typ hält das fest, damit niemand versehentlich wieder danach greift und
  * die Spalte zurückholt.
  */
-export type PublicTour = Omit<Tour, 'user_id'>
+export type PublicTour = Omit<Tour, 'user_id' | 'packliste' | 'etappen'>
 
 /** Ein Kommentar, wie ihn die View `oeffentliche_kommentare` herausgibt. */
 export interface Kommentar {

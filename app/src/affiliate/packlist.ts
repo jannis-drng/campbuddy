@@ -9,6 +9,39 @@
 import type { TripParams } from '../data/types'
 import { GEAR_ITEMS, type GearCategory, type GearItem } from './gearItems'
 
+/**
+ * Der Stand eines Ausrüstungsteils in der Checkliste.
+ *
+ * Drei Zustände, weil zwei nicht reichen: „abgehakt" beantwortet nicht die
+ * Frage, die vor einer Tour wirklich ansteht — was muss ich noch besorgen?
+ * Ohne Eintrag ist ein Teil unentschieden; das ist der Ausgangszustand und
+ * wird nicht gespeichert.
+ */
+export type PackStand = 'habe' | 'brauche' | 'weglassen'
+
+/** Der gespeicherte Stand: Ausrüstungs-ID → Entscheidung. */
+export type PackStaende = Record<string, PackStand>
+
+const STAENDE: PackStand[] = ['habe', 'brauche', 'weglassen']
+
+/**
+ * Fremde Daten in einen brauchbaren Stand verwandeln.
+ *
+ * Was aus der Datenbank kommt, ist beliebiges JSON: eine ältere Fassung der
+ * App, ein von Hand gesetzter Wert, ein Ausrüstungsteil, das den Katalog
+ * inzwischen verlassen hat. Unbekanntes fliegt hier raus, statt später als
+ * halb gezeichnete Zeile aufzufallen.
+ */
+export function packstaendeLesen(roh: unknown): PackStaende {
+  if (!roh || typeof roh !== 'object' || Array.isArray(roh)) return {}
+  const bekannt = new Set(GEAR_ITEMS.map((i) => i.id))
+  const stand: PackStaende = {}
+  for (const [id, wert] of Object.entries(roh as Record<string, unknown>)) {
+    if (bekannt.has(id) && STAENDE.includes(wert as PackStand)) stand[id] = wert as PackStand
+  }
+  return stand
+}
+
 export interface PacklistEntry {
   item: GearItem
   quantity: number

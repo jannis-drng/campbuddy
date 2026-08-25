@@ -5,7 +5,7 @@
  * Konstanten und werden im UI offengelegt — Faustformeln sollen als solche
  * erkennbar bleiben.
  */
-import { distanceToLine, type Position } from './geo'
+import { distanceToLine, naechsterIndex, type Position } from './geo'
 import type { Point } from './types'
 import type { ElevationPoint } from '../services/elevation'
 
@@ -139,6 +139,22 @@ export function analyseProfil(profil: ElevationPoint[]): HikingStats | null {
 
 /* ---------------- Mehrtages-Etappen ---------------- */
 
+/**
+ * Wo eine Etappe endet und die Nacht verbracht wird.
+ *
+ * Bewusst nicht der `Point` selbst: eine Übernachtung kann auch an einem
+ * selbst gesetzten Stopp liegen („beim Bach hinter der Alp"), und der steht
+ * in keinem Datensatz. Was zählt, ist Name, Lage und wie weit sie vom
+ * Etappenende entfernt ist.
+ */
+export interface Uebernachtung {
+  name: string
+  position: Position
+  /** Luftlinie vom Etappenende zum Platz. */
+  distance_m: number
+  art: 'hut' | 'campsite' | 'vehicle_spot' | 'eigen' | 'stopp'
+}
+
 export interface Etappe {
   nummer: number
   von_m: number
@@ -147,20 +163,67 @@ export interface Etappe {
   ascent_m: number
   descent_m: number
   duration_s: number
+  /** Höhe am Etappenende — bestimmt Schlafsack und Kleidung. */
+  endhoehe_m: number
   /** Wo die Etappe endet — Grundlage für den Schlafplatz-Vorschlag. */
   endposition: Position
-  /** Nächstgelegene Übernachtungsmöglichkeit, falls eine in Reichweite liegt. */
-  schlafplatz: { point: Point; distance: number } | null
+  /** Wo übernachtet wird, falls etwas in Reichweite liegt oder gewählt wurde. */
+  schlafplatz: Uebernachtung | null
 }
 
 /** Wie weit ein Schlafplatz vom Etappenende entfernt sein darf. */
 const SCHLAFPLATZ_RADIUS_M = 3000
+
+/** Punktart → Art der Übernachtung. Beides dieselbe Sprache, andere Herkunft. */
+function artVonPunkt(p: Point): Uebernachtung['art'] {
+  return p.type === 'hut' || p.type === 'campsite' || p.type === 'vehicle_spot' ? p.type : 'stopp'
+}
+
+/** Eine Etappe aus einem Abschnitt des Höhenprofils bauen. */
+function etappeAus(
+  profil: ElevationPoint[], startIndex: number, endIndex: number, nummer: number,
+): Etappe {
+  const abschnitt = profil.slice(startIndex, endIndex + 1)
+  const s = analyseProfil(abschnitt)
+  return {
+    nummer,
+    von_m: profil[startIndex].distance_m,
+    bis_m: profil[endIndex].distance_m,
+    distance_m: s?.distance_m ?? 0,
+    ascent_m: s?.ascent_m ?? 0,
+    descent_m: s?.descent_m ?? 0,
+    duration_s: s?.duration_s ?? 0,
+    endhoehe_m: Math.round(profil[endIndex].elevation),
+    endposition: profil[endIndex].position,
+    schlafplatz: null,
+  }
+}
+
+/** Nächstgelegene Übernachtungsmöglichkeit zu einem Etappenende. */
+function schlafplatzNahe(position: Position, punkte: Point[]): Uebernachtung | null {
+  const naechster = punkte
+    .filter((p) => p.type !== 'vehicle_spot')
+    .map((point) => ({ point, distance: distanceToLine([point.lng, point.lat], [position]) }))
+    .filter((k) => k.distance <= SCHLAFPLATZ_RADIUS_M)
+    .sort((a, b) => a.distance - b.distance)[0]
+  if (!naechster) return null
+  return {
+    name: naechster.point.name,
+    position: [naechster.point.lng, naechster.point.lat],
+    distance_m: Math.round(naechster.distance),
+    art: artVonPunkt(naechster.point),
+  }
+}
 
 /**
  * Teilt die Route in Tagesetappen und schlägt je Etappe eine Übernachtung vor.
  *
  * Geteilt wird nach Gehzeit, nicht nach Kilometern: 12 km im Flachen und
  * 12 km mit 1200 Höhenmetern sind nicht derselbe Tag.
+ *
+ * Das ist der Vorschlag. Wer die Nächte selbst festlegt, geht über
+ * `etappenNachZielen` — dort bestimmen gewählte Orte die Grenzen, nicht die
+ * Uhr.
  */
 export function planeEtappen(
   profil: ElevationPoint[],
@@ -193,33 +256,121 @@ export function planeEtappen(
     }
     if (endIndex <= startIndex) endIndex = Math.min(startIndex + 1, profil.length - 1)
 
-    const abschnitt = profil.slice(startIndex, endIndex + 1)
-    const s = analyseProfil(abschnitt)
-    const endposition = profil[endIndex].position
-
-    const naechster = punkte
-      .filter((p) => p.type !== 'vehicle_spot')
-      .map((point) => ({ point, distance: distanceToLine([point.lng, point.lat], [endposition]) }))
-      .filter((k) => k.distance <= SCHLAFPLATZ_RADIUS_M)
-      .sort((a, b) => a.distance - b.distance)[0] ?? null
-
-    etappen.push({
-      nummer: tag,
-      von_m: profil[startIndex].distance_m,
-      bis_m: profil[endIndex].distance_m,
-      distance_m: (s?.distance_m ?? 0),
-      ascent_m: s?.ascent_m ?? 0,
-      descent_m: s?.descent_m ?? 0,
-      duration_s: s?.duration_s ?? 0,
-      endposition,
-      schlafplatz: naechster,
-    })
+    const etappe = etappeAus(profil, startIndex, endIndex, tag)
+    // Die letzte Etappe endet am Ziel, nicht an einer Übernachtung.
+    etappe.schlafplatz = tag < tage ? schlafplatzNahe(etappe.endposition, punkte) : null
+    etappen.push(etappe)
 
     startIndex = endIndex
     if (startIndex >= profil.length - 1) break
   }
 
   return etappen
+}
+
+/**
+ * Selbst festgelegte Etappen: die gewählten Nachtlager bestimmen die Tage.
+ *
+ * Der Vorschlag rechnet mit sechs Gehstunden — eine Zahl, die für die eigene
+ * Tour fast nie stimmt. Wer weiss, dass er in der Cabane de Moiry schläft und
+ * am zweiten Tag nur bis zur Alp will, legt genau das fest; Strecke, Aufstieg
+ * und Gehzeit je Tag ergeben sich daraus.
+ *
+ * `ziele` sind die Nachtlager in Streckenmetern ab Start, ungeordnet erlaubt.
+ * Das Ende der Route zählt nicht dazu: dort ist die Tour zu Ende, nicht die
+ * Nacht.
+ */
+export function etappenNachZielen(
+  profil: ElevationPoint[],
+  ziele: { bei_m: number; uebernachtung: Uebernachtung }[],
+): Etappe[] {
+  if (profil.length < 2) return []
+
+  const gesamtMeter = profil[profil.length - 1].distance_m
+  // Ein Nachtlager am Start oder am Ziel ergäbe eine Etappe von null Länge.
+  const sortiert = [...ziele]
+    .filter((z) => z.bei_m > profil[0].distance_m + 1 && z.bei_m < gesamtMeter - 1)
+    .sort((a, b) => a.bei_m - b.bei_m)
+  if (sortiert.length === 0) return []
+
+  const grenzen = sortiert.map((z) => indexBei(profil, z.bei_m))
+  const etappen: Etappe[] = []
+  let startIndex = 0
+
+  for (const [i, endIndex] of [...grenzen, profil.length - 1].entries()) {
+    if (endIndex <= startIndex) continue
+    const etappe = etappeAus(profil, startIndex, endIndex, etappen.length + 1)
+    etappe.schlafplatz = sortiert[i]?.uebernachtung ?? null
+    etappen.push(etappe)
+    startIndex = endIndex
+  }
+
+  return etappen
+}
+
+/** Der Stützpunkt des Profils, der diesem Streckenmeter am nächsten liegt. */
+function indexBei(profil: ElevationPoint[], meter: number): number {
+  let bester = 0
+  let abstand = Infinity
+  for (const [i, p] of profil.entries()) {
+    const d = Math.abs(p.distance_m - meter)
+    if (d < abstand) { abstand = d; bester = i }
+  }
+  return bester
+}
+
+/**
+ * Ein möglicher Ort für eine Nacht, mit seiner Stelle auf der Strecke.
+ *
+ * `bei_m` ist der Streckenmeter, an dem die Route diesem Ort am nächsten
+ * kommt — nicht die Luftlinie zum Start. Nur so lässt sich eine Liste
+ * bilden, die der Reihe nach abläuft, wie man sie auch geht.
+ */
+export interface Etappenkandidat extends Uebernachtung {
+  id: string
+  bei_m: number
+}
+
+/**
+ * Kandidaten der Reihe nach auf die Strecke legen.
+ *
+ * Doppelte Orte fallen weg: eine Hütte, die zugleich als Stopp gesetzt wurde,
+ * stünde sonst zweimal in der Liste — einmal aus den erfassten Punkten,
+ * einmal aus den eigenen Stopps.
+ */
+export function etappenkandidaten(
+  profil: ElevationPoint[],
+  eintraege: (Uebernachtung & { id: string })[],
+): Etappenkandidat[] {
+  if (profil.length < 2) return []
+  const positionen = profil.map((p) => p.position)
+
+  const gesehen = new Set<string>()
+  const kandidaten: Etappenkandidat[] = []
+  for (const e of eintraege) {
+    // Auf zehn Meter gerundet: derselbe Ort aus zwei Quellen trägt selten
+    // exakt dieselbe Koordinate, aber immer dieselbe Stelle.
+    const schluessel = `${e.position[0].toFixed(4)},${e.position[1].toFixed(4)}`
+    if (gesehen.has(schluessel)) continue
+    gesehen.add(schluessel)
+    const i = naechsterIndex(e.position, positionen)
+    kandidaten.push({ ...e, bei_m: profil[i].distance_m })
+  }
+  return kandidaten.sort((a, b) => a.bei_m - b.bei_m)
+}
+
+/**
+ * Die Höhe, auf der geschlafen wird — die höchste Nacht zählt.
+ *
+ * Sie bestimmt Schlafsack und Kleidung, und dafür ist die kälteste Nacht
+ * massgeblich, nicht der Durchschnitt. Ohne Etappen ist es der höchste Punkt
+ * der Tour: wer an einem Tag hin und zurück geht, schläft zwar zu Hause, aber
+ * die Packliste soll die Tour tragen.
+ */
+export function schlafhoehe(etappen: Etappe[], hoechsterPunkt: number): number {
+  const naechte = etappen.filter((e) => e.schlafplatz != null || e.nummer < etappen.length)
+  if (naechte.length === 0) return hoechsterPunkt
+  return Math.max(...naechte.map((e) => e.endhoehe_m))
 }
 
 export function formatDauer(sekunden: number): string {

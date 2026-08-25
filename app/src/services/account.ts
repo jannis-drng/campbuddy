@@ -13,6 +13,8 @@ import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import type { TripParams } from '../data/types'
 import { getSupabase, type PublicTour, type Tour } from './supabase'
+import type { PackStaende } from '../affiliate/packlist'
+import type { Uebernachtung } from '../data/hiking'
 import { alleZeilen } from './deckel'
 
 export function useSession() {
@@ -221,6 +223,25 @@ export interface TourEckdaten extends Partial<TripParams> {
   distance_m?: number | null
   ascent_m?: number | null
   duration_s?: number | null
+  /** Stand der Checkliste; `null` löscht ihn. Siehe Migration 0021. */
+  packliste?: PackStaende | null
+  /** Selbst gewählte Nachtlager; `null` heisst „automatischer Vorschlag". */
+  etappen?: GespeicherteEtappe[] | null
+}
+
+/**
+ * Ein selbst gewähltes Nachtlager, wie es in der Tour liegt.
+ *
+ * Gespeichert wird die Stelle auf der Strecke (`bei_m`) und nicht der Index
+ * eines Profilpunkts: das Höhenprofil wird bei jedem Öffnen neu geholt und
+ * kann eine andere Auflösung haben — ein Index zeigte danach woandershin, ein
+ * Streckenmeter nicht.
+ */
+export interface GespeicherteEtappe {
+  bei_m: number
+  name: string
+  art: Uebernachtung['art']
+  position: [number, number]
 }
 
 export async function listTouren(): Promise<Tour[]> {
@@ -268,6 +289,10 @@ function eckdatenZeile(eck: TourEckdaten | undefined): Record<string, unknown> {
   if (eck.distance_m != null) zeile.distance_m = Math.round(eck.distance_m)
   if (eck.ascent_m != null) zeile.ascent_m = Math.round(eck.ascent_m)
   if (eck.duration_s != null) zeile.duration_s = Math.round(eck.duration_s)
+  // Ausdrücklich gegen `undefined` geprüft: `null` ist hier eine Aussage —
+  // „Checkliste zurücksetzen" beziehungsweise „wieder automatisch einteilen".
+  if (eck.packliste !== undefined) zeile.packliste = eck.packliste
+  if (eck.etappen !== undefined) zeile.etappen = eck.etappen
   return zeile
 }
 

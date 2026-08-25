@@ -13,8 +13,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
-  Bookmark, Globe, Heart, Lock, Map as MapIcon, MessageCircle, Pencil, Share2, Trash2,
-  TriangleAlert, X,
+  Bookmark, Globe, Heart, ListChecks, Lock, Map as MapIcon, MessageCircle, Pencil, Share2,
+  Trash2, TriangleAlert, X,
 } from 'lucide-react'
 import type { Position } from '../data/geo'
 import { isSupabaseConfigured, type PublicTour, type Tour } from '../services/supabase'
@@ -24,6 +24,7 @@ import {
 } from '../services/account'
 import { Badge, Button, Eingabe, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
+import { PacklisteModal } from './PacklisteModal'
 
 interface Props {
   session: Session | null
@@ -47,6 +48,14 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
   const [teilt, setTeilt] = useState<Tour | null>(null)
   const [bearbeitet, setBearbeitet] = useState<Tour | null>(null)
   const [loescht, setLoescht] = useState<Tour | null>(null)
+  /**
+   * Welche Tour ihre Packliste zeigt.
+   *
+   * Nur für eigene Touren: der Stand — habe ich, brauche ich noch — ist eine
+   * persönliche Notiz und wird in der eigenen Zeile gespeichert. Bei einer
+   * fremden Tour gäbe es nichts, wohin damit.
+   */
+  const [packliste, setPackliste] = useState<Tour | null>(null)
 
   const laden = useCallback(async () => {
     if (!session) { setEigene([]); setGemerkt([]); setLaedt(false); return }
@@ -189,6 +198,9 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                               Teilen
                             </Button>
                           )}
+                          <IconButton icon={ListChecks} groesse="klein"
+                                      label={`Packliste für „${t.name}"`}
+                                      onClick={() => setPackliste(t)} />
                           <IconButton icon={Pencil} groesse="klein" label={`„${t.name}" bearbeiten`}
                                       onClick={() => setBearbeitet(t)} />
                           <IconButton icon={Trash2} groesse="klein" label={`„${t.name}" löschen`}
@@ -255,6 +267,17 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
         onClose={() => setLoescht(null)}
         onBestaetigt={() => loescht && entfernen(loescht)}
       />
+
+      {packliste && (
+        <PacklisteModal
+          tour={packliste}
+          onClose={() => setPackliste(null)}
+          onAufKarte={(geometry, wegpunkte) => {
+            setPackliste(null)
+            onLoadRoute(geometry, wegpunkte)
+          }}
+        />
+      )}
     </Seite>
   )
 }

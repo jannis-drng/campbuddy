@@ -6,15 +6,22 @@
  * öffnet sich hier das ganze Bild: Legalität, Profil, Etappen, Ausrüstung,
  * Verpflegung und Wetter.
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Position } from '../data/geo'
 import type { Peak, Point, Region, TripParams, Wegpunkt } from '../data/types'
 import { tournameVorschlaege } from '../data/tourname'
 import { NEARBY_RADIUS_M, summarise, type RouteAnalysis } from '../data/routeAnalysis'
-import { formatDauer, STUNDEN_PRO_TAG, type Etappe, type HikingStats } from '../data/hiking'
+import {
+  etappenkandidaten, etappenNachZielen, formatDauer, schlafhoehe,
+  type Etappe, type Etappenkandidat, type HikingStats,
+} from '../data/hiking'
+import type { PackStand, PackStaende } from '../affiliate/packlist'
+import type { GespeicherteEtappe } from '../services/account'
+import { wegpunktName } from '../data/wegpunkte'
+import { EtappenPlaner } from './EtappenPlaner'
 import type { ElevationPoint } from '../services/elevation'
 import { ElevationProfile } from './ElevationProfile'
-import { TripPlanner } from './TripPlanner'
+import { TripPlanner, type Abgeleitet } from './TripPlanner'
 import { Shuffle, X } from 'lucide-react'
 import { Button, IconButton, Stufen } from '../ui'
 import { StatusBadge } from './ui'
@@ -41,7 +48,12 @@ interface Props {
    * sagen, was der Unterschied sein sollte. Seit Migration 0016 ist es eine
    * Sache. null = kein Backend oder nicht angemeldet.
    */
-  onSaveTour: ((name: string, trip: TripParams) => Promise<void>) | null
+  onSaveTour: ((
+    name: string,
+    trip: TripParams,
+    packliste: PackStaende,
+    etappen: GespeicherteEtappe[] | null,
+  ) => Promise<void>) | null
 }
 
 const formatKm = (m: number) =>
@@ -69,6 +81,64 @@ export function TourDetailModal({
   const [vorschlagNr, setVorschlagNr] = useState(0)
   /** Nur gesetzt, wenn jemand den Namen von Hand angefasst hat. */
   const [eigenerName, setEigenerName] = useState<string | null>(null)
+  /** Stand der Checkliste. Wird mit der Tour gespeichert. */
+  const [staende, setStaende] = useState<PackStaende>({})
+  /** Selbst gewählte Nachtlager; `null` heisst „automatischer Vorschlag". */
+  const [etappenWahl, setEtappenWahl] = useState<GespeicherteEtappe[] | null>(null)
+
+  const standSetzen = useCallback((id: string, stand: PackStand | null) => {
+    setStaende((alt) => {
+      const neu = { ...alt }
+      if (stand) neu[id] = stand
+      else delete neu[id]
+      return neu
+    })
+  }, [])
+
+  /*
+    Woraus sich Nachtlager wählen lassen: die erfassten Punkte in Routennähe
+    und die selbst gesetzten Stopps. Beide in derselben Liste, weil die Frage
+    dieselbe ist — hier oder dort die Nacht? — und die Herkunft nur als
+    Kennzeichnung dahinter steht.
+  */
+  const kandidaten = useMemo<Etappenkandidat[]>(() => {
+    if (profil.length < 2) return []
+    const ausPunkten = analysis.nearby.map(({ point, distance }) => ({
+      id: `punkt-${point.id}`,
+      name: point.name,
+      position: [point.lng, point.lat] as Position,
+      distance_m: Math.round(distance),
+      art: (point.type === 'hut' || point.type === 'campsite' || point.type === 'vehicle_spot'
+        ? point.type
+        : 'stopp') as Etappenkandidat['art'],
+    }))
+    // Namenlose Klicks auf freie Fläche sind Form der Linie, kein Ort — sie
+    // taugen nicht als „hier schlafe ich".
+    const ausStopps = wegpunkte
+      .map((w, i) => ({ w, name: wegpunktName(w, i, wegpunkte.length), i }))
+      .filter(({ w }) => Boolean(w.name?.trim() || w.ort))
+      .map(({ w, name, i }) => ({
+        id: `stopp-${i}`,
+        name,
+        position: w.position,
+        distance_m: 0,
+        art: (w.ort?.art === 'hut' || w.ort?.art === 'campsite' || w.ort?.art === 'vehicle_spot'
+          ? w.ort.art
+          : w.ort?.art === 'eigen' ? 'eigen' : 'stopp') as Etappenkandidat['art'],
+      }))
+    return etappenkandidaten(profil, [...ausStopps, ...ausPunkten])
+  }, [profil, analysis.nearby, wegpunkte])
+
+  /** Was gerade gilt: die selbst gewählte Einteilung oder der Vorschlag. */
+  const etappenAktuell = useMemo(
+    () => (etappenWahl
+      ? etappenNachZielen(profil, etappenWahl.map((e) => ({
+          bei_m: e.bei_m,
+          uebernachtung: { name: e.name, art: e.art, position: e.position, distance_m: 0 },
+        })))
+      : etappen),
+    [etappenWahl, profil, etappen],
+  )
 
   /*
     Der Name entsteht aus der Tour selbst — aus den angetippten Orten, dem
@@ -93,27 +163,21 @@ export function TourDetailModal({
   }, [offen, onClose])
 
   /**
-   * Tourdaten aus der Route ableiten: Tage aus den Etappen, Schlafhöhe aus der
-   * höchsten Etappenübernachtung. Ohne das begänne die Packliste bei
-   * Standardwerten, die nichts mit der gezeichneten Tour zu tun haben.
+   * Was die Route bereits entscheidet: Tage aus den Etappen, Schlafhöhe aus
+   * dem Höhenprofil, Hüttentour aus den gewählten Nachtlagern.
+   *
+   * Das waren früher Eingabefelder im Planer — mit dem Ergebnis, dass sich
+   * „7 Tage" neben einer Etappenplanung über drei einstellen liess. Jetzt
+   * folgen sie der Tour.
    */
-  const vorbelegung = useMemo<Partial<TripParams>>(() => {
-    const tage = Math.max(1, etappen.length || (stats ? Math.ceil(stats.duration_s / 3600 / STUNDEN_PRO_TAG) : 1))
-    const schlafhoehen = etappen.length > 0
-      ? etappen.map((e) => {
-          const punkt = profil.find((p) => p.distance_m >= e.bis_m) ?? profil[profil.length - 1]
-          return punkt?.elevation ?? 0
-        })
-      : [stats?.max_ele ?? 0]
-    const hoehe = Math.round(Math.max(...schlafhoehen, 0) / 100) * 100
-    // Der Schlüssel darf nicht mit dem Wert `undefined` gesetzt werden: beim
-    // Zusammenführen im Planer überschriebe er sonst dessen Vorgabewert mit
-    // „nichts". Genau das führte dazu, dass eine Tour ohne Höhenprofil mit
-    // leerer Schlafhöhe gespeichert wurde — und die Datenbank sie ablehnte.
-    const vorgabe: Partial<TripParams> = { days: tage }
-    if (hoehe > 0) vorgabe.elevation = hoehe
-    return vorgabe
-  }, [etappen, profil, stats])
+  const abgeleitet = useMemo<Abgeleitet>(() => {
+    const naechte = etappenAktuell.filter((e) => e.schlafplatz != null)
+    return {
+      days: Math.max(1, etappenAktuell.length || 1),
+      elevation: Math.max(0, Math.round(schlafhoehe(etappenAktuell, stats?.max_ele ?? 0))),
+      huettenTour: naechte.length > 0 && naechte.every((e) => e.schlafplatz?.art === 'hut'),
+    }
+  }, [etappenAktuell, stats])
 
   if (!offen) return null
 
@@ -122,7 +186,7 @@ export function TourDetailModal({
     if (!onSaveTour || !name.trim() || !trip) return
     setSpeicherStand('busy'); setSpeicherFehler(null)
     try {
-      await onSaveTour(name.trim(), trip)
+      await onSaveTour(name.trim(), trip, staende, etappenWahl)
       setSpeicherStand('ok')
     } catch (err) {
       setSpeicherStand('error'); setSpeicherFehler((err as Error).message)
@@ -144,7 +208,7 @@ export function TourDetailModal({
             <p className="text-fliess text-ink-400">
               {formatKm(analysis.length_m)}
               {stats && ` · ${formatDauer(stats.duration_s)}`}
-              {etappen.length > 0 && ` · ${etappen.length} Tage`}
+              {etappenAktuell.length > 1 && ` · ${etappenAktuell.length} Tage`}
             </p>
           </div>
           {/*
@@ -200,7 +264,7 @@ export function TourDetailModal({
               </p>
             )}
             {profil.length > 1 && (
-              <ElevationProfile profil={profil} etappenGrenzen={etappen.slice(0, -1).map((e) => e.bis_m)} />
+              <ElevationProfile profil={profil} etappenGrenzen={etappenAktuell.slice(0, -1).map((e) => e.bis_m)} />
             )}
             {stats && (
               <>
@@ -223,31 +287,13 @@ export function TourDetailModal({
             )}
           </section>
 
-          {/* ---- Etappen ---- */}
-          {etappen.length > 0 && (
-            <section>
-              <h3 className="mb-1.5 text-fliess font-semibold text-ink-200">
-                Etappen ({etappen.length} Tage)
-              </h3>
-              <ul className="space-y-1.5">
-                {etappen.map((e) => (
-                  <li key={e.nummer} className="rounded-mittel bg-flaeche-1 p-2.5">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <span className="text-fliess font-medium text-ink-50">Tag {e.nummer}</span>
-                      <span className="text-mikro text-ink-500">
-                        {formatKm(e.distance_m)} · {e.ascent_m} hm · {formatDauer(e.duration_s)}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 text-klein text-ink-400">
-                      {e.schlafplatz
-                        ? `Übernachtung: ${e.schlafplatz.point.name} (${formatKm(e.schlafplatz.distance)} entfernt)`
-                        : 'Keine erfasste Übernachtung in der Nähe — hier zählt die Rechtslage der Zone.'}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+          {/* ---- Etappen: Vorschlag oder eigene Einteilung ---- */}
+          <EtappenPlaner
+            etappen={etappenAktuell}
+            kandidaten={kandidaten}
+            wahl={etappenWahl}
+            onWahl={setEtappenWahl}
+          />
 
           {/* ---- Schlafplätze ---- */}
           <section>
@@ -274,9 +320,16 @@ export function TourDetailModal({
               Ausrüstung, Verpflegung &amp; Wetter
             </h3>
             <p className="mb-3 text-mikro leading-relaxed text-ink-500">
-              Dauer und Schlafhöhe sind aus deiner Route übernommen und lassen sich anpassen.
+              Dauer, Schlafhöhe und Jahreszeit ergeben sich aus deiner Route und den Etappen
+              darüber.
             </p>
-            <TripPlanner region={region} onTripChange={setTrip} initial={vorbelegung} />
+            <TripPlanner
+              region={region}
+              abgeleitet={abgeleitet}
+              onTripChange={setTrip}
+              staende={staende}
+              onStand={standSetzen}
+            />
           </section>
 
           {/* ---- Speichern: Verlauf und Eckdaten in einem Zug ---- */}
