@@ -19,12 +19,19 @@
  * Gearbeitet wird mit dem installierten Chrome (playwright-core, `channel:
  * 'chrome'`) — wie in scripts/recherche-gemeinden-browser.mjs, damit kein
  * zusätzlicher Browser heruntergeladen werden muss.
+ *
+ * Gezählt wird über das Netzwerk-Protokoll des Browsers (`encodedDataLength`
+ * aus dem Chrome DevTools Protocol), nicht über die Antwortkörper. Der
+ * Unterschied ist nicht akademisch: ein Körper sagt, wie schwer eine Datei
+ * ist, aber nicht, ob sie überhaupt über die Leitung ging. Beim Wiederbesuch
+ * liefert der Browser jeden Körper aus dem Cache — eine Zählung auf dieser
+ * Grundlage sah einen perfekten Cache-Treffer genauso an wie ein vollständiges
+ * Neuladen.
  */
 import { spawn } from 'node:child_process'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { existsSync } from 'node:fs'
-import { gzipSync } from 'node:zlib'
 import { chromium } from 'playwright-core'
 
 const HIER = dirname(fileURLToPath(import.meta.url))
@@ -75,95 +82,17 @@ for (let i = 0; i < 60; i++) {
   await new Promise((f) => setTimeout(f, 100))
 }
 
-/* ------------------------------------------------------------- Messung */
-
-/** Was schon komprimiert ist, wird durch gzip nicht kleiner — nur die Zahl falsch. */
-function schonGepackt(pfad) {
-  return /\.(webp|png|jpe?g|woff2?|avif)$/.test(pfad)
-}
+/* --------------------------------------------------------------- Helfer */
 
 /** Die drei Kachelserver von OpenTopoMap sind einer, für die Bilanz. */
-function kurzerHost(host) {
-  return host.replace(/^[abc]\.tile\./, 'tile.')
-}
-
-
-const browser = await chromium.launch({ channel: 'chrome', headless: true })
-
-/**
- * Ein Durchgang.
- *
- * Gezählt wird die gepackte Grösse, weil das ist, was über die Leitung geht.
- * Der Vorschauserver packt nicht selbst (er ist ein Prüfwerkzeug, kein CDN),
- * deshalb packen wir hier — dieselbe Zahl, die Cloudflare senden würde, eher
- * etwas pessimistischer als brotli.
- */
-async function durchgang(seite, beschriftung) {
-  const posten = new Map()
-
-  const zaehler = async (antwort) => {
-    // blob: und data: sind keine Netzanfragen — MapLibre baut daraus seinen
-    // Web Worker. Sie mitzuzählen hätte im ersten Lauf 466 KB erfunden.
-    if (!/^https?:/.test(antwort.url())) return
-
-    const url = new URL(antwort.url())
-    const fremd = url.host !== `localhost:${PORT}`
-    const gruppe = fremd ? `fremd: ${kurzerHost(url.host)}` : gruppeFuer(url.pathname)
-    let bytes = 0
-    try {
-      const roh = await antwort.body()
-      bytes = schonGepackt(url.pathname) || fremd ? roh.length : gzipSync(roh, { level: 9 }).length
-    } catch { /* abgebrochene oder aus dem Cache bediente Antwort */ }
-    const alt = posten.get(gruppe) ?? { anzahl: 0, bytes: 0 }
-    posten.set(gruppe, { anzahl: alt.anzahl + 1, bytes: alt.bytes + bytes })
-  }
-
-  /*
-   * Ruhe heisst: nichts mehr unterwegs, und seit einer Weile nichts Neues.
-   *
-   * Beide Hälften sind nötig, und beide sind teuer erkauft. Nur auf `response`
-   * zu hören war falsch, weil das schon beim Kopf feuert — unter Drosselung
-   * liegen zwischen Kopf und fertigem Körper zweistellige Sekunden. Nur auf
-   * `requestfinished` zu hören war ebenfalls falsch, weil eine einzelne lange
-   * Übertragung dann wie eine Pause aussieht. Also wird mitgezählt, was offen
-   * ist.
-   */
-  let offen = 0
-  let zuletzt = Date.now()
-  const auf = () => { offen++; zuletzt = Date.now() }
-  const zu = () => { offen = Math.max(0, offen - 1); zuletzt = Date.now() }
-  seite.on('request', auf)
-  seite.on('requestfinished', zu)
-  seite.on('requestfailed', zu)
-  seite.on('response', zaehler)
-
-  const start = Date.now()
-  await seite.goto(ADRESSE, { waitUntil: 'load', timeout: 180_000 })
-  const geladen = Date.now() - start
-
-  // Warten, bis das Netz ruhig ist, statt eine feste Zeit abzusitzen. Eine
-  // feste Wartezeit ist bei jedem Netzprofil falsch: auf schnellem Netz
-  // verschenkt sie Zeit, auf gedrosseltem schneidet sie die Messung mitten im
-  // Laden ab und meldet dann zu wenig Bytes als Erfolg.
-  const RUHE = netz ? 6_000 : 2_500
-  const FRIST = netz ? 240_000 : 45_000
-  while ((offen > 0 || Date.now() - zuletzt < RUHE) && Date.now() - start < FRIST) {
-    await seite.waitForTimeout(500)
-  }
-  const fertig = Date.now() - start
-
-  seite.off('request', auf)
-  seite.off('requestfinished', zu)
-  seite.off('requestfailed', zu)
-  seite.off('response', zaehler)
-
-  return { beschriftung, geladen, fertig: fertig - RUHE, posten }
-}
+const kurzerHost = (host) => host.replace(/^[abc]\.tile\./, 'tile.')
 
 /** Grobe Einordnung eines Pfads, damit die Ausgabe lesbar bleibt. */
 function gruppeFuer(pfad) {
   if (/\/assets\/-?\d+_-?\d+-/.test(pfad)) return 'eigene Kacheln (Gipfel/Natur/Gemeinden)'
-  if (/\/assets\/(zonen|punkte|gemeinden|kantone|gipfel|natur|beispiel)\./.test(pfad)) return 'eigene Kartendaten'
+  if (/\/assets\/(zonen|punkte|gemeinden|kantone|gipfel|natur|beispiel)\./.test(pfad)) {
+    return 'eigene Kartendaten'
+  }
   if (pfad.endsWith('.js')) return 'eigenes JavaScript'
   if (pfad.endsWith('.css')) return 'eigenes CSS'
   if (pfad.endsWith('.woff2')) return 'eigene Schrift'
@@ -171,14 +100,18 @@ function gruppeFuer(pfad) {
   return 'eigenes Übriges'
 }
 
+/* ------------------------------------------------------------- Messung */
+
+const browser = await chromium.launch({ channel: 'chrome', headless: true })
 const kontext = await browser.newContext({ viewport: { width: 1280, height: 800 } })
 const seite = await kontext.newPage()
+const cdp = await kontext.newCDPSession(seite)
+await cdp.send('Network.enable')
 
 // Die Drosselung gilt pro Seite, nicht pro Kontext — sie muss deshalb an
 // genau die Seite, die danach gemessen wird. Hing sie an einer anderen, lief
 // die Messung stillschweigend ungedrosselt und meldete Traumwerte.
 if (netz) {
-  const cdp = await kontext.newCDPSession(seite)
   await cdp.send('Network.emulateNetworkConditions', {
     offline: false,
     latency: netz.latenz,
@@ -186,41 +119,153 @@ if (netz) {
     uploadThroughput: netz.upload,
   })
 }
-const kalt = await durchgang(seite, 'kalt (neuer Besucher)')
-// Zweiter Durchgang im selben Kontext: HTTP-Cache und Service Worker stehen.
-const warm = await durchgang(seite, 'warm (Wiederbesuch)')
+
+const adressen = new Map()
+let posten = new Map()
+let offen = 0
+let zuletzt = Date.now()
+let zaehlen = false
+
+/*
+ * Nur fremde Bytes werden im Browser gezählt.
+ *
+ * Die eigenen kommen vom Vorschauserver (`/__messung`), und zwar aus einem
+ * handfesten Grund: Der Service Worker holt Dateien in seinem eigenen Prozess,
+ * und die Netzwerk-Sicht einer Seite endet an dieser Grenze. Gemessen sah der
+ * erste Besuch dadurch so aus, als hätte er die 584 KB Kartendaten gratis
+ * bekommen — sie waren geladen, nur eben nebenan. Was der Server gesendet hat,
+ * ist dagegen eindeutig.
+ */
+function buchen(url, bytes) {
+  const u = new URL(url)
+  if (u.host === `localhost:${PORT}`) return
+  const gruppe = `fremd: ${kurzerHost(u.host)}`
+  const alt = posten.get(gruppe) ?? { anzahl: 0, bytes: 0 }
+  posten.set(gruppe, { anzahl: alt.anzahl + 1, bytes: alt.bytes + bytes })
+}
+
+/** Zählstand des Servers holen und zurücksetzen. */
+async function serverBytes(zuruecksetzen = false) {
+  const res = await fetch(`http://localhost:${PORT}/__messung${zuruecksetzen ? '?reset=1' : ''}`)
+  return res.json()
+}
+
+const zaehlbar = (url) => zaehlen && url && /^https?:/.test(url)
+const teilmengen = new Map()
+
+cdp.on('Network.requestWillBeSent', (e) => {
+  adressen.set(e.requestId, e.request.url)
+  if (zaehlbar(e.request.url)) { offen++; zuletzt = Date.now() }
+})
+
+/*
+ * Die Bytes stückweise mitzählen.
+ *
+ * `loadingFinished.encodedDataLength` sollte die Gesamtmenge tragen, tut es
+ * aber nicht zuverlässig: für Dateien, die über `fetch` oder von der
+ * Stil-Engine geholt werden — also gerade für unsere Kartendaten und die
+ * Schrift — steht dort null. Gemessen sah der erste Besuch dadurch so aus, als
+ * hätte er die 584 KB Kartendaten gratis bekommen.
+ *
+ * `dataReceived` feuert dagegen pro Datenpaket und stimmt. Genommen wird das
+ * Grössere von beidem, damit auch Antworten ohne Paket-Ereignisse zählen.
+ */
+cdp.on('Network.dataReceived', (e) => {
+  if (!zaehlbar(adressen.get(e.requestId))) return
+  teilmengen.set(e.requestId, (teilmengen.get(e.requestId) ?? 0) + (e.encodedDataLength || 0))
+  zuletzt = Date.now()
+})
+
+cdp.on('Network.loadingFinished', (e) => {
+  const url = adressen.get(e.requestId)
+  if (!zaehlbar(url)) return
+  offen = Math.max(0, offen - 1)
+  zuletzt = Date.now()
+  buchen(url, Math.max(e.encodedDataLength ?? 0, teilmengen.get(e.requestId) ?? 0))
+  teilmengen.delete(e.requestId)
+})
+
+cdp.on('Network.loadingFailed', (e) => {
+  if (!zaehlbar(adressen.get(e.requestId))) return
+  offen = Math.max(0, offen - 1)
+  zuletzt = Date.now()
+})
+
+async function durchgang(beschriftung) {
+  posten = new Map()
+  teilmengen.clear()
+  offen = 0
+  zuletzt = Date.now()
+  zaehlen = true
+
+  await serverBytes(true)
+  const start = Date.now()
+  await seite.goto(ADRESSE, { waitUntil: 'load', timeout: 180_000 })
+  const geladen = Date.now() - start
+
+  /*
+   * Warten, bis das Netz ruhig ist, statt eine feste Zeit abzusitzen.
+   *
+   * Ruhe heisst: nichts mehr unterwegs, und seit einer Weile nichts Neues.
+   * Beide Hälften sind nötig. Nur auf neue Anfragen zu achten übersieht eine
+   * einzelne lange Übertragung; nur auf abgeschlossene zu achten hält eine
+   * laufende für eine Pause. Unter Drosselung liegen zwischen dem Beginn einer
+   * Anfrage und ihrem Ende zweistellige Sekunden.
+   */
+  const RUHE = netz ? 6_000 : 2_500
+  const FRIST = netz ? 240_000 : 60_000
+  while ((offen > 0 || Date.now() - zuletzt < RUHE) && Date.now() - start < FRIST) {
+    await seite.waitForTimeout(500)
+  }
+  const fertig = Date.now() - start - RUHE
+
+  zaehlen = false
+
+  // Die eigenen Bytes aus dem Server nachtragen, gruppiert wie die fremden.
+  for (const [pfad, bytes] of Object.entries(await serverBytes(true))) {
+    const gruppe = gruppeFuer(pfad)
+    const alt = posten.get(gruppe) ?? { anzahl: 0, bytes: 0 }
+    posten.set(gruppe, { anzahl: alt.anzahl + 1, bytes: alt.bytes + bytes })
+  }
+
+  return { beschriftung, geladen, fertig: Math.max(fertig, geladen), posten }
+}
+
+const kalt = await durchgang('kalt (neuer Besucher)')
+const warm = await durchgang('warm (Wiederbesuch)')
 
 await browser.close()
 server.kill()
 
 /* --------------------------------------------------------------- Bericht */
 
-const kb = (b) => (b / 1024).toFixed(0)
+const kb = (b) => Math.round(b / 1024)
 
-function zeige({ beschriftung, geladen, fertig, posten }) {
-  const reihen = [...posten.entries()].sort((a, b) => b[1].bytes - a[1].bytes)
-  const gesamt = reihen.reduce((s, [, v]) => s + v.bytes, 0)
-  const eigen = reihen.filter(([k]) => !k.startsWith('fremd:'))
+function zeige({ beschriftung, geladen, fertig, posten: p }) {
+  const reihen = [...p.entries()].sort((a, b) => b[1].bytes - a[1].bytes)
+  const summe = (nurEigen) => reihen
+    .filter(([k]) => !nurEigen || !k.startsWith('fremd:'))
     .reduce((s, [, v]) => s + v.bytes, 0)
 
   console.log(`\n  ${beschriftung}`)
-  console.log(`  ${'—'.repeat(58)}`)
+  console.log(`  ${'—'.repeat(60)}`)
   for (const [name, v] of reihen) {
-    if (v.bytes < 1024 && v.anzahl < 3) continue
     console.log(`   ${name.padEnd(42)} ${String(kb(v.bytes)).padStart(5)} KB  ${String(v.anzahl).padStart(3)}×`)
   }
+  const eigen = summe(true)
   console.log(`   ${'davon von uns'.padEnd(42)} ${String(kb(eigen)).padStart(5)} KB`)
-  console.log(`   ${'insgesamt über die Leitung'.padEnd(42)} ${String(kb(gesamt)).padStart(5)} KB`)
+  console.log(`   ${'insgesamt über die Leitung'.padEnd(42)} ${String(kb(summe(false))).padStart(5)} KB`)
   console.log(`   ${'bis load-Ereignis'.padEnd(42)} ${String(geladen).padStart(5)} ms`)
-  console.log(`   ${'bis die Karte vollständig ist'.padEnd(42)} ${String(Math.max(fertig, geladen)).padStart(5)} ms`)
-  return { gesamt, eigen }
+  console.log(`   ${'bis die Karte vollständig ist'.padEnd(42)} ${String(fertig).padStart(5)} ms`)
+  return eigen
 }
 
 console.log(`\n  Kaltstart-Messung — Netzprofil: ${netzName}`)
+console.log('  Gezählt werden Bytes über die Leitung, komprimiert und mit Kopfzeilen.')
 const k = zeige(kalt)
 const w = zeige(warm)
 
-const gespart = k.eigen > 0 ? Math.round((1 - w.eigen / k.eigen) * 100) : 0
-console.log(`\n  Der Wiederbesuch holt ${gespart} % unserer eigenen Bytes nicht mehr.`)
+const gespart = k > 0 ? Math.round((1 - w / k) * 100) : 0
+console.log(`\n  Der Wiederbesuch holt ${gespart} % unserer eigenen Bytes nicht mehr aus dem Netz.`)
 console.log('  Bleibt dieser Wert klein, arbeitet der Service Worker nicht — dann')
 console.log('  zuerst prüfen, ob sw.js ausgeliefert und angemeldet wird.\n')

@@ -22,3 +22,21 @@ export function serviceWorkerAnmelden() {
       .catch(() => {})
   })
 }
+
+/**
+ * Dem Service Worker sagen, dass die Seite durch ist.
+ *
+ * Er wärmt seinen Cache erst danach vor. Das klingt nach einer Feinheit und
+ * ist keine: wärmt er früher vor, holt er genau die Dateien ein zweites Mal,
+ * die die Seite gerade selbst lädt. Gemessen kostete das auf gedrosseltem Netz
+ * 346 KB umsonst — für die Zonendatei, ausgerechnet.
+ *
+ * Aufgerufen wird das, wenn die Kartendaten stehen (siehe App.tsx). Kommt kein
+ * Service Worker zustande, passiert schlicht nichts.
+ */
+export function serviceWorkerVorwaermen() {
+  if (!import.meta.env.PROD || !('serviceWorker' in navigator)) return
+  navigator.serviceWorker.ready
+    .then((reg) => reg.active?.postMessage({ typ: 'vorwaermen' }))
+    .catch(() => {})
+}

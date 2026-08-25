@@ -12,9 +12,12 @@
  *
  * Bewusst schlicht: das ist ein Prüfwerkzeug, kein Produktionsserver. Es
  * unterstützt vom `_headers`-Format nur, was wir benutzen — Pfadmuster mit
- * höchstens einem abschliessenden `*`.
+ * höchstens einem abschliessenden `*`. Komprimiert wird trotzdem: sonst
+ * antwortet er in der falschen Grössenordnung, und jede Messung dagegen ist
+ * wertlos.
  */
 import { createServer } from 'node:http'
+import { gzipSync } from 'node:zlib'
 import { readFile } from 'node:fs/promises'
 import { existsSync, readFileSync } from 'node:fs'
 import { extname, join, normalize } from 'node:path'
@@ -81,8 +84,31 @@ const BASIS = basisLesen()
 const passt = (muster, pfad) =>
   muster.endsWith('*') ? pfad.startsWith(muster.slice(0, -1)) : muster === pfad
 
+/**
+ * Was der Server tatsächlich hinausgeschickt hat.
+ *
+ * Das klingt nach einer Kleinigkeit und ist die einzig verlässliche Zahl:
+ * Im Browser gemessen fehlen die Bytes, die der Service Worker in seinem
+ * eigenen Prozess holt — die Netzwerk-Sicht einer Seite endet an dieser
+ * Grenze. Hier gibt es keine Grenze. Was der Server sendet, ging über die
+ * Leitung; was er nicht sendet, kam aus einem Cache.
+ *
+ * `scripts/kaltstart-messen.mjs` liest das über GET /__messung ab und setzt
+ * es mit ?reset=1 zurück.
+ */
+const gezaehlt = new Map()
+
 createServer(async (anfrage, antwort) => {
-  const pfad = decodeURIComponent(new URL(anfrage.url, 'http://x').pathname)
+  const adresse = new URL(anfrage.url, 'http://x')
+  const pfad = decodeURIComponent(adresse.pathname)
+
+  if (pfad === '/__messung') {
+    const daten = Object.fromEntries(gezaehlt)
+    if (adresse.searchParams.has('reset')) gezaehlt.clear()
+    antwort.setHeader('Content-Type', 'application/json')
+    antwort.end(JSON.stringify(daten))
+    return
+  }
   // Den Basispfad abstreifen, bevor im Verzeichnis gesucht wird — die Regeln
   // aus _headers gelten dagegen für den ungekürzten Pfad, so wie beim CDN.
   const ohneBasis = BASIS !== '/' && pfad.startsWith(BASIS) ? pfad.slice(BASIS.length - 1) : pfad
@@ -102,8 +128,31 @@ createServer(async (anfrage, antwort) => {
     if (!passt(muster, pfad)) continue
     for (const [name, wert] of Object.entries(kopfzeilen)) antwort.setHeader(name, wert)
   }
-  antwort.setHeader('Content-Type', TYPEN[extname(datei)] ?? 'application/octet-stream')
-  antwort.end(inhalt)
+  const typ = TYPEN[extname(datei)] ?? 'application/octet-stream'
+  antwort.setHeader('Content-Type', typ)
+
+  /*
+   * Komprimieren, weil Cloudflare das auch tut.
+   *
+   * Ohne das log dieser Server rund das Dreifache dessen aus, was live über
+   * die Leitung geht — und eine Messung gegen ihn (scripts/kaltstart-messen.mjs)
+   * meldete entsprechend Fantasiewerte. Ein Prüfwerkzeug, das in der falschen
+   * Grössenordnung antwortet, ist schlimmer als keines.
+   *
+   * Bereits gepackte Formate bleiben unangetastet: sie werden durch gzip nicht
+   * kleiner, nur langsamer.
+   */
+  const gepackt = /gzip/.test(anfrage.headers['accept-encoding'] ?? '')
+    && !/\.(webp|png|jpe?g|woff2?|avif|gz)$/.test(datei)
+    && inhalt.length > 1024
+  const koerper = gepackt ? gzipSync(inhalt, { level: 6 }) : inhalt
+  if (gepackt) {
+    antwort.setHeader('Content-Encoding', 'gzip')
+    antwort.setHeader('Vary', 'Accept-Encoding')
+  }
+  antwort.setHeader('Content-Length', String(koerper.length))
+  gezaehlt.set(pfad, (gezaehlt.get(pfad) ?? 0) + koerper.length)
+  antwort.end(koerper)
 }).listen(PORT, () => {
   console.log(`Vorschau mit Kopfzeilen: http://localhost:${PORT}${BASIS}`)
   console.log(`${REGELN.length} Regel(n) aus dist/_headers übernommen.`)

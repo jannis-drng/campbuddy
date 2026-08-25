@@ -42,24 +42,73 @@ const EINSTIEG = `${BASIS}index.html`
 const KERN = "%PRECACHE%"
 
 self.addEventListener('install', (e) => {
-  // Vorwärmen, damit schon der zweite Aufruf ohne Netz auskommt. Das kostet
-  // hier fast nichts: die Dateien liegen bereits im HTTP-Cache des Browsers
-  // (sie tragen `immutable`), der Service Worker holt sie also nicht neu aus
-  // dem Netz, sondern nur in seinen eigenen Speicher.
-  //
-  // Einzeln statt `addAll`, weil `addAll` bei einem einzigen Fehlschlag alles
-  // verwirft. Eine Ebene weniger im Cache ist besser als gar kein Cache.
+  // Nur die Hülle, und sofort übernehmen. Das Vorwärmen der grossen Dateien
+  // passiert bewusst NICHT hier — siehe `vorwaermen`.
   e.waitUntil(
     caches.open(CACHE)
-      .then((c) => Promise.all(
-        [BASIS, EINSTIEG, ...(Array.isArray(KERN) ? KERN : [])]
-          .map((u) => c.add(u).catch(() => {})),
-      ))
+      .then((c) => Promise.all([BASIS, EINSTIEG].map((u) => c.add(u).catch(() => {}))))
       .catch(() => {})
       // Nicht auf das Schliessen aller Tabs warten. Bei einer Seite, die man
       // im Gehen benutzt, ist „beim nächsten Mal" praktisch nie.
       .then(() => self.skipWaiting()),
   )
+})
+
+/**
+ * Die Kerndateien in den eigenen Speicher holen — ohne sie neu herunterzuladen.
+ *
+ * Der springende Punkt ist `cache: 'force-cache'`. Der Service Worker meldet
+ * sich an, während die Seite noch lädt; ein gewöhnliches `fetch` holte genau
+ * die Dateien ein zweites Mal, die die Seite in derselben Sekunde selbst
+ * anfordert — gemessen kostete das den ersten Besuch rund 350 KB umsonst.
+ *
+ * `force-cache` sagt dem Browser: nimm, was du hast, und geh nur ans Netz,
+ * wenn du nichts hast. Weil alles unter /assets/ einen Inhalts-Hash trägt,
+ * ist das immer die richtige Datei — es gibt keine veraltete Fassung unter
+ * demselben Namen.
+ *
+ * `force-cache` allein reicht aber nicht: solange die Anfrage der Seite noch
+ * unterwegs ist, liegt die Datei eben *noch nicht* im Cache, und dann geht
+ * auch force-cache ans Netz. Das Vorwärmen muss also warten, bis die Seite
+ * fertig geladen hat.
+ *
+ * Wann das ist, weiss nur die Seite selbst — sie sagt es per `postMessage`,
+ * sobald ihre Kartendaten stehen (siehe `services/sw.ts`). Zwei einfachere
+ * Versuche waren vorher da und beide falsch: eine feste Wartezeit muss raten
+ * und kommt auf langsamen Leitungen zu früh; „seit drei Sekunden lief nichts
+ * durch den fetch-Handler" hält die lange Übertragung des Kartenbündels für
+ * eine Pause. Gemessen holte der Service Worker dann die Zonendatei ein
+ * zweites Mal — 346 KB umsonst, ausgerechnet auf der langsamen Leitung.
+ *
+ * Was durch den fetch-Handler gelaufen ist, wird übersprungen; es liegt dort
+ * bereits. Nacheinander statt gleichzeitig: das läuft neben dem, was der
+ * Nutzer gerade tut, und soll ihm die Leitung nicht wegnehmen.
+ */
+const gesehen = new Set()
+let laeuft = false
+
+async function vorwaermen() {
+  if (!Array.isArray(KERN) || laeuft) return
+  laeuft = true
+  const c = await caches.open(CACHE)
+  for (const u of KERN) {
+    if (gesehen.has(u) || await c.match(u)) continue
+    try {
+      const res = await fetch(u, { cache: 'force-cache' })
+      if (res.ok && res.status === 200) await c.put(u, res)
+    } catch { /* eine Ebene weniger im Cache ist besser als kein Cache */ }
+  }
+}
+
+/**
+ * Die Seite meldet, dass sie durch ist.
+ *
+ * Bleibt die Meldung aus — jemand schliesst den Tab beim Laden —, wird
+ * einfach nicht vorgewärmt. Der Cache ist dann so voll, wie der fetch-Handler
+ * ihn gefüllt hat, und das ist genau das, was die Seite tatsächlich brauchte.
+ */
+self.addEventListener('message', (e) => {
+  if (e.data?.typ === 'vorwaermen') e.waitUntil(vorwaermen())
 })
 
 self.addEventListener('activate', (e) => {
@@ -98,6 +147,10 @@ self.addEventListener('fetch', (e) => {
   // MapLibre, die Zonen, die Gemeindekacheln, alles kommt beim zweiten Besuch
   // ohne eine einzige Netzanfrage.
   if (url.pathname.startsWith(`${BASIS}assets/`)) {
+    // Mitschreiben, was hier durchläuft: `vorwaermen` überspringt es dann und
+    // holt es nicht ein zweites Mal, während die Seite noch daran zieht.
+    gesehen.add(url.pathname)
+
     e.respondWith(
       caches.match(request).then((treffer) => treffer ?? fetch(request).then((res) => {
         // Nur Vollantworten aufheben. Eine 206 oder ein Fehler im Cache wäre

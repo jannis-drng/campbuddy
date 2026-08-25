@@ -32,6 +32,7 @@ import {
 import { BasemapSwitcher } from './components/BasemapSwitcher'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
+import { serviceWorkerVorwaermen } from './services/sw'
 import { linkErgebnisAuslesen, saveTour, useSession, type LinkErgebnis } from './services/account'
 import { ORT_UMKREIS_M, type Ortsfilter } from './services/community'
 import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
@@ -154,7 +155,13 @@ export default function App() {
     // Zonen sind der Kern: bleiben sie aus, ist die Karte keine Legalitätskarte
     // mehr und muss das sagen, statt leer und zuversichtlich auszusehen.
     ladeZonen(regionCode)
-      .then((z) => { if (aktuell) setAllZones(z) })
+      .then((z) => {
+        if (!aktuell) return
+        setAllZones(z)
+        // Erst jetzt darf der Service Worker seinen Cache füllen: vorher
+        // konkurrierte er mit genau diesem Ladevorgang.
+        serviceWorkerVorwaermen()
+      })
       .catch(() => { if (aktuell) setDatenFehler(true) })
     ladePunkte(regionCode)
       .then((p) => { if (aktuell) setAllPoints(p) })
