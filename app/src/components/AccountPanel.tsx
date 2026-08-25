@@ -22,7 +22,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
   AtSign, BadgeCheck, Check, ChevronRight, Eye, EyeOff, KeyRound, Loader2, Lock, LogOut, Mail,
-  Map as MapIcon, ShieldCheck, Sparkles, Trash2, TriangleAlert, UserRound, X,
+  Map as MapIcon, ShieldCheck, Trash2, TriangleAlert, UserRound, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Badge, Button, Card, Eingabe, Hinweis, Label, Leer, Segmente, Seite, Stufen } from '../ui'
@@ -68,11 +68,11 @@ export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnis
   if (!isSupabaseConfigured) {
     return (
       <Seite titel="Konto" breite="schmal"
-             beschreibung="Für dieses Projekt ist kein Backend hinterlegt.">
+             beschreibung="Alles Wesentliche funktioniert ohne Anmeldung.">
         <Leer
           icon={UserRound}
-          titel="Hier gibt es nichts anzumelden"
-          text="Karte, Routenplanung und Auswertung funktionieren vollständig ohne Konto. Sobald ein Backend hinterlegt ist, entsteht an dieser Stelle die Anmeldung."
+          titel="Für diese Karte brauchst du kein Konto"
+          text="Karte, Rechtslage, Routenplanung und Auswertung stehen dir vollständig offen — auch ohne Anmeldung."
         />
       </Seite>
     )
@@ -576,7 +576,7 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
           Gespeichert wird nur, was du selbst anlegst — kein Tracking, keine Weitergabe.
         </Zusage>
         <Zusage icon={Lock}>
-          Die Daten liegen in der EU-Region des Supabase-Projekts.
+          Deine Daten liegen auf Servern in der EU.
         </Zusage>
       </ul>
     </div>
@@ -755,35 +755,6 @@ function AngemeldeteAnsicht({
             </div>
           </form>
         )}
-      </Feldkarte>
-
-      {/* ---- Abo (Platzhalter) ---- */}
-      <Feldkarte
-        icon={Sparkles}
-        titel="Abo"
-        beschreibung={bezahlt
-          ? profil?.abo_bis
-            ? `CampBuddy Plus, läuft bis ${new Date(profil.abo_bis).toLocaleDateString('de-DE')}.`
-            : 'CampBuddy Plus ist aktiv.'
-          : 'Du nutzt die kostenlose Fassung — alle Grundfunktionen ohne Kosten.'}
-        beiwerk={
-          <Button variante="sekundaer" groesse="klein" disabled title="Noch nicht verfügbar">
-            Bald verfügbar
-          </Button>
-        }
-      >
-        <ul className="space-y-1.5 rounded-mittel bg-flaeche-1 p-3.5">
-          {['Weitere Regionen', 'Offline-Karten', 'Unbegrenzt gespeicherte Touren'].map((z) => (
-            <li key={z} className="flex items-center gap-2.5 text-klein text-ink-300">
-              <span aria-hidden className="h-1 w-1 shrink-0 rounded-full bg-ink-600" />
-              {z}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-          Geplant für später (Abschnitt 5 der Spezifikation). Die Grundkarte für die
-          Basis-Region bleibt kostenlos. Es ist noch nichts buchbar und nichts abgerechnet.
-        </p>
       </Feldkarte>
 
       {/* ---- Sicherheit ---- */}

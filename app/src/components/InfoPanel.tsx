@@ -335,7 +335,7 @@ function RegionBody({
           <strong className="font-semibold">
             {gemeindeRecht
               ? `Für ${gemeinde.name} ist die Frage nur teilweise geklärt.`
-              : `Für ${gemeinde.name} ist noch nicht recherchiert.`}
+              : `Für ${gemeinde.name} liegt kein Reglement vor.`}
           </strong>{' '}
           {gemeindeRecht
             ? 'Das gefundene Reglement regelt nur einen Teil — was oben steht, ist alles, was es hergibt.'
@@ -374,7 +374,7 @@ function RegionBody({
       */}
       {kanton && !recht && !gemeinde && (
         <Hinweis ton="warnung" icon={Scale}>
-          <strong className="font-semibold">Kantonale Regelung noch nicht recherchiert.</strong>{' '}
+          <strong className="font-semibold">Für diesen Kanton liegt keine eigene Regelung vor.</strong>{' '}
           Zuständig ist hier {kanton.name}
           {kanton.code && ` (${kanton.code})`}, dazu die Gemeinde. Was unten steht, ist der
           landesweite Rahmen — er ersetzt die kantonale Auskunft nicht. Erkundige dich vor
@@ -486,8 +486,9 @@ function RegionBody({
         </Hinweis>
       ) : (
         <Hinweis ton="warnung" icon={FileWarning}>
-          {stats.total} Flächen erfasst, davon <strong className="font-semibold">{stats.entwurf} ungeprüft</strong>.
-          Ungeprüfte Flächen haben auf der Karte einen gestrichelten Rand.
+          Von {stats.total} Schutzgebieten auf dieser Karte sind{' '}
+          <strong className="font-semibold">{stats.entwurf} nicht amtlich belegt</strong> — sie
+          tragen einen gestrichelten Rand.
         </Hinweis>
       )}
 
@@ -739,11 +740,12 @@ function QuellenBlock({
       </p>
       {nurGeometrie && (
         <p className="mt-1 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-          Die rechtliche Einstufung stammt nicht aus OpenStreetMap, sondern aus eigener Pflege.
+          Die Geometrie stammt aus offenen Kartendaten; die rechtliche Einstufung wird
+          separat gepflegt und belegt.
         </p>
       )}
       <p className="mt-1 text-mikro normal-case tracking-normal text-ink-500">
-        Eigene Prüfung: {lastVerified ?? 'noch nicht erfolgt'}
+        {lastVerified ? `Zuletzt geprüft: ${lastVerified}` : 'Vor Ort noch nicht nachgeprüft'}
       </p>
     </section>
   )

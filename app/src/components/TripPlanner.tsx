@@ -269,16 +269,17 @@ export function TripPlanner({
                         </span>
                       </div>
                       <p className="mt-1 text-klein leading-relaxed text-ink-400">{item.rationale}</p>
-                      {url ? (
+                      {/*
+                        Ohne hinterlegten Händler steht hier nichts. Ein
+                        abgeschaltetes „bald verfügbar" ist für den, der gerade
+                        packt, keine Auskunft — nur ein Blick in die Werkstatt.
+                      */}
+                      {url && (
                         <a href={url} target="_blank" rel="noreferrer noopener sponsored"
                            className="mt-1.5 inline-block text-klein text-gletscher-400 hover:underline">
                           Zum Produkt <ExternalLink size={11} strokeWidth={2.5} className="inline" aria-hidden />
                         </a>
-                      ) : item.vendor ? (
-                        <span className="mt-1.5 inline-block rounded bg-flaeche-1 px-2 py-0.5 text-mikro text-ink-500">
-                          Kauf-Link bald verfügbar
-                        </span>
-                      ) : null}
+                      )}
                     </li>
                   )
                 })}

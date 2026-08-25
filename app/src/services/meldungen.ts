@@ -70,7 +70,7 @@ export async function meldungAbsenden(
     // kein Fehler des Meldenden — aber verschweigen wäre schlimmer, denn er
     // ginge davon aus, die Meldung sei angekommen.
     if (error.code === 'PGRST205' || error.code === '42P01') {
-      throw new Error('Die Meldefunktion ist noch nicht eingerichtet.')
+      throw new Error('Meldungen lassen sich gerade nicht entgegennehmen. Versuch es später noch einmal.')
     }
     throw new Error('Die Meldung konnte nicht gesendet werden.')
   }

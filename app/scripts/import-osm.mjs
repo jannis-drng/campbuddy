@@ -1185,32 +1185,32 @@ const REGELN = [
   {
     trifft: (t) => t.leisure === 'nature_reserve' || t.boundary === 'national_park',
     status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'als Naturschutzgebiet beziehungsweise Nationalpark erfasst',
-    folgerung: 'Dort ist Übernachten im Freien in der Schweiz in der Regel untersagt.',
+    grund: 'Naturschutzgebiet oder Nationalpark',
+    folgerung: 'Übernachten im Freien ist dort in der Schweiz in der Regel untersagt.',
   },
   {
     trifft: (t) => /jagdbann/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
     status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'als eidgenössisches Jagdbanngebiet erfasst',
+    grund: 'Eidgenössisches Jagdbanngebiet',
     folgerung: 'Diese Gebiete schützen Wild vor Störung (VEJ, SR 922.31); Übernachten im Gelände ist damit in aller Regel unvereinbar.',
   },
   {
     trifft: (t) => /wildruhe|wildschutz/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
     status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'als Wildruhezone beziehungsweise Wildschutzgebiet erfasst',
-    folgerung: 'Wildruhezonen sind gerade dafür da, dass Wild ungestört bleibt — vielerorts nur im Winterhalbjahr, aber dann verbindlich.',
+    grund: 'Wildruhezone beziehungsweise Wildschutzgebiet',
+    folgerung: 'Solche Zonen sollen Wild ungestört lassen — vielerorts nur im Winterhalbjahr, dann aber verbindlich.',
   },
   {
     trifft: (t) => /moor|ried|auengebiet|aue\b/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
     status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'als Moor-, Ried- oder Auengebiet erfasst',
-    folgerung: 'Moor- und Auenflächen von nationaler Bedeutung sind bundesrechtlich geschützt und trittempfindlich; Zelten und Feuer sind dort untersagt.',
+    grund: 'Moor-, Ried- oder Auengebiet',
+    folgerung: 'Flächen von nationaler Bedeutung sind bundesrechtlich geschützt und trittempfindlich; Zelten und Feuer sind dort untersagt.',
   },
   {
     trifft: (t) => STRENGE_SCHUTZKLASSEN.has(String(t.protect_class ?? '')),
     status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: (t) => `als Schutzgebiet der IUCN-Klasse ${t.protect_class} erfasst`,
-    folgerung: 'Schutzgebiete dieser Klassen sind streng geschützt; Übernachten im Freien ist dort in der Regel untersagt.',
+    grund: (t) => `Streng geschütztes Gebiet (IUCN-Schutzkategorie ${t.protect_class})`,
+    folgerung: 'Übernachten im Freien ist dort in der Regel untersagt.',
   },
   {
     // Die einzige Regel, die nicht auf „verboten" hinausläuft: Landschaftsschutz
@@ -1219,8 +1219,8 @@ const REGELN = [
     trifft: (t) => String(t.protect_class ?? '') === '5'
       || /landschaftsschutz|naturpark|landschaftspark/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
     status: 'tolerated', zelt: 'conditional', fahrzeug: 'no', feuer: 'conditional',
-    grund: 'als Landschaftsschutzgebiet beziehungsweise regionaler Naturpark erfasst',
-    folgerung: 'Kein pauschales Zeltverbot, aber Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind ausgenommen. Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.',
+    grund: 'Landschaftsschutzgebiet oder regionaler Naturpark',
+    folgerung: 'Kein pauschales Zeltverbot — Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind aber ausgenommen, und Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.',
   },
 ]
 
@@ -1261,8 +1261,8 @@ async function importRecht() {
       tent_allowed: ab.zelt,
       vehicle_allowed: ab.fahrzeug,
       fire_allowed: ab.feuer,
-      conditions: `Aus OpenStreetMap abgeleitet: ${ab.grund}. ${ab.folgerung}`,
-      notes: 'Regelbasiert abgeleitet, nicht einzeln recherchiert und nicht amtlich geprüft. Beschilderung vor Ort und Auskunft der Gemeinde gehen dieser Einstufung vor.',
+      conditions: `${ab.grund}. ${ab.folgerung}`,
+      notes: 'Diese Einstufung folgt der Schutzkategorie der Fläche und ist nicht durch ein einzelnes amtliches Dokument belegt. Beschilderung vor Ort und die Auskunft der Gemeinde gehen ihr vor.',
       review_status: 'entwurf',
       last_verified: null,
     }

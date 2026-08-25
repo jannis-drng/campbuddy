@@ -50,7 +50,7 @@ const GEMEINDEN = [
   ['Erlaubt', GEMEINDE_COLORS.allowed, true],
   ['Geduldet', GEMEINDE_COLORS.tolerated, true],
   ['Verboten', GEMEINDE_COLORS.forbidden, true],
-  ['… schraffiert: unbestätigt', GEMEINDE_COLORS.forbidden, false],
+  ['… schraffiert: ohne Beleg', GEMEINDE_COLORS.forbidden, false],
 ] as const
 
 /** Dieselbe Schraffur wie auf der Karte, nur als Kachel im Kästchen. */
@@ -129,9 +129,8 @@ export function Legend({ activity }: { activity: ActivityMode }) {
               ))}
             </div>
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Schraffiert heisst:
-              abgeleitet, nicht mit einem amtlichen Dokument belegt. Ohne Füllung heisst:
-              keine Gesamteinstufung — antippen zeigt, was bekannt ist und wen man fragen kann.
+              Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Ohne Füllung heisst:
+              hier gilt keine bekannte Gemeinderegel — antippen zeigt, wen du fragen kannst.
             </p>
           </div>
 
@@ -176,7 +175,7 @@ export function Legend({ activity }: { activity: ActivityMode }) {
             <svg viewBox="0 0 20 6" className="mt-1.5 h-1 w-5 shrink-0" aria-hidden>
               <line x1="0" y1="3" x2="20" y2="3" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" />
             </svg>
-            Gestrichelter Rand: Einstufung noch nicht geprüft
+            Gestrichelter Rand oder Schraffur: Einstufung ohne amtlichen Beleg
           </p>
         </div>
       )}

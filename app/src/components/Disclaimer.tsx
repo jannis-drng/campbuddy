@@ -43,10 +43,10 @@ export function DisclaimerBar() {
             (Waldbrandgefahr, Wildruhezonen im Winter) oder Gemeindebeschlüsse jederzeit ändern.
           </p>
           <p>
-            Angaben ohne Prüfdatum sind aus dem allgemeinen Rechtsrahmen abgeleitet und
-            <strong className="font-semibold"> nicht amtlich bestätigt</strong>. Jede Zone zeigt
-            ihren Prüfstand offen an. Beschilderung vor Ort und Auskünfte von Gemeinde oder
-            Wildhut gehen dieser Karte immer vor.
+            Angaben ohne benannte Quelle sind aus dem allgemeinen Rechtsrahmen abgeleitet und
+            <strong className="font-semibold"> nicht amtlich bestätigt</strong>. Jede Fläche zeigt
+            offen an, wie gut sie belegt ist. Beschilderung vor Ort und Auskünfte von Gemeinde
+            oder Wildhut gehen dieser Karte immer vor.
           </p>
         </div>
       )}

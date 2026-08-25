@@ -193,8 +193,8 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
       <Seite titel="Community" beschreibung="Touren, die andere geteilt haben.">
         <Leer
           icon={Compass}
-          titel="Keine geteilten Touren"
-          text="Für dieses Projekt ist kein Backend hinterlegt. Karte und Tourenplanung funktionieren ohne."
+          titel="Noch keine geteilten Touren"
+          text="Sobald jemand eine Tour teilt, steht sie hier. Karte und Tourenplanung funktionieren unabhängig davon."
         />
       </Seite>
     )

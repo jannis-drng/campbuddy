@@ -54,7 +54,7 @@ export async function ladeEigenePunkte(region: RegionCode): Promise<EigenerPunkt
 
 export async function punktAnlegen(entwurf: PunktEntwurf): Promise<EigenerPunkt> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data: userData } = await sb.auth.getUser()
   const user_id = userData.user?.id
   if (!user_id) throw new Error('Nicht angemeldet')
@@ -73,7 +73,7 @@ export async function punktAendern(
   felder: Partial<Pick<EigenerPunkt, 'name' | 'notiz' | 'typ' | 'ist_oeffentlich' | 'foto_pfad'>>,
 ): Promise<EigenerPunkt> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data, error } = await sb.from(TABELLE).update(felder).eq('id', id).select().single()
   if (error) throw new Error(uebersetze(error.message))
   return data as EigenerPunkt
@@ -82,7 +82,7 @@ export async function punktAendern(
 /** Löscht den Punkt und, falls vorhanden, sein Foto — sonst bliebe eine Waise im Speicher. */
 export async function punktLoeschen(punkt: EigenerPunkt): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   if (punkt.foto_pfad) await sb.storage.from(BUCKET).remove([punkt.foto_pfad])
   const { error } = await sb.from(TABELLE).delete().eq('id', punkt.id)
   if (error) throw new Error(uebersetze(error.message))
@@ -150,7 +150,7 @@ async function ladeBild(datei: File): Promise<ImageBitmap | HTMLImageElement> {
 /** Lädt das Foto hoch und gibt seinen Pfad im Bucket zurück. */
 export async function fotoHochladen(datei: File): Promise<string> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data: userData } = await sb.auth.getUser()
   const user_id = userData.user?.id
   if (!user_id) throw new Error('Nicht angemeldet')
@@ -192,10 +192,10 @@ function uebersetze(meldung: string): string {
     return 'Dafür fehlt die Berechtigung — bist du angemeldet?'
   }
   if (/relation .* does not exist|schema cache/i.test(meldung)) {
-    return 'Die Tabelle fehlt noch. Migration 0007 im SQL-Editor ausführen.'
+    return 'Eigene Punkte lassen sich gerade nicht speichern. Versuch es später noch einmal.'
   }
   if (/Bucket not found/i.test(meldung)) {
-    return 'Der Fotospeicher fehlt noch. Migration 0007 im SQL-Editor ausführen.'
+    return 'Fotos lassen sich gerade nicht hochladen. Versuch es später noch einmal.'
   }
   if (/exceeded the maximum allowed size|Payload too large/i.test(meldung)) {
     return 'Das Bild ist zu gross.'

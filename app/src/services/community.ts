@@ -193,7 +193,7 @@ export async function listLikeIds(): Promise<Set<string>> {
 
 export async function setLike(routeId: string, mag: boolean): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   if (mag) {
     const { data: userData } = await sb.auth.getUser()
     const user_id = userData.user?.id
@@ -303,7 +303,7 @@ export async function schreibeKommentar(
   routeId: string, text: string, autor: string | null, elternId?: string | null,
 ): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data: userData } = await sb.auth.getUser()
   const user_id = userData.user?.id
   if (!user_id) throw new Error('Nicht angemeldet')
@@ -336,7 +336,7 @@ export async function listKommentarLikeIds(kommentarIds: string[]): Promise<Set<
 
 export async function setKommentarLike(kommentarId: string, mag: boolean): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   if (mag) {
     const { data: userData } = await sb.auth.getUser()
     const user_id = userData.user?.id
@@ -408,7 +408,7 @@ function uebersetze(meldung: string): string {
     return 'Dafür fehlt die Berechtigung — bist du noch angemeldet, und ist die Tour noch geteilt?'
   }
   if (/relation .* does not exist|schema cache|column .* does not exist/i.test(meldung)) {
-    return 'Die Datenbank kennt diesen Teil noch nicht — Migration 0016 oder 0018 ist noch nicht eingespielt.'
+    return 'Das klappt gerade nicht. Versuch es später noch einmal.'
   }
   return meldung
 }

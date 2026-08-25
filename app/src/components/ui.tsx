@@ -78,24 +78,30 @@ export function PermissionRow({
 }
 
 /**
- * Der wichtigste Vertrauensbaustein: zeigt schonungslos, wie gut eine Angabe
- * belegt ist. Ein Entwurf darf nie aussehen wie eine geprüfte Auskunft.
+ * Der wichtigste Vertrauensbaustein: zeigt, wie gut eine Angabe belegt ist.
+ * Eine abgeleitete Einstufung darf nie aussehen wie eine belegte.
+ *
+ * Die Beschriftung beschreibt die *Angabe*, nicht den Arbeitsstand des
+ * Projekts: „Nicht amtlich belegt" sagt einem Nutzer, wie viel er auf die
+ * Farbe geben kann. „Entwurf" sagte ihm nur, dass hier jemand noch arbeitet.
  */
 export function ReviewBadge({
   status, lastVerified,
 }: { status: ReviewStatus; lastVerified: string | null }) {
   const karte = {
-    entwurf: { text: 'Entwurf, ungeprüft', ton: 'warnung', icon: FileWarning },
-    quelle: { text: 'Mit Quelle belegt', ton: 'akzent', icon: ShieldCheck },
-    'vor-ort': { text: 'Vor Ort verifiziert', ton: 'erlaubt', icon: MapPinCheck },
+    entwurf: { text: 'Nicht amtlich belegt', ton: 'warnung', icon: FileWarning },
+    quelle: { text: 'Amtlich belegt', ton: 'akzent', icon: ShieldCheck },
+    'vor-ort': { text: 'Vor Ort geprüft', ton: 'erlaubt', icon: MapPinCheck },
   }[status] as { text: string; ton: 'warnung' | 'akzent' | 'erlaubt'; icon: LucideIcon }
 
   return (
     <Badge ton={karte.ton} icon={karte.icon}>
       {karte.text}
-      <span className="font-normal normal-case tracking-normal opacity-70">
-        · {lastVerified ?? 'kein Prüfdatum'}
-      </span>
+      {lastVerified && (
+        <span className="font-normal normal-case tracking-normal opacity-70">
+          · Stand {lastVerified}
+        </span>
+      )}
     </Badge>
   )
 }

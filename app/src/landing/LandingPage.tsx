@@ -1,19 +1,22 @@
 /**
  * Die Startseite — was ein neuer Besucher zuerst sieht.
  *
- * Zwei Regeln haben diese Seite geformt:
+ * Drei Regeln haben diese Seite geformt:
  *
  * 1. Sie verkauft die *Rechtsfrage*, nicht die Funktionsliste. Tourenplaner
  *    gibt es genug; die Lücke ist „darf ich hier überhaupt schlafen?".
- * 2. Jede Zahl auf dieser Seite kommt aus den echten Daten des Projekts
- *    (`legalData`), nicht aus einer Marketingtabelle — inklusive der
- *    unangenehmen: dass bislang keine einzige Fläche amtlich geprüft ist.
- *    Erfundene Nutzerstimmen gibt es aus demselben Grund nicht; an ihrer
- *    Stelle stehen Anwendungsfälle.
+ * 2. Sie spricht aus der Sicht dessen, der draussen schlafen will — nicht aus
+ *    der des Projekts. Woher die Daten technisch kommen, wie weit die
+ *    Recherche ist und was strukturell schon vorbereitet wurde, interessiert
+ *    hier niemanden. Was zählt: was die Karte kann, was sie kostet, worauf
+ *    man sich verlassen kann und worauf nicht.
+ * 3. Jede Zahl kommt aus den echten Daten des Projekts (`zahlen.ts`), nicht
+ *    aus einer Marketingtabelle. Erfundene Nutzerstimmen gibt es aus
+ *    demselben Grund nicht; an ihrer Stelle stehen Anwendungsfälle.
  */
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import {
-  ArrowRight, Ban, CloudSun, Compass, Flame, FileWarning, Code2, Map, MapPinned,
+  ArrowRight, Ban, CloudSun, Compass, Flame, Landmark, Map, MapPinned,
   Menu, MountainSnow, Route, ScrollText, ShieldCheck, Tent, TriangleAlert, Truck, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -23,8 +26,7 @@ import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
 import { Einblenden } from './Einblenden'
 import { KartenSchema, Zeltmarke } from './Grafiken'
 import {
-  beispielZone, gipfelGesamt, punkteGesamt, punkteJeArt, zonenBelegt,
-  zonenGesamt, zonenUngeklaert, zonenVorOrt,
+  beispielZone, gemeindenGesamt, gipfelGesamt, punkteGesamt, punkteJeArt, zonenGesamt,
 } from './zahlen'
 
 import heroBild from '../assets/landing/hero-biwak.webp'
@@ -40,9 +42,10 @@ import wetterBildKlein from '../assets/landing/wetter-front-700.webp'
 import nachtBild from '../assets/landing/nacht-biwak.webp'
 import nachtBildKlein from '../assets/landing/nacht-biwak-960.webp'
 
-/* ------------------------------------------------------------------ Zahlen */
-
 const region = REGIONS[DEFAULT_REGION]
+
+/** Tausenderpunkte einmal an einer Stelle — nicht in jeder Zeile neu. */
+const zahl = (n: number) => n.toLocaleString('de-CH')
 
 /* ---------------------------------------------------------------- Bausteine */
 
@@ -116,7 +119,8 @@ export function LandingPage({ onStart }: { onStart: () => void }) {
         <Funktionen />
         <Ablauf />
         <Anwendungsfaelle />
-        <Pruefstand />
+        <Grundlage />
+        <Fragen />
         <Schluss onStart={onStart} />
       </main>
 
@@ -129,8 +133,9 @@ export function LandingPage({ onStart }: { onStart: () => void }) {
 
 const ABSCHNITTE: [string, string][] = [
   ['funktionen', 'Funktionen'],
-  ['ablauf', 'Ablauf'],
-  ['pruefstand', 'Prüfstand'],
+  ['ablauf', 'So funktioniert’s'],
+  ['grundlage', 'Rechtslage'],
+  ['fragen', 'Fragen'],
 ]
 
 function Kopfzeile({ onStart }: { onStart: () => void }) {
@@ -153,7 +158,7 @@ function Kopfzeile({ onStart }: { onStart: () => void }) {
           <span className="text-ueberschrift font-semibold tracking-tight text-ink-50">CampBuddy</span>
         </a>
 
-        <nav aria-label="Abschnitte" className="ml-auto hidden items-center gap-7 md:flex">
+        <nav aria-label="Abschnitte" className="ml-auto hidden items-center gap-7 lg:flex">
           {ABSCHNITTE.map(([id, label]) => (
             <a
               key={id}
@@ -165,27 +170,27 @@ function Kopfzeile({ onStart }: { onStart: () => void }) {
           ))}
         </nav>
 
-        <Button variante="primaer" icon={Map} onClick={onStart} className="ml-auto md:ml-0">
+        <Button variante="primaer" icon={Map} onClick={onStart} className="ml-auto lg:ml-0">
           Karte öffnen
         </Button>
 
         {/*
           Auf dem Telefon war die Abschnittsnavigation schlicht ausgeblendet —
-          drei Kapitel der Seite waren dort nur durch Scrollen erreichbar.
+          die Kapitel der Seite waren dort nur durch Scrollen erreichbar.
         */}
         <IconButton
           icon={menuOffen ? X : Menu}
           label={menuOffen ? 'Menü schliessen' : 'Menü öffnen'}
           onClick={() => setMenuOffen((v) => !v)}
           aria-expanded={menuOffen}
-          className="-mr-1.5 md:hidden"
+          className="-mr-1.5 lg:hidden"
         />
       </div>
 
       {menuOffen && (
         <nav
           aria-label="Abschnitte"
-          className="border-t border-kante bg-flaeche-1/95 backdrop-blur-lg md:hidden"
+          className="border-t border-kante bg-flaeche-1/95 backdrop-blur-lg lg:hidden"
         >
           <ul className={`${BREITE} flex flex-col py-2`}>
             {ABSCHNITTE.map(([id, label]) => (
@@ -237,7 +242,7 @@ function Hero({ onStart, zuAnker }: { onStart: () => void; zuAnker: (id: string)
       <div className={`${BREITE} flex min-h-[min(46rem,88vh)] flex-col justify-center py-24 sm:py-28`}>
         <Einblenden als="div" className="max-w-2xl">
           <Badge ton="akzent" icon={MountainSnow}>
-            {region.name} — die erste Region
+            Für die ganze {region.name}
           </Badge>
 
           <h1 className="mt-6 text-held font-semibold text-ink-50">
@@ -247,11 +252,11 @@ function Hero({ onStart, zuAnker }: { onStart: () => void; zuAnker: (id: string)
           </h1>
 
           <p className="mt-6 max-w-xl text-vorspann text-ink-200">
-            CampBuddy zeigt dir flächenscharf auf der Karte, wo Übernachten in der Natur
+            CampBuddy zeigt dir auf der Karte, wo Übernachten in der Natur
             <strong className="font-semibold text-erlaubt-400"> erlaubt</strong>,
             <strong className="font-semibold text-geduldet-400"> geduldet</strong> oder
             <strong className="font-semibold text-verboten-400"> verboten</strong> ist —
-            mit Quelle und Prüfstand an jeder einzelnen Fläche.
+            Fläche für Fläche, mit Quelle und Datum.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -264,7 +269,7 @@ function Hero({ onStart, zuAnker }: { onStart: () => void; zuAnker: (id: string)
           </div>
 
           <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-klein text-ink-400">
-            {['Kostenlos', 'Ohne Konto nutzbar', 'Offene Daten, keine Kartenlizenz'].map((t) => (
+            {['Kostenlos', 'Ohne Konto nutzbar', 'Landesweit'].map((t) => (
               <li key={t} className="flex items-center gap-2">
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gletscher-400" />
                 {t}
@@ -303,27 +308,26 @@ const QUELLEN = [
 ]
 
 function Kennzahlen() {
-  const zahlen: { wert: string; label: string; hinweis: string; ton?: 'warnung' }[] = [
+  const zahlen: { wert: string; label: string; hinweis: string }[] = [
     {
-      wert: String(zonenGesamt),
-      label: 'Schutzgebietsflächen',
-      hinweis: 'Geometrie aus OpenStreetMap, Einstufung selbst gepflegt',
+      wert: zahl(zonenGesamt),
+      label: 'Schutzgebiete',
+      hinweis: 'Naturschutzgebiete, Jagdbanngebiete, Wildruhezonen und Moorlandschaften',
     },
     {
-      wert: String(punkteGesamt),
-      label: 'Schlafmöglichkeiten',
+      wert: zahl(punkteGesamt),
+      label: 'Orte zum Übernachten',
       hinweis: `${punkteJeArt('hut')} Hütten · ${punkteJeArt('campsite')} Campingplätze · ${punkteJeArt('vehicle_spot')} Stellplätze`,
     },
     {
-      wert: String(region.legal_framework.references.length),
-      label: 'Rechtsgrundlagen',
-      hinweis: 'Bundesrecht, Kanton und Wildruhezonen, direkt verlinkt',
+      wert: zahl(gemeindenGesamt),
+      label: 'Gemeinden',
+      hinweis: 'Ausserhalb der Schutzgebiete entscheidet fast immer die Gemeinde',
     },
     {
-      wert: zonenBelegt.toLocaleString('de-CH'),
-      label: 'mit amtlicher Quelle',
-      hinweis: `BAFU-Inventare. ${zonenVorOrt} davon selbst vor Ort nachgesehen`,
-      ton: zonenBelegt > 0 ? undefined : 'warnung',
+      wert: gipfelGesamt ? zahl(gipfelGesamt) : '—',
+      label: 'Gipfel zur Orientierung',
+      hinweis: 'Dazu Quellen, Seen und Aussichtspunkte auf der Wanderkarte',
     },
   ]
 
@@ -335,13 +339,7 @@ function Kennzahlen() {
             <div key={z.label} className="bg-flaeche-2 px-6 py-7">
               <dt className="text-mikro font-medium uppercase text-ink-500">{z.label}</dt>
               <dd>
-                <p
-                  className={`mt-1.5 text-display font-semibold ${
-                    z.ton === 'warnung' ? 'text-geduldet-400' : 'text-ink-50'
-                  }`}
-                >
-                  {z.wert}
-                </p>
+                <p className="mt-1.5 text-display font-semibold text-ink-50">{z.wert}</p>
                 <p className="mt-2 text-klein leading-relaxed text-ink-400">{z.hinweis}</p>
               </dd>
             </div>
@@ -351,7 +349,7 @@ function Kennzahlen() {
 
       <Einblenden als="div" verzoegerung={80} className="mt-10">
         <p className="text-center text-mikro font-medium uppercase text-ink-500">
-          Gebaut auf offenen Daten und amtlichen Quellen
+          Daten aus amtlichen und offenen Quellen
         </p>
         <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {QUELLEN.map((q) => (
@@ -450,7 +448,7 @@ function Funktion({
   )
 }
 
-/** Zeigt eine echte Fläche aus den Projektdaten — inklusive ihres Prüfstands. */
+/** Zeigt eine echte Fläche aus den Projektdaten — so, wie sie auch in der App steht. */
 function Infokarte() {
   if (!beispielZone) return null
   return (
@@ -478,13 +476,13 @@ function Funktionen() {
   return (
     <section id="funktionen" className={`${BREITE} space-y-20 py-20 sm:space-y-28 sm:py-28`}>
       <Funktion
-        kapitel="Legalitäts-Ebene"
+        kapitel="Rechtslage auf der Karte"
         titel="Jede Fläche sagt dir, was gilt"
-        text="Antippen genügt. Zelt, Fahrzeug und Feuer stehen einzeln da — erlaubt, bedingt, verboten oder ehrlich als ungeklärt markiert."
+        text="Antippen genügt. Zelt, Fahrzeug und Feuer stehen einzeln da — erlaubt, bedingt, verboten oder ausdrücklich als ungeklärt markiert."
         punkte={[
           'Bedingungen im Klartext statt im Verordnungsdeutsch: „nur oberhalb der Waldgrenze", „ausserhalb der Kernzonen".',
           'Die Rechtsgrundlage steht als Link daneben — du kannst jede Aussage nachlesen.',
-          'Ausserhalb eingezeichneter Flächen gilt der Rahmen der Region, nicht stillschweigend „erlaubt".',
+          'Ausserhalb eingezeichneter Flächen gilt, was Gemeinde und Kanton sagen, nicht stillschweigend „erlaubt".',
         ]}
         visual={
           <div className="relative">
@@ -508,7 +506,7 @@ function Funktionen() {
         gedreht
         kapitel="Route & Auswertung"
         titel="Deine Route, rechtlich ausgewertet"
-        text="Zeichne die Strecke auf der Karte oder importiere die GPX-Datei aus deinem Tourenplaner. Die Legalitäts-Ebene legt sich darüber."
+        text="Zeichne die Strecke auf der Karte oder importiere die GPX-Datei aus deinem Tourenplaner. Die Rechtslage legt sich darüber."
         punkte={[
           'Welche Zonen die Route quert und wie viel der Strecke in Verbotsgebieten liegt.',
           'Welche Hütten, Campingplätze und Stellplätze in Routennähe zum Übernachten taugen.',
@@ -535,13 +533,13 @@ function Funktionen() {
       />
 
       <Funktion
-        kapitel="Punkte"
-        titel={`Hütte, Zeltplatz, Stellplatz — ${punkteGesamt} Punkte`}
-        text={`${punkteJeArt('hut')} Hütten, ${punkteJeArt('campsite')} Campingplätze und ${punkteJeArt('vehicle_spot')} Stellplätze fürs Fahrzeug, aus OpenStreetMap importiert und filterbar nach dem, wie du unterwegs bist.`}
+        kapitel="Schlafplätze"
+        titel={`Hütte, Zeltplatz, Stellplatz — ${zahl(punkteGesamt)} Orte`}
+        text={`${punkteJeArt('hut')} Hütten, ${punkteJeArt('campsite')} Campingplätze und ${punkteJeArt('vehicle_spot')} Stellplätze fürs Fahrzeug — landesweit erfasst und filterbar nach dem, wie du unterwegs bist.`}
         punkte={[
           'Filter nach Übernachtungsart: nur Zelt, nur Fahrzeug, nur wo Feuer erlaubt ist.',
-          'Etappenplanung setzt jeden Tag an einem Punkt mit Dach oder legalem Platz ab.',
-          `${gipfelGesamt?.toLocaleString('de-CH') ?? 'Tausende'} benannte Gipfel als Orientierung auf der Outdoor-Karte mit Höhenlinien.`,
+          'Die Etappenplanung setzt jeden Tag an einem Punkt mit Dach oder legalem Platz ab.',
+          `${gipfelGesamt ? zahl(gipfelGesamt) : 'Tausende'} benannte Gipfel, dazu Quellen und Aussichtspunkte auf der Wanderkarte mit Höhenlinien.`,
         ]}
         visual={
           <Foto
@@ -564,7 +562,7 @@ function Funktionen() {
         punkte={[
           'Die Vorhersage für deinen Reisezeitraum bestimmt Schlafsack und Kleidung mit.',
           'Verpflegung grob gerechnet: Kalorien pro Tag mal Tage mal Personen.',
-          'Kaufempfehlungen sind strukturell vorbereitet, aber bewusst noch nicht angebunden — du siehst Platzhalter, keine getarnte Werbung.',
+          'Gewicht pro Teil und in der Summe — damit vorher klar ist, was du wirklich trägst.',
         ]}
         visual={
           <Foto
@@ -587,13 +585,13 @@ function Funktionen() {
 const SCHRITTE: { icon: LucideIcon; titel: string; text: string }[] = [
   {
     icon: MountainSnow,
-    titel: 'Region öffnen',
-    text: 'Die Karte startet in der Schweiz — ohne Konto, ohne Einwilligungsdialog, ohne Umweg.',
+    titel: 'Karte öffnen',
+    text: 'Ohne Konto, ohne Einwilligungsdialog, ohne Umweg — die Karte steht sofort da.',
   },
   {
     icon: ShieldCheck,
     titel: 'Fläche antippen',
-    text: 'Rechtslage, Bedingungen, Quelle und Prüfstand stehen in der Infokarte. Ungeprüftes ist als solches markiert.',
+    text: 'Rechtslage, Bedingungen, Quelle und Stand stehen in der Infokarte. Was nicht belegt ist, ist als solches markiert.',
   },
   {
     icon: Route,
@@ -612,7 +610,7 @@ function Ablauf() {
     <section id="ablauf" className="border-y border-kante bg-flaeche-2/40">
       <div className={`${BREITE} py-20 sm:py-24`}>
         <Einblenden als="div" className="max-w-2xl">
-          <Kapitel>Ablauf</Kapitel>
+          <Kapitel>So funktioniert&rsquo;s</Kapitel>
           <Sektionstitel>In vier Schritten zur geplanten Nacht</Sektionstitel>
         </Einblenden>
 
@@ -670,8 +668,8 @@ function Anwendungsfaelle() {
         <Kapitel>Anwendungsfälle</Kapitel>
         <Sektionstitel>Drei Wege, wie die Karte benutzt wird</Sektionstitel>
         <p className="mt-4 text-vorspann text-ink-300">
-          Hier stehen bewusst keine Nutzerstimmen: die Karte ist neu, und erfundene Zitate wären
-          das genaue Gegenteil dessen, wofür dieses Projekt existiert.
+          Ob eine Nacht, eine Woche oder das Fahrzeug — die Frage bleibt dieselbe,
+          die Antwort nicht.
         </p>
       </Einblenden>
 
@@ -693,25 +691,35 @@ function Anwendungsfaelle() {
   )
 }
 
-/* -------------------------------------------------------------- Prüfstand */
+/* -------------------------------------------------------------- Grundlage */
 
-function Pruefstand() {
+/**
+ * Woher die Auskunft kommt — und wie belastbar sie ist.
+ *
+ * Der frühere Abschnitt rechnete an dieser Stelle den Recherchestand des
+ * Projekts vor. Das beantwortet keine Frage, die jemand mitbringt, der wissen
+ * will, ob er heute Nacht zelten darf. Was ihm hilft: dass jede Angabe ihre
+ * Herkunft trägt, dass die drei Stufen unterscheidbar sind — und dass die
+ * Karte nichts errät, wo sie nichts weiss.
+ */
+function Grundlage() {
   return (
-    <section id="pruefstand" className="border-y border-kante bg-flaeche-2/40">
+    <section id="grundlage" className="border-y border-kante bg-flaeche-2/40">
       <div className={`${BREITE} grid gap-12 py-20 sm:py-24 lg:grid-cols-2 lg:gap-16`}>
         <Einblenden als="div">
-          <Kapitel>Prüfstand</Kapitel>
-          <Sektionstitel>Was hier steht, steht mit Prüfstand da</Sektionstitel>
+          <Kapitel>Rechtslage</Kapitel>
+          <Sektionstitel>Jede Angabe nennt ihre Quelle</Sektionstitel>
           <p className="mt-4 text-vorspann text-ink-300">
-            Der Wert dieser Karte liegt nicht im Code, sondern in der Rechtsrecherche. Also wird
-            offengelegt, wie weit sie ist — an jeder Fläche, nicht im Kleingedruckten.
+            Eine Farbe auf der Karte ist nur so viel wert wie das, was hinter ihr steht.
+            Deshalb siehst du an jeder Fläche, worauf ihre Einstufung beruht und wann sie
+            zuletzt geprüft wurde.
           </p>
 
           <div className="mt-7 space-y-3">
             {[
-              { status: 'entwurf' as const, datum: null, text: 'Aus dem allgemeinen Rechtsrahmen abgeleitet, nicht amtlich bestätigt. Gestrichelter Rand auf der Karte.' },
-              { status: 'quelle' as const, datum: '2026-08-19', text: 'Mit einer benannten Quelle belegt, Prüfdatum sichtbar.' },
-              { status: 'vor-ort' as const, datum: '2026-08-19', text: 'Selbst vor Ort verifiziert — Beschilderung und Lage geprüft.' },
+              { status: 'entwurf' as const, datum: null, text: 'Aus dem übergeordneten Rechtsrahmen abgeleitet, ohne amtliches Dokument. Auf der Karte am gestrichelten Rand erkennbar.' },
+              { status: 'quelle' as const, datum: '2026-08-19', text: 'Durch ein amtliches Inventar, eine Verordnung oder ein Gemeindereglement belegt — der Beleg ist verlinkt.' },
+              { status: 'vor-ort' as const, datum: '2026-08-19', text: 'Zusätzlich vor Ort nachgesehen: Beschilderung und Lage stimmen mit der Einstufung überein.' },
             ].map((s) => (
               <div key={s.status} className="flex flex-col gap-2 rounded-mittel border border-kante bg-flaeche-1 px-4 py-3.5 sm:flex-row sm:items-start sm:gap-4">
                 <div className="shrink-0">
@@ -722,16 +730,14 @@ function Pruefstand() {
             ))}
           </div>
 
-          <div className="mt-6 flex gap-2.5 rounded-mittel border border-geduldet-500/20 bg-geduldet-500/[0.07] px-4 py-3.5">
-            <FileWarning size={16} strokeWidth={2} className="mt-px shrink-0 text-geduldet-400" aria-hidden />
-            <p className="text-klein leading-relaxed text-geduldet-400/90">
-              Ehrlicher Stand heute: von {zonenGesamt.toLocaleString('de-CH')} erfassten Flächen sind{' '}
-              <strong className="font-semibold">{zonenBelegt.toLocaleString('de-CH')} mit einer
-              amtlichen Quelle belegt</strong> — den Bundesinventaren für Jagdbanngebiete und
-              Wildruhezonen. Der Rest ist aus OpenStreetMap-Merkmalen abgeleitet, und{' '}
-              {zonenUngeklaert} sind ausdrücklich ungeklärt.{' '}
-              <strong className="font-semibold">Selbst vor Ort nachgesehen: {zonenVorOrt}.</strong>{' '}
-              Die Karte weist das an jeder Fläche aus, statt es zu verstecken.
+          <div className="mt-6 flex gap-2.5 rounded-mittel border border-kante bg-flaeche-1 px-4 py-3.5">
+            <Landmark size={16} strokeWidth={2} className="mt-px shrink-0 text-gletscher-400" aria-hidden />
+            <p className="text-klein leading-relaxed text-ink-400">
+              <strong className="font-semibold text-ink-200">Wo nichts belegt ist, wird nichts behauptet.</strong>{' '}
+              Zuständig sind Bund, Kanton und Gemeinde — und die feinste Ebene entscheidet.
+              Liegt für eine Gemeinde kein Reglement vor, bleibt ihre Fläche ungefüllt, und die
+              Karte gibt dir stattdessen Webseite und E-Mail der Gemeinde. Eine geratene Farbe
+              wäre hier das Schlechteste, was sie tun könnte.
             </p>
           </div>
         </Einblenden>
@@ -767,6 +773,57 @@ function Pruefstand() {
   )
 }
 
+/* ------------------------------------------------------------------ Fragen */
+
+const FRAGEN: { frage: string; antwort: ReactNode }[] = [
+  {
+    frage: 'Was kostet CampBuddy?',
+    antwort: 'Nichts. Karte, Rechtslage, Routenplanung, Auswertung und Packliste sind vollständig kostenlos nutzbar.',
+  },
+  {
+    frage: 'Brauche ich ein Konto?',
+    antwort: 'Zum Ansehen und Planen nicht. Ein Konto brauchst du erst, wenn du Touren speichern, teilen oder dir fremde merken willst.',
+  },
+  {
+    frage: 'Gilt die Karte für die ganze Schweiz?',
+    antwort: `Ja. Schutzgebiete, alle ${zahl(gemeindenGesamt)} Gemeinden und ${zahl(punkteGesamt)} Übernachtungsorte sind landesweit erfasst.`,
+  },
+  {
+    frage: 'Kann ich mich auf die Farben verlassen?',
+    antwort: 'Sie sind eine sorgfältig belegte Orientierungshilfe, keine Rechtsgarantie. Beschilderung vor Ort und die Auskunft der Gemeinde gehen immer vor — und jede Fläche zeigt dir, wie gut sie belegt ist.',
+  },
+  {
+    frage: 'Was, wenn für meine Gemeinde nichts hinterlegt ist?',
+    antwort: 'Dann bleibt ihre Fläche ungefüllt, statt eine Regel zu erfinden. Die Infokarte nennt dir Webseite und E-Mail der Gemeinde, damit du in einem Schritt weiterkommst.',
+  },
+  {
+    frage: 'Kann ich meine Route aus einem anderen Planer mitbringen?',
+    antwort: 'Ja, als GPX-Datei — und genauso wieder heraus, für komoot, Organic Maps, OsmAnd oder das GPS-Gerät.',
+  },
+]
+
+function Fragen() {
+  return (
+    <section id="fragen" className={`${BREITE} py-20 sm:py-24`}>
+      <Einblenden als="div" className="max-w-2xl">
+        <Kapitel>Fragen</Kapitel>
+        <Sektionstitel>Kurz beantwortet</Sektionstitel>
+      </Einblenden>
+
+      <dl className="mt-10 grid gap-5 md:grid-cols-2">
+        {FRAGEN.map((f, i) => (
+          <Einblenden als="div" key={f.frage} verzoegerung={(i % 2) * 90}>
+            <Card className="h-full p-6">
+              <dt className="text-ueberschrift font-semibold text-ink-50">{f.frage}</dt>
+              <dd className="mt-2 text-fliess leading-relaxed text-ink-400">{f.antwort}</dd>
+            </Card>
+          </Einblenden>
+        ))}
+      </dl>
+    </section>
+  )
+}
+
 /* ------------------------------------------------------------- Abschluss-CTA */
 
 function Schluss({ onStart }: { onStart: () => void }) {
@@ -790,17 +847,9 @@ function Schluss({ onStart }: { onStart: () => void }) {
             Karte öffnen, Fläche antippen, Route ziehen. Kein Konto nötig — das brauchst du erst,
             wenn du Touren speichern willst.
           </p>
-          <div className="mt-9 flex flex-wrap justify-center gap-3">
+          <div className="mt-9 flex justify-center">
             <Button variante="primaer" groesse="gross" icon={Map} onClick={onStart}>
               Karte öffnen
-            </Button>
-            <Button
-              variante="sekundaer"
-              groesse="gross"
-              icon={Code2}
-              onClick={() => window.open('https://github.com/jannis-drng/campbuddy', '_blank', 'noopener')}
-            >
-              Projekt auf GitHub
             </Button>
           </div>
         </Einblenden>
@@ -834,8 +883,9 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
               </button>
             </li>
             <li><a href="#funktionen" className="transition-colors duration-[160ms] hover:text-gletscher-300">Funktionen</a></li>
-            <li><a href="#ablauf" className="transition-colors duration-[160ms] hover:text-gletscher-300">Ablauf</a></li>
-            <li><a href="#pruefstand" className="transition-colors duration-[160ms] hover:text-gletscher-300">Prüfstand</a></li>
+            <li><a href="#ablauf" className="transition-colors duration-[160ms] hover:text-gletscher-300">So funktioniert&rsquo;s</a></li>
+            <li><a href="#grundlage" className="transition-colors duration-[160ms] hover:text-gletscher-300">Rechtslage</a></li>
+            <li><a href="#fragen" className="transition-colors duration-[160ms] hover:text-gletscher-300">Fragen</a></li>
           </ul>
         </nav>
 
@@ -856,16 +906,6 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
             CampBuddy stellt Rechtsinformationen dar und ersetzt keine Rechtsberatung. Einstufungen
             können sich durch Verordnungen, saisonale Verbote und Gemeindebeschlüsse jederzeit ändern.
           </p>
-          <a
-            href="https://github.com/jannis-drng/campbuddy"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="mt-4 inline-flex items-center gap-2 text-klein font-medium text-gletscher-400
-                       transition-colors duration-[160ms] hover:text-gletscher-300"
-          >
-            <Code2 size={15} strokeWidth={2} aria-hidden />
-            Quellcode ansehen
-          </a>
         </div>
       </div>
 
@@ -873,7 +913,6 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
         <div className={`${BREITE} flex flex-wrap items-center justify-between gap-3 py-5 text-mikro normal-case tracking-normal text-ink-500`}>
           <p>
             © {new Date().getFullYear()} CampBuddy · Kartendaten © OpenStreetMap-Mitwirkende (ODbL).
-            Rechtliche Einstufung: eigene Pflege.
           </p>
           <p className="flex items-center gap-1.5">
             <Ban size={12} strokeWidth={2.5} aria-hidden />

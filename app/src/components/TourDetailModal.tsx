@@ -333,8 +333,8 @@ export function TourDetailModal({
 
           <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
             Orientierungshilfe, keine Rechtsgarantie. Die Auswertung ist nur so verlässlich wie
-            der Prüfstand der Zonen; ausserhalb eingezeichneter Flächen gilt allein der
-            allgemeine Grundsatz der Region. Prüfe die Lage vor Ort.
+            die Angaben der einzelnen Flächen; ausserhalb eingezeichneter Flächen gilt allein
+            der allgemeine Rechtsrahmen. Prüfe die Lage vor Ort.
           </p>
         </div>
       </div>

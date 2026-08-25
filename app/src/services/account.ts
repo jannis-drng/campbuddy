@@ -49,7 +49,7 @@ export async function signUpWithPassword(
   benutzername: string,
 ): Promise<{ bestaetigungNoetig: boolean }> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data, error } = await sb.auth.signUp({
     email,
     password,
@@ -115,7 +115,7 @@ export async function namePruefen(kandidat: string): Promise<NamensUrteil> {
     return {
       ok: false, art: 'unbekannt',
       meldung: /function .* does not exist|schema cache/i.test(error.message)
-        ? 'Die Datenbank kennt die Namensprüfung noch nicht — Migration 0017 ist noch nicht eingespielt.'
+        ? 'Der Name lässt sich gerade nicht prüfen. Versuch es später noch einmal.'
         : error.message,
     }
   }
@@ -124,7 +124,7 @@ export async function namePruefen(kandidat: string): Promise<NamensUrteil> {
 
 export async function signInWithPassword(email: string, password: string): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.signInWithPassword({ email, password })
   if (error) throw new Error(uebersetzeFehler(error.message))
 }
@@ -132,7 +132,7 @@ export async function signInWithPassword(email: string, password: string): Promi
 /** Anmeldung über einen externen Anbieter (Google, Apple, …). */
 export async function signInWithProvider(provider: string): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.signInWithOAuth({
     provider: provider as Parameters<typeof sb.auth.signInWithOAuth>[0]['provider'],
     options: { redirectTo: rueckkehrAdresse() },
@@ -167,7 +167,7 @@ export async function verfuegbareAnbieter(): Promise<string[]> {
 /** Passwort vergessen: Link zum Neusetzen anfordern. */
 export async function passwortZuruecksetzen(email: string): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: rueckkehrAdresse() })
   if (error) throw new Error(uebersetzeFehler(error.message))
 }
@@ -175,7 +175,7 @@ export async function passwortZuruecksetzen(email: string): Promise<void> {
 /** Passwort ändern — setzt eine bestehende Anmeldung voraus. */
 export async function passwortAendern(neu: string): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.updateUser({ password: neu })
   if (error) throw new Error(uebersetzeFehler(error.message))
 }
@@ -187,7 +187,7 @@ function uebersetzeFehler(nachricht: string): string {
   if (m.includes('email not confirmed')) return 'Bitte bestätige zuerst den Link in deiner E-Mail.'
   if (m.includes('user already registered')) return 'Für diese Adresse gibt es schon ein Konto. Melde dich an oder setze das Passwort zurück.'
   if (m.includes('password should be at least')) return 'Das Passwort ist zu kurz.'
-  if (m.includes('provider is not enabled')) return 'Dieser Anmeldeweg ist im Projekt noch nicht eingerichtet.'
+  if (m.includes('provider is not enabled')) return 'Dieser Anmeldeweg steht hier nicht zur Verfügung.'
   if (m.includes('rate limit') || m.includes('too many')) return 'Zu viele Versuche. Warte einen Moment.'
   return nachricht
 }
@@ -195,7 +195,7 @@ function uebersetzeFehler(nachricht: string): string {
 /** Schickt den Anmeldelink — der passwortlose Weg. */
 export async function signInWithEmail(email: string): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.auth.signInWithOtp({
     email,
     options: { emailRedirectTo: window.location.href.split('?')[0] },
@@ -280,7 +280,7 @@ export async function saveTour(
   optionen: { is_public?: boolean; beschreibung?: string; autor?: string } = {},
 ): Promise<Tour> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data: userData } = await sb.auth.getUser()
   const user_id = userData.user?.id
   if (!user_id) throw new Error('Nicht angemeldet')
@@ -308,7 +308,7 @@ export async function aktualisiereTour(
   patch: { name?: string; beschreibung?: string | null } & TourEckdaten,
 ): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const zeile: Record<string, unknown> = eckdatenZeile(patch)
   if (patch.name !== undefined) zeile.name = patch.name
   if (patch.beschreibung !== undefined) zeile.beschreibung = patch.beschreibung
@@ -336,7 +336,7 @@ function uebersetzeSpeicherfehler(meldung: string): string {
     return 'Dafür fehlt die Berechtigung — bist du noch angemeldet?'
   }
   if (/column .* does not exist|schema cache/i.test(meldung)) {
-    return 'Die Datenbank kennt die Tour-Felder noch nicht — Migration 0016 ist noch nicht eingespielt.'
+    return 'Die Tour lässt sich gerade nicht speichern. Versuch es später noch einmal.'
   }
   return meldung
 }
@@ -359,7 +359,7 @@ export async function setTourPublic(
   zusatz: { beschreibung?: string } = {},
 ): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   // Kein `autor` mehr: den holt die View seit Migration 0017 live aus dem
   // Profil. Mitkopiert hiesse, dass eine Umbenennung alte Touren unter dem
   // alten Namen stehen lässt.
@@ -418,7 +418,7 @@ export async function listFavoriteTouren(): Promise<PublicTour[]> {
 
 export async function addFavorite(routeId: string): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data: userData } = await sb.auth.getUser()
   const user_id = userData.user?.id
   if (!user_id) throw new Error('Nicht angemeldet')
@@ -490,7 +490,7 @@ export async function ladeProfil(): Promise<Profil | null> {
  */
 export async function speichereAnzeigename(anzeigename: string): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const name = anzeigename.trim()
   if (!name) throw new Error('Der Benutzername darf nicht leer sein.')
   const { data: userData } = await sb.auth.getUser()
@@ -512,12 +512,12 @@ export async function speichereAnzeigename(anzeigename: string): Promise<void> {
  */
 export async function kontoLoeschen(): Promise<void> {
   const sb = getSupabase()
-  if (!sb) throw new Error('Kein Backend konfiguriert')
+  if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { error } = await sb.rpc('delete_own_account')
   if (error) {
     throw new Error(
       error.message.includes('delete_own_account')
-        ? 'Die Löschfunktion fehlt in der Datenbank — Migration 0006 noch nicht eingespielt.'
+        ? 'Das Konto lässt sich gerade nicht löschen. Versuch es später noch einmal.'
         : error.message,
     )
   }

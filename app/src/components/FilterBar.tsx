@@ -69,7 +69,8 @@ export function FilterBar({ filters, onChange, counts }: Props) {
 
       <p className="ml-auto hidden items-center gap-1.5 text-mikro text-ink-500 lg:flex">
         <Home size={12} strokeWidth={2} aria-hidden />
-        {counts.zones} Zonen · {counts.points} Punkte
+        {counts.zones.toLocaleString('de-CH')} Schutzgebiete ·{' '}
+        {counts.points.toLocaleString('de-CH')} Schlafplätze
       </p>
     </div>
   )
