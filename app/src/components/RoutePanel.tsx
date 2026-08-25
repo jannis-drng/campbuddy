@@ -12,7 +12,7 @@
  */
 import { useRef } from 'react'
 import {
-  ArrowRight, Bike, Building2, Camera, Car, Download, Droplet, Eye, Flag, Footprints, MapPin,
+  ArrowRight, Bike, Building2, Camera, Car, Droplet, Eye, Flag, Footprints, MapPin,
   MountainSnow, MousePointerClick, Pencil, PencilOff, Star, Tent, Trash2, TriangleAlert, Truck,
   Undo2, Upload, X,
 } from 'lucide-react'
@@ -32,8 +32,8 @@ const WEGPUNKT_ICON: Record<WegpunktArt, LucideIcon> = {
 }
 import { formatDauer, type HikingStats } from '../data/hiking'
 import { PROFILE_LABEL, SNAP_WARN_M, type RoutedPath, type RoutingProfile } from '../map/routing'
-import { toGpx } from '../services/gpx'
 import { Button, Hinweis, IconButton, Label, Leer, Segmente } from '../ui'
+import { ExportKnopf } from './ExportKnopf'
 
 interface Props {
   route: Position[]
@@ -72,16 +72,6 @@ export function RoutePanel({
   onImportGpx, onAuswerten, onClose, onToggleMarkieren,
 }: Props) {
   const fileInput = useRef<HTMLInputElement>(null)
-
-  const gpxSpeichern = () => {
-    const blob = new Blob([toGpx(route)], { type: 'application/gpx+xml' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'campbuddy-route.gpx'
-    a.click()
-    URL.revokeObjectURL(url)
-  }
 
   // Aus der Geometrie, nicht aus dem Routing-Ergebnis: eine importierte
   // GPX-Spur wird nicht geroutet und hätte dort keine Länge.
@@ -174,10 +164,10 @@ export function RoutePanel({
                     onClick={() => fileInput.current?.click()} className="flex-1">
               GPX laden
             </Button>
-            <Button variante="geist" groesse="klein" icon={Download}
-                    onClick={gpxSpeichern} disabled={route.length < 2} className="flex-1">
-              GPX sichern
-            </Button>
+            <ExportKnopf
+              route={route} wegpunkte={waypoints}
+              beschriftung="Mitnehmen" className="flex-1"
+            />
             <input
               ref={fileInput} type="file" accept=".gpx,application/gpx+xml,text/xml" className="hidden"
               onChange={(e) => {

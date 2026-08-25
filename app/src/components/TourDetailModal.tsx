@@ -18,6 +18,7 @@ import { TripPlanner } from './TripPlanner'
 import { Shuffle, X } from 'lucide-react'
 import { Button, IconButton, Stufen } from '../ui'
 import { StatusBadge } from './ui'
+import { ExportKnopf } from './ExportKnopf'
 
 interface Props {
   offen: boolean
@@ -146,7 +147,20 @@ export function TourDetailModal({
               {etappen.length > 0 && ` · ${etappen.length} Tage`}
             </p>
           </div>
-          <IconButton icon={X} label="Auswertung schliessen" onClick={onClose} className="-mr-1.5 -mt-1" />
+          {/*
+            Der Export sitzt im Kopf, nicht unten beim Speichern: Speichern
+            braucht ein Konto, Mitnehmen nicht — und wer die Tour gleich aufs
+            Gerät holen will, soll dafür nicht durch die ganze Auswertung
+            scrollen. Der Name der Tour ist derselbe, den das Formular unten
+            vorschlägt; er wird Dateiname und Spurname im fremden Planer.
+          */}
+          <div className="-mt-0.5 flex shrink-0 items-center gap-1.5">
+            <ExportKnopf
+              route={route} wegpunkte={wegpunkte} name={name.trim() || 'CampBuddy-Route'}
+              variante="sekundaer" groesse="mittel"
+            />
+            <IconButton icon={X} label="Auswertung schliessen" onClick={onClose} className="-mr-1.5 -mt-0.5" />
+          </div>
         </header>
 
         <div className="space-y-7 overflow-y-auto px-5 py-5">

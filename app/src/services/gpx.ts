@@ -6,6 +6,7 @@
  * nimmt CampBuddy deren Ergebnis entgegen und legt die Legalitäts-Ebene darüber.
  */
 import type { Position } from '../data/geo'
+import type { Wegpunkt, WegpunktArt } from '../data/types'
 
 export interface GpxResult {
   name: string | null
@@ -47,13 +48,56 @@ export function parseGpx(xml: string): GpxResult {
   return { name: name || null, points }
 }
 
-/** Exportiert die gezeichnete Route wieder als GPX. */
-export function toGpx(points: Position[], name = 'CampBuddy-Route'): string {
-  const escaped = name.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]!))
+/**
+ * GPX-Symbolnamen je Art.
+ *
+ * Die Namen sind keine Erfindung, sondern Garmins Symbolliste — sie ist der
+ * faktische Standard, den auch komoot und Strava beim Import lesen. Eigene
+ * Namen würden schlicht ignoriert und der Wegpunkt landete als namenlose
+ * Stecknadel.
+ */
+const WEGPUNKT_SYMBOL: Record<WegpunktArt, string> = {
+  hut: 'Lodging',
+  campsite: 'Campground',
+  vehicle_spot: 'Parking Area',
+  peak: 'Summit',
+  wasser: 'Drinking Water',
+  aussicht: 'Scenic Area',
+  eigen: 'Flag, Blue',
+}
+
+const escapeXml = (s: string) =>
+  s.replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]!))
+
+/**
+ * Exportiert die gezeichnete Route wieder als GPX.
+ *
+ * Benannte Wegpunkte kommen als `<wpt>` mit — genau die Hütten, Gipfel und
+ * Wasserstellen, die jemand bewusst angetippt hat. Ohne sie käme im fremden
+ * Planer eine nackte Linie an, und die Entscheidung "hier wird übernachtet"
+ * müsste dort noch einmal getroffen werden. Namenlose Klicks auf freie Fläche
+ * bleiben aussen vor; sie sind Form der Linie, kein Ort.
+ *
+ * Die Reihenfolge `metadata` → `wpt` → `trk` gibt das GPX-1.1-Schema vor.
+ * Strenge Importeure weisen die Datei sonst zurück.
+ */
+export function toGpx(points: Position[], name = 'CampBuddy-Route', wegpunkte: Wegpunkt[] = []): string {
+  const escaped = escapeXml(name)
   const seg = points.map(([lng, lat]) => `      <trkpt lat="${lat}" lon="${lng}" />`).join('\n')
+  const wpts = wegpunkte
+    .filter((w) => w.ort)
+    .map((w) => `  <wpt lat="${w.position[1]}" lon="${w.position[0]}">
+    <name>${escapeXml(w.ort!.name)}</name>
+    <sym>${WEGPUNKT_SYMBOL[w.ort!.art]}</sym>
+  </wpt>`)
+    .join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="CampBuddy" xmlns="http://www.topografix.com/GPX/1/1">
-  <trk>
+  <metadata>
+    <name>${escaped}</name>
+    <time>${new Date().toISOString()}</time>
+  </metadata>
+${wpts ? wpts + '\n' : ''}  <trk>
     <name>${escaped}</name>
     <trkseg>
 ${seg}
