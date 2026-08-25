@@ -134,10 +134,14 @@ export async function routeWaypoints(
 
   // Valhalla zuerst — nur dieses Modell kennt Wanderwege wirklich.
   try {
-    return pruefeVersatz(await routeViaValhalla(waypoints, profile, signal), waypoints)
+    return pruefeVersatz(await routeViaValhallaMitZweitversuch(waypoints, profile, signal), waypoints)
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e
-    ersterFehler = (e as Error).message
+    // „Failed to fetch" steht in der Sprache des Browsers und sagt niemandem
+    // etwas. Der häufigste Grund dafür ist hier die Anfragegrenze des Dienstes.
+    ersterFehler = istNetzfehler(e)
+      ? 'der Routing-Dienst war nicht erreichbar (womöglich zu viele Anfragen kurz hintereinander)'
+      : (e as Error).message
   }
 
   try {
@@ -161,6 +165,68 @@ function pruefeVersatz(pfad: RoutedPath, waypoints: Position[]): RoutedPath {
 }
 
 /* ---------------------------------------------------------------- Valhalla */
+
+/**
+ * Wie lange nach einem gescheiterten Versuch gewartet wird, bevor es der
+ * Zweitversuch nochmal probiert.
+ */
+const ZWEITVERSUCH_MS = 900
+
+/**
+ * War das ein Netzfehler — oder eine echte Absage des Dienstes?
+ *
+ * `fetch` lehnt mit einem `TypeError` ab, wenn die Antwort den Browser gar
+ * nicht erst erreicht: Verbindung weg, oder die Antwort trug keine
+ * CORS-Kopfzeile. Alles, was dieses Modul selbst wirft, ist ein schlichter
+ * `Error` — daran lassen sich die beiden Fälle unterscheiden.
+ */
+function istNetzfehler(e: unknown): boolean {
+  return e instanceof TypeError
+}
+
+function abgebrochen(): Error {
+  return new DOMException('Abgebrochen', 'AbortError')
+}
+
+function warte(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(abgebrochen())
+    const beiAbbruch = () => { clearTimeout(zeit); reject(abgebrochen()) }
+    const zeit = setTimeout(() => {
+      signal?.removeEventListener('abort', beiAbbruch)
+      resolve()
+    }, ms)
+    signal?.addEventListener('abort', beiAbbruch, { once: true })
+  })
+}
+
+/**
+ * Ein zweiter Versuch, bevor auf OSRM zurückgefallen wird.
+ *
+ * Die FOSSGIS-Instanz begrenzt die Anfragen pro IP. Wer zügig mehrere
+ * Wegpunkte setzt, läuft in diese Grenze — und sieht sie im Browser nicht als
+ * 429: die Fehlerantwort von deren nginx trägt keine CORS-Kopfzeile, deshalb
+ * hält der Browser die Antwort ganz zurück und meldet stattdessen einen
+ * CORS-Verstoss. Gemessen an zwölf gleichzeitigen Anfragen: elf mit 200 und
+ * `access-control-allow-origin: *`, eine mit 429 und ohne die Kopfzeile.
+ *
+ * Ohne diesen Versuch fiel jede solche Anfrage stillschweigend auf OSRM
+ * zurück — und das nimmt im Gebirge die Talstrasse statt des Steigs. Ein
+ * einzelner später Versuch, nicht mehr: die Instanz läuft auf Spendenbasis.
+ */
+async function routeViaValhallaMitZweitversuch(
+  waypoints: Position[],
+  profile: RoutingProfile,
+  signal?: AbortSignal,
+): Promise<RoutedPath> {
+  try {
+    return await routeViaValhalla(waypoints, profile, signal)
+  } catch (e) {
+    if ((e as Error).name === 'AbortError' || !istNetzfehler(e)) throw e
+    await warte(ZWEITVERSUCH_MS, signal)
+    return routeViaValhalla(waypoints, profile, signal)
+  }
+}
 
 async function routeViaValhalla(
   waypoints: Position[],
