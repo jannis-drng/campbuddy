@@ -32,7 +32,7 @@ import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/g
 import type { Ausschnitt } from '../data/types'
 import { effectiveStatus } from '../data/legalData'
 import {
-  ATTRIBUTION, BASEMAPS, GEMEINDE_COLORS, STATUS_COLORS, TEXT_FONT, ZOOM_AB, type BasemapKey,
+  ATTRIBUTION, BASEMAPS, GEMEINDE_COLORS, STATUS_COLORS, textFontFuer, ZOOM_AB, type BasemapKey,
 } from './mapConfig'
 import { alpenGrenzen, MIN_ZOOM } from './alpenRahmen'
 import { symboleAnlegen } from './symbole'
@@ -841,6 +841,11 @@ function gemeindeEbenen(m: MlMap, quelle: string, zoom: { minzoom?: number; maxz
 function addLayers(m: MlMap) {
   const empty: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
 
+  // Hier und nicht als Konstante im Modul: welche Schrift die eigenen
+  // Beschriftungen bekommen können, hängt an der Hintergrundkarte — jeder
+  // Style bringt seinen eigenen Schriftserver mit (siehe mapConfig).
+  const schrift = textFontFuer(m.getGlyphs())
+
   m.addSource('zones', { type: 'geojson', data: empty })
   m.addSource('points', { type: 'geojson', data: empty })
   m.addSource('natur', { type: 'geojson', data: empty })
@@ -881,7 +886,7 @@ function addLayers(m: MlMap) {
     source: 'gemeinden',
     minzoom: 10,
     layout: {
-      'text-field': ['get', 'name'], 'text-size': 10.5, 'text-font': TEXT_FONT,
+      'text-field': ['get', 'name'], 'text-size': 10.5, 'text-font': schrift,
       'text-letter-spacing': 0.03, 'text-max-width': 9,
     },
     paint: {
@@ -919,7 +924,7 @@ function addLayers(m: MlMap) {
     source: 'zones',
     minzoom: 8,
     layout: {
-      'text-field': ['get', 'name'], 'text-size': 11.5, 'text-font': TEXT_FONT,
+      'text-field': ['get', 'name'], 'text-size': 11.5, 'text-font': schrift,
       'text-letter-spacing': 0.02, 'text-max-width': 8,
     },
     paint: {
@@ -952,7 +957,7 @@ function addLayers(m: MlMap) {
         'icon-anchor': 'bottom',
         'text-field': ['concat', ['get', 'name'], '\n', ['to-string', ['get', 'elevation']], ' m'],
         'text-size': 10.5,
-        'text-font': TEXT_FONT,
+        'text-font': schrift,
         'text-anchor': 'top',
         'text-offset': [0, 0.35],
         'text-optional': true,
@@ -987,7 +992,7 @@ function addLayers(m: MlMap) {
     // ist Rauschen, kein Hinweis.
     'text-field': ['case', ['get', 'benannt'], ['get', 'name'], ''],
     'text-size': 10.5,
-    'text-font': TEXT_FONT,
+    'text-font': schrift,
     'text-offset': [0, 0.95],
     'text-anchor': 'top',
     'text-optional': true,
@@ -1095,7 +1100,7 @@ function addLayers(m: MlMap) {
       'icon-allow-overlap': true,
       'text-field': ['get', 'name'],
       'text-size': 11,
-      'text-font': TEXT_FONT,
+      'text-font': schrift,
       'text-offset': [0, 0.35],
       'text-anchor': 'top',
       'text-optional': true,
@@ -1184,7 +1189,7 @@ function addLayers(m: MlMap) {
     layout: {
       'text-field': ['get', 'beschriftung'],
       'text-size': 10,
-      'text-font': TEXT_FONT,
+      'text-font': schrift,
       'text-offset': [0, -1.4],
       'text-anchor': 'bottom',
       'text-allow-overlap': true,
@@ -1219,7 +1224,7 @@ function addLayers(m: MlMap) {
       'icon-allow-overlap': true,
       'text-field': ['get', 'name'],
       'text-size': 11,
-      'text-font': TEXT_FONT,
+      'text-font': schrift,
       'text-offset': [0, 0.35],
       'text-anchor': 'top',
       'text-optional': true,

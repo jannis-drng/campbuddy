@@ -12,7 +12,39 @@ import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
  * Punktnamen auf der Outdoor-Karte unsichtbar.
  */
 const GLYPHS = 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf'
-export const TEXT_FONT = ['Open Sans Regular']
+
+/**
+ * Welche Schrift die eigenen Beschriftungen verlangen dürfen — das entscheidet
+ * nicht der Geschmack, sondern der Schriftserver des geladenen Styles.
+ *
+ * MapLibre kennt pro Style genau **eine** Glyphen-Adresse, und die gilt auch
+ * für unsere Ebenen. Auf den Rasterkarten ist das die oben eingetragene; wählt
+ * jemand die Karte „Standard", ist es die von OpenFreeMap, und die kennt eine
+ * andere Schrift. Gemessen an `0-255.pbf`:
+ *
+ *   fonts.openmaptiles.org   Open Sans Regular ✓   Noto Sans Regular ✗
+ *   tiles.openfreemap.org    Open Sans Regular ✗   Noto Sans Regular ✓
+ *
+ * Es gibt also keinen Namen, der auf beiden liegt — deshalb die Zuordnung.
+ * Vorher stand hier fest „Open Sans Regular": auf der Karte „Standard" kam
+ * jede Zeichengruppe als 404 zurück, und MapLibre zeichnete die Namen
+ * ersatzweise lokal, Zeichen für Zeichen (eine Konsolenzeile je Zeichen).
+ *
+ * Achtung bei „✗": beide Server antworten dann mit 200 und einer HTML-Seite,
+ * nicht mit 404 — der Fehler zeigt sich erst beim Auspacken der Glyphen.
+ */
+const SCHRIFT_JE_SERVER: [string, string[]][] = [
+  ['fonts.openmaptiles.org', ['Open Sans Regular']],
+  ['tiles.openfreemap.org', ['Noto Sans Regular']],
+]
+
+/** Die Schrift des zuerst eingetragenen Servers — auch die der Rasterkarten. */
+export const TEXT_FONT = SCHRIFT_JE_SERVER[0][1]
+
+/** Passende Schrift zur Glyphen-Adresse des geladenen Styles (`map.getGlyphs()`). */
+export function textFontFuer(glyphsUrl: string | null | undefined): string[] {
+  return SCHRIFT_JE_SERVER.find(([host]) => glyphsUrl?.includes(host))?.[1] ?? TEXT_FONT
+}
 
 export type BasemapKey = 'outdoor' | 'landeskarte' | 'standard'
 
