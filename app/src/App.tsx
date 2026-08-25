@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import {
   filterNature, filterPoints, getRegion, ladeGipfel, ladeGipfelUebersicht, ladeNatur, ladePunkte,
   ladeZonen, verificationStats,
 } from './data/legalData'
 import type {
-  Ausschnitt, EigenerPunkt, MapFilters, NatureFeature, Peak, Point, TripParams, Wegpunkt, Zone,
+  Ausschnitt, EigenerPunkt, LegalStatus, MapFilters, NatureFeature, Peak, Point, TripParams,
+  Wegpunkt, WegpunktArt, Zone,
 } from './data/types'
 import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
@@ -16,12 +17,12 @@ import { MyToursPanel } from './components/MyToursPanel'
 import { CommunityPanel } from './components/CommunityPanel'
 import { TourDetailModal } from './components/TourDetailModal'
 import { RoutePanel } from './components/RoutePanel'
-import { analyseRoute } from './data/routeAnalysis'
-import { lineLength, type Position } from './data/geo'
-import { umkehren, verschieben, wegpunktName } from './data/wegpunkte'
+import { analyseRoute, NEARBY_RADIUS_M } from './data/routeAnalysis'
+import { distanceToLine, lineLength, pointInGeometry, type Position } from './data/geo'
+import { einfuegeStelle, umkehren, verschieben, wegpunktName } from './data/wegpunkte'
 import { parseGpx } from './services/gpx'
 import { loadElevationProfile, type ElevationPoint } from './services/elevation'
-import { analyseProfil, planeEtappen } from './data/hiking'
+import { analyseProfil, planeEtappen, type Schlafmoeglichkeit } from './data/hiking'
 import { routeWaypoints, type RoutedPath, type RoutingProfile } from './map/routing'
 import { AccountPanel } from './components/AccountPanel'
 import { PunktDialog } from './components/PunktDialog'
@@ -307,7 +308,67 @@ export default function App() {
   }, [routeGeometry])
 
   const wanderStats = useMemo(() => analyseProfil(profil), [profil])
-  const etappen = useMemo(() => planeEtappen(profil, allPoints), [profil, allPoints])
+
+  /**
+   * Was an einer bestimmten Stelle gilt — feinste zuständige Ebene zuerst.
+   *
+   * Dieselbe Reihenfolge wie in der Infokarte: Schutzgebiet schlägt Gemeinde,
+   * Gemeinde schlägt Kanton, Kanton schlägt den landesweiten Rahmen. Bei
+   * überlappenden Schutzgebieten gewinnt das strengste — zwei Flächen
+   * übereinander heben einander nicht auf.
+   */
+  const statusAn = useCallback((position: Position): LegalStatus => {
+    let gefunden: LegalStatus | null = null
+    for (const zone of allZones) {
+      if (!pointInGeometry(position, zone.geometry)) continue
+      if (zone.status === 'forbidden') return 'forbidden'
+      if (zone.status === 'tolerated' || gefunden === null) gefunden = zone.status
+    }
+    if (gefunden) return gefunden
+    return gemeindeRecht(gemeindeAn(position))?.status
+      ?? kantonRecht(kantonAn(position))?.status
+      ?? region.legal_framework.baseline_status
+  }, [allZones, region])
+
+  /**
+   * Alle Orte entlang der Route, an denen die Nacht möglich wäre.
+   *
+   * Der Etappenvorschlag zog früher ausschliesslich Hütten und Campingplätze
+   * heran — in einer App fürs Wildcampen ausgerechnet die zwei Arten, um die
+   * es dort am wenigsten geht. Jetzt stehen markierte Schlafplätze
+   * gleichberechtigt daneben: eigene und die, die andere geteilt haben. Was
+   * davon der Vorschlag nimmt, entscheidet nicht die Art, sondern Entfernung
+   * und Rechtslage (siehe `bestesLager` in hiking.ts).
+   */
+  const schlafmoeglichkeiten = useMemo<Schlafmoeglichkeit[]>(() => {
+    if (routeGeometry.length < 2) return []
+    const ausPunkten = analysis.nearby.map(({ point }) => ({
+      id: `punkt-${point.id}`,
+      name: point.name,
+      position: [point.lng, point.lat] as Position,
+      art: point.type as Schlafmoeglichkeit['art'],
+      status: statusAn([point.lng, point.lat]),
+    }))
+    // Nur ausdrückliche Schlafplätze: eine Aussicht oder eine Wasserstelle ist
+    // kein Nachtlager, und sie als eines vorzuschlagen wäre geraten.
+    const ausEigenen = eigenePunkte
+      .filter((p) => p.typ === 'campspot')
+      .map((p) => ({ p, abstand: distanceToLine([p.lng, p.lat], routeGeometry) }))
+      .filter(({ abstand }) => abstand <= NEARBY_RADIUS_M)
+      .map(({ p }) => ({
+        id: `eigen-${p.id}`,
+        name: p.name,
+        position: [p.lng, p.lat] as Position,
+        art: 'eigen' as const,
+        status: statusAn([p.lng, p.lat]),
+      }))
+    return [...ausEigenen, ...ausPunkten]
+  }, [analysis.nearby, eigenePunkte, routeGeometry, statusAn])
+
+  const etappen = useMemo(
+    () => planeEtappen(profil, schlafmoeglichkeiten),
+    [profil, schlafmoeglichkeiten],
+  )
 
   // Wegpunkte auf reale Wege rastern. Entprellt, weil die genutzte
   // OSRM-Instanz von der OSM-Community bereitgestellt wird.
@@ -437,6 +498,25 @@ export default function App() {
       if (!m) setDrawing(false)
       return !m
     })
+  }
+
+  /**
+   * Einen Ort aus der Auswertung in die Route übernehmen.
+   *
+   * Einsortiert statt angehängt: eine Hütte auf halber Strecke ist eine
+   * Station, nicht das neue Ziel. Eine importierte GPX-Spur verträgt sich
+   * nicht mit gesetzten Stopps — dieselbe Regel wie beim Zeichnen auf der
+   * Karte, deshalb tritt sie hier zurück.
+   */
+  const alsStopp = (position: Position, ort: { name: string; art: WegpunktArt }) => {
+    const stelle = einfuegeStelle(position, routeGeometry, wegpunktOrte)
+    setGpxTrack(null)
+    setWaypoints((w) => {
+      const kopie = [...w]
+      kopie.splice(stelle, 0, { position, ort })
+      return kopie
+    })
+    setRouteOpen(true)
   }
 
   const punktGespeichert = (punkt: EigenerPunkt) => {
@@ -774,6 +854,9 @@ export default function App() {
         wegpunkte={gpxTrack ? [] : waypoints}
         points={allPoints}
         peaks={allPeaks}
+        schlafmoeglichkeiten={schlafmoeglichkeiten}
+        statusAn={statusAn}
+        onAlsStopp={gpxTrack ? null : alsStopp}
         onSaveTour={handleSaveTour}
       />
     </div>

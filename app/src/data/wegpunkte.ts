@@ -8,6 +8,7 @@
  * kein Datensatz liefern kann und die eine Mehrtagestour trotzdem erst lesbar
  * machen. Ein selbst gesetzter Name schlägt deshalb immer den übernommenen.
  */
+import { naechsterIndex, type Position } from './geo'
 import type { Wegpunkt } from './types'
 
 /** Start, Ziel oder wievielter Zwischenstopp — die Rolle folgt der Position. */
@@ -53,4 +54,29 @@ export function verschieben<T>(liste: T[], von: number, nach: number): T[] {
 /** Denselben Weg andersherum gehen: aus Start wird Ziel. */
 export function umkehren<T>(liste: T[]): T[] {
   return [...liste].reverse()
+}
+
+/**
+ * An welche Stelle der Liste ein neuer Stopp gehört.
+ *
+ * Hinten anhängen wäre falsch: eine Hütte, die auf halber Strecke liegt, ist
+ * nicht das neue Ziel der Tour, sondern eine Station unterwegs. Ablesen lässt
+ * sich die Stelle nicht direkt — die gezeichnete Spur folgt echten Wegen und
+ * hat hunderte Stützpunkte, die gesetzten Stopps sind eine Handvoll. Also
+ * wird geschaut, zwischen welchen zwei Stopps der neue Ort auf der Spur
+ * liegt.
+ *
+ * Ohne Spur oder mit weniger als zwei Stopps gibt es nichts einzusortieren;
+ * dann ist das Ende die richtige Antwort.
+ */
+export function einfuegeStelle(
+  position: Position, route: Position[], stopps: Position[],
+): number {
+  if (stopps.length < 2 || route.length < 2) return stopps.length
+  const stelle = naechsterIndex(position, route)
+  const marken = stopps.map((p) => naechsterIndex(p, route))
+  for (let i = 1; i < marken.length; i++) {
+    if (stelle <= marken[i]) return i
+  }
+  return stopps.length
 }

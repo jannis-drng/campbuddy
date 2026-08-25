@@ -6,7 +6,7 @@
  * erkennbar bleiben.
  */
 import { distanceToLine, naechsterIndex, type Position } from './geo'
-import type { Point } from './types'
+import type { LegalStatus } from './types'
 import type { ElevationPoint } from '../services/elevation'
 
 /* ---------------- Annahmen ---------------- */
@@ -153,6 +153,26 @@ export interface Uebernachtung {
   /** Luftlinie vom Etappenende zum Platz. */
   distance_m: number
   art: 'hut' | 'campsite' | 'vehicle_spot' | 'eigen' | 'stopp'
+  /** Was an dieser Stelle gilt. Fehlt bei selbst gewählten Nachtlagern. */
+  status?: LegalStatus
+}
+
+/**
+ * Eine Stelle, an der die Nacht verbracht werden könnte.
+ *
+ * Bewusst nicht `Point`: eine Hütte aus dem Datenbestand, ein von jemandem
+ * markierter Schlafplatz und ein selbst gesetzter Stopp sind für diese Frage
+ * dasselbe — Orte, an denen man liegen kann. Dass eine App fürs Wildcampen
+ * ihre Etappen nur an Hütten enden liess, war die alte Fassung: sie kannte
+ * nichts anderes.
+ */
+export interface Schlafmoeglichkeit {
+  id: string
+  name: string
+  position: Position
+  art: Uebernachtung['art']
+  /** Rechtslage an dieser Stelle — feinste zuständige Ebene, siehe App.tsx. */
+  status: LegalStatus
 }
 
 export interface Etappe {
@@ -169,14 +189,6 @@ export interface Etappe {
   endposition: Position
   /** Wo übernachtet wird, falls etwas in Reichweite liegt oder gewählt wurde. */
   schlafplatz: Uebernachtung | null
-}
-
-/** Wie weit ein Schlafplatz vom Etappenende entfernt sein darf. */
-const SCHLAFPLATZ_RADIUS_M = 3000
-
-/** Punktart → Art der Übernachtung. Beides dieselbe Sprache, andere Herkunft. */
-function artVonPunkt(p: Point): Uebernachtung['art'] {
-  return p.type === 'hut' || p.type === 'campsite' || p.type === 'vehicle_spot' ? p.type : 'stopp'
 }
 
 /** Eine Etappe aus einem Abschnitt des Höhenprofils bauen. */
@@ -199,19 +211,72 @@ function etappeAus(
   }
 }
 
-/** Nächstgelegene Übernachtungsmöglichkeit zu einem Etappenende. */
-function schlafplatzNahe(position: Position, punkte: Point[]): Uebernachtung | null {
-  const naechster = punkte
-    .filter((p) => p.type !== 'vehicle_spot')
-    .map((point) => ({ point, distance: distanceToLine([point.lng, point.lat], [position]) }))
-    .filter((k) => k.distance <= SCHLAFPLATZ_RADIUS_M)
-    .sort((a, b) => a.distance - b.distance)[0]
-  if (!naechster) return null
+/** Wie weit ein Schlafplatz vom Etappenende entfernt sein darf. */
+const SCHLAFPLATZ_RADIUS_M = 3000
+
+/**
+ * Wie stark die Rechtslage gegen einen Platz spricht, in Metern Umweg
+ * gerechnet.
+ *
+ * Die Zahlen sind Gewichte, keine Entfernungen — sie beantworten die Frage
+ * „wie viel weiter würde ich für einen sicheren Platz gehen?". Ein geduldeter
+ * Platz ist einen knappen Kilometer Umweg wert gegenüber einem erlaubten, ein
+ * ungeklärter zwei. Verboten ist keine Frage des Abwägens: in einem
+ * Naturschutzgebiet oder einer Wildruhezone schlägt diese App keinen
+ * Schlafplatz vor, egal wie günstig er läge.
+ */
+const STATUS_GEWICHT: Record<LegalStatus, number> = {
+  allowed: 0,
+  tolerated: 800,
+  unknown: 2000,
+  forbidden: Infinity,
+}
+
+/**
+ * Und wie stark die Art des Platzes.
+ *
+ * Ein markierter Schlafplatz ist die naheliegendste Antwort für das, was
+ * diese App ist — jemand hat dort schon gelegen und es aufgeschrieben. Eine
+ * Hütte ist ebenso gut, nur nicht dasselbe. Ein Campingplatz kostet Geld und
+ * liegt meist im Tal; ein Stellplatz ist fürs Fahrzeug und taugt zu Fuss
+ * selten, deshalb steht er weit hinten statt gar nicht zur Wahl.
+ */
+const ART_GEWICHT: Record<Uebernachtung['art'], number> = {
+  eigen: 0,
+  stopp: 0,
+  hut: 100,
+  campsite: 600,
+  vehicle_spot: 2500,
+}
+
+/**
+ * Der beste Platz für diese Nacht.
+ *
+ * Entfernung, Rechtslage und Art wandern in dieselbe Einheit — Meter, die man
+ * dafür in Kauf nähme. So gewinnt der geduldete Platz 400 m neben dem Weg
+ * gegen die Hütte drei Kilometer weiter, aber nicht gegen die Hütte
+ * nebenan; und ein Platz im Verbotsgebiet gewinnt nie.
+ */
+function bestesLager(
+  position: Position, moeglichkeiten: Schlafmoeglichkeit[],
+): Uebernachtung | null {
+  let bester: { m: Schlafmoeglichkeit; abstand: number; wert: number } | null = null
+
+  for (const m of moeglichkeiten) {
+    const abstand = distanceToLine(m.position, [position])
+    if (abstand > SCHLAFPLATZ_RADIUS_M) continue
+    const wert = abstand + STATUS_GEWICHT[m.status] + ART_GEWICHT[m.art]
+    if (!Number.isFinite(wert)) continue
+    if (!bester || wert < bester.wert) bester = { m, abstand, wert }
+  }
+
+  if (!bester) return null
   return {
-    name: naechster.point.name,
-    position: [naechster.point.lng, naechster.point.lat],
-    distance_m: Math.round(naechster.distance),
-    art: artVonPunkt(naechster.point),
+    name: bester.m.name,
+    position: bester.m.position,
+    distance_m: Math.round(bester.abstand),
+    art: bester.m.art,
+    status: bester.m.status,
   }
 }
 
@@ -227,7 +292,7 @@ function schlafplatzNahe(position: Position, punkte: Point[]): Uebernachtung | n
  */
 export function planeEtappen(
   profil: ElevationPoint[],
-  punkte: Point[],
+  moeglichkeiten: Schlafmoeglichkeit[],
   stundenProTag = STUNDEN_PRO_TAG,
 ): Etappe[] {
   if (profil.length < 2) return []
@@ -258,7 +323,7 @@ export function planeEtappen(
 
     const etappe = etappeAus(profil, startIndex, endIndex, tag)
     // Die letzte Etappe endet am Ziel, nicht an einer Übernachtung.
-    etappe.schlafplatz = tag < tage ? schlafplatzNahe(etappe.endposition, punkte) : null
+    etappe.schlafplatz = tag < tage ? bestesLager(etappe.endposition, moeglichkeiten) : null
     etappen.push(etappe)
 
     startIndex = endIndex
@@ -329,6 +394,7 @@ function indexBei(profil: ElevationPoint[], meter: number): number {
 export interface Etappenkandidat extends Uebernachtung {
   id: string
   bei_m: number
+  status: LegalStatus
 }
 
 /**
@@ -340,7 +406,7 @@ export interface Etappenkandidat extends Uebernachtung {
  */
 export function etappenkandidaten(
   profil: ElevationPoint[],
-  eintraege: (Uebernachtung & { id: string })[],
+  eintraege: (Uebernachtung & { id: string; status: LegalStatus })[],
 ): Etappenkandidat[] {
   if (profil.length < 2) return []
   const positionen = profil.map((p) => p.position)

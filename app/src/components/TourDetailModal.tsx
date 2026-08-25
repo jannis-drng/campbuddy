@@ -7,13 +7,13 @@
  * Verpflegung und Wetter.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { Position } from '../data/geo'
-import type { Peak, Point, Region, TripParams, Wegpunkt } from '../data/types'
+import { distanceToLine, type Position } from '../data/geo'
+import type { LegalStatus, Peak, Point, Region, TripParams, Wegpunkt, WegpunktArt } from '../data/types'
 import { tournameVorschlaege } from '../data/tourname'
-import { NEARBY_RADIUS_M, summarise, type RouteAnalysis } from '../data/routeAnalysis'
+import { summarise, type RouteAnalysis } from '../data/routeAnalysis'
 import {
   etappenkandidaten, etappenNachZielen, formatDauer, schlafhoehe,
-  type Etappe, type Etappenkandidat, type HikingStats,
+  type Etappe, type Etappenkandidat, type HikingStats, type Schlafmoeglichkeit,
 } from '../data/hiking'
 import type { PackStand, PackStaende } from '../affiliate/packlist'
 import type { GespeicherteEtappe } from '../services/account'
@@ -42,6 +42,15 @@ interface Props {
   wegpunkte: Wegpunkt[]
   points: Point[]
   peaks: Peak[]
+  /** Alle Orte entlang der Route, an denen die Nacht möglich wäre. */
+  schlafmoeglichkeiten: Schlafmoeglichkeit[]
+  /** Rechtslage an einer Stelle — für die selbst gesetzten Stopps. */
+  statusAn: (position: Position) => LegalStatus
+  /**
+   * Einen Ort als Stopp in die Route übernehmen. Null, wenn gerade keine
+   * Route besteht, in die er passen würde.
+   */
+  onAlsStopp: ((position: Position, ort: { name: string; art: WegpunktArt }) => void) | null
   /**
    * Speichert Verlauf und Eckdaten in einem Zug. Vorher standen hier zwei
    * Formulare — „Route speichern" und „Tour speichern" — und niemand konnte
@@ -71,6 +80,7 @@ const SCHWIERIGKEIT_STUFE = {
 export function TourDetailModal({
   offen, onClose, region, analysis, stats, profil, etappen,
   hoehenBusy, hoehenFehler, wegpunkte, points, peaks, onSaveTour, route,
+  schlafmoeglichkeiten, statusAn, onAlsStopp,
 }: Props) {
   const [speicherStand, setSpeicherStand] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
   const [speicherFehler, setSpeicherFehler] = useState<string | null>(null)
@@ -96,28 +106,19 @@ export function TourDetailModal({
   }, [])
 
   /*
-    Woraus sich Nachtlager wählen lassen: die erfassten Punkte in Routennähe
-    und die selbst gesetzten Stopps. Beide in derselben Liste, weil die Frage
-    dieselbe ist — hier oder dort die Nacht? — und die Herkunft nur als
-    Kennzeichnung dahinter steht.
+    Woraus sich Nachtlager wählen lassen: alles, was entlang der Route zum
+    Schlafen taugt, dazu die selbst gesetzten Stopps.
+
+    Beide in derselben Liste, weil die Frage dieselbe ist — hier oder dort die
+    Nacht? — und die Herkunft nur als Kennzeichnung dahintersteht. Ein Stopp
+    ohne Namen bleibt aussen vor: er ist Form der Linie, kein Ort.
   */
   const kandidaten = useMemo<Etappenkandidat[]>(() => {
     if (profil.length < 2) return []
-    const ausPunkten = analysis.nearby.map(({ point, distance }) => ({
-      id: `punkt-${point.id}`,
-      name: point.name,
-      position: [point.lng, point.lat] as Position,
-      distance_m: Math.round(distance),
-      art: (point.type === 'hut' || point.type === 'campsite' || point.type === 'vehicle_spot'
-        ? point.type
-        : 'stopp') as Etappenkandidat['art'],
-    }))
-    // Namenlose Klicks auf freie Fläche sind Form der Linie, kein Ort — sie
-    // taugen nicht als „hier schlafe ich".
     const ausStopps = wegpunkte
-      .map((w, i) => ({ w, name: wegpunktName(w, i, wegpunkte.length), i }))
+      .map((w, i) => ({ w, name: wegpunktName(w, i, wegpunkte.length) }))
       .filter(({ w }) => Boolean(w.name?.trim() || w.ort))
-      .map(({ w, name, i }) => ({
+      .map(({ w, name }, i) => ({
         id: `stopp-${i}`,
         name,
         position: w.position,
@@ -125,9 +126,26 @@ export function TourDetailModal({
         art: (w.ort?.art === 'hut' || w.ort?.art === 'campsite' || w.ort?.art === 'vehicle_spot'
           ? w.ort.art
           : w.ort?.art === 'eigen' ? 'eigen' : 'stopp') as Etappenkandidat['art'],
+        status: statusAn(w.position),
       }))
-    return etappenkandidaten(profil, [...ausStopps, ...ausPunkten])
-  }, [profil, analysis.nearby, wegpunkte])
+    const ausOrten = schlafmoeglichkeiten.map((m) => ({
+      ...m,
+      distance_m: Math.round(distanceToLine(m.position, route)),
+    }))
+    return etappenkandidaten(profil, [...ausStopps, ...ausOrten])
+  }, [profil, schlafmoeglichkeiten, wegpunkte, statusAn, route])
+
+  /**
+   * Steht dieser Ort schon in der Route?
+   *
+   * Auf zehn Meter genau: ein übernommener Ort landet exakt auf seiner
+   * Koordinate, aber ein danach auf der Karte verschobener Stopp nicht mehr —
+   * und dann ist es derselbe Platz, nur um ein paar Schritte versetzt.
+   */
+  const bereitsStopp = useCallback(
+    (position: Position) => wegpunkte.some((w) => distanceToLine(w.position, [position]) < 10),
+    [wegpunkte],
+  )
 
   /** Was gerade gilt: die selbst gewählte Einteilung oder der Vorschlag. */
   const etappenAktuell = useMemo(
@@ -293,26 +311,9 @@ export function TourDetailModal({
             kandidaten={kandidaten}
             wahl={etappenWahl}
             onWahl={setEtappenWahl}
+            onAlsStopp={onAlsStopp}
+            bereitsStopp={bereitsStopp}
           />
-
-          {/* ---- Schlafplätze ---- */}
-          <section>
-            <h3 className="mb-1.5 text-fliess font-semibold text-ink-200">
-              Schlafplätze im Umkreis von {NEARBY_RADIUS_M / 1000} km
-            </h3>
-            {analysis.nearby.length === 0 ? (
-              <p className="text-klein text-ink-400">Keine erfassten Punkte in Routennähe.</p>
-            ) : (
-              <ul className="divide-y divide-kante rounded-mittel border border-kante">
-                {analysis.nearby.slice(0, 12).map(({ point, distance }) => (
-                  <li key={point.id} className="flex items-baseline justify-between gap-2 px-2.5 py-2">
-                    <span className="min-w-0 text-fliess text-ink-50">{point.name}</span>
-                    <span className="shrink-0 text-klein text-ink-400">{formatKm(distance)}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
 
           {/* ---- Ausrüstung, Verpflegung, Wetter ---- */}
           <section className="border-t border-kante pt-5">
