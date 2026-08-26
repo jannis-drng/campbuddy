@@ -248,8 +248,7 @@ export function TripPlanner({
             <Stat label="Gewicht Verpflegung" value={formatWeight(packlist.food.weight_g)} />
           </div>
           <p className="mt-2.5 border-t border-kante pt-2 text-mikro leading-relaxed text-ink-500">
-            Annahmen: {packlist.food.assumptions.join(' · ')}. Grobe Richtwerte, kein Ernährungsplan —
-            wie viel du wirklich brauchst, hängt von Tempo, Gewicht und Körperbau ab.
+            Annahmen: {packlist.food.assumptions.join(' · ')}. Grobe Richtwerte, kein Ernährungsplan.
           </p>
         </div>
       </section>

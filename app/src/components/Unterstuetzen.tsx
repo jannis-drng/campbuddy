@@ -57,7 +57,7 @@ export const KLIMA_ZUSAGE_KURZ =
 /**
  * Die Ausnahme gehört zur Zusage, nicht ins Impressum.
  *
- * Ko-fi nimmt auch PayPal an, und PayPal-Zahlungen laufen am Stripe-Konto
+ * Ko-fi nimmt auch PayPal an, und PayPal-Zahlungen laufen an Stripe
  * vorbei — dort greift Stripe Climate also nicht. „Jeder Zahlung" stimmt
  * damit nur mit dieser Einschränkung, und eine Werbeaussage, deren
  * Einschränkung man suchen muss, ist keine ehrliche.
@@ -67,7 +67,7 @@ export const KLIMA_ZUSAGE_KURZ =
  * Zeichen dafür steht unmittelbar hinter dem Satz, den es einschränkt.
  */
 export const KLIMA_AUSNAHME =
-  'Ausgenommen sind Zahlungen über PayPal: die laufen nicht über das Stripe-Konto, ' +
+  'Ausgenommen sind Zahlungen über PayPal: die laufen nicht über Stripe, ' +
   'deshalb greift Stripe Climate dort nicht.'
 
 /* --------------------------------------------------------------- Ko-fi-Link */
@@ -216,7 +216,7 @@ export function UnterstuetzenKnopf({ className = '' }: { className?: string }) {
           <div className="flex items-center gap-2 border-b border-kante px-3.5 py-2.5">
             <Heart size={15} strokeWidth={2} className="shrink-0 text-gletscher-300" aria-hidden />
             <span className="flex-1 text-klein font-semibold text-ink-100">
-              Kostenlos — und bleibt es
+              Kostenlos - und bleibt es
             </span>
             <button
               onClick={() => setOffen(false)}
@@ -259,7 +259,7 @@ export function UnterstuetzenBand() {
             className="flex items-center gap-2.5 text-ueberschrift font-semibold tracking-tight text-ink-50"
           >
             <Heart size={18} strokeWidth={2} className="shrink-0 text-gletscher-300" aria-hidden />
-            Die Karte ist kostenlos — und bleibt es.
+            Die Karte ist kostenlos - und bleibt es.
           </h2>
           <p className="mt-2.5 max-w-xl text-fliess leading-relaxed text-ink-300">
             Jede Einstufung hier ist von Hand nachgelesen, belegt und mit einem Datum versehen.

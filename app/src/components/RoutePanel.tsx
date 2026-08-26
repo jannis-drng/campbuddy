@@ -220,11 +220,8 @@ export function RoutePanel({
         {/* ---- Zustände ---- */}
         {drawing && (
           <Hinweis ton="info" icon={MousePointerClick}>
-            <strong className="font-semibold">Tippen</strong> hängt hinten einen Stopp an ·{' '}
-            <strong className="font-semibold">Punkt ziehen</strong> verschiebt ihn ·{' '}
-            <strong className="font-semibold">Linie ziehen</strong> baut an dieser Stelle einen
-            Umweg ein. Dazwischen wird auf reale Wege geroutet.
-            {profile === 'foot' && ' Wanderwege werden gegenüber Strassen bevorzugt.'}
+            Tippen setzt einen Stopp. Punkte lassen sich verschieben, die Linie zu einem
+            Umweg ziehen.
           </Hinweis>
         )}
         {markieren && (
@@ -284,25 +281,6 @@ export function RoutePanel({
                 />
               ))}
             </ul>
-            {/*
-              Auf dem Telefon der eine Satz, der hier etwas erklärt, was man
-              nicht sieht. Der Rest — Ziehen, Rechtsklick, Umwege — beschreibt
-              Handgriffe am Zeiger und stand dort als siebenzeiliger Block über
-              der Stopp-Liste, dem eigentlichen Inhalt dieses Blattes.
-            */}
-            <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal
-                          text-ink-500 sm:hidden">
-              Über das Schild lässt sich jeder Stopp frei benennen („Schlafplatz", „Mittag"),
-              mit den Pfeilen umsortieren.
-            </p>
-            <p className="mt-1.5 hidden text-mikro normal-case leading-relaxed tracking-normal
-                          text-ink-500 sm:block">
-              Ein Tippen auf eine Hütte, einen Gipfel, eine Quelle oder eine eigene Markierung
-              übernimmt sie als Stopp — mit Namen. Über das Schild lässt sich jeder Stopp frei
-              benennen („Schlafplatz", „Mittag"), mit den Pfeilen umsortieren. Auf der Karte
-              lassen sie sich verschieben, Rechtsklick entfernt sie; für einen Umweg die Linie
-              an der gewünschten Stelle anfassen und ziehen.
-            </p>
           </section>
         )}
       </div>
@@ -369,7 +347,6 @@ export function RoutePanel({
 
           <p className="mt-3 hidden text-mikro normal-case leading-relaxed tracking-normal
                         text-ink-500 sm:block">
-            Rechtslage entlang der Route, Höhenprofil, Etappen, Ausrüstung, Verpflegung und Wetter.
             {routed?.anbieter === 'osrm' && profile === 'foot' && (
               <> Der bevorzugte Wanderweg-Router war nicht erreichbar; diese Route folgt
               der kürzesten Strecke und nutzt eher Strassen.</>

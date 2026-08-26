@@ -154,8 +154,8 @@ export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
               ))}
             </div>
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Ohne Füllung heisst:
-              hier gilt keine bekannte Gemeinderegel — antippen zeigt, wen du fragen kannst.
+              Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Ohne Füllung: keine
+              bekannte Regel — antippen zeigt den Kontakt.
             </p>
           </div>
 

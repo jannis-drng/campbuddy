@@ -90,8 +90,7 @@ export function BenutzernameDialog({ offen, bisher, onSpaeter, onGespeichert }: 
         {bisher && (
           <p className="mt-2 text-klein leading-relaxed text-ink-500">
             Bis dahin heisst du{' '}
-            <span className="font-medium text-ink-200">{bisher}</span> — das geht auch,
-            und ändern kannst du es jederzeit.
+            <span className="font-medium text-ink-200">{bisher}</span>.
           </p>
         )}
 
@@ -119,8 +118,7 @@ export function BenutzernameDialog({ offen, bisher, onSpaeter, onGespeichert }: 
         </form>
 
         <p className="mt-3 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-          Der erste eigene Name ist frei; erst ein späterer Wechsel ist danach eine Weile
-          gesperrt — im Kontobereich steht, wie lange.
+          Ein späterer Wechsel ist danach eine Weile gesperrt.
         </p>
       </div>
     </div>

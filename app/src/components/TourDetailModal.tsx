@@ -394,13 +394,12 @@ export function TourDetailModal({
               <h3 className="text-fliess font-semibold text-ink-100">
                 {bearbeitet ? 'Änderungen speichern' : 'Tour speichern'}
               </h3>
-              <p className="mb-3 mt-0.5 text-klein leading-relaxed text-ink-500">
-                {bearbeitet
-                  ? 'Verlauf, Nachtlager, Eckdaten und Packliste gehen zurück in deine bestehende Tour — es entsteht keine zweite. Der Name lässt sich dabei mit ändern.'
-                  : onSaveTour
-                    ? 'Der Name kommt aus der Tour selbst — aus den Orten am Weg. Überschreiben geht jederzeit. Gespeichert wird beides zusammen: der Verlauf und die Eckdaten von oben; unter „Deine Touren“ kannst du die Tour später teilen.'
-                    : 'Der Name kommt aus der Tour selbst — überschreiben geht jederzeit. Zum Speichern brauchst du ein Konto; deine Tour bleibt dabei erhalten und steht nach der Anmeldung wieder hier, samt Etappen und Packliste.'}
-              </p>
+              {!onSaveTour && (
+                <p className="mb-3 mt-0.5 text-klein leading-relaxed text-ink-500">
+                  Zum Speichern brauchst du ein Konto. Deine Tour bleibt erhalten und steht
+                  nach der Anmeldung wieder hier.
+                </p>
+              )}
               <form onSubmit={speichern} className="flex flex-wrap gap-2">
                 <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-mittel border
                                 border-kante bg-flaeche-2 pr-1 focus-within:border-gletscher-500
@@ -439,9 +438,7 @@ export function TourDetailModal({
                 </Button>
                 {speicherStand === 'ok' && (
                   <p className="w-full text-klein text-erlaubt-400">
-                    {bearbeitet
-                      ? 'Gespeichert. Die Änderungen stehen jetzt in deiner Tour.'
-                      : 'Gespeichert. Unter „Deine Touren“ kannst du sie teilen.'}
+                    Gespeichert.
                   </p>
                 )}
                 {speicherStand === 'error' && <p className="w-full text-klein text-verboten-300">{speicherFehler}</p>}

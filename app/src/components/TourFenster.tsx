@@ -483,16 +483,8 @@ export function TourFenster({
                   : 'Wo die Urheberin übernachtet, gehört zu ihrer Planung und wird nicht mitveröffentlicht. Übernimm die Tour, dann legst du deine eigenen Nächte fest.'}
               </p>
             )}
-            {eigen && (
-              <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-                Nachtlager hängen am Höhenprofil und an dem, was entlang der Route liegt — beides
-                kennt nur die Karte. Deshalb führt der Knopf unten dorthin, statt hier eine
-                zweite, blindere Auswahl anzubieten.
-              </p>
-            )}
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Ob an einer dieser Stellen übernachtet werden darf, sagt die Legalitäts-Ebene auf der
-              Karte — nicht diese Liste.
+              Ob dort übernachtet werden darf, sagt die Karte — nicht diese Liste.
             </p>
           </section>
 
@@ -545,8 +537,8 @@ export function TourFenster({
 
             {!eigen && (
               <p className="text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-                Was du hier abhakst, gilt nur für diesen Besuch — es gehört zu einer Tour, die dir
-                nicht gehört. Übernimm sie, dann bleibt der Stand erhalten.
+                Abgehakt gilt nur für diesen Besuch. Übernimm die Tour, dann bleibt der
+                Stand erhalten.
               </p>
             )}
 

@@ -247,7 +247,7 @@ export function MyToursPanel({
 
           <p className="border-t border-kante pt-5 text-klein leading-relaxed text-ink-500">
             Neue Touren entstehen auf der Karte: Verlauf zeichnen, „Tour auswerten“ öffnen und
-            dort speichern. Die Auswertung enthält auch Ausrüstung, Verpflegung und Wetter.{' '}
+            dort speichern.{' '}
             <button onClick={onZurKarte} className="text-gletscher-400 underline underline-offset-2 hover:text-gletscher-300">
               Zur Karte
             </button>

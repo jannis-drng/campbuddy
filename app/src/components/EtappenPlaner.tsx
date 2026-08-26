@@ -204,9 +204,7 @@ export function EtappenPlaner({
         )}
 
         <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-          Hütten und Campingplätze aus dem Datenbestand, dazu markierte Schlafplätze — eigene
-          und geteilte. Die Rechtslage dahinter ist die der feinsten zuständigen Ebene an
-          dieser Stelle; der Vorschlag meidet Verbotsgebiete.
+          Der Vorschlag meidet Verbotsgebiete.
         </p>
       </section>
     </>

@@ -139,8 +139,7 @@ function ExportDialog({
                 An App senden
               </Button>
               <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-                Öffnet die Teilen-Auswahl deines Geräts. komoot, Strava, Garmin und die
-                Dateien-App stehen dort direkt zur Wahl und nehmen die Route als GPX an.
+                komoot, Strava, Garmin und die Dateien-App nehmen die Route direkt an.
               </p>
             </div>
           )}
@@ -184,8 +183,7 @@ function ExportDialog({
               {erledigt === 'datei' ? 'Heruntergeladen' : 'Nur die GPX-Datei'}
             </Button>
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Für alles andere — Organic Maps, OsmAnd, Locus, das eigene Gerät. Benannte
-              Wegpunkte wie Hütten und Gipfel sind in der Datei enthalten.
+              Für Organic Maps, OsmAnd, Locus oder das eigene Gerät.
             </p>
           </div>
 
