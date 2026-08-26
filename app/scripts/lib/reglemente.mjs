@@ -8,7 +8,10 @@
  * hiesse, sie über kurz oder lang auseinanderlaufen zu lassen — und dann
  * hinge es vom Abrufweg ab, welche Rechtslage die Karte zeigt.
  */
+import { promises as dnsPromises } from 'node:dns'
 import { PDFParse } from 'pdf-parse'
+
+const { lookup } = dnsPromises
 
 /* ------------------------------------------------------------- Erkennung */
 
@@ -282,17 +285,40 @@ const ANBIETER_PAUSE = 2500
 const letzterAbruf = new Map()
 const wartend = new Map()
 
-/** Der Adressblock hinter einer Adresse. Fällt auf den Hostnamen zurück. */
-export function anbieterVon(url) {
+const anbieterCache = new Map()
+
+/**
+ * Der Anbieter hinter einer Adresse — über die aufgelöste IP, nicht den Namen.
+ *
+ * Das ist der Kern der Sache und war zuerst falsch: nach `regensdorf.ch` zu
+ * gruppieren macht jede Gemeinde zu ihrem eigenen Anbieter, und die Bremse
+ * greift nie. Genau so kam es zur Sperre. Entscheidend ist, wer die Anfragen
+ * tatsächlich entgegennimmt — und das sind bei zwei Dritteln aller Schweizer
+ * Gemeinden dieselben Server.
+ *
+ * Gruppiert wird auf /16, weil ein Hoster seine Gemeindeseiten über mehrere
+ * benachbarte Adressen verteilt. Lässt sich der Name nicht auflösen, bleibt
+ * er selbst der Schlüssel — dann wird eben diese eine Gemeinde gedrosselt.
+ */
+export async function anbieterVon(url) {
+  let host
   try {
-    const host = new URL(url).hostname
-    // Ohne DNS-Auflösung ist die zweite Ebene die beste verfügbare Näherung;
-    // Gemeinden desselben Hosters teilen sie zwar nicht, aber der Aufrufer
-    // reicht den aufgelösten Block durch, wo er ihn kennt.
-    return host.split('.').slice(-2).join('.')
+    host = new URL(url).hostname
   } catch {
     return url
   }
+  if (anbieterCache.has(host)) return anbieterCache.get(host)
+
+  let schluessel = host
+  try {
+    const [{ address }] = await lookup(host, { all: true })
+    if (address?.includes('.')) schluessel = address.split('.').slice(0, 2).join('.')
+    else if (address) schluessel = address.split(':').slice(0, 3).join(':')
+  } catch {
+    // Nicht auflösbar — dann ist der Name der beste Schlüssel, den es gibt.
+  }
+  anbieterCache.set(host, schluessel)
+  return schluessel
 }
 
 /**

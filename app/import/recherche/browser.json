@@ -1,5 +1,5 @@
 {
- "stand": "2026-08-24",
+ "stand": "2026-08-26",
  "ergebnisse": [
   {
    "bfs": 2,
@@ -127,10 +127,10 @@
    "name": "Dachsen",
    "kanton": "CH-ZH",
    "website": "http://www.dachsen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.dachsen.ch/_rte/information/1406638",
+   "dokument_titel": "Gemeindeordnung der Politischen Gemeinde",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -149,10 +149,10 @@
    "name": "Flaach",
    "kanton": "CH-ZH",
    "website": "https://www.flaach.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://camping.tcs.ch/de/campingplaetze/tcs-camping-flaach-am-rhein/",
+   "dokument_titel": "Zum Eintrag: Camping Flaach",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -160,10 +160,21 @@
    "name": "Flurlingen",
    "kanton": "CH-ZH",
    "website": "http://www.flurlingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.flurlingen.ch/_rte/publikation/86657",
+   "dokument_titel": "500.1 Polizeiverordnung",
+   "stellen": [
+    {
+     "artikel": "Art. 53 Camping",
+     "text": "Art. 53 Camping Das Aufstellen von Zelten und Wohnwagen auf öffentlichem Grund ausserhalb besonders bezeichneter oder hierfür eingerichteter Campingplätze bedarf einer Bewilligung des Polizeivorstandes. Auf privatem Grund ist das Zelten und Campieren nur mit Bewilligung des Eigen- tümers oder eines Bevollmächtigten gestattet.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 38 Lautsprecher, Verstär-",
+     "text": "Art. 38 Lautsprecher, Verstär- keranlagen im Freien, in Zelten und Fahrnis- bauten Lautsprecher, Megaphone und andere Verstärkeranlagen dürfen im Freien, Zelten und anderen Fahrnisbauten nur mit Bewilligung des Polizeivorstandes verwendet werden. Die Bewilligung ist zu verweigern, wenn diese Geräte hauptsächlich für kommerzielle Reklamezwecke verwendet werden sollen. Der Betrieb solcher Geräte und Anlagen zwischen 22.00 bis 07.00 und 12.00 bis 13.00 Uhr darf nur für grössere Veranstaltungen (Quartierfeste usw.) bewilligt werden. Für die Bewilligung ist der Polizeivorstand zuständig. -- 8 of 12 -- Polizeiverordnung Gemeinde Flurlingen - 9 -",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -174,7 +185,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {

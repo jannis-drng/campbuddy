@@ -25,7 +25,8 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
 import {
-  dokumentKandidaten, fundstellen, hole, holeDokument, links, pdfText, sammlungsRang,
+  SPERRE, anbieterVon, anstehen, dokumentKandidaten, fundstellen, hole, holeDokument, links,
+  pdfText, sammlungsRang, sperrWaechter,
 } from './lib/reglemente.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -293,6 +294,8 @@ const bisher = JSON.parse(readFileSync(KANDIDATEN, 'utf8')).ergebnisse
 // Mit --wiederholen werden die Gemeinden erneut vorgenommen, die am
 // Netzabbruch gescheitert sind — nicht die, über die tatsächlich etwas
 // festgestellt wurde.
+/** Der eine Text für „nicht die Gemeinde, sondern ihr Anbieter hat abgelehnt". */
+const ANBIETERSPERRE = 'Anbieter sperrt uns aus'
 const WIEDERHOLEN = process.argv.includes('--wiederholen')
 const frueher = WIEDERHOLEN && existsSync(resolve(ROOT, 'import/recherche/browser.json'))
   ? JSON.parse(readFileSync(resolve(ROOT, 'import/recherche/browser.json'), 'utf8')).ergebnisse
@@ -300,7 +303,12 @@ const frueher = WIEDERHOLEN && existsSync(resolve(ROOT, 'import/recherche/browse
 
 let offen
 if (WIEDERHOLEN) {
-  offen = frueher.filter((r) => r.website && !r.stellen?.length && NETZFEHLER.test(r.fehler ?? ''))
+  // Sowohl die rohe Fehlermeldung als auch die zusammengefasste Fassung: die
+  // 693 Einträge aus dem ersten Lauf wurden auf einen sprechenden Text
+  // umgeschrieben, und ein Filter, der nur die alten Meldungen kennt, findet
+  // sie nicht mehr wieder.
+  offen = frueher.filter((r) => r.website && !r.stellen?.length
+    && (r.fehler === ANBIETERSPERRE || SPERRE.test(r.fehler ?? '')))
 } else {
   offen = bisher.filter((r) => (
     r.website && (ALLE ? !r.stellen?.length : r.fehler === 'kein passendes Reglement gefunden')
@@ -342,11 +350,11 @@ async function arbeiter() {
     // Nach Anbieter drosseln, nicht nach Gemeinde: zwei Drittel aller
     // Gemeindeseiten liegen beim selben Hoster, und der sieht nicht drei
     // gleichzeitige Abrufe, sondern tausende aus einer Hand.
-    const anbieter = anbieterVon(g.website ?? '')
+    const anbieter = await anbieterVon(g.website ?? '')
     if (waechter.gesperrt(anbieter)) {
       ergebnisse.push({
         bfs: g.bfs, name: g.name, kanton: g.kanton, website: g.website,
-        stellen: [], fehler: 'Anbieter sperrt uns aus', weg: 'browser',
+        stellen: [], fehler: ANBIETERSPERRE, weg: 'browser',
       })
       fertig++
       continue
@@ -375,7 +383,7 @@ async function arbeiter() {
     // Anbieter, nicht auf sie.
     const abgewiesen = SPERRE.test(r.fehler ?? '')
     waechter.melde(anbieter, abgewiesen)
-    if (abgewiesen) r.fehler = 'Anbieter sperrt uns aus'
+    if (abgewiesen) r.fehler = ANBIETERSPERRE
     ergebnisse.push(r)
     fertig++
     if (fertig % 25 === 0 || fertig === offen.length) {
@@ -402,7 +410,7 @@ console.log(`In diesem Lauf: ${ergebnisse.filter((r) => r.stellen.length > 0).le
   + `aus ${ergebnisse.length} Gemeinden, Reglement gefunden bei ${ergebnisse.filter((r) => r.dokument).length}.`)
 console.log(`Insgesamt in der Datei: ${zusammen.filter((r) => r.stellen.length > 0).length} Fundstellen `
   + `aus ${zusammen.length} Gemeinden.`)
-const gesperrt = zusammen.filter((r) => r.fehler === 'Anbieter sperrt uns aus').length
+const gesperrt = zusammen.filter((r) => r.fehler === ANBIETERSPERRE).length
 if (gesperrt > 0) console.log(`Vom Anbieter abgewiesen (kein Befund über die Gemeinde): ${gesperrt}`)
 console.log(`-> ${AUSGABE}`)
 const gründe = {}

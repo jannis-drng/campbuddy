@@ -183,6 +183,17 @@ export async function passwortAendern(neu: string): Promise<void> {
 }
 
 /**
+ * Scheiterte nicht die Anmeldung, sondern nur der Versand?
+ *
+ * Der Auth-Dienst meldet das als 500 („error sending confirmation email"),
+ * also in derselben Form wie einen echten Serverfehler. Für den Nutzer ist es
+ * aber etwas ganz anderes: seine Eingabe war in Ordnung, es kam nur keine Post.
+ */
+function istMailfehler(nachricht: string): boolean {
+  return /error sending|sending (confirmation|recovery|magic link|invite|email)/i.test(nachricht)
+}
+
+/**
  * Supabase antwortet auf Englisch — übersetzt, so gut es geht.
  *
  * Zuerst über `error.code`, erst danach über den Text. Der Code ist die
@@ -228,6 +239,17 @@ function uebersetzeFehler(fehler: { message: string; code?: string } | string): 
       return 'Zu viele Versuche. Warte einen Moment.'
     case 'validation_failed':
       return `Die Eingabe hat der Anmeldedienst abgelehnt. ${nachricht}`
+    // Der Mailversand ist ausgefallen — das Konto ist deswegen nicht angelegt.
+    // Für den Nutzer ist das kein Eingabefehler, und er soll nicht anfangen,
+    // Passwörter oder Adressen zu variieren, weil ihm etwas Rotes entgegenkommt.
+    case 'unexpected_failure':
+      return istMailfehler(nachricht)
+        ? 'Die E-Mail konnte nicht verschickt werden — das liegt am Mailversand, nicht an deiner Eingabe. Versuch es in ein paar Minuten noch einmal.'
+        : nachricht
+  }
+
+  if (istMailfehler(nachricht)) {
+    return 'Die E-Mail konnte nicht verschickt werden — das liegt am Mailversand, nicht an deiner Eingabe. Versuch es in ein paar Minuten noch einmal.'
   }
 
   // Ältere Auth-Versionen liefern keinen Code — dann bleibt der Text.

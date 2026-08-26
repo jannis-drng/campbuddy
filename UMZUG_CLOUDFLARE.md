@@ -196,6 +196,44 @@ Supabase-Projekt → **Authentication → URL Configuration**:
 Die Liste eng halten: jede Adresse hier ist eine Adresse, auf die ein
 Anmelde-Token weitergereicht werden kann.
 
+## Schritt 4b — eigener Mailversand
+
+**Ohne diesen Schritt kann sich niemand ausser dir registrieren.** Der
+Mailversand, den Supabase mitliefert, ist ausdrücklich nur zum Ausprobieren
+gedacht: er nimmt **nur Adressen von Mitgliedern des Supabase-Projekts** an und
+lässt **zwei E-Mails pro Stunde** durch. Alles darüber scheitert — und zwar
+nicht als freundliche Auskunft, sondern als
+
+```
+POST /auth/v1/signup → 500  "error sending confirmation email"
+```
+
+Das Konto wird dabei nicht angelegt. Wer die Meldung im Browser sieht, sucht
+den Fehler zwangsläufig bei sich und probiert andere Passwörter und Adressen
+durch, obwohl an der Eingabe nie etwas falsch war.
+
+Was tatsächlich schiefging, steht nur an einer Stelle: Supabase-Projekt →
+**Logs → Auth Logs**. Dort nach der fehlgeschlagenen Anfrage sehen, die
+SMTP-Antwort steht im Eintrag.
+
+Abhilfe: einen eigenen Versender eintragen unter **Authentication → Emails →
+SMTP Settings**. Passend zum Rest des Aufbaus (kostenlos, EU möglich, eigene
+Domain):
+
+| Dienst | Freikontingent |
+|---|---|
+| Resend | 3 000 Mails/Monat, 100/Tag |
+| Brevo | 300 Mails/Tag |
+| Mailgun / Postmark | kostenpflichtig, dafür zuverlässiger im Posteingang |
+
+Absenderadresse auf der eigenen Domain (`noreply@camping-map.com`), und die
+SPF-, DKIM- und DMARC-Einträge, die der Dienst nennt, ins **Cloudflare-DNS**
+derselben Zone eintragen. Ohne die landen die Bestätigungsmails im Spam — was
+sich vom Ausfall kaum unterscheidet, nur dass es niemand meldet.
+
+Nach dem Umstellen die Sendegrenzen unter **Authentication → Rate Limits**
+hochsetzen; sie stehen auf den Werten des eingebauten Versands.
+
 ## Schritt 5 — camping-map.com auf den Worker binden
 
 Voraussetzung: Schritt 0 ist durch, die Zone steht in Cloudflare auf *Active*.
