@@ -25,7 +25,7 @@
  * gekürzte Fassungen klingen immer nach Restposten.
  */
 import { useEffect, useRef, useState } from 'react'
-import { ExternalLink, Heart, Sprout, X } from 'lucide-react'
+import { ExternalLink, Heart, Info, Sprout, X } from 'lucide-react'
 
 /* ------------------------------------------------------------ Konfiguration */
 
@@ -53,6 +53,22 @@ export const KLIMA_ZUSAGE =
   `${KLIMA_ANTEIL} jeder Zahlung geht über Stripe Climate in die dauerhafte Entnahme von CO₂ aus der Atmosphäre.`
 export const KLIMA_ZUSAGE_KURZ =
   `${KLIMA_ANTEIL} jeder Zahlung geht über Stripe Climate in dauerhafte CO₂-Entnahme.`
+
+/**
+ * Die Ausnahme gehört zur Zusage, nicht ins Impressum.
+ *
+ * Ko-fi nimmt auch PayPal an, und PayPal-Zahlungen laufen am Stripe-Konto
+ * vorbei — dort greift Stripe Climate also nicht. „Jeder Zahlung" stimmt
+ * damit nur mit dieser Einschränkung, und eine Werbeaussage, deren
+ * Einschränkung man suchen muss, ist keine ehrliche.
+ *
+ * Als aufklappbare Fussnote statt als zweiter Satz, weil sie sonst länger
+ * wäre als die Zusage selbst und die Kernaussage erschlagen würde. Das
+ * Zeichen dafür steht unmittelbar hinter dem Satz, den es einschränkt.
+ */
+export const KLIMA_AUSNAHME =
+  'Ausgenommen sind Zahlungen über PayPal: die laufen nicht über das Stripe-Konto, ' +
+  'deshalb greift Stripe Climate dort nicht.'
 
 /* --------------------------------------------------------------- Ko-fi-Link */
 
@@ -83,6 +99,56 @@ function Kleingedrucktes({ className = '' }: { className?: string }) {
       <ExternalLink size={11} strokeWidth={2.5} aria-hidden />
       Einmalig, kein Abo, kein Konto nötig
     </p>
+  )
+}
+
+/* ---------------------------------------------------------------- Klimazeile */
+
+/**
+ * Die Klimazusage mit ihrer Ausnahme — einmal geschrieben, an beiden Orten
+ * benutzt. Läge der Text zweimal da, würde die Ausnahme beim nächsten Mal an
+ * genau einer Stelle nachgezogen.
+ *
+ * Das „i" klappt die Ausnahme auf statt sie als Tooltip zu zeigen: ein
+ * Tooltip hängt am Zeiger, und auf dem Telefon gibt es keinen. Seine
+ * Trefferfläche wächst über ein Pseudo-Element auf Fingergrösse, ohne dass
+ * das Zeichen im Fliesstext dicker wird.
+ */
+function Klimazeile({ kurz = false, className = '' }: { kurz?: boolean; className?: string }) {
+  const [ausnahme, setAusnahme] = useState(false)
+
+  return (
+    <div className={className}>
+      <p className={`flex items-start gap-2 leading-relaxed text-ink-400 ${kurz ? 'text-mikro' : 'text-klein'}`}>
+        <Sprout
+          size={kurz ? 13 : 14}
+          strokeWidth={2}
+          className="mt-0.5 shrink-0 text-gletscher-400"
+          aria-hidden
+        />
+        <span>
+          {kurz ? KLIMA_ZUSAGE_KURZ : KLIMA_ZUSAGE}{' '}
+          <button
+            type="button"
+            onClick={() => setAusnahme((v) => !v)}
+            aria-expanded={ausnahme}
+            aria-label="Ausnahme zur Klimazusage"
+            className={`relative inline-flex translate-y-px items-center justify-center rounded-full
+                        transition-colors duration-[160ms] ease-[var(--ease-heraus)]
+                        after:absolute after:-inset-2.5 after:content-['']
+                        ${ausnahme ? 'text-gletscher-300' : 'text-ink-500 hover:text-gletscher-300'}`}
+          >
+            <Info size={kurz ? 12 : 13} strokeWidth={2.5} aria-hidden />
+          </button>
+        </span>
+      </p>
+
+      {ausnahme && (
+        <p className={`mt-1.5 text-mikro leading-relaxed text-ink-500 ${kurz ? 'pl-[21px]' : 'pl-[22px]'}`}>
+          {KLIMA_AUSNAHME}
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -122,8 +188,8 @@ export function UnterstuetzenKnopf({ className = '' }: { className?: string }) {
       <button
         onClick={() => setOffen((v) => !v)}
         aria-expanded={offen}
-        aria-label="CampBuddy unterstützen"
-        title="CampBuddy unterstützen"
+        aria-label="Unterstütze uns"
+        title="Unterstütze uns"
         className={`inline-flex h-9 items-center justify-center gap-2 rounded-mittel px-2.5
                     text-fliess font-medium
                     transition-[background-color,color] duration-[160ms] ease-[var(--ease-heraus)]
@@ -131,13 +197,19 @@ export function UnterstuetzenKnopf({ className = '' }: { className?: string }) {
                     ${offen ? 'bg-flaeche-3 text-gletscher-300' : 'text-ink-300'}`}
       >
         <Heart size={17} strokeWidth={2} aria-hidden />
-        <span className="hidden lg:inline">Unterstützen</span>
+        {/*
+          Sichtbar auf dem Telefon und ab Laptop, dazwischen nicht: im
+          Tablet-Bereich liegt die Segment-Navigation quer in der Kopfzeile und
+          braucht jede Spalte. Unterhalb davon sitzt die Navigation unten, die
+          Kopfzeile ist dort also fast leer — ein Herz allein sagt zu wenig.
+        */}
+        <span className="inline sm:hidden lg:inline">Unterstütze uns</span>
       </button>
 
       {offen && (
         <div
           role="dialog"
-          aria-label="CampBuddy unterstützen"
+          aria-label="Unterstütze uns"
           className="absolute right-0 top-full z-50 mt-2 w-[19rem] overflow-hidden rounded-gross
                      border border-kante bg-flaeche-2/97 shadow-[var(--shadow-4)] backdrop-blur-md"
         >
@@ -161,10 +233,7 @@ export function UnterstuetzenKnopf({ className = '' }: { className?: string }) {
               Jede Einstufung auf dieser Karte ist von Hand nachgelesen, belegt und mit einem
               Datum versehen. Wer das nützlich findet, kann etwas dalassen.
             </p>
-            <p className="flex items-start gap-2 text-mikro leading-relaxed text-ink-400">
-              <Sprout size={13} strokeWidth={2} className="mt-0.5 shrink-0 text-gletscher-400" aria-hidden />
-              <span>{KLIMA_ZUSAGE_KURZ}</span>
-            </p>
+            <Klimazeile kurz />
             <KofiLink hoehe="h-10" />
             <Kleingedrucktes className="justify-center" />
           </div>
@@ -196,10 +265,7 @@ export function UnterstuetzenBand() {
             Jede Einstufung hier ist von Hand nachgelesen, belegt und mit einem Datum versehen.
             Wenn dir das eine Nacht draussen leichter gemacht hat, kannst du etwas dalassen.
           </p>
-          <p className="mt-3 flex max-w-xl items-start gap-2 text-klein leading-relaxed text-ink-400">
-            <Sprout size={14} strokeWidth={2} className="mt-0.5 shrink-0 text-gletscher-400" aria-hidden />
-            <span>{KLIMA_ZUSAGE}</span>
-          </p>
+          <Klimazeile className="mt-3 max-w-xl" />
         </div>
 
         <div className="shrink-0 md:w-60">
