@@ -22,7 +22,7 @@ import { EtappenPlaner } from './EtappenPlaner'
 import type { ElevationPoint } from '../services/elevation'
 import { ElevationProfile } from './ElevationProfile'
 import { TripPlanner, type Abgeleitet } from './TripPlanner'
-import { Shuffle, X } from 'lucide-react'
+import { LogIn, Shuffle, X } from 'lucide-react'
 import { Button, IconButton, Stufen } from '../ui'
 import { StatusBadge } from './ui'
 import { ExportKnopf } from './ExportKnopf'
@@ -63,6 +63,31 @@ interface Props {
     packliste: PackStaende,
     etappen: GespeicherteEtappe[] | null,
   ) => Promise<void>) | null
+  /**
+   * Ohne Konto führt „Speichern" zur Anmeldung — und nimmt die Tour mit.
+   *
+   * Dass es Speichern überhaupt gibt, soll man vorher sehen: eine Funktion,
+   * die erst nach der Registrierung auftaucht, ist einer der Gründe, sich
+   * nicht zu registrieren.
+   */
+  onAnmelden: (entwurf: {
+    name: string
+    trip: TripParams | null
+    packliste: PackStaende
+    etappen: GespeicherteEtappe[] | null
+  }) => void
+  /**
+   * Vorbelegung aus einer über die Anmeldung geretteten Tour.
+   *
+   * Kommt zusammen mit einem neuen `key` von aussen, damit die Zustände hier
+   * frisch daraus entstehen statt nachträglich überschrieben zu werden.
+   */
+  entwurf?: {
+    name: string | null
+    trip: TripParams | null
+    packliste: PackStaende
+    etappen: GespeicherteEtappe[] | null
+  }
 }
 
 const formatKm = (m: number) =>
@@ -80,7 +105,7 @@ const SCHWIERIGKEIT_STUFE = {
 export function TourDetailModal({
   offen, onClose, region, analysis, stats, profil, etappen,
   hoehenBusy, hoehenFehler, wegpunkte, points, peaks, onSaveTour, route,
-  schlafmoeglichkeiten, statusAn, onAlsStopp,
+  schlafmoeglichkeiten, statusAn, onAlsStopp, onAnmelden, entwurf,
 }: Props) {
   const [speicherStand, setSpeicherStand] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
   const [speicherFehler, setSpeicherFehler] = useState<string | null>(null)
@@ -90,11 +115,13 @@ export function TourDetailModal({
   /** Welcher der Vorschläge gerade steht. */
   const [vorschlagNr, setVorschlagNr] = useState(0)
   /** Nur gesetzt, wenn jemand den Namen von Hand angefasst hat. */
-  const [eigenerName, setEigenerName] = useState<string | null>(null)
+  const [eigenerName, setEigenerName] = useState<string | null>(entwurf?.name ?? null)
   /** Stand der Checkliste. Wird mit der Tour gespeichert. */
-  const [staende, setStaende] = useState<PackStaende>({})
+  const [staende, setStaende] = useState<PackStaende>(entwurf?.packliste ?? {})
   /** Selbst gewählte Nachtlager; `null` heisst „automatischer Vorschlag". */
-  const [etappenWahl, setEtappenWahl] = useState<GespeicherteEtappe[] | null>(null)
+  const [etappenWahl, setEtappenWahl] = useState<GespeicherteEtappe[] | null>(
+    entwurf?.etappen ?? null,
+  )
 
   const standSetzen = useCallback((id: string, stand: PackStand | null) => {
     setStaende((alt) => {
@@ -201,7 +228,16 @@ export function TourDetailModal({
 
   const speichern = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!onSaveTour || !name.trim() || !trip) return
+    if (!name.trim()) return
+
+    // Ohne Konto ist „Speichern" der Weg zur Anmeldung. Die Tour geht mit —
+    // Name, Eckdaten, Etappen und Packliste.
+    if (!onSaveTour) {
+      onAnmelden({ name: name.trim(), trip, packliste: staende, etappen: etappenWahl })
+      return
+    }
+
+    if (!trip) return
     setSpeicherStand('busy'); setSpeicherFehler(null)
     try {
       await onSaveTour(name.trim(), trip, staende, etappenWahl)
@@ -328,19 +364,27 @@ export function TourDetailModal({
               region={region}
               abgeleitet={abgeleitet}
               onTripChange={setTrip}
+              initial={entwurf?.trip ?? undefined}
               staende={staende}
               onStand={standSetzen}
             />
           </section>
 
-          {/* ---- Speichern: Verlauf und Eckdaten in einem Zug ---- */}
-          {onSaveTour && (
-            <section className="rounded-gross border border-kante bg-flaeche-1 p-4">
+          {/*
+            Speichern: Verlauf und Eckdaten in einem Zug.
+
+            Der Abschnitt steht auch ohne Konto da. Eine Funktion, die erst
+            nach der Registrierung auftaucht, ist einer der Gründe, sich nicht
+            zu registrieren — man sieht ja nicht, wofür. Der Knopf heisst
+            deshalb in beiden Fällen „Speichern"; ohne Konto führt er zur
+            Anmeldung und nimmt die Tour mit (siehe services/entwurf.ts).
+          */}
+          <section className="rounded-gross border border-kante bg-flaeche-1 p-4">
               <h3 className="text-fliess font-semibold text-ink-100">Tour speichern</h3>
               <p className="mb-3 mt-0.5 text-klein leading-relaxed text-ink-500">
-                Der Name kommt aus der Tour selbst — aus den Orten am Weg. Überschreiben
-                geht jederzeit. Gespeichert wird beides zusammen: der Verlauf und die
-                Eckdaten von oben; unter „Deine Touren“ kannst du die Tour später teilen.
+                {onSaveTour
+                  ? 'Der Name kommt aus der Tour selbst — aus den Orten am Weg. Überschreiben geht jederzeit. Gespeichert wird beides zusammen: der Verlauf und die Eckdaten von oben; unter „Deine Touren“ kannst du die Tour später teilen.'
+                  : 'Der Name kommt aus der Tour selbst — überschreiben geht jederzeit. Zum Speichern brauchst du ein Konto; deine Tour bleibt dabei erhalten und steht nach der Anmeldung wieder hier, samt Etappen und Packliste.'}
               </p>
               <form onSubmit={speichern} className="flex flex-wrap gap-2">
                 <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-mittel border
@@ -372,6 +416,7 @@ export function TourDetailModal({
                   )}
                 </div>
                 <Button type="submit" variante="primaer" groesse="gross"
+                        icon={onSaveTour ? undefined : LogIn}
                         disabled={!name.trim() || speicherStand === 'busy'}>
                   {speicherStand === 'busy' ? 'Speichere …' : 'Speichern'}
                 </Button>
@@ -382,8 +427,7 @@ export function TourDetailModal({
                 )}
                 {speicherStand === 'error' && <p className="w-full text-klein text-verboten-300">{speicherFehler}</p>}
               </form>
-            </section>
-          )}
+          </section>
 
           <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
             Orientierungshilfe, keine Rechtsgarantie. Die Auswertung ist nur so verlässlich wie

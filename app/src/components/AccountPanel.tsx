@@ -21,8 +21,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
-  AtSign, BadgeCheck, Check, ChevronRight, Eye, EyeOff, KeyRound, Loader2, Lock, LogOut, Mail,
-  Map as MapIcon, ShieldCheck, Trash2, TriangleAlert, UserRound, X,
+  AtSign, BadgeCheck, Bookmark, Check, ChevronRight, Eye, EyeOff, KeyRound, Loader2, Lock,
+  LogOut, Mail, Map as MapIcon, ShieldCheck, Trash2, TriangleAlert, UserRound, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Badge, Button, Card, Eingabe, Hinweis, Label, Leer, Segmente, Seite, Stufen } from '../ui'
@@ -42,6 +42,14 @@ interface Props {
   /** Ergebnis der Rückkehr von einem E-Mail-Link, falls es eines gab. */
   linkErgebnis: LinkErgebnis | null
   onLinkErgebnisGelesen: () => void
+  /**
+   * Liegt gerade eine begonnene Tour und wartet auf die Anmeldung?
+   *
+   * Wer hier landet, weil er auf „Speichern" getippt hat, will vor allem
+   * eines wissen: ist meine Arbeit noch da. Die Zusage gehört auf diese Seite,
+   * nicht auf die davor.
+   */
+  tourWartet?: boolean
 }
 
 const ANBIETER_NAMEN: Record<string, string> = {
@@ -59,7 +67,9 @@ const ANBIETER_NAMEN: Record<string, string> = {
 // die Serverseite muss denselben Wert tragen, sonst ist er Zierde.
 const MIN_PASSWORT = 8
 
-export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnisGelesen }: Props) {
+export function AccountPanel({
+  session, onZuTouren, linkErgebnis, onLinkErgebnisGelesen, tourWartet = false,
+}: Props) {
   const [anbieter, setAnbieter] = useState<string[]>([])
 
   useEffect(() => {
@@ -85,7 +95,7 @@ export function AccountPanel({ session, onZuTouren, linkErgebnis, onLinkErgebnis
 
   return session
     ? <AngemeldeteAnsicht session={session} onZuTouren={onZuTouren} meldung={meldung} />
-    : <AnmeldeAnsicht anbieter={anbieter} meldung={meldung} />
+    : <AnmeldeAnsicht anbieter={anbieter} meldung={meldung} tourWartet={tourWartet} />
 }
 
 /**
@@ -386,7 +396,9 @@ function Namensfeld({
   )
 }
 
-function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: React.ReactNode }) {
+function AnmeldeAnsicht({
+  anbieter, meldung, tourWartet,
+}: { anbieter: string[]; meldung: React.ReactNode; tourWartet: boolean }) {
   const [modus, setModus] = useState<'anmelden' | 'registrieren'>('anmelden')
   const [email, setEmail] = useState('')
   const [passwort, setPasswort] = useState('')
@@ -465,6 +477,16 @@ function AnmeldeAnsicht({ anbieter, meldung }: { anbieter: string[]; meldung: Re
             : 'Melde dich an, um deine gespeicherten Touren wiederzufinden.'}
         </p>
       </header>
+
+      {tourWartet && (
+        <div className="mb-4">
+          <Hinweis ton="erfolg" icon={Bookmark}>
+            <strong className="font-semibold">Deine Tour ist gesichert.</strong> Sie steht
+            nach der Anmeldung wieder da — samt Etappen und Packliste. Auch der Weg zurück
+            zur Karte kostet sie nicht.
+          </Hinweis>
+        </div>
+      )}
 
       <Card className="space-y-4 p-5 shadow-[var(--shadow-3)] sm:p-6">
         {meldung}

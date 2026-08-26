@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_REGION, REGIONS } from './data/regions'
 import {
   filterNature, filterPoints, getRegion, ladeGipfel, ladeGipfelUebersicht, ladeNatur, ladePunkte,
@@ -36,6 +36,9 @@ import { Marke } from './components/Marke'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
 import { serviceWorkerVorwaermen } from './services/sw'
+import {
+  entwurfAbholen, entwurfSichern, entwurfVerwerfen, entwurfWartet, type Tourentwurf,
+} from './services/entwurf'
 import {
   linkErgebnisAuslesen, saveTour, useSession,
   type GespeicherteEtappe, type LinkErgebnis,
@@ -83,6 +86,17 @@ export default function App() {
 
   const [routeOpen, setRouteOpen] = useState(false)
   const [auswertungOffen, setAuswertungOffen] = useState(false)
+  /**
+   * Eine über die Anmeldung gerettete Tour.
+   *
+   * Sie wird beim Start genau einmal abgeholt (`entwurfAbholen` verbraucht
+   * sie) und dient hier zweierlei: die Auswertung bekommt Name, Etappen und
+   * Packliste als Vorbelegung, und ihr `key` wechselt damit — so entstehen die
+   * Zustände dort frisch daraus, statt nachträglich überschrieben zu werden.
+   */
+  const [entwurf, setEntwurf] = useState<Tourentwurf | null>(null)
+  /** Wartet gerade eine Tour auf die Anmeldung? Nur für den Hinweis im Konto. */
+  const [tourWartet, setTourWartet] = useState(entwurfWartet)
   const [drawing, setDrawing] = useState(false)
   const [routeError, setRouteError] = useState<string | null>(null)
   // Die vom Nutzer gesetzten Stützpunkte …
@@ -431,6 +445,11 @@ export default function App() {
             etappen,
           },
         )
+        // Die Tour liegt jetzt in der Datenbank; der Zwischenspeicher hat
+        // seinen Zweck erfüllt und darf nicht beim nächsten Laden wieder
+        // dieselbe Route hervorholen.
+        entwurfVerwerfen()
+        setTourWartet(false)
       }
     : null
 
@@ -475,6 +494,97 @@ export default function App() {
 
   const clearRoute = () => {
     setWaypoints([]); setGpxTrack(null); setRouted(null); setRouteError(null)
+  }
+
+  /**
+   * Eine über die Anmeldung gerettete Tour zurückholen.
+   *
+   * Läuft genau einmal beim Start und nur, wenn tatsächlich etwas hinterlegt
+   * ist. Die gerouteten Stützpunkte stehen nicht im Entwurf — sie entstehen
+   * aus den Stopps von selbst neu, sobald das Routing angelaufen ist. Nur eine
+   * importierte Spur kommt vollständig zurück, weil sie sich aus nichts
+   * berechnen lässt.
+   *
+   * Die Auswertung geht gleich wieder auf: dort ist der Nutzer stehen
+   * geblieben, als er auf „Speichern" getippt hat.
+   */
+  useEffect(() => {
+    const gerettet = entwurfAbholen()
+    setTourWartet(false)
+    if (!gerettet) return
+    setEntwurf(gerettet)
+    setRegionCode(gerettet.region)
+    setWaypoints(gerettet.waypoints ?? [])
+    setGpxTrack(gerettet.gpxTrack)
+    setRouteOpen(true)
+    setAuswertungOffen(true)
+    const spur = gerettet.gpxTrack ?? (gerettet.waypoints ?? []).map((w) => w.position)
+    if (spur.length > 0) setKameraZiel((z) => ({ geometry: spur, zaehler: (z?.zaehler ?? 0) + 1 }))
+  }, [])
+
+  /**
+   * Nach dem Anmelden zurück zur Tour.
+   *
+   * Der Fall ohne Seitenneuaufbau: wer sich mit Passwort anmeldet, bleibt im
+   * selben Dokument, die Karte war die ganze Zeit montiert und die Route ist
+   * unverändert da. Es fehlt nur der Weg zurück — sonst stünde man nach dem
+   * Anmelden auf der Kontoseite und müsste selbst wiederfinden, was man gerade
+   * speichern wollte.
+   *
+   * Der Zwischenspeicher wird dabei fällig: er war für den Neuaufbau gedacht,
+   * und der ist ausgeblieben.
+   */
+  const hatteSession = useRef(session != null)
+  useEffect(() => {
+    const jetzt = session != null
+    const vorher = hatteSession.current
+    hatteSession.current = jetzt
+    if (!jetzt || vorher || !tourWartet) return
+    entwurfVerwerfen()
+    setTourWartet(false)
+    setView('karte')
+    setRouteOpen(true)
+    setAuswertungOffen(true)
+  }, [session, tourWartet])
+
+  /**
+   * Wer die Anmeldung abbricht, lässt keinen Zwischenspeicher zurück.
+   *
+   * Sonst entstünde ein Gespenst: der Entwurf ist eine Momentaufnahme vom
+   * Klick auf „Speichern". Wer danach zur Karte zurückgeht und weiterzeichnet,
+   * bekäme bei einem späteren Neuaufbau die ältere Fassung zurück — und zwar
+   * über die neuere hinweg. Im Arbeitsspeicher ist die Tour ohnehin noch da,
+   * solange die Seite steht; der Zwischenspeicher ist nur für den Weg durch
+   * einen Bestätigungslink gedacht, und den verlässt man hier gerade.
+   */
+  useEffect(() => {
+    if (view === 'konto' || session || !tourWartet) return
+    entwurfVerwerfen()
+    setTourWartet(false)
+  }, [view, session, tourWartet])
+
+  /**
+   * Ohne Konto führt „Speichern" zur Anmeldung — mit der Tour im Gepäck.
+   *
+   * Beim blossen Wechsel in den Kontobereich bliebe sie ohnehin erhalten, weil
+   * die Karte montiert bleibt. Der Bestätigungslink aus der E-Mail lädt die
+   * Seite aber neu, und dann ist nur noch da, was vorher weggeschrieben wurde.
+   */
+  const zurAnmeldung = (teil: {
+    name: string
+    trip: TripParams | null
+    packliste: PackStaende
+    etappen: GespeicherteEtappe[] | null
+  }) => {
+    entwurfSichern({
+      region: regionCode,
+      waypoints: gpxTrack ? [] : waypoints,
+      gpxTrack,
+      ...teil,
+    })
+    setTourWartet(true)
+    setAuswertungOffen(false)
+    setView('konto')
   }
 
   /**
@@ -794,6 +904,7 @@ export default function App() {
         <main className="flex-1 overflow-y-auto">
           <AccountPanel
             session={session}
+            tourWartet={tourWartet}
             onZuTouren={() => setView('touren')}
             linkErgebnis={linkErgebnis}
             onLinkErgebnisGelesen={() => setLinkErgebnis(null)}
@@ -841,6 +952,13 @@ export default function App() {
       />
 
       <TourDetailModal
+        /*
+          Der Schlüssel wechselt, sobald eine gerettete Tour zurückkommt. Ohne
+          ihn behielte das Fenster seine bereits angelegten Zustände — Name,
+          Etappen und Packliste stünden dann leer da, obwohl sie im Entwurf
+          liegen.
+        */
+        key={entwurf ? entwurf.gespeichert : 'neu'}
         offen={auswertungOffen}
         onClose={() => setAuswertungOffen(false)}
         region={region}
@@ -858,6 +976,15 @@ export default function App() {
         statusAn={statusAn}
         onAlsStopp={gpxTrack ? null : alsStopp}
         onSaveTour={handleSaveTour}
+        onAnmelden={zurAnmeldung}
+        entwurf={entwurf
+          ? {
+              name: entwurf.name,
+              trip: entwurf.trip,
+              packliste: entwurf.packliste,
+              etappen: entwurf.etappen,
+            }
+          : undefined}
       />
     </div>
   )
