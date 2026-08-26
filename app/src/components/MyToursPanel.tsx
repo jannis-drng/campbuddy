@@ -13,7 +13,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
-  Bookmark, Globe, Heart, ListChecks, Lock, Map as MapIcon, MessageCircle, Pencil, Share2,
+  Bookmark, Globe, Heart, Lock, Map as MapIcon, MessageCircle, Pencil, Share2,
   Trash2, TriangleAlert, X,
 } from 'lucide-react'
 import type { Position } from '../data/geo'
@@ -24,7 +24,7 @@ import {
 } from '../services/account'
 import { Badge, Button, Eingabe, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
-import { PacklisteModal } from './PacklisteModal'
+import { TourFenster } from './TourFenster'
 
 interface Props {
   session: Session | null
@@ -49,13 +49,14 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
   const [bearbeitet, setBearbeitet] = useState<Tour | null>(null)
   const [loescht, setLoescht] = useState<Tour | null>(null)
   /**
-   * Welche Tour ihre Packliste zeigt.
+   * Welche Tour gerade aufgeschlagen ist.
    *
-   * Nur für eigene Touren: der Stand — habe ich, brauche ich noch — ist eine
-   * persönliche Notiz und wird in der eigenen Zeile gespeichert. Bei einer
-   * fremden Tour gäbe es nichts, wohin damit.
+   * Nur für eigene Touren: das Fenster zeigt die Nächte, das Wetter und die
+   * Packliste, und deren Stand — habe ich, brauche ich noch — ist eine
+   * persönliche Notiz in der eigenen Zeile. Bei einer fremden Tour gäbe es
+   * nichts, wohin damit.
    */
-  const [packliste, setPackliste] = useState<Tour | null>(null)
+  const [detail, setDetail] = useState<Tour | null>(null)
 
   const laden = useCallback(async () => {
     if (!session) { setEigene([]); setGemerkt([]); setLaedt(false); return }
@@ -170,7 +171,15 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                     <TourKarte
                       key={t.id}
                       tour={t}
-                      onOeffnen={() => aufKarte(t)}
+                      /*
+                        Die Tour öffnet die Tour — nicht die Karte. Der Verlauf
+                        ist einer von fünf Gründen, eine gespeicherte Tour
+                        aufzuschlagen; die anderen vier standen hinter einem
+                        Listensymbol in der Fussleiste oder gar nicht. Auf die
+                        Karte führt von dort aus weiterhin ein Weg, und der
+                        Knopf in der Fussleiste bleibt als Abkürzung.
+                      */
+                      onOeffnen={() => setDetail(t)}
                       marke={
                         // Unterlage, sonst verschwindet die Marke im Kartenbild.
                         <Badge
@@ -198,9 +207,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                               Teilen
                             </Button>
                           )}
-                          <IconButton icon={ListChecks} groesse="klein"
-                                      label={`Packliste für „${t.name}"`}
-                                      onClick={() => setPackliste(t)} />
                           <IconButton icon={Pencil} groesse="klein" label={`„${t.name}" bearbeiten`}
                                       onClick={() => setBearbeitet(t)} />
                           <IconButton icon={Trash2} groesse="klein" label={`„${t.name}" löschen`}
@@ -268,12 +274,12 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
         onBestaetigt={() => loescht && entfernen(loescht)}
       />
 
-      {packliste && (
-        <PacklisteModal
-          tour={packliste}
-          onClose={() => setPackliste(null)}
+      {detail && (
+        <TourFenster
+          tour={detail}
+          onClose={() => setDetail(null)}
           onAufKarte={(geometry, wegpunkte) => {
-            setPackliste(null)
+            setDetail(null)
             onLoadRoute(geometry, wegpunkte)
           }}
         />

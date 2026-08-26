@@ -225,7 +225,7 @@ export function TripPlanner({
       <section className="rounded-mittel bg-flaeche-1 p-3 text-fliess">
         <p className="text-ink-300">
           Die Liste rechnet mit einer kältesten Nacht von{' '}
-          <strong className="text-ink-50">{packlist.basedOnNightTemp} °C</strong> auf {trip.elevation} m.
+          <strong className="text-ink-50">{packlist.basedOnNightTemp.toLocaleString('de-DE')} °C</strong> auf {trip.elevation} m.
         </p>
         <p className="mt-1 text-klein text-ink-500">
           {packlist.fromForecast

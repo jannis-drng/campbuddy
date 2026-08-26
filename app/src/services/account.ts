@@ -321,6 +321,36 @@ export interface GespeicherteEtappe {
   position: [number, number]
 }
 
+const ETAPPEN_ARTEN: Uebernachtung['art'][] = ['hut', 'campsite', 'vehicle_spot', 'eigen', 'stopp']
+
+/**
+ * Gewählte Nachtlager aus einer gespeicherten Tour lesen.
+ *
+ * Die Spalte ist `jsonb` und kommt als `unknown` zurück — geschrieben hat sie
+ * eine frühere Fassung dieser App, und was dort einmal drinsteht, bleibt
+ * drin. Deshalb wird jede Zeile geprüft statt geglaubt: eine kaputte Zeile
+ * fällt weg, eine kaputte Liste macht kein Fenster kaputt.
+ */
+export function etappenLesen(roh: unknown): GespeicherteEtappe[] | null {
+  if (!Array.isArray(roh)) return null
+  const liste = roh.flatMap((eintrag): GespeicherteEtappe[] => {
+    if (!eintrag || typeof eintrag !== 'object') return []
+    const e = eintrag as Record<string, unknown>
+    const position = e.position
+    if (typeof e.bei_m !== 'number' || typeof e.name !== 'string') return []
+    if (!ETAPPEN_ARTEN.includes(e.art as Uebernachtung['art'])) return []
+    if (!Array.isArray(position) || position.length < 2) return []
+    if (typeof position[0] !== 'number' || typeof position[1] !== 'number') return []
+    return [{
+      bei_m: e.bei_m,
+      name: e.name,
+      art: e.art as Uebernachtung['art'],
+      position: [position[0], position[1]],
+    }]
+  })
+  return liste.length > 0 ? liste : null
+}
+
 export async function listTouren(): Promise<Tour[]> {
   const sb = getSupabase()
   if (!sb) return []

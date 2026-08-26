@@ -14,10 +14,7 @@
  *
  * Die Auswahl ist Teil der Tour und wird mit ihr gespeichert (Migration 0021).
  */
-import {
-  Building2, CalendarClock, Hand, MapPin, MapPinPlus, Star, Tent, Truck,
-} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import { CalendarClock, Hand, MapPin, MapPinPlus } from 'lucide-react'
 import type { Position } from '../data/geo'
 import type { LegalStatus, WegpunktArt } from '../data/types'
 import type { Etappe, Etappenkandidat, Uebernachtung } from '../data/hiking'
@@ -25,25 +22,10 @@ import { formatDauer } from '../data/hiking'
 import type { GespeicherteEtappe } from '../services/account'
 import { Hinweis, Segmente } from '../ui'
 import { STATUS_LABEL } from './ui'
+import { UEBERNACHTUNG_ICON as ART_ICON, UEBERNACHTUNG_LABEL as ART_LABEL } from './uebernachtung'
 
 const formatKm = (m: number) =>
   m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
-
-const ART_ICON: Record<Uebernachtung['art'], LucideIcon> = {
-  hut: Building2,
-  campsite: Tent,
-  vehicle_spot: Truck,
-  eigen: Star,
-  stopp: MapPin,
-}
-
-const ART_LABEL: Record<Uebernachtung['art'], string> = {
-  hut: 'Hütte',
-  campsite: 'Campingplatz',
-  vehicle_spot: 'Stellplatz',
-  eigen: 'Markierter Schlafplatz',
-  stopp: 'Dein Stopp',
-}
 
 /** Nur die Farbe, nicht die volle Marke: in einer Zeile wäre die zu laut. */
 const STATUS_FARBE: Record<LegalStatus, string> = {
