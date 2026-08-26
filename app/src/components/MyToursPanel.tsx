@@ -13,16 +13,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
-  Bookmark, Globe, Heart, Lock, Map as MapIcon, MessageCircle, Pencil, Share2,
+  Bookmark, Globe, Heart, Lock, Map as MapIcon, MessageCircle, Share2,
   Trash2, TriangleAlert, X,
 } from 'lucide-react'
 import type { Position } from '../data/geo'
 import { isSupabaseConfigured, type PublicTour, type Tour } from '../services/supabase'
 import {
-  aktualisiereTour, deleteTour, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
-  setTourPublic,
+  deleteTour, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
+  setTourPublic, tourKopieren,
 } from '../services/account'
-import { Badge, Button, Eingabe, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
+import { Badge, Button, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
 import { TourFenster } from './TourFenster'
 
@@ -32,11 +32,21 @@ interface Props {
   onAnmelden: () => void
   /** Führt zur Karte, wo Touren entstehen. */
   onZurKarte: () => void
+  /**
+   * Eine eigene Tour auf der Karte weiterbearbeiten.
+   *
+   * Verlauf und Nachtlager hängen am Höhenprofil und an dem, was entlang der
+   * Route liegt — beides kennt nur die Karte. Gespeichert wird danach in
+   * dieselbe Tour, nicht als zweite (siehe App.tsx).
+   */
+  onBearbeiten: (tour: Tour) => void
 }
 
 type Stapel = 'eigene' | 'gemerkt'
 
-export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: Props) {
+export function MyToursPanel({
+  session, onLoadRoute, onAnmelden, onZurKarte, onBearbeiten,
+}: Props) {
   const [stapel, setStapel] = useState<Stapel>('eigene')
   const [eigene, setEigene] = useState<Tour[]>([])
   const [gemerkt, setGemerkt] = useState<PublicTour[]>([])
@@ -46,17 +56,16 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
 
   /** Welche Tour gerade geteilt bzw. bearbeitet wird — null heisst: kein Dialog. */
   const [teilt, setTeilt] = useState<Tour | null>(null)
-  const [bearbeitet, setBearbeitet] = useState<Tour | null>(null)
   const [loescht, setLoescht] = useState<Tour | null>(null)
   /**
-   * Welche Tour gerade aufgeschlagen ist.
+   * Welche Tour gerade aufgeschlagen ist — und ob sie mir gehört.
    *
-   * Nur für eigene Touren: das Fenster zeigt die Nächte, das Wetter und die
-   * Packliste, und deren Stand — habe ich, brauche ich noch — ist eine
-   * persönliche Notiz in der eigenen Zeile. Bei einer fremden Tour gäbe es
-   * nichts, wohin damit.
+   * Dasselbe Fenster trägt beide Stapel. Der Unterschied liegt nicht darin,
+   * was zu sehen ist, sondern wohin eine Änderung geht: bei einer eigenen
+   * Tour in die Zeile, bei einer gemerkten in eine Kopie, wenn man sie
+   * übernimmt.
    */
-  const [detail, setDetail] = useState<Tour | null>(null)
+  const [detail, setDetail] = useState<{ tour: Tour | PublicTour; eigen: boolean } | null>(null)
 
   const laden = useCallback(async () => {
     if (!session) { setEigene([]); setGemerkt([]); setLaedt(false); return }
@@ -179,7 +188,8 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                         Karte führt von dort aus weiterhin ein Weg, und der
                         Knopf in der Fussleiste bleibt als Abkürzung.
                       */
-                      onOeffnen={() => setDetail(t)}
+                      onOeffnen={() => setDetail({ tour: t, eigen: true })}
+                      autorZeigen={false}
                       marke={
                         // Unterlage, sonst verschwindet die Marke im Kartenbild.
                         <Badge
@@ -207,8 +217,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                               Teilen
                             </Button>
                           )}
-                          <IconButton icon={Pencil} groesse="klein" label={`„${t.name}" bearbeiten`}
-                                      onClick={() => setBearbeitet(t)} />
                           <IconButton icon={Trash2} groesse="klein" label={`„${t.name}" löschen`}
                                       onClick={() => setLoescht(t)} />
                           <AufKarteKnopf onClick={() => aufKarte(t)} disabled={!hatWeg(t)} />
@@ -220,7 +228,7 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
                     <TourKarte
                       key={t.id}
                       tour={t}
-                      onOeffnen={() => aufKarte(t)}
+                      onOeffnen={() => setDetail({ tour: t, eigen: false })}
                       aktionen={
                         <>
                           <ZaehlerKnopf icon={Heart} zahl={t.likes_count} tonAktiv="warm"
@@ -258,16 +266,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
         onFehler={setFehler}
       />
 
-      <BearbeitenDialog
-        tour={bearbeitet}
-        onClose={() => setBearbeitet(null)}
-        onGespeichert={(id, name, beschreibung) => {
-          setEigene((l) => l.map((x) => (x.id === id ? { ...x, name, beschreibung } : x)))
-          setBearbeitet(null)
-        }}
-        onFehler={setFehler}
-      />
-
       <LoeschDialog
         tour={loescht}
         onClose={() => setLoescht(null)}
@@ -276,12 +274,32 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
 
       {detail && (
         <TourFenster
-          tour={detail}
+          /*
+            Der Schlüssel wechselt mit der Tour: sonst behielte das Fenster
+            beim Übernehmen einer gemerkten Tour die Zustände der Vorlage —
+            Name und Angaben stünden dann auf der fremden Tour, obwohl die
+            eigene Kopie darin liegt.
+          */
+          key={detail.tour.id}
+          tour={detail.tour}
+          eigen={detail.eigen}
           onClose={() => setDetail(null)}
           onAufKarte={(geometry, wegpunkte) => {
             setDetail(null)
             onLoadRoute(geometry, wegpunkte)
           }}
+          onBearbeiten={detail.eigen
+            ? () => { setDetail(null); onBearbeiten(detail.tour as Tour) }
+            : undefined}
+          onKopieren={detail.eigen ? undefined : async (name, trip) => {
+            const kopie = await tourKopieren(detail.tour as PublicTour, name, trip)
+            setEigene((liste) => [kopie, ...liste])
+            setStapel('eigene')
+            setDetail({ tour: kopie, eigen: true })
+          }}
+          onGeaendert={(patch) =>
+            setEigene((liste) =>
+              liste.map((x) => (x.id === detail.tour.id ? { ...x, ...patch } : x)))}
         />
       )}
     </Seite>
@@ -385,72 +403,6 @@ function TeilenDialog({
   )
 }
 
-function BearbeitenDialog({
-  tour, onClose, onGespeichert, onFehler,
-}: {
-  tour: Tour | null
-  onClose: () => void
-  onGespeichert: (id: string, name: string, beschreibung: string | null) => void
-  onFehler: (m: string) => void
-}) {
-  const [name, setName] = useState('')
-  const [text, setText] = useState('')
-  const [busy, setBusy] = useState(false)
-
-  useEffect(() => { setName(tour?.name ?? ''); setText(tour?.beschreibung ?? '') }, [tour])
-
-  const speichern = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!tour || !name.trim()) return
-    setBusy(true)
-    try {
-      const beschreibung = text.trim() || null
-      await aktualisiereTour(tour.id, { name: name.trim(), beschreibung })
-      onGespeichert(tour.id, name.trim(), beschreibung)
-    } catch (err) {
-      onFehler((err as Error).message)
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  return (
-    <Dialog offen={tour !== null} titel="Tour bearbeiten" onClose={onClose}>
-      <form onSubmit={speichern}>
-        <label className="block">
-          <span className="mb-1.5 block text-mikro font-medium uppercase text-ink-500">Name</span>
-          <Eingabe value={name} onChange={(e) => setName(e.target.value)} maxLength={120} required />
-        </label>
-        <label className="mt-3 block">
-          <span className="mb-1.5 block text-mikro font-medium uppercase text-ink-500">Beschreibung</span>
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={3}
-            maxLength={1000}
-            className="w-full resize-y rounded-mittel border border-kante bg-flaeche-1 px-3 py-2 text-fliess leading-relaxed text-ink-100 placeholder:text-ink-500 transition-colors duration-[160ms] hover:border-kante-stark focus:border-gletscher-500 focus:outline-none focus:ring-2 focus:ring-gletscher-500/25"
-          />
-        </label>
-        {tour?.is_public && (
-          <p className="mt-2 text-mikro normal-case tracking-normal text-ink-500">
-            Diese Tour ist geteilt — Änderungen sind sofort für alle sichtbar.
-          </p>
-        )}
-        <div className="mt-4 flex flex-wrap justify-end gap-2">
-          <Button variante="geist" onClick={onClose}>Abbrechen</Button>
-          <Button type="submit" variante="primaer" disabled={busy || !name.trim()}>
-            {busy ? 'Speichert …' : 'Speichern'}
-          </Button>
-        </div>
-      </form>
-    </Dialog>
-  )
-}
-
-/**
- * Löschen fragt nach. Eine gezeichnete Mehrtagestour ist Arbeit, und ein
- * Fehlklick in einer Kartenfussleiste ist schnell passiert.
- */
 function LoeschDialog({
   tour, onClose, onBestaetigt,
 }: { tour: Tour | null; onClose: () => void; onBestaetigt: () => void }) {

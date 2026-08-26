@@ -8,7 +8,7 @@
  * Aufbau von oben nach unten, nach dem, wonach jemand eine Tour aussucht:
  * Bild (wo geht es lang?), Name, Urheberin, Kennzahlen, Handlungen.
  */
-import type { ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { ArrowUpRight, Clock, MessageCircle, Mountain, Route as RouteIcon } from 'lucide-react'
 import type { Position } from '../data/geo'
 import { formatDauer } from '../data/hiking'
@@ -121,10 +121,24 @@ interface Props {
   aktionen?: ReactNode
   /** Kleine Marke oben links auf dem Bild — z.B. „Geteilt". */
   marke?: ReactNode
+  /**
+   * Urheberzeile zeigen.
+   *
+   * Unter „Deine Touren" gehört sie nicht hin: dort ist jede Tour die eigene,
+   * und die Zeile stand ohnehin auf „gelöschtes Konto" — die Spalte `autor`
+   * in `routes` ist seit Migration 0017 ein Überbleibsel und bei eigenen
+   * Zeilen leer. Bei einer gemerkten Tour ist sie dagegen die Auskunft, um
+   * die es geht: von wem ist das.
+   */
+  autorZeigen?: boolean
 }
 
-export function TourKarte({ tour, onOeffnen, aktionen, marke }: Props) {
-  const geometrie = (tour.geometry?.coordinates ?? []) as Position[]
+export function TourKarte({ tour, onOeffnen, aktionen, marke, autorZeigen = true }: Props) {
+  // Stabile Referenz, sonst läuft die Memoisierung der Vorschau ins Leere.
+  const geometrie = useMemo(
+    () => (tour.geometry?.coordinates ?? []) as Position[],
+    [tour.geometry],
+  )
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-gross border border-kante bg-flaeche-2 transition-[border-color,transform,box-shadow] duration-[160ms] ease-[var(--ease-heraus)] hover:-translate-y-0.5 hover:border-kante-stark hover:shadow-[var(--shadow-3)] focus-within:border-kante-stark">
@@ -149,11 +163,17 @@ export function TourKarte({ tour, onOeffnen, aktionen, marke }: Props) {
               <span className="line-clamp-2">{tour.name}</span>
             </button>
           </h3>
-          <AutorZeile
-            autor={tour.autor}
-            zeit={tour.veroeffentlicht_am ?? tour.created_at}
-            className="mt-1.5"
-          />
+          {autorZeigen ? (
+            <AutorZeile
+              autor={tour.autor}
+              zeit={tour.veroeffentlicht_am ?? tour.created_at}
+              className="mt-1.5"
+            />
+          ) : (
+            <p className="mt-1 text-klein text-ink-600">
+              {seitdem(tour.veroeffentlicht_am ?? tour.created_at)}
+            </p>
+          )}
         </div>
 
         {tour.beschreibung && (

@@ -434,19 +434,69 @@ export async function saveTour(
   return data as Tour
 }
 
-/** Nachträglich ändern: Name, Beschreibung, Eckdaten. Nur eigene (RLS). */
+/**
+ * Nachträglich ändern: Name, Beschreibung, Eckdaten — und der Verlauf selbst.
+ * Nur eigene (RLS).
+ *
+ * Dass auch die Geometrie mitkommt, ist der Unterschied zwischen „ändern" und
+ * „noch einmal speichern". Vorher legte jedes Bearbeiten auf der Karte eine
+ * zweite Tour an, weil `saveTour` immer einfügt; wer eine Etappe verschob,
+ * hatte danach zwei fast gleiche Touren in der Liste und musste raten, welche
+ * die neue ist.
+ */
 export async function aktualisiereTour(
   id: string,
-  patch: { name?: string; beschreibung?: string | null } & TourEckdaten,
+  patch: {
+    name?: string
+    beschreibung?: string | null
+    geometry?: Position[]
+    waypoints?: Position[]
+  } & TourEckdaten,
 ): Promise<void> {
   const sb = getSupabase()
   if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const zeile: Record<string, unknown> = eckdatenZeile(patch)
   if (patch.name !== undefined) zeile.name = patch.name
   if (patch.beschreibung !== undefined) zeile.beschreibung = patch.beschreibung
+  if (patch.geometry !== undefined) {
+    zeile.geometry = { type: 'LineString', coordinates: patch.geometry }
+  }
+  if (patch.waypoints !== undefined) {
+    zeile.waypoints = patch.waypoints.length > 0 ? patch.waypoints : null
+  }
   if (Object.keys(zeile).length === 0) return
   const { error } = await sb.from('routes').update(zeile).eq('id', id)
   if (error) throw new Error(uebersetzeSpeicherfehler(error.message))
+}
+
+/**
+ * Eine fremde Tour als eigene übernehmen.
+ *
+ * Kopiert wird der Verlauf und was daran öffentlich hängt — Name, Beschreibung,
+ * Kenngrössen — plus die Eckdaten, die sich der Übernehmende gerade selbst
+ * eingestellt hat. Nicht kopiert wird, was privat ist: Packliste und Nachtlager
+ * der Urheberin stehen gar nicht in der öffentlichen Sicht, und das ist auch
+ * richtig so — wo jemand schlafen will, ist seine Planung, nicht ihre.
+ *
+ * Die Kopie ist immer privat. Wer sie selbst teilen will, tut das ausdrücklich;
+ * sonst stünde dieselbe Tour nach zwei Klicks zweimal in der Community.
+ */
+export async function tourKopieren(
+  vorlage: PublicTour,
+  name: string,
+  eckdaten?: TourEckdaten,
+): Promise<Tour> {
+  const geometry = (vorlage.geometry?.coordinates ?? []) as Position[]
+  const waypoints = (vorlage.waypoints ?? []) as Position[]
+  return saveTour(name, vorlage.region, geometry, waypoints, {
+    distance_m: vorlage.distance_m,
+    ascent_m: vorlage.ascent_m,
+    duration_s: vorlage.duration_s,
+    ...eckdaten,
+  }, {
+    is_public: false,
+    beschreibung: vorlage.beschreibung ?? undefined,
+  })
 }
 
 export async function deleteTour(id: string): Promise<void> {

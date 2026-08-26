@@ -65,6 +65,27 @@ export function pointInGeometry(
  * Ohne Zwischenpunkte könnte eine Route ein schmales Schutzgebiet komplett
  * überspringen — genau der Fall, der nicht passieren darf.
  */
+/**
+ * Punkte ausdünnen, gleichmässig über die Linie verteilt.
+ *
+ * Für Bilder, nicht für Rechnungen: eine geroutete Mehrtagestour bringt
+ * mehrere tausend Stützpunkte mit, und ein Vorschaubild von 640 px kann
+ * davon keine hundert unterscheiden. Ungefiltert bedeutet jede Vorschau in
+ * einer Liste zwei SVG-Linien mit Tausenden Punkten — der Browser hängt dann
+ * beim blossen Umschalten zwischen zwei Stapeln sekundenlang.
+ *
+ * Erster und letzter Punkt bleiben immer stehen: an ihnen hängen Start- und
+ * Zielmarke.
+ */
+export function ausduennen(line: Position[], max: number): Position[] {
+  if (max < 2 || line.length <= max) return line
+  const schritt = (line.length - 1) / (max - 1)
+  const raus: Position[] = []
+  for (let i = 0; i < max - 1; i++) raus.push(line[Math.round(i * schritt)])
+  raus.push(line[line.length - 1])
+  return raus
+}
+
 export function densify(line: Position[], maxSpacingM = 250): Position[] {
   if (line.length < 2) return line
   const out: Position[] = [line[0]]

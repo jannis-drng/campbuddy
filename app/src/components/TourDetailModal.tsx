@@ -88,6 +88,15 @@ interface Props {
     packliste: PackStaende
     etappen: GespeicherteEtappe[] | null
   }
+  /**
+   * Wird gerade eine bestehende eigene Tour geändert statt eine neue angelegt?
+   *
+   * Der Unterschied ist keine Formulierungsfrage: derselbe Knopf schrieb
+   * vorher in beiden Fällen eine *neue* Zeile, und wer eine Etappe verschob,
+   * hatte danach dieselbe Tour zweimal. Steht hier ein Name, geht das
+   * Speichern in die bestehende Zeile zurück (siehe App.tsx).
+   */
+  bearbeitet?: { id: string; name: string } | null
 }
 
 const formatKm = (m: number) =>
@@ -105,7 +114,7 @@ const SCHWIERIGKEIT_STUFE = {
 export function TourDetailModal({
   offen, onClose, region, analysis, stats, profil, etappen,
   hoehenBusy, hoehenFehler, wegpunkte, points, peaks, onSaveTour, route,
-  schlafmoeglichkeiten, statusAn, onAlsStopp, onAnmelden, entwurf,
+  schlafmoeglichkeiten, statusAn, onAlsStopp, onAnmelden, entwurf, bearbeitet,
 }: Props) {
   const [speicherStand, setSpeicherStand] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle')
   const [speicherFehler, setSpeicherFehler] = useState<string | null>(null)
@@ -115,7 +124,9 @@ export function TourDetailModal({
   /** Welcher der Vorschläge gerade steht. */
   const [vorschlagNr, setVorschlagNr] = useState(0)
   /** Nur gesetzt, wenn jemand den Namen von Hand angefasst hat. */
-  const [eigenerName, setEigenerName] = useState<string | null>(entwurf?.name ?? null)
+  const [eigenerName, setEigenerName] = useState<string | null>(
+    entwurf?.name ?? bearbeitet?.name ?? null,
+  )
   /** Stand der Checkliste. Wird mit der Tour gespeichert. */
   const [staende, setStaende] = useState<PackStaende>(entwurf?.packliste ?? {})
   /** Selbst gewählte Nachtlager; `null` heisst „automatischer Vorschlag". */
@@ -380,11 +391,15 @@ export function TourDetailModal({
             Anmeldung und nimmt die Tour mit (siehe services/entwurf.ts).
           */}
           <section className="rounded-gross border border-kante bg-flaeche-1 p-4">
-              <h3 className="text-fliess font-semibold text-ink-100">Tour speichern</h3>
+              <h3 className="text-fliess font-semibold text-ink-100">
+                {bearbeitet ? 'Änderungen speichern' : 'Tour speichern'}
+              </h3>
               <p className="mb-3 mt-0.5 text-klein leading-relaxed text-ink-500">
-                {onSaveTour
-                  ? 'Der Name kommt aus der Tour selbst — aus den Orten am Weg. Überschreiben geht jederzeit. Gespeichert wird beides zusammen: der Verlauf und die Eckdaten von oben; unter „Deine Touren“ kannst du die Tour später teilen.'
-                  : 'Der Name kommt aus der Tour selbst — überschreiben geht jederzeit. Zum Speichern brauchst du ein Konto; deine Tour bleibt dabei erhalten und steht nach der Anmeldung wieder hier, samt Etappen und Packliste.'}
+                {bearbeitet
+                  ? 'Verlauf, Nachtlager, Eckdaten und Packliste gehen zurück in deine bestehende Tour — es entsteht keine zweite. Der Name lässt sich dabei mit ändern.'
+                  : onSaveTour
+                    ? 'Der Name kommt aus der Tour selbst — aus den Orten am Weg. Überschreiben geht jederzeit. Gespeichert wird beides zusammen: der Verlauf und die Eckdaten von oben; unter „Deine Touren“ kannst du die Tour später teilen.'
+                    : 'Der Name kommt aus der Tour selbst — überschreiben geht jederzeit. Zum Speichern brauchst du ein Konto; deine Tour bleibt dabei erhalten und steht nach der Anmeldung wieder hier, samt Etappen und Packliste.'}
               </p>
               <form onSubmit={speichern} className="flex flex-wrap gap-2">
                 <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-mittel border
@@ -418,11 +433,15 @@ export function TourDetailModal({
                 <Button type="submit" variante="primaer" groesse="gross"
                         icon={onSaveTour ? undefined : LogIn}
                         disabled={!name.trim() || speicherStand === 'busy'}>
-                  {speicherStand === 'busy' ? 'Speichere …' : 'Speichern'}
+                  {speicherStand === 'busy'
+                    ? 'Speichere …'
+                    : bearbeitet ? 'Änderungen speichern' : 'Speichern'}
                 </Button>
                 {speicherStand === 'ok' && (
                   <p className="w-full text-klein text-erlaubt-400">
-                    Gespeichert. Unter „Deine Touren“ kannst du sie teilen.
+                    {bearbeitet
+                      ? 'Gespeichert. Die Änderungen stehen jetzt in deiner Tour.'
+                      : 'Gespeichert. Unter „Deine Touren“ kannst du sie teilen.'}
                   </p>
                 )}
                 {speicherStand === 'error' && <p className="w-full text-klein text-verboten-300">{speicherFehler}</p>}

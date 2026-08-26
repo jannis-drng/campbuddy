@@ -34,13 +34,13 @@ import { Kartenebenen } from './components/Kartenebenen'
 import { ZeichenLeiste } from './components/ZeichenLeiste'
 import { Marke } from './components/Marke'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
-import { isSupabaseConfigured } from './services/supabase'
+import { isSupabaseConfigured, type Tour } from './services/supabase'
 import { serviceWorkerVorwaermen } from './services/sw'
 import {
   entwurfAbholen, entwurfSichern, entwurfVerwerfen, entwurfWartet, type Tourentwurf,
 } from './services/entwurf'
 import {
-  brauchtNamenswahl, ladeProfil, linkErgebnisAuslesen, saveTour, useSession,
+  aktualisiereTour, brauchtNamenswahl, ladeProfil, linkErgebnisAuslesen, saveTour, useSession,
   type GespeicherteEtappe, type LinkErgebnis, type Profil,
 } from './services/account'
 import { BenutzernameDialog } from './components/BenutzernameDialog'
@@ -106,6 +106,19 @@ export default function App() {
 
   const [routeOpen, setRouteOpen] = useState(false)
   const [auswertungOffen, setAuswertungOffen] = useState(false)
+  /**
+   * Die eigene Tour, die gerade auf der Karte bearbeitet wird.
+   *
+   * Ohne sie legte jedes Speichern eine neue Tour an — `saveTour` fügt immer
+   * ein. Wer eine gespeicherte Tour zum Ändern öffnete und danach speicherte,
+   * hatte zwei fast gleiche Touren in der Liste und musste raten, welche die
+   * neue ist. Steht hier eine Tour, geht das Speichern in ihre Zeile.
+   *
+   * Sie wird verworfen, sobald der Verlauf ein anderer wird, ohne dass er von
+   * ihr abstammt: eine gelöschte Route und eine importierte GPX-Spur sind
+   * beide keine Änderung *dieser* Tour mehr.
+   */
+  const [bearbeiteteTour, setBearbeiteteTour] = useState<{ id: string; name: string } | null>(null)
   /**
    * Eine über die Anmeldung gerettete Tour.
    *
@@ -429,6 +442,8 @@ export default function App() {
       setRouted(null)
       setDrawing(false)
       setRouteError(null)
+      // Eine importierte Spur ist keine Änderung an der geladenen Tour mehr.
+      setBearbeiteteTour(null)
     } catch (e) {
       setRouteError(`GPX konnte nicht gelesen werden: ${(e as Error).message}`)
     }
@@ -452,19 +467,25 @@ export default function App() {
         packliste: PackStaende,
         etappen: GespeicherteEtappe[] | null,
       ) => {
-        await saveTour(
-          name, regionCode, routeGeometry, gpxTrack ? [] : wegpunktOrte,
-          {
-            ...trip,
-            distance_m: routeGeometry.length > 1 ? lineLength(routeGeometry) : null,
-            ascent_m: wanderStats?.ascent_m ?? null,
-            duration_s: wanderStats?.duration_s ?? null,
-            // Ein leerer Stand ist keine Angabe — dann bleibt die Spalte leer,
-            // statt ein leeres Objekt in jede Zeile zu schreiben.
-            packliste: Object.keys(packliste).length > 0 ? packliste : null,
-            etappen,
-          },
-        )
+        const eck = {
+          ...trip,
+          distance_m: routeGeometry.length > 1 ? lineLength(routeGeometry) : null,
+          ascent_m: wanderStats?.ascent_m ?? null,
+          duration_s: wanderStats?.duration_s ?? null,
+          // Ein leerer Stand ist keine Angabe — dann bleibt die Spalte leer,
+          // statt ein leeres Objekt in jede Zeile zu schreiben.
+          packliste: Object.keys(packliste).length > 0 ? packliste : null,
+          etappen,
+        }
+        const wegpunkte = gpxTrack ? [] : wegpunktOrte
+        if (bearbeiteteTour) {
+          await aktualisiereTour(bearbeiteteTour.id, {
+            name, geometry: routeGeometry, waypoints: wegpunkte, ...eck,
+          })
+          setBearbeiteteTour({ id: bearbeiteteTour.id, name })
+        } else {
+          await saveTour(name, regionCode, routeGeometry, wegpunkte, eck)
+        }
         // Die Tour liegt jetzt in der Datenbank; der Zwischenspeicher hat
         // seinen Zweck erfüllt und darf nicht beim nächsten Laden wieder
         // dieselbe Route hervorholen.
@@ -500,20 +521,38 @@ export default function App() {
     setView('community')
   }
 
-  const routeLaden = (geometry: Position[], wps: Position[]) => {
+  const routeLaden = (
+    geometry: Position[],
+    wps: Position[],
+    /** Gehört der Verlauf einer eigenen Tour, die jetzt geändert werden soll? */
+    bearbeiten?: { id: string; name: string },
+  ) => {
     setGpxTrack(geometry)
     setWaypoints(wps.map((position) => ({ position })))
     setRouted(null)
     setView('karte')
     setRouteOpen(true)
-    setAuswertungOffen(false)
+    setBearbeiteteTour(bearbeiten ?? null)
+    // Beim Bearbeiten geht die Auswertung gleich auf: dort stehen Nachtlager,
+    // Ausrüstung und der Knopf, mit dem die Änderung in die Tour zurückgeht.
+    setAuswertungOffen(bearbeiten != null)
     if (geometry.length > 0) {
       setKameraZiel((z) => ({ geometry, zaehler: (z?.zaehler ?? 0) + 1 }))
     }
   }
 
+  /** Eine eigene Tour zum Ändern auf die Karte holen. */
+  const tourBearbeiten = (tour: Tour) => {
+    routeLaden(
+      (tour.geometry?.coordinates ?? []) as Position[],
+      (tour.waypoints ?? []) as Position[],
+      { id: tour.id, name: tour.name },
+    )
+  }
+
   const clearRoute = () => {
     setWaypoints([]); setGpxTrack(null); setRouted(null); setRouteError(null)
+    setBearbeiteteTour(null)
   }
 
   /**
@@ -999,6 +1038,7 @@ export default function App() {
             onLoadRoute={routeLaden}
             onAnmelden={() => setView('konto')}
             onZurKarte={() => setView('karte')}
+            onBearbeiten={tourBearbeiten}
           />
         </main>
       )}
@@ -1085,7 +1125,7 @@ export default function App() {
           Etappen und Packliste stünden dann leer da, obwohl sie im Entwurf
           liegen.
         */
-        key={entwurf ? entwurf.gespeichert : 'neu'}
+        key={entwurf ? entwurf.gespeichert : bearbeiteteTour?.id ?? 'neu'}
         offen={auswertungOffen}
         onClose={() => setAuswertungOffen(false)}
         region={region}
@@ -1103,6 +1143,7 @@ export default function App() {
         statusAn={statusAn}
         onAlsStopp={gpxTrack ? null : alsStopp}
         onSaveTour={handleSaveTour}
+        bearbeitet={bearbeiteteTour}
         onAnmelden={zurAnmeldung}
         entwurf={entwurf
           ? {

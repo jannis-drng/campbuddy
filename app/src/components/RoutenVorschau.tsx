@@ -22,8 +22,8 @@
  * Wird die Nutzung gross, gehört hier ein eigener Kachelserver hin — nicht
  * mehr Last auf fremde Infrastruktur. Derselbe Hinweis steht in `mapConfig.ts`.
  */
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { Position } from '../data/geo'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { ausduennen, type Position } from '../data/geo'
 
 /** Wie gross eine Kachel auf dem Bildschirm gezeichnet wird (nativ: 256). */
 const KACHEL = 512
@@ -108,10 +108,19 @@ interface Props {
   abdunkeln?: boolean
 }
 
-export function RoutenVorschau({
-  geometry, breite = 600, hoehe = 300, className = '', rund = 'oben',
+/**
+ * Mehr Punkte, als ein Bild von wenigen hundert Pixeln zeigen kann, sind
+ * verschenkte Rechenzeit — und in einer Liste von Touren die teuerste
+ * Verschwendung, die es hier gibt. Zweihundert genügen für jede Form, die
+ * man auf einem Vorschaubild noch erkennt.
+ */
+const VORSCHAU_PUNKTE = 200
+
+function RoutenVorschauInnen({
+  geometry: roh, breite = 600, hoehe = 300, className = '', rund = 'oben',
   linie = 3, abdunkeln = false,
 }: Props) {
+  const geometry = useMemo(() => ausduennen(roh, VORSCHAU_PUNKTE), [roh])
   const [sichtbar, setSichtbar] = useState(false)
   const [kachelnDa, setKachelnDa] = useState(true)
   const huelle = useRef<HTMLDivElement>(null)
@@ -275,3 +284,11 @@ export function RoutenVorschau({
     </div>
   )
 }
+
+/*
+  Memoisiert, weil eine Übersichtsseite ein Dutzend davon trägt und jede
+  Zustandsänderung darüber — ein anderer Stapel, ein geöffneter Dialog —
+  sonst alle neu zeichnen liesse. Die Aufrufer geben `geometry` als stabile
+  Referenz weiter (siehe `TourKarte`), sonst brächte das nichts.
+*/
+export const RoutenVorschau = memo(RoutenVorschauInnen)
