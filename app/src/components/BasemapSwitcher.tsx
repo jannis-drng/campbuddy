@@ -1,6 +1,10 @@
 /**
  * Wahl der Hintergrundkarte. Sitzt auf der Karte, nicht in der Kopfzeile —
  * es ist eine Karteneinstellung, keine Navigation.
+ *
+ * Wo sie sitzt, entscheidet `Kartenebenen`: sie stand einmal frei schwebend
+ * über der unteren Kartenhälfte und wirkte dort wie ein Fremdkörper mitten im
+ * Bild. Hier bleibt nur, was sie *ist* — die Wahl selbst.
  */
 import { basemapsFor, type BasemapKey } from '../map/mapConfig'
 
@@ -8,9 +12,12 @@ interface Props {
   region: string
   value: BasemapKey
   onChange: (key: BasemapKey) => void
+  /** Füllt die Breite — in der Ebenen-Blase auf dem Telefon. */
+  breit?: boolean
+  className?: string
 }
 
-export function BasemapSwitcher({ region, value, onChange }: Props) {
+export function BasemapSwitcher({ region, value, onChange, breit, className = '' }: Props) {
   const optionen = basemapsFor(region)
   if (optionen.length < 2) return null
 
@@ -19,17 +26,14 @@ export function BasemapSwitcher({ region, value, onChange }: Props) {
       role="group"
       aria-label="Hintergrundkarte"
       /*
-        Auf dem Telefon unten rechts: oben teilt sich der Platz mit der
-        Rechtslage-Pille, und 375 px reichen nicht für beides. Ab Tablet oben
-        rechts — die Zoomstufen von MapLibre rücken dafür nach unten (siehe
-        `.maplibregl-ctrl-top-right` in index.css). Weicht wie die Legende
-        einer offenen Infokarte aus.
+        Nebeneinander am Zeiger, untereinander auf dem Telefon. „Landeskarte"
+        neben zwei weiteren Namen in eine Blase von 17 rem zu zwängen ging nur
+        mit abgeschnittener Schrift — und ein Kartenname, den man raten muss,
+        ist keiner.
       */
-      style={{ right: 'calc(var(--karte-rechts, 0px) + 0.75rem)' }}
-      className="absolute bottom-20 z-10 flex overflow-hidden rounded-mittel border
-                 border-kante bg-flaeche-2/92 shadow-[var(--shadow-2)] backdrop-blur-md
-                 transition-[right] duration-200 ease-[var(--ease-heraus)]
-                 sm:bottom-auto sm:top-3"
+      className={`overflow-hidden rounded-mittel border border-kante bg-flaeche-2/92
+                  shadow-[var(--shadow-2)] backdrop-blur-md
+                  ${breit ? 'flex w-full flex-col' : 'flex'} ${className}`}
     >
       {optionen.map((b, i) => (
         <button
@@ -38,7 +42,8 @@ export function BasemapSwitcher({ region, value, onChange }: Props) {
           aria-pressed={value === b.key}
           title={b.hint}
           className={`h-9 px-3 text-klein font-medium transition-colors duration-[160ms]
-                      ${i > 0 ? 'border-l border-kante' : ''}
+                      ${breit ? 'text-left' : ''}
+                      ${i > 0 ? (breit ? 'border-t border-kante' : 'border-l border-kante') : ''}
                       ${value === b.key
                         ? 'bg-gletscher-500/18 text-gletscher-200'
                         : 'text-ink-400 hover:bg-flaeche-3 hover:text-ink-100'}`}

@@ -12,7 +12,6 @@ import { MapView } from './map/MapView'
 import { DisclaimerBar } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
 import { InfoPanel, type Selection } from './components/InfoPanel'
-import { Legend } from './components/Legend'
 import { MyToursPanel } from './components/MyToursPanel'
 import { CommunityPanel } from './components/CommunityPanel'
 import { TourDetailModal } from './components/TourDetailModal'
@@ -31,7 +30,8 @@ import { kantonAn, kantonGrundlagen, kantonRecht, ladeKantone } from './data/kan
 import {
   gemeindeAn, gemeindeRecht, gemeindenGeoJSON, ladeGemeindenDetail, ladeGemeindenUebersicht,
 } from './data/gemeinden'
-import { BasemapSwitcher } from './components/BasemapSwitcher'
+import { Kartenebenen } from './components/Kartenebenen'
+import { ZeichenLeiste } from './components/ZeichenLeiste'
 import { Marke } from './components/Marke'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured } from './services/supabase'
@@ -789,7 +789,8 @@ export default function App() {
         <main
           className={`karte relative flex-1
                       ${routeOpen ? 'karte-panel-links' : ''}
-                      ${selection ? 'karte-panel-rechts' : ''}`}
+                      ${selection ? 'karte-panel-rechts' : ''}
+                      ${routeOpen && (drawing || markieren) ? 'karte-leiste-unten' : ''}`}
         >
           <MapView
             region={region}
@@ -863,6 +864,12 @@ export default function App() {
                 offen und kommt beim Schliessen der Infokarte wieder.
               */
               verdeckt={selection != null}
+              /*
+                Wer auf dem Telefon zeichnet oder markiert, braucht die Karte —
+                das Blatt tritt so lange ganz zurück und die `ZeichenLeiste`
+                unten übernimmt. „Fertig" holt es zurück.
+              */
+              aufKarte={drawing || markieren}
               route={routeGeometry}
               waypoints={gpxTrack ? [] : waypoints}
               waypointCount={gpxTrack ? 0 : waypoints.length}
@@ -905,8 +912,22 @@ export default function App() {
               </Button>
             </>
           )}
-          <BasemapSwitcher region={regionCode} value={basemap} onChange={setBasemap} />
-          <Legend activity={filters.activity} />
+          {routeOpen && (drawing || markieren) && (
+            <ZeichenLeiste
+              modus={markieren ? 'markieren' : 'zeichnen'}
+              stopps={gpxTrack ? 0 : waypoints.length}
+              hatRoute={routeGeometry.length > 0}
+              onUndo={() => setWaypoints((w) => w.slice(0, -1))}
+              onClear={clearRoute}
+              onFertig={() => { setMarkieren(false); setDrawing(false) }}
+            />
+          )}
+          <Kartenebenen
+            region={regionCode}
+            basemap={basemap}
+            onBasemapChange={setBasemap}
+            activity={filters.activity}
+          />
           <InfoPanel
             selection={selection}
             onClose={() => setSelection(null)}

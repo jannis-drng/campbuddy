@@ -1,8 +1,14 @@
 /**
  * Legende der Kartenebenen.
  *
- * Auf kleinen Bildschirmen einklappbar: draussen zählt Kartenfläche mehr als
- * eine Dauererklärung.
+ * Die Legende bringt ihre Lage nicht mehr selbst mit — sie steht dort, wo auch
+ * die Wahl der Hintergrundkarte steht (siehe `Kartenebenen`). Beides sind
+ * Auskünfte über dieselbe Karte; sie an zwei gegenüberliegende Ecken zu
+ * verteilen hiess, zweimal suchen zu müssen.
+ *
+ * Deshalb zwei Bausteine: `LegendeInhalt` ist die reine Erklärung, `Legende`
+ * die aufklappbare Karte drumherum. Auf dem Telefon steckt der Inhalt in der
+ * Ebenen-Blase und braucht keinen zweiten Klappmechanismus.
  */
 import { useState } from 'react'
 import { ChevronDown, Droplet, Eye, Layers, Star, Tent, Truck, Waves } from 'lucide-react'
@@ -75,42 +81,48 @@ const NATUR: [string, string, LucideIcon][] = [
   ['Eigene Markierung', SYMBOL_FARBEN.eigen, Star],
 ]
 
-export function Legend({ activity }: { activity: ActivityMode }) {
+/**
+ * Die aufklappbare Legende, wie sie am Zeiger unter der Kartenwahl hängt.
+ *
+ * Sie klappt nach unten auf und bringt keine eigene Lage mit — die gibt ihr
+ * `Kartenebenen`. Was nicht in die Höhe passt, scrollt innen.
+ */
+export function Legende({ activity }: { activity: ActivityMode }) {
   const [offen, setOffen] = useState(true)
 
   return (
-    /*
-      Rechts unten, aber oberhalb der Herkunftsangabe (ⓘ, 24 px plus Rand) und
-      links neben einer offenen Infokarte — deren Breite steht in
-      `--karte-rechts`. Vorher lag beides übereinander: die Legende verdeckte
-      die Herkunft, und sobald die Infokarte aufging, verschwand die Legende
-      unter ihr.
-
-      Die Höhe begrenzt der Kartenbereich, nicht das Fenster: `vh` rechnet
-      Kopfzeile, Haftungsstreifen und Filterleiste nicht mit.
-    */
     <div
-      style={{ right: 'calc(var(--karte-rechts, 0px) + 0.75rem)' }}
-      className="pointer-events-auto absolute bottom-11 z-10 hidden max-h-[calc(100%-7rem)] w-48
-                 overflow-y-auto rounded-gross border border-kante bg-flaeche-2/92
-                 shadow-[var(--shadow-3)] backdrop-blur-md transition-[right] duration-200
-                 ease-[var(--ease-heraus)] sm:block">
+      className={`pointer-events-auto flex min-h-0 w-48 flex-col overflow-hidden rounded-gross
+                  border border-kante bg-flaeche-2/92 shadow-[var(--shadow-3)] backdrop-blur-md
+                  ${offen ? '' : 'shrink-0'}`}
+    >
       <button
         onClick={() => setOffen((v) => !v)}
         aria-expanded={offen}
-        className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors
+        className="flex w-full shrink-0 items-center gap-2 px-3 py-2.5 text-left transition-colors
                    duration-[160ms] hover:bg-flaeche-3"
       >
         <Layers size={14} strokeWidth={2} className="text-ink-500" aria-hidden />
         <span className="flex-1 text-klein font-semibold text-ink-100">Legende</span>
         <ChevronDown
           size={14} strokeWidth={2.5} aria-hidden
-          className={`text-ink-500 transition-transform duration-[160ms] ease-[var(--ease-heraus)] ${offen ? '' : '-rotate-90'}`}
+          className={`text-ink-500 transition-transform duration-[160ms] ease-[var(--ease-heraus)] ${offen ? '-rotate-0' : '-rotate-90'}`}
         />
       </button>
 
       {offen && (
-        <div className="space-y-3 border-t border-kante px-3 pb-3 pt-2.5">
+        <div className="min-h-0 overflow-y-auto border-t border-kante px-3 pb-3 pt-2.5">
+          <LegendeInhalt activity={activity} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+/** Die Erklärung selbst — ohne Rahmen, ohne Klappmechanik. */
+export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
+  return (
+    <div className="space-y-3">
           <div>
             <Label className="mb-1.5">{BEZUG[activity]}</Label>
             <div className="space-y-1.5">
@@ -190,8 +202,6 @@ export function Legend({ activity }: { activity: ActivityMode }) {
             </svg>
             Gestrichelter Rand oder Schraffur: Einstufung ohne amtlichen Beleg
           </p>
-        </div>
-      )}
     </div>
   )
 }

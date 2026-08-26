@@ -214,11 +214,11 @@ h1, h2, h3 { font-variant-numeric: normal; }
   Wo die Kartenbedienelemente stehen dürfen.
 
   Über der Karte liegen bis zu vier eigene Flächen: das Routenpanel links, die
-  Infokarte rechts, der Knopf „Route planen" unten links und die Legende unten
-  rechts. MapLibre kennt keine davon und legt seine Elemente stur in die Ecken
-  — Massstab unter den Knopf, Zoomstufen unter die Kartenwahl, Herkunft unter
-  die Legende. Die beiden Variablen sagen ihm, wie viel Rand belegt ist; die
-  Panels setzen sie, wenn sie sich öffnen (siehe App.tsx).
+  Infokarte rechts, der Knopf „Route planen" unten links und Kartenwahl samt
+  Legende oben rechts. MapLibre kennt keine davon und legt seine Elemente stur
+  in die Ecken — Massstab unter den Knopf, Herkunft unter ein Panel. Die beiden
+  Variablen sagen ihm, wie viel Rand belegt ist; die Panels setzen sie, wenn
+  sie sich öffnen (siehe App.tsx).
 */
 .karte {
   --karte-links: 0px;
@@ -237,14 +237,20 @@ h1, h2, h3 { font-variant-numeric: normal; }
 }
 /* Platz für „Route planen"; ohne ihn liegt der Massstab hinter dem Knopf. */
 .karte .maplibregl-ctrl-bottom-left { padding-bottom: 3.75rem; }
+/*
+  Im Zeichenmodus steht auf dem Telefon statt des Knopfes eine ganze Leiste am
+  unteren Rand (siehe `ZeichenLeiste`) — der Massstab muss höher hinauf.
+*/
+.karte.karte-leiste-unten .maplibregl-ctrl-bottom-left { padding-bottom: 5rem; }
+@media (min-width: 640px) {
+  .karte.karte-leiste-unten .maplibregl-ctrl-bottom-left { padding-bottom: 3.75rem; }
+}
 .karte .maplibregl-ctrl-bottom-right,
 .karte .maplibregl-ctrl-top-right {
   right: var(--karte-rechts);
   transition: right 200ms var(--ease-heraus);
 }
-/* Ab Tablet sitzt die Kartenwahl oben rechts — die Zoomstufen darunter. */
 @media (min-width: 640px) {
-  .karte .maplibregl-ctrl-top-right { padding-top: 3.25rem; }
   .karte.karte-panel-links { --karte-links: 23rem; }
   .karte.karte-panel-rechts { --karte-rechts: 26rem; }
 }

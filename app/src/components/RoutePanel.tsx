@@ -75,6 +75,16 @@ interface Props {
    * nebeneinander und lassen noch Karte dazwischen.
    */
   verdeckt?: boolean
+  /**
+   * Tritt auf dem Telefon ganz zurück, solange auf der Karte gezeichnet oder
+   * markiert wird.
+   *
+   * Dort ist das Panel ein Blatt *über* der Karte, kein Nachbar daneben — wer
+   * zeichnet, braucht die Karte und nicht die Liste. An seiner Stelle steht
+   * dann `ZeichenLeiste`; ein Tippen auf „Fertig" holt das Blatt zurück, mit
+   * Stopps, Reihenfolge und Namen.
+   */
+  aufKarte?: boolean
 }
 
 const formatKm = (m: number) =>
@@ -84,7 +94,7 @@ const PROFILE_ICONS = { foot: Footprints, bike: Bike, car: Car } as const
 
 export function RoutePanel({
   route, waypoints, waypointCount, routed, routingBusy, profile, isImported,
-  stats, hoehenBusy, drawing, error, markieren, verdeckt = false,
+  stats, hoehenBusy, drawing, error, markieren, verdeckt = false, aufKarte = false,
   onProfileChange, onToggleDrawing, onUndo, onClear, onRemoveWaypoint,
   onMoveWaypointTo, onReverseWaypoints, onRenameWaypoint,
   onImportGpx, onAuswerten, onClose, onToggleMarkieren,
@@ -106,10 +116,15 @@ export function RoutePanel({
         `inset-y-0` wieder auf — das Panel wuchs dann mit seinem Inhalt aus
         dem Bild heraus und schob die ganze Seite ins Scrollen.
 
-        Jetzt begrenzt der Kartenbereich selbst: auf dem Telefon 70 % davon
-        als Blatt von unten, ab Tablet die volle Höhe als Spalte. Was nicht
-        hineinpasst, scrollt innen (siehe `min-h-0 flex-1 overflow-y-auto`
-        weiter unten) — die Seite selbst nie.
+        Jetzt begrenzt der Kartenbereich selbst: auf dem Telefon fast dessen
+        volle Höhe als Blatt von unten, ab Tablet die volle Höhe als Spalte.
+        Was nicht hineinpasst, scrollt innen (siehe `min-h-0 flex-1
+        overflow-y-auto` weiter unten) — die Seite selbst nie.
+
+        Dass das Blatt die Karte auf dem Telefon beinahe ganz verdeckt, ist
+        jetzt richtig: gezeichnet wird ohne es (siehe `aufKarte`). Wer es
+        offen hat, arbeitet an der Liste — und dafür war früher zu wenig Platz,
+        weil ein Streifen Karte freigehalten wurde, den niemand brauchte.
 
         Das `overflow-y-auto` hier ist der letzte Ausweg für sehr flache
         Fenster: dort sind Kopfzeile und Fussleiste zusammen schon höher als
@@ -117,18 +132,23 @@ export function RoutePanel({
         aus dem Bild. Im Normalfall greift es nie, weil der innere Bereich
         vorher nachgibt.
       */
-      className={`absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col overflow-y-auto rounded-t-riesig border
-                 border-kante bg-flaeche-2/97 shadow-[var(--shadow-4)] backdrop-blur-md
+      className={`absolute inset-x-0 bottom-0 z-20 flex max-h-[calc(100%-2rem)] flex-col
+                 overflow-y-auto rounded-t-riesig border border-kante bg-flaeche-2/97
+                 shadow-[var(--shadow-4)] backdrop-blur-md
                  sm:inset-y-0 sm:right-auto sm:left-0 sm:max-h-none sm:w-[23rem]
-                 sm:rounded-none sm:rounded-r-gross ${verdeckt ? 'hidden lg:flex' : ''}`}
+                 sm:rounded-none sm:rounded-r-gross
+                 ${aufKarte ? 'hidden sm:flex' : ''}
+                 ${verdeckt ? 'hidden lg:flex' : ''}`}
       aria-label="Route"
     >
-      <header className="flex shrink-0 items-start justify-between gap-3 border-b border-kante px-5 py-4">
-        <div>
-          <h2 className="text-titel font-semibold leading-tight text-ink-50">Route</h2>
-          <p className="mt-0.5 text-klein text-ink-400">Zeichnen, dann auswerten</p>
-        </div>
-        <IconButton icon={X} label="Routenpanel schliessen" onClick={onClose} className="-mr-1.5 -mt-1" />
+      {/*
+        Nur der Name der Sache. Die Unterzeile „Zeichnen, dann auswerten"
+        erklärte einen Ablauf, den die beiden Knöpfe darunter ohnehin zeigen —
+        auf dem Telefon kostete sie eine ganze Zeile des knappsten Platzes.
+      */}
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-kante px-5 py-3 sm:py-4">
+        <h2 className="text-titel font-semibold leading-tight text-ink-50">Route</h2>
+        <IconButton icon={X} label="Routenpanel schliessen" onClick={onClose} className="-mr-1.5" />
       </header>
 
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4">
@@ -264,7 +284,19 @@ export function RoutePanel({
                 />
               ))}
             </ul>
-            <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
+            {/*
+              Auf dem Telefon der eine Satz, der hier etwas erklärt, was man
+              nicht sieht. Der Rest — Ziehen, Rechtsklick, Umwege — beschreibt
+              Handgriffe am Zeiger und stand dort als siebenzeiliger Block über
+              der Stopp-Liste, dem eigentlichen Inhalt dieses Blattes.
+            */}
+            <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal
+                          text-ink-500 sm:hidden">
+              Über das Schild lässt sich jeder Stopp frei benennen („Schlafplatz", „Mittag"),
+              mit den Pfeilen umsortieren.
+            </p>
+            <p className="mt-1.5 hidden text-mikro normal-case leading-relaxed tracking-normal
+                          text-ink-500 sm:block">
               Ein Tippen auf eine Hütte, einen Gipfel, eine Quelle oder eine eigene Markierung
               übernimmt sie als Stopp — mit Namen. Über das Schild lässt sich jeder Stopp frei
               benennen („Schlafplatz", „Mittag"), mit den Pfeilen umsortieren. Auf der Karte
@@ -285,24 +317,58 @@ export function RoutePanel({
           />
         </div>
       ) : (
-        <div className="shrink-0 space-y-3 border-t border-kante bg-flaeche-2 px-5 py-4">
-          <div className="flex gap-6">
-            <div>
-              <Label>Länge</Label>
-              <p className="mt-0.5 text-titel font-semibold text-ink-50">{formatKm(laenge)}</p>
-            </div>
-            <div>
-              <Label>Gehzeit</Label>
-              <p className="mt-0.5 text-titel font-semibold text-ink-50">
+        /*
+          Der Abschluss ist auf dem Telefon eine Zeile, am Zeiger ein Block.
+
+          Länge, Gehzeit und „Tour auswerten" standen dort untereinander und
+          belegten mit dem Erklärsatz darunter fast ein Drittel des Blattes —
+          Platz, der der Stopp-Liste fehlte. Nebeneinander sagen sie dasselbe
+          in einem Viertel der Höhe; der Erklärsatz bleibt dem Zeiger, wo er
+          nichts verdrängt.
+        */
+        <div className="shrink-0 border-t border-kante bg-flaeche-2 px-5 py-3 sm:py-4">
+          {/* Telefon: eine Zeile. Zahl, Zahl, Knopf — mehr passt nicht, mehr braucht es nicht. */}
+          <div className="flex items-center gap-3 sm:hidden">
+            <p className="min-w-0 flex-1 truncate text-klein text-ink-400">
+              <span className="font-semibold text-ink-50">{formatKm(laenge)}</span>
+              {' · '}
+              <span className="font-semibold text-ink-50">
                 {stats ? formatDauer(stats.duration_s) : hoehenBusy ? '…' : '—'}
-              </p>
-            </div>
+              </span>
+            </p>
+            <Button
+              variante="primaer" icon={ArrowRight} onClick={onAuswerten}
+              className="shrink-0 whitespace-nowrap"
+            >
+              Auswerten
+            </Button>
           </div>
 
-          <Button variante="primaer" groesse="gross" breit icon={ArrowRight} onClick={onAuswerten}>
-            Tour auswerten
-          </Button>
-          <p className="text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
+          {/* Zeiger: die Werte gross, der Knopf über die Breite. */}
+          <div className="hidden sm:block">
+            <div className="flex gap-6">
+              <div>
+                <Label>Länge</Label>
+                <p className="mt-0.5 text-titel font-semibold text-ink-50">{formatKm(laenge)}</p>
+              </div>
+              <div>
+                <Label>Gehzeit</Label>
+                <p className="mt-0.5 text-titel font-semibold text-ink-50">
+                  {stats ? formatDauer(stats.duration_s) : hoehenBusy ? '…' : '—'}
+                </p>
+              </div>
+            </div>
+
+            <Button
+              variante="primaer" groesse="gross" breit icon={ArrowRight} onClick={onAuswerten}
+              className="mt-3"
+            >
+              Tour auswerten
+            </Button>
+          </div>
+
+          <p className="mt-3 hidden text-mikro normal-case leading-relaxed tracking-normal
+                        text-ink-500 sm:block">
             Rechtslage entlang der Route, Höhenprofil, Etappen, Ausrüstung, Verpflegung und Wetter.
             {routed?.anbieter === 'osrm' && profile === 'foot' && (
               <> Der bevorzugte Wanderweg-Router war nicht erreichbar; diese Route folgt
