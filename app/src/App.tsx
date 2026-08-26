@@ -40,9 +40,10 @@ import {
   entwurfAbholen, entwurfSichern, entwurfVerwerfen, entwurfWartet, type Tourentwurf,
 } from './services/entwurf'
 import {
-  linkErgebnisAuslesen, saveTour, useSession,
-  type GespeicherteEtappe, type LinkErgebnis,
+  hatBenutzername, ladeProfil, linkErgebnisAuslesen, saveTour, useSession,
+  type GespeicherteEtappe, type LinkErgebnis, type Profil,
 } from './services/account'
+import { BenutzernameDialog } from './components/BenutzernameDialog'
 import type { PackStaende } from './affiliate/packlist'
 import { ORT_UMKREIS_M, type Ortsfilter } from './services/community'
 import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
@@ -73,6 +74,24 @@ export default function App() {
     const ergebnis = linkErgebnisAuslesen()
     if (ergebnis) { setLinkErgebnis(ergebnis); setView('konto') }
   }, [])
+  /*
+    Der Benutzername ist seit Migration 0022 nichts mehr, was bei der
+    Registrierung entsteht — er wird nach der Mailbestätigung gewählt. Damit
+    diese Wahl nicht in einem Menü versauert, holt die App das Profil einmal je
+    Anmeldung und fragt gleich danach. Wer „Später" tippt, wird bis zur nächsten
+    Anmeldung nicht mehr gefragt; veröffentlichen kann er ohne Namen trotzdem
+    nicht, das entscheidet die Datenbank.
+  */
+  const [kontoProfil, setKontoProfil] = useState<Profil | null>(null)
+  const [namenSpaeter, setNamenSpaeter] = useState(false)
+  const nutzerId = session?.user.id
+  useEffect(() => {
+    if (!nutzerId) { setKontoProfil(null); setNamenSpaeter(false); return }
+    let abgebrochen = false
+    ladeProfil().then((p) => { if (!abgebrochen) setKontoProfil(p) }).catch(() => {})
+    return () => { abgebrochen = true }
+  }, [nutzerId])
+
   const [regionCode, setRegionCode] = useState(DEFAULT_REGION)
   const [basemap, setBasemap] = useState<BasemapKey>(DEFAULT_BASEMAP)
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
@@ -1035,6 +1054,18 @@ export default function App() {
           )
         })}
       </nav>
+
+      {/*
+        Steht über allem, weil es dazwischenkommt — der Moment direkt nach der
+        Bestätigung ist der einzige, in dem diese Frage niemanden unterbricht.
+        `kontoProfil != null` ist wichtig: ein fehlgeschlagener Lesevorgang darf
+        nicht als „hat keinen Namen" durchgehen (siehe `ladeProfil`).
+      */}
+      <BenutzernameDialog
+        offen={session != null && kontoProfil != null && !hatBenutzername(kontoProfil) && !namenSpaeter}
+        onSpaeter={() => setNamenSpaeter(true)}
+        onGespeichert={(name) => setKontoProfil((p) => (p ? { ...p, anzeigename: name } : p))}
+      />
 
       <PunktDialog
         offen={dialogPosition != null || dialogPunkt != null}

@@ -44,23 +44,25 @@ function rueckkehrAdresse(): string {
 /**
  * Registrierung mit Passwort. Supabase verlangt eine Mailbestätigung, bevor
  * die Sitzung gültig wird — deshalb kommt hier meist noch keine Session zurück.
+ *
+ * Bewusst ohne Benutzernamen (Migration 0022). Er wurde vorher hier abgefragt
+ * und als Metadatum mitgeschickt; eingetragen hat ihn ein Trigger, wenn das
+ * Konto entstand — also nach der Bestätigung, oft Minuten später. In dieser
+ * Lücke konnte der Name vergeben sein, und weil ein Trigger niemandem etwas
+ * erklären kann, bekam man wortlos „wanderer-3f9a1c". Der Name gehört deshalb
+ * hinter die Anmeldung: dort wird er in derselben Abfrage geprüft, in der er
+ * gespeichert wird, und ein Fehlschlag ist ein Fehler und kein Ersatzname.
  */
 export async function signUpWithPassword(
   email: string,
   password: string,
-  benutzername: string,
 ): Promise<{ bestaetigungNoetig: boolean }> {
   const sb = getSupabase()
   if (!sb) throw new Error('Diese Funktion steht gerade nicht zur Verfügung.')
   const { data, error } = await sb.auth.signUp({
     email,
     password,
-    // Der Name reist als Metadatum mit. Ihn erst nach der Anmeldung ins
-    // Profil zu schreiben, ginge nicht: solange die E-Mail unbestätigt ist,
-    // gibt es keine Sitzung — das Konto entstünde namenlos und bekäme seinen
-    // Namen erst Stunden später, wenn überhaupt. Der Trigger
-    // `handle_new_user` (Migration 0017) setzt ihn beim Anlegen.
-    options: { emailRedirectTo: rueckkehrAdresse(), data: { anzeigename: benutzername } },
+    options: { emailRedirectTo: rueckkehrAdresse() },
   })
   if (error) throw new Error(uebersetzeFehler(error))
   return { bestaetigungNoetig: data.session == null }
@@ -557,6 +559,16 @@ export function umbenennenFreiAb(profil: Profil | null): Date | null {
   return frei > new Date() ? frei : null
 }
 
+/**
+ * Das eigene Profil, oder `null`, wenn es sich nicht sagen lässt.
+ *
+ * Der Unterschied ist seit Migration 0022 wichtig geworden: „Konto ohne
+ * Benutzernamen" ist jetzt ein echter Zustand, an dem die Oberfläche etwas
+ * festmacht. Ein fehlgeschlagener Lesevorgang darf deshalb nicht als Profil
+ * ohne Namen zurückkommen — sonst fragt die App jemanden nach einem Namen, den
+ * er längst hat, bloss weil das Netz gerade weg war. Kein Profil heisst hier
+ * ausdrücklich: unbekannt.
+ */
 export async function ladeProfil(): Promise<Profil | null> {
   const sb = getSupabase()
   if (!sb) return null
@@ -569,21 +581,27 @@ export async function ladeProfil(): Promise<Profil | null> {
     .select('id, anzeigename, subscription_status, abo_bis, umbenannt_am')
     .eq('id', id)
     .maybeSingle()
-  // Fehlt die Spalte, ist Migration 0006 noch nicht eingespielt — kein Grund,
-  // die Kontoseite unbrauchbar zu machen.
-  const leer: Profil = {
+  if (error) return null
+  // Keine Zeile: das Konto ist gerade erst entstanden. Für die Oberfläche ist
+  // das dasselbe wie ein Profil ohne Namen.
+  return (data as Profil) ?? {
     id, anzeigename: null, subscription_status: 'free', abo_bis: null, umbenannt_am: null,
   }
-  if (error) return leer
-  return (data as Profil) ?? leer
+}
+
+/** Hat das Konto schon einen Benutzernamen? */
+export function hatBenutzername(profil: Profil | null): boolean {
+  return Boolean(profil?.anzeigename?.trim())
 }
 
 /**
- * Umbenennen.
+ * Den Benutzernamen setzen — die erste Wahl wie jede spätere Umbenennung.
  *
- * Kein Löschen mehr: seit Migration 0017 hat jedes Konto einen Namen, weil
- * geteilte Touren sonst wieder namenlos dastünden. Die Meldungen des Triggers
- * sind für Menschen geschrieben und werden unverändert durchgereicht.
+ * Kein Löschen: ein einmal gewählter Name bleibt, weil geteilte Touren und
+ * Kommentare sonst wieder namenlos dastünden. Die Sperrfrist fürs Umbenennen
+ * beginnt erst mit dem zweiten Namen (Migration 0022) — ein Tippfehler in der
+ * ersten Wahl sperrt niemanden 30 Tage aus. Die Meldungen des Triggers sind für
+ * Menschen geschrieben und werden unverändert durchgereicht.
  */
 export async function speichereAnzeigename(anzeigename: string): Promise<void> {
   const sb = getSupabase()

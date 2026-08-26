@@ -27,7 +27,9 @@ import {
 import type { Position } from '../data/geo'
 import { REGIONS } from '../data/regions'
 import { isSupabaseConfigured, type PublicTour } from '../services/supabase'
-import { addFavorite, ladeProfil, listFavoriteIds, removeFavorite } from '../services/account'
+import {
+  addFavorite, hatBenutzername, ladeProfil, listFavoriteIds, removeFavorite,
+} from '../services/account'
 import {
   listCommunityTouren, listLikeIds, setLike, verfuegbareRegionen,
   LAENGENKLASSEN, SORTIERUNGEN, STANDARD_FILTER,
@@ -61,6 +63,8 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
   const [likes, setLikes] = useState<Set<string>>(new Set())
   const [favoriten, setFavoriten] = useState<Set<string>>(new Set())
   const [anzeigename, setAnzeigename] = useState<string | null>(null)
+  /* Erst wenn das Profil wirklich gelesen ist, steht fest, dass ein Name fehlt. */
+  const [nameFehlt, setNameFehlt] = useState(false)
   const [regionen, setRegionen] = useState<string[]>([])
   const [offen, setOffen] = useState<PublicTour | null>(null)
   const [filterOffen, setFilterOffen] = useState(false)
@@ -127,7 +131,10 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
     if (!session) { setLikes(new Set()); setFavoriten(new Set()); setAnzeigename(null); return }
     listLikeIds().then(setLikes).catch(() => {})
     listFavoriteIds().then(setFavoriten).catch(() => {})
-    ladeProfil().then((p) => setAnzeigename(p?.anzeigename ?? null)).catch(() => {})
+    ladeProfil().then((p) => {
+      setAnzeigename(p?.anzeigename ?? null)
+      setNameFehlt(p != null && !hatBenutzername(p))
+    }).catch(() => {})
   }, [session])
 
   /**
@@ -432,6 +439,7 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
         tour={offen}
         session={session}
         anzeigename={anzeigename}
+        nameFehlt={nameFehlt}
         geliked={offen ? likes.has(offen.id) : false}
         gemerkt={offen ? favoriten.has(offen.id) : false}
         onLike={() => offen && likeUmschalten(offen)}

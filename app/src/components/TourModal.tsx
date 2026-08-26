@@ -35,6 +35,8 @@ interface Props {
   tour: PublicTour | null
   session: Session | null
   anzeigename: string | null
+  /** Konto ohne Benutzernamen — kommentieren lehnt die Datenbank dann ab. */
+  nameFehlt?: boolean
   geliked: boolean
   gemerkt: boolean
   onLike: () => void
@@ -46,7 +48,7 @@ interface Props {
 }
 
 export function TourModal({
-  tour, session, anzeigename, geliked, gemerkt,
+  tour, session, anzeigename, nameFehlt = false, geliked, gemerkt,
   onLike, onMerken, onAufKarte, onClose, onKommentarZahl,
 }: Props) {
   useEffect(() => {
@@ -149,6 +151,7 @@ export function TourModal({
               tour={tour}
               session={session}
               anzeigename={anzeigename}
+              nameFehlt={nameFehlt}
               onKommentarZahl={onKommentarZahl}
               onMelden={(k) => setMeldet({ art: 'kommentar', id: k.id, name: `Kommentar von ${k.autor ?? 'unbekannt'}` })}
             />
@@ -215,11 +218,12 @@ function Kenndaten({ tour }: { tour: PublicTour }) {
 const PRO_SEITE = 10
 
 function Kommentare({
-  tour, session, anzeigename, onKommentarZahl, onMelden,
+  tour, session, anzeigename, nameFehlt, onKommentarZahl, onMelden,
 }: {
   tour: PublicTour
   session: Session | null
   anzeigename: string | null
+  nameFehlt: boolean
   onKommentarZahl: (routeId: string, delta: number) => void
   onMelden: (k: Kommentar) => void
 }) {
@@ -417,7 +421,20 @@ function Kommentare({
         />
       )}
 
-      {session ? (
+      {/*
+        Drei Zustände, nicht zwei: nicht angemeldet, angemeldet ohne
+        Benutzernamen, angemeldet mit. Der mittlere ist seit Migration 0022
+        möglich — und ohne diesen Hinweis liefe er in eine Absage der Datenbank,
+        nachdem der Kommentar schon geschrieben war.
+      */}
+      {session && nameFehlt && (
+        <p className="mb-4 rounded-mittel border border-dashed border-kante px-4 py-3 text-klein text-ink-500">
+          Zum Kommentieren fehlt dir noch ein Benutzername — er steht an jedem Beitrag. Du
+          wählst ihn im Kontobereich.
+        </p>
+      )}
+
+      {session && !nameFehlt ? (
         <form onSubmit={absenden} className="mb-4">
           {antwortZiel && (
             <div className="mb-2 flex items-center gap-2 rounded-mittel bg-flaeche-1 px-3 py-2 text-klein text-ink-400">
@@ -459,11 +476,11 @@ function Kommentare({
             </div>
           </div>
         </form>
-      ) : (
+      ) : !session ? (
         <p className="mb-4 rounded-mittel border border-dashed border-kante px-4 py-3 text-klein text-ink-500">
           Zum Kommentieren ist eine Anmeldung nötig. Mitlesen geht ohne.
         </p>
-      )}
+      ) : null}
 
       {fehler && <Hinweis ton="fehler" icon={TriangleAlert} className="mb-3">{fehler}</Hinweis>}
 
