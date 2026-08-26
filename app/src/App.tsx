@@ -65,7 +65,7 @@ const mehrereRegionen = Object.keys(REGIONS).length > 1
 
 export default function App() {
   const [view, setView] = useState<View>('karte')
-  const { session } = useSession()
+  const { session, ready } = useSession()
   // Rückkehr von einem Bestätigungs-, Anmelde- oder Passwortlink auswerten,
   // bevor die Adresszeile aufgeräumt wird.
   const [linkErgebnis, setLinkErgebnis] = useState<LinkErgebnis | null>(null)
@@ -508,10 +508,26 @@ export default function App() {
    * Die Auswertung geht gleich wieder auf: dort ist der Nutzer stehen
    * geblieben, als er auf „Speichern" getippt hat.
    */
+  const wiederhergestellt = useRef(false)
   useEffect(() => {
+    /*
+      Genau einmal, und der Merker steht davor.
+
+      `entwurfAbholen` liest und löscht in einem Zug — beim zweiten Aufruf ist
+      nichts mehr da. React ruft Effekte im Entwicklungsmodus aber absichtlich
+      doppelt auf, und der zweite Lauf hielt das leere Ergebnis für „es wartet
+      keine Tour" und nahm die Zusage im Kontobereich wieder weg.
+    */
+    if (wiederhergestellt.current) return
+    wiederhergestellt.current = true
+
     const gerettet = entwurfAbholen()
-    setTourWartet(false)
-    if (!gerettet) return
+    if (!gerettet) { setTourWartet(false); return }
+    // Der Zwischenspeicher ist verbraucht, die Absicht nicht: diese Tour will
+    // immer noch gespeichert werden. Deshalb bleibt der Merker stehen — er
+    // entscheidet weiter unten, wohin die Anmeldung führt, und trägt im
+    // Kontobereich die Zusage, dass nichts verloren ist.
+    setTourWartet(true)
     setEntwurf(gerettet)
     setRegionCode(gerettet.region)
     setWaypoints(gerettet.waypoints ?? [])
@@ -523,29 +539,68 @@ export default function App() {
   }, [])
 
   /**
-   * Nach dem Anmelden zurück zur Tour.
+   * Wohin nach einer Anmeldung.
    *
-   * Der Fall ohne Seitenneuaufbau: wer sich mit Passwort anmeldet, bleibt im
-   * selben Dokument, die Karte war die ganze Zeit montiert und die Route ist
-   * unverändert da. Es fehlt nur der Weg zurück — sonst stünde man nach dem
-   * Anmelden auf der Kontoseite und müsste selbst wiederfinden, was man gerade
-   * speichern wollte.
+   * Zwei Ziele, und die Reihenfolge ist keine Geschmacksfrage: wer auf
+   * „Speichern" getippt hat, kam wegen dieser einen Tour hierher — er landet
+   * wieder in ihrer Auswertung, wo der Speicherknopf steht. „Deine Touren"
+   * wäre dort das falsche Ziel: die Tour ist ja noch nicht gespeichert und
+   * stünde nicht in der Liste. Alle anderen landen in „Deine Touren" — dem
+   * einzigen Ort, der ohne Konto nichts zu zeigen hat und mit Konto alles.
    *
-   * Der Zwischenspeicher wird dabei fällig: er war für den Neuaufbau gedacht,
-   * und der ist ausgeblieben.
+   * Erkannt wird die frische Anmeldung daran, dass die Sitzung *nach* dem
+   * Bereitsein eintrifft. Beim Seitenaufbau kommen beide zusammen; ohne diese
+   * Unterscheidung würde jeder Neuaufbau mit bestehender Sitzung den Nutzer
+   * ungefragt in „Deine Touren" werfen — auch wenn er gerade die Karte
+   * geöffnet hat.
+   *
+   * Die Rückkehr von einem Bestätigungslink zählt bewusst nicht dazu: dort
+   * steht eine Meldung im Kontobereich, die gelesen werden soll.
    */
   const hatteSession = useRef(session != null)
+  const warBereit = useRef(false)
+  const weitergeleitet = useRef(false)
   useEffect(() => {
     const jetzt = session != null
-    const vorher = hatteSession.current
+    const vorherSession = hatteSession.current
+    const vorherBereit = warBereit.current
     hatteSession.current = jetzt
-    if (!jetzt || vorher || !tourWartet) return
-    entwurfVerwerfen()
-    setTourWartet(false)
-    setView('karte')
-    setRouteOpen(true)
-    setAuswertungOffen(true)
-  }, [session, tourWartet])
+    warBereit.current = ready
+
+    // Abgemeldet heisst: die nächste Anmeldung darf wieder weiterleiten.
+    if (!jetzt) { weitergeleitet.current = false; return }
+    if (weitergeleitet.current) return
+
+    /*
+      Zwei Wege führen zu einer frischen Anmeldung, und beide müssen sich vom
+      blossen Seitenaufbau mit bestehender Sitzung unterscheiden lassen:
+
+      - im selben Dokument (Passwort, Anbieter): die Sitzung trifft *nach* dem
+        Bereitsein ein. Beim Seitenaufbau kommen beide zusammen.
+      - über einen Bestätigungslink: dort lädt die Seite neu, die Sitzung ist
+        also sofort da — erkennbar ist er am ausgewerteten Link.
+
+      Ein abgelaufener Link und ein Passwort-Neusetzen zählen ausdrücklich
+      nicht dazu: beide verlangen noch etwas vom Nutzer, und zwar im
+      Kontobereich.
+    */
+    const imDokument = !vorherSession && vorherBereit
+    const ueberLink = linkErgebnis?.art === 'bestaetigt'
+    if (!imDokument && !ueberLink) return
+    weitergeleitet.current = true
+
+    if (tourWartet) {
+      // Der Zwischenspeicher war für einen Seitenneuaufbau gedacht, und der
+      // ist ausgeblieben — die Tour liegt unverändert im Arbeitsspeicher.
+      entwurfVerwerfen()
+      setTourWartet(false)
+      setView('karte')
+      setRouteOpen(true)
+      setAuswertungOffen(true)
+      return
+    }
+    setView('touren')
+  }, [session, ready, tourWartet, linkErgebnis])
 
   /**
    * Wer die Anmeldung abbricht, lässt keinen Zwischenspeicher zurück.
@@ -556,9 +611,15 @@ export default function App() {
    * über die neuere hinweg. Im Arbeitsspeicher ist die Tour ohnehin noch da,
    * solange die Seite steht; der Zwischenspeicher ist nur für den Weg durch
    * einen Bestätigungslink gedacht, und den verlässt man hier gerade.
+   *
+   * Nur *verlassen* zählt: eine gerade wiederhergestellte Tour wartet
+   * weiterhin auf ihren Speicherknopf, obwohl ihr Besitzer den Kontobereich
+   * noch gar nicht gesehen hat.
    */
+  const warImKonto = useRef(false)
   useEffect(() => {
-    if (view === 'konto' || session || !tourWartet) return
+    if (view === 'konto') { warImKonto.current = true; return }
+    if (!warImKonto.current || session || !tourWartet) return
     entwurfVerwerfen()
     setTourWartet(false)
   }, [view, session, tourWartet])
@@ -880,14 +941,26 @@ export default function App() {
         geroutet — sie folgt bereits realen Wegen.
       */}
 
-      <main className={view === 'touren' ? 'flex-1 overflow-y-auto' : 'hidden'}>
-        <MyToursPanel
-          session={session}
-          onLoadRoute={routeLaden}
-          onAnmelden={() => setView('konto')}
-          onZurKarte={() => setView('karte')}
-        />
-      </main>
+      {/*
+        Anders als die Karte wird diese Ansicht beim Verlassen abgebaut — wie
+        die Community daneben.
+
+        Sie hing vorher als verstecktes `hidden` in der Seite und lud genau
+        einmal, beim ersten Öffnen. Wer danach eine Tour speicherte, sie teilte
+        oder auf einem anderen Gerät etwas änderte, sah hier weiter den alten
+        Stand, bis er die Seite neu lud. Ein Aufbau kostet eine Abfrage; ein
+        falscher Stand kostet Vertrauen.
+      */}
+      {view === 'touren' && (
+        <main className="flex-1 overflow-y-auto">
+          <MyToursPanel
+            session={session}
+            onLoadRoute={routeLaden}
+            onAnmelden={() => setView('konto')}
+            onZurKarte={() => setView('karte')}
+          />
+        </main>
+      )}
 
       {view === 'community' && (
         <main className="flex-1 overflow-y-auto">
