@@ -2,6 +2,8 @@
 
 Verbindliche Produktspezifikation für dieses gesamte Projekt: @Freistehen_Spezifikation.md
 
+Monetarisierungs-Fahrplan (korrigiert Abschnitt 5 der Spezifikation): @MONETARISIERUNG.md
+
 Diese Spezifikation ist die Referenz für **alle** Arbeiten in diesem Repo. Vor Architektur-,
 Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach Rücksprache.
 
