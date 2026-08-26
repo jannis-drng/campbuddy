@@ -28,7 +28,7 @@ import type { LucideIcon } from 'lucide-react'
 import { Badge, Button, Card, Eingabe, Hinweis, Label, Leer, Segmente, Seite, Stufen } from '../ui'
 import { isSupabaseConfigured } from '../services/supabase'
 import {
-  hatBenutzername, kontoLoeschen, ladeProfil, passwortAendern,
+  brauchtNamenswahl, kontoLoeschen, ladeProfil, passwortAendern,
   passwortZuruecksetzen, signInWithEmail, signInWithPassword, signInWithProvider, signOut,
   signUpWithPassword, speichereAnzeigename, umbenennenFreiAb, verfuegbareAnbieter,
   NAME_MIN, NAME_MAX, UMBENENNEN_SPERRE_TAGE,
@@ -159,7 +159,7 @@ function Feldkarte({
 }: {
   icon: LucideIcon
   titel: string
-  beschreibung?: string
+  beschreibung?: React.ReactNode
   beiwerk?: React.ReactNode
   ton?: 'normal' | 'gefahr'
   children: React.ReactNode
@@ -533,7 +533,14 @@ function AngemeldeteAnsicht({
   const [fehler, setFehler] = useState<string | null>(null)
 
   useEffect(() => {
-    ladeProfil().then((p) => { setProfil(p); setName(p?.anzeigename ?? '') }).catch(() => {})
+    /*
+      Bewusst leer statt mit dem eigenen Namen vorbelegt: das Feld prüft, was
+      darin steht, und der eigene Name ist — richtigerweise — vergeben. Wer die
+      Seite öffnete, sah deshalb ein rotes „Dieser Name ist schon vergeben."
+      unter seinem eigenen. Wie man heisst, steht in der Karte darüber; hier
+      steht, wie man heissen will.
+    */
+    ladeProfil().then((p) => { setProfil(p); setName('') }).catch(() => {})
   }, [session])
 
   const nameSpeichern = async (e: React.FormEvent) => {
@@ -542,8 +549,9 @@ function AngemeldeteAnsicht({
     try {
       await speichereAnzeigename(name)
       setNameStand('ok')
-      // Neu laden, damit die Sperrfrist sofort steht statt erst beim nächsten
-      // Seitenaufruf.
+      setName('')
+      // Neu laden, damit der neue Name und die Sperrfrist sofort stehen statt
+      // erst beim nächsten Seitenaufruf.
       ladeProfil().then((p) => p && setProfil(p)).catch(() => {})
     } catch (err) { setFehler((err as Error).message); setNameStand('idle') }
   }
@@ -564,7 +572,8 @@ function AngemeldeteAnsicht({
   }
 
   const bezahlt = profil?.subscription_status === 'paid'
-  const hatNamen = hatBenutzername(profil)
+  // Trägt das Konto noch den Übergangsnamen aus seiner ID?
+  const nochUebergang = brauchtNamenswahl(profil)
   // Umbenennen nur, wenn der Name geprüft *und* wirklich ein anderer ist —
   // sonst schickt der Knopf eine Änderung, die keine ist.
   const nameAenderbar = nameUrteil?.ok === true && name.trim() !== (profil?.anzeigename ?? '')
@@ -593,18 +602,18 @@ function AngemeldeteAnsicht({
             aria-hidden
             className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-gletscher-500/30 bg-gletscher-500/12 text-ueberschrift font-semibold text-gletscher-200"
           >
-            {initialen(hatNamen ? profil?.anzeigename ?? null : null, session.user.email)}
+            {initialen(profil?.anzeigename ?? null, session.user.email)}
           </span>
           {/* `basis-48`: unterschreitet der Platz daneben diese Breite, rutscht
               die Plakette in die nächste Zeile, statt die Adresse zu quetschen. */}
           <div className="min-w-0 flex-1 basis-48">
             <p className="truncate text-ueberschrift font-semibold text-ink-50">
-              {hatNamen ? profil?.anzeigename?.trim() : session.user.email}
+              {profil?.anzeigename?.trim() || session.user.email}
             </p>
             {/* Nicht abgeschnitten, sondern umbrechend: auf dem Telefon ist
                 „über E-Mail · dabe…" keine Auskunft mehr. */}
             <p className="text-klein leading-relaxed text-ink-500">
-              {hatNamen && <>{session.user.email} · </>}
+              {profil?.anzeigename?.trim() && <>{session.user.email} · </>}
               über {providerName}
               {seit && <> · dabei seit {seit}</>}
             </p>
@@ -633,19 +642,23 @@ function AngemeldeteAnsicht({
 
       {/* ---- Benutzername ---- */}
       {/*
-        Zwei Fälle in einer Karte, und der Unterschied ist mehr als der
-        Knopftext: solange kein Name gewählt ist, ist das hier kein
-        Einstellungsfeld, sondern eine offene Aufgabe. Deshalb steht sie oben,
-        in Akzentfarbe, mit dem Grund dabei — und die Sperrfrist gilt nicht,
-        weil eine erste Wahl keine Umbenennung ist (Migration 0022).
+        Zwei Fälle in einer Karte. Wer noch den Übergangsnamen trägt, hat nichts
+        versäumt und wird deshalb nicht gewarnt, sondern eingeladen — und die
+        Sperrfrist gilt für ihn nicht, weil das Ablegen des erzeugten Namens
+        keine Umbenennung ist (Migration 0022).
       */}
       <Feldkarte
         icon={UserRound}
-        titel={hatNamen ? 'Benutzername' : 'Benutzernamen wählen'}
-        beschreibung={hatNamen
-          ? 'Dein Name in der Community: er steht an jeder Tour, die du teilst, und an jedem Kommentar. Deine E-Mail-Adresse wird nie veröffentlicht.'
-          : 'Du hast noch keinen. Er steht an jeder Tour, die du teilst, und an jedem Kommentar — ohne ihn bleibt beides gesperrt. Deine E-Mail-Adresse wird nie veröffentlicht.'}
-        beiwerk={hatNamen ? undefined : <Badge ton="akzent">Offen</Badge>}
+        titel={nochUebergang ? 'Benutzernamen wählen' : 'Benutzername'}
+        beschreibung={nochUebergang
+          ? <>
+              Dein Konto heisst noch{' '}
+              <span className="font-medium text-ink-200">{profil?.anzeigename}</span> — den
+              Namen hat es beim Anlegen bekommen. Wähle einen eigenen: er steht an jeder Tour,
+              die du teilst, und an jedem Kommentar. Deine E-Mail-Adresse wird nie
+              veröffentlicht.
+            </>
+          : 'Dein Name in der Community: er steht an jeder Tour, die du teilst, und an jedem Kommentar. Deine E-Mail-Adresse wird nie veröffentlicht.'}
       >
         {gesperrtBis ? (
           <Hinweis ton="info" icon={Lock}>
@@ -663,14 +676,14 @@ function AngemeldeteAnsicht({
               onAendern={(w) => { setName(w); setNameStand('idle') }}
               onUrteil={urteilUebernehmen}
               label="Name"
-              hinweis={hatNamen
-                ? `${NAME_MIN}–${NAME_MAX} Zeichen. Eine Umbenennung wirkt sofort auf alle deine geteilten Touren und Kommentare — und ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`
-                : `${NAME_MIN}–${NAME_MAX} Zeichen. Die erste Wahl ist frei; erst ein späterer Wechsel ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`}
+              hinweis={nochUebergang
+                ? `${NAME_MIN}–${NAME_MAX} Zeichen. Die erste eigene Wahl ist frei; erst ein späterer Wechsel ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`
+                : `${NAME_MIN}–${NAME_MAX} Zeichen. Eine Umbenennung wirkt sofort auf alle deine geteilten Touren und Kommentare — und ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`}
             />
             <div className="flex flex-wrap items-center gap-2">
-              <Button type="submit" variante={hatNamen ? 'sekundaer' : 'primaer'} groesse="gross"
+              <Button type="submit" variante={nochUebergang ? 'primaer' : 'sekundaer'} groesse="gross"
                       disabled={nameStand === 'busy' || !nameAenderbar}>
-                {nameStand === 'busy' ? 'Speichere …' : hatNamen ? 'Umbenennen' : 'Namen übernehmen'}
+                {nameStand === 'busy' ? 'Speichere …' : nochUebergang ? 'Namen übernehmen' : 'Umbenennen'}
               </Button>
               {nameStand === 'ok' && (
                 <p className="flex items-center gap-1.5 text-klein text-erlaubt-400">

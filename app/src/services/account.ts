@@ -52,6 +52,9 @@ function rueckkehrAdresse(): string {
  * erklären kann, bekam man wortlos „wanderer-3f9a1c". Der Name gehört deshalb
  * hinter die Anmeldung: dort wird er in derselben Abfrage geprüft, in der er
  * gespeichert wird, und ein Fehlschlag ist ein Fehler und kein Ersatzname.
+ *
+ * Den Übergangsnamen gibt es weiterhin — das Konto entsteht damit. Nur
+ * überschreibt er jetzt nichts mehr, was jemand eingetippt hat.
  */
 export async function signUpWithPassword(
   email: string,
@@ -589,19 +592,35 @@ export async function ladeProfil(): Promise<Profil | null> {
   }
 }
 
-/** Hat das Konto schon einen Benutzernamen? */
-export function hatBenutzername(profil: Profil | null): boolean {
-  return Boolean(profil?.anzeigename?.trim())
+/**
+ * Der Übergangsname, den ein neues Konto trägt — dieselbe Bildung wie in
+ * `erzeugter_name()` (Migration 0022).
+ *
+ * Dass er sich aus der Konto-ID ergibt, ist der Trick: „noch nicht gewählt"
+ * steht damit im Namen selbst und braucht kein zusätzliches Feld, das ein
+ * Client umschreiben könnte.
+ */
+export function erzeugterName(id: string, laenge = 6): string {
+  return `wanderer-${id.replace(/-/g, '').slice(0, laenge)}`
+}
+
+/** Trägt das Konto noch den Übergangsnamen — lohnt sich also die Frage danach? */
+export function brauchtNamenswahl(profil: Profil | null): boolean {
+  if (!profil) return false
+  const name = profil.anzeigename?.trim()
+  if (!name) return true
+  return name === erzeugterName(profil.id) || name === erzeugterName(profil.id, 11)
 }
 
 /**
- * Den Benutzernamen setzen — die erste Wahl wie jede spätere Umbenennung.
+ * Den Benutzernamen setzen — die erste eigene Wahl wie jede spätere Umbenennung.
  *
- * Kein Löschen: ein einmal gewählter Name bleibt, weil geteilte Touren und
- * Kommentare sonst wieder namenlos dastünden. Die Sperrfrist fürs Umbenennen
- * beginnt erst mit dem zweiten Namen (Migration 0022) — ein Tippfehler in der
- * ersten Wahl sperrt niemanden 30 Tage aus. Die Meldungen des Triggers sind für
- * Menschen geschrieben und werden unverändert durchgereicht.
+ * Kein Löschen: jedes Konto hat einen Namen, notfalls den erzeugten, weil
+ * geteilte Touren und Kommentare sonst wieder namenlos dastünden. Den
+ * Übergangsnamen abzulegen zählt nicht als Umbenennung und startet die
+ * Sperrfrist nicht (Migration 0022) — ein Tippfehler in der ersten Wahl sperrt
+ * niemanden 30 Tage aus. Die Meldungen des Triggers sind für Menschen
+ * geschrieben und werden unverändert durchgereicht.
  */
 export async function speichereAnzeigename(anzeigename: string): Promise<void> {
   const sb = getSupabase()

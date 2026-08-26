@@ -14,13 +14,13 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
   Bookmark, Globe, Heart, ListChecks, Lock, Map as MapIcon, MessageCircle, Pencil, Share2,
-  Trash2, TriangleAlert, UserRound, X,
+  Trash2, TriangleAlert, X,
 } from 'lucide-react'
 import type { Position } from '../data/geo'
 import { isSupabaseConfigured, type PublicTour, type Tour } from '../services/supabase'
 import {
-  aktualisiereTour, deleteTour, hatBenutzername, ladeProfil, listFavoriteTouren, listTouren,
-  removeFavorite, setTourPublic,
+  aktualisiereTour, deleteTour, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
+  setTourPublic,
 } from '../services/account'
 import { Badge, Button, Eingabe, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
@@ -41,12 +41,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
   const [eigene, setEigene] = useState<Tour[]>([])
   const [gemerkt, setGemerkt] = useState<PublicTour[]>([])
   const [anzeigename, setAnzeigename] = useState<string | null>(null)
-  /*
-    Nicht `!anzeigename`: solange das Profil noch nicht gelesen ist, weiss
-    niemand, ob ein Name fehlt — und ein Teilen-Knopf, der aus Unwissenheit
-    sperrt, ist schlimmer als einer, der einmal auf eine Fehlermeldung läuft.
-  */
-  const [nameFehlt, setNameFehlt] = useState(false)
   const [fehler, setFehler] = useState<string | null>(null)
   const [laedt, setLaedt] = useState(true)
 
@@ -73,7 +67,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
       setEigene(meine)
       setGemerkt(favoriten)
       setAnzeigename(profil?.anzeigename ?? null)
-      setNameFehlt(profil != null && !hatBenutzername(profil))
       setFehler(null)
     } catch (e) {
       setFehler((e as Error).message)
@@ -251,8 +244,6 @@ export function MyToursPanel({ session, onLoadRoute, onAnmelden, onZurKarte }: P
       <TeilenDialog
         tour={teilt}
         anzeigename={anzeigename}
-        nameFehlt={nameFehlt}
-        onZumKonto={onAnmelden}
         onClose={() => setTeilt(null)}
         onGeteilt={(id, beschreibung) => {
           setEigene((l) => l.map((x) => (x.id === id ? { ...x, is_public: true, beschreibung } : x)))
@@ -329,13 +320,10 @@ function Dialog({
  * in der Community erst lesbar macht.
  */
 function TeilenDialog({
-  tour, anzeigename, nameFehlt, onZumKonto, onClose, onGeteilt, onFehler,
+  tour, anzeigename, onClose, onGeteilt, onFehler,
 }: {
   tour: Tour | null
   anzeigename: string | null
-  /** Konto ohne Benutzernamen — die Datenbank lehnt das Teilen dann ab. */
-  nameFehlt: boolean
-  onZumKonto: () => void
   onClose: () => void
   onGeteilt: (id: string, beschreibung: string | null) => void
   onFehler: (m: string) => void
@@ -357,24 +345,6 @@ function TeilenDialog({
     } finally {
       setBusy(false)
     }
-  }
-
-  if (nameFehlt) {
-    return (
-      <Dialog offen={tour !== null} titel="Tour teilen" onClose={onClose}>
-        <Hinweis ton="warnung" icon={UserRound}>
-          <strong className="font-semibold">Dir fehlt noch ein Benutzername.</strong> Er steht
-          an jeder geteilten Tour — ohne ihn stünde deine hier ohne Urheber. Wähle ihn im
-          Kontobereich, danach kannst du sofort teilen.
-        </Hinweis>
-        <div className="mt-4 flex flex-wrap justify-end gap-2">
-          <Button variante="geist" onClick={onClose}>Abbrechen</Button>
-          <Button variante="primaer" icon={UserRound} onClick={onZumKonto}>
-            Benutzernamen wählen
-          </Button>
-        </div>
-      </Dialog>
-    )
   }
 
   return (

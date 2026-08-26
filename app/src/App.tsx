@@ -40,7 +40,7 @@ import {
   entwurfAbholen, entwurfSichern, entwurfVerwerfen, entwurfWartet, type Tourentwurf,
 } from './services/entwurf'
 import {
-  hatBenutzername, ladeProfil, linkErgebnisAuslesen, saveTour, useSession,
+  brauchtNamenswahl, ladeProfil, linkErgebnisAuslesen, saveTour, useSession,
   type GespeicherteEtappe, type LinkErgebnis, type Profil,
 } from './services/account'
 import { BenutzernameDialog } from './components/BenutzernameDialog'
@@ -75,12 +75,13 @@ export default function App() {
     if (ergebnis) { setLinkErgebnis(ergebnis); setView('konto') }
   }, [])
   /*
-    Der Benutzername ist seit Migration 0022 nichts mehr, was bei der
-    Registrierung entsteht — er wird nach der Mailbestätigung gewählt. Damit
-    diese Wahl nicht in einem Menü versauert, holt die App das Profil einmal je
-    Anmeldung und fragt gleich danach. Wer „Später" tippt, wird bis zur nächsten
-    Anmeldung nicht mehr gefragt; veröffentlichen kann er ohne Namen trotzdem
-    nicht, das entscheidet die Datenbank.
+    Der Benutzername wird seit Migration 0022 nicht mehr bei der Registrierung
+    verlangt: das Konto entsteht mit dem Übergangsnamen aus seiner ID, und der
+    eigene wird nach der Mailbestätigung angeboten. Damit dieses Angebot nicht
+    in einem Menü versauert, holt die App das Profil einmal je Anmeldung und
+    fragt gleich danach. Wer „Später" tippt, wird bis zur nächsten Anmeldung
+    nicht mehr gefragt und heisst so lange `wanderer-…` — gesperrt ist dadurch
+    nichts.
   */
   const [kontoProfil, setKontoProfil] = useState<Profil | null>(null)
   const [namenSpaeter, setNamenSpaeter] = useState(false)
@@ -1059,10 +1060,11 @@ export default function App() {
         Steht über allem, weil es dazwischenkommt — der Moment direkt nach der
         Bestätigung ist der einzige, in dem diese Frage niemanden unterbricht.
         `kontoProfil != null` ist wichtig: ein fehlgeschlagener Lesevorgang darf
-        nicht als „hat keinen Namen" durchgehen (siehe `ladeProfil`).
+        nicht als „heisst noch wanderer-…" durchgehen (siehe `ladeProfil`).
       */}
       <BenutzernameDialog
-        offen={session != null && kontoProfil != null && !hatBenutzername(kontoProfil) && !namenSpaeter}
+        offen={session != null && brauchtNamenswahl(kontoProfil) && !namenSpaeter}
+        bisher={kontoProfil?.anzeigename ?? null}
         onSpaeter={() => setNamenSpaeter(true)}
         onGespeichert={(name) => setKontoProfil((p) => (p ? { ...p, anzeigename: name } : p))}
       />

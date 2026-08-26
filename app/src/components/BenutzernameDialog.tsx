@@ -12,9 +12,11 @@
  * dieselbe Datenbank, die gleich speichert, und ein vergebener Name führt zu
  * einer Meldung statt zu einer Überraschung.
  *
- * „Später" ist Absicht: wer sich nur angemeldet hat, um eine private Tour zu
- * sichern, braucht keinen öffentlichen Namen. Veröffentlichen kann er ohne
- * einen trotzdem nicht — das entscheidet die Datenbank, nicht dieses Fenster.
+ * „Später" ist Absicht und keine Sackgasse: das Konto trägt bereits den
+ * Übergangsnamen aus seiner ID, und der bleibt einfach stehen. Nichts ist
+ * gesperrt, nichts fehlt — man heisst nur vorerst `wanderer-3f9a1c` und kann
+ * sich jederzeit im Kontobereich umbenennen. Deshalb steht der aktuelle Name
+ * hier auch ausdrücklich drin: wer wegklickt, soll wissen, wie er heisst.
  */
 import { useEffect, useState } from 'react'
 import { Check, TriangleAlert, UserRound } from 'lucide-react'
@@ -24,12 +26,14 @@ import { Namensfeld } from './Namensfeld'
 
 interface Props {
   offen: boolean
+  /** Wie das Konto gerade heisst — der Übergangsname aus seiner ID. */
+  bisher: string | null
   /** Zurückgestellt — das Fenster bleibt bis zur nächsten Anmeldung weg. */
   onSpaeter: () => void
   onGespeichert: (name: string) => void
 }
 
-export function BenutzernameDialog({ offen, onSpaeter, onGespeichert }: Props) {
+export function BenutzernameDialog({ offen, bisher, onSpaeter, onGespeichert }: Props) {
   const [name, setName] = useState('')
   const [urteil, setUrteil] = useState<NamensUrteil | null>(null)
   const [busy, setBusy] = useState(false)
@@ -83,6 +87,13 @@ export function BenutzernameDialog({ offen, onSpaeter, onGespeichert }: Props) {
           Unter diesem Namen erscheinen deine geteilten Touren und Kommentare. Deine
           E-Mail-Adresse wird nie veröffentlicht.
         </p>
+        {bisher && (
+          <p className="mt-2 text-klein leading-relaxed text-ink-500">
+            Bis dahin heisst du{' '}
+            <span className="font-medium text-ink-200">{bisher}</span> — das geht auch,
+            und ändern kannst du es jederzeit.
+          </p>
+        )}
 
         <form onSubmit={speichern} className="mt-4 space-y-3.5">
           <Namensfeld
@@ -108,8 +119,8 @@ export function BenutzernameDialog({ offen, onSpaeter, onGespeichert }: Props) {
         </form>
 
         <p className="mt-3 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-          Ohne Namen kannst du Touren speichern und planen — teilen und kommentieren erst
-          danach. Ändern lässt er sich später im Kontobereich.
+          Der erste eigene Name ist frei; erst ein späterer Wechsel ist danach eine Weile
+          gesperrt — im Kontobereich steht, wie lange.
         </p>
       </div>
     </div>
