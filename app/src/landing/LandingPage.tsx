@@ -26,6 +26,7 @@ import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
 import { Einblenden } from './Einblenden'
 import { KartenSchema } from './Grafiken'
 import { Marke } from '../components/Marke'
+import { UnterstuetzenBand } from '../components/Unterstuetzen'
 import {
   beispielZone, gemeindenGesamt, gipfelGesamt, punkteGesamt, punkteJeArt, zonenGesamt,
 } from './zahlen'
@@ -125,6 +126,7 @@ export function LandingPage({ onStart }: { onStart: () => void }) {
         <Schluss onStart={onStart} />
       </main>
 
+      <UnterstuetzenBand />
       <Fusszeile onStart={onStart} />
     </div>
   )

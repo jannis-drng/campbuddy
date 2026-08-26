@@ -33,6 +33,7 @@ import {
 import { Kartenebenen } from './components/Kartenebenen'
 import { ZeichenLeiste } from './components/ZeichenLeiste'
 import { Marke } from './components/Marke'
+import { UnterstuetzenKnopf } from './components/Unterstuetzen'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
 import { isSupabaseConfigured, type Tour } from './services/supabase'
 import { serviceWorkerVorwaermen } from './services/sw'
@@ -824,6 +825,15 @@ export default function App() {
             </Auswahl>
           </label>
         )}
+
+        {/*
+          Ganz rechts, absichtlich leise: ein Herz, ab Laptop mit Wort. Auf dem
+          Telefon holt es sich den freien Platz selbst — dort ist die Navigation
+          unten, die Kopfzeile also leer. Steht die Regionswahl daneben, hat die
+          den Rand schon gesetzt; zwei `ml-auto` würden den Platz unter sich
+          aufteilen und die Wahl in die Mitte schieben.
+        */}
+        <UnterstuetzenKnopf className={mehrereRegionen ? '' : 'ml-auto sm:ml-0'} />
       </header>
 
       <DisclaimerBar />
