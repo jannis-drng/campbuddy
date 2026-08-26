@@ -328,15 +328,26 @@ export async function anbieterVon(url) {
  * Arbeitern würden sonst alle gleichzeitig feststellen, dass die Pause vorbei
  * ist, und wieder im Pulk losrennen.
  */
+const HOECHSTE_HALTEDAUER = 180000
+
 export async function anstehen(schluessel) {
   const vorherige = wartend.get(schluessel) ?? Promise.resolve()
   let freigeben
-  wartend.set(schluessel, new Promise((r) => { freigeben = r }))
+  const meine = new Promise((r) => { freigeben = r })
+  wartend.set(schluessel, meine)
+
+  // Notbremse: eine verlorene Freigabe darf die Kette nicht für immer
+  // festsetzen. Genau das ist passiert — ein `continue` an der falschen Stelle,
+  // und der Lauf stand neun Stunden bei null Gemeinden, weil fast alle
+  // denselben Anbieter teilen. Ein Fehler in dieser Kette darf höchstens
+  // langsam machen, nie blockieren.
+  const notbremse = setTimeout(freigeben, HOECHSTE_HALTEDAUER)
+
   await vorherige
   const seit = Date.now() - (letzterAbruf.get(schluessel) ?? 0)
   if (seit < ANBIETER_PAUSE) await schlafe(ANBIETER_PAUSE - seit)
   letzterAbruf.set(schluessel, Date.now())
-  return freigeben
+  return () => { clearTimeout(notbremse); freigeben() }
 }
 
 /**

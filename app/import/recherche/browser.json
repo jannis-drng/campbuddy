@@ -226,10 +226,21 @@
    "name": "Rheinau",
    "kanton": "CH-ZH",
    "website": "https://www.rheinau.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.rheinau.ch/_rte/information/1431710",
+   "dokument_titel": "Polizeiverordnung",
+   "stellen": [
+    {
+     "artikel": "Art. 21 Zelten und Campieren in Wohnwagen und Wohnmobilen",
+     "text": "Art. 21 Zelten und Campieren in Wohnwagen und Wohnmobilen 1 Für das Zelten und Campieren in Wohnwagen und Wohnmobilen auf öffentlichem Grund braucht es eine Bewilligung des Polizeivorstandes. 2 Durchgangs- und Standplätze für Fahrende stehen in Rheinau nicht zur Verfügung. Für den spontanen Halt von Fahrenden auf öffentlichem wie auf privatem Grund braucht es zusätzlich zur Einwilligung des Grundeigentümers eine Bewilligung des Gemeinderates.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 14 Nachtruhe und Ruhezeiten",
+     "text": "Art. 14 Nachtruhe und Ruhezeiten 1 Es ist verboten, Lärm zu verursachen, der durch rücksichtsvolle Handlungsweise vermieden oder verhindert werden kann. 2 Die Nachtruhe dauert von 22.00 Uhr bis 07.00 Uhr. Jede lärmverursachende Hand- lung im Freien, in Zelten und in Fahrnisbauten ist während der Nachtruhe verboten. Lärm im Innern von Gebäuden darf Dritte nicht belästigen. 3 Die Ruhezeiten dauern an Werktagen von 12.00 Uhr bis 13.00 Uhr und von 19.00 Uhr bis 07.00 Uhr, an Samstagen von 12.00 Uhr bis 13.00 Uhr und ab 17.00 Uhr sowie an Sonn- und allgemeinen Feiertagen. Während der Ruhezeiten sind lärmige Arbeiten verboten. Für lärmige Arbeiten, die aus technischen oder betrieblichen Gründen nicht unterbrochen oder ausserhalb der Ruhezeiten ausgeführt werden kön- nen, kann der Polizeivorstand eine Bewilligung erteilen. 4 Landwirtschaftliche Feldarbeiten sind während der Ruhezeiten erlaubt, sofern diese zwingend notwendig sind. 5 An öffentlichen Ruhetagen richtet sich der Schutz nach dem Ruhetags- und Laden- öffnungsgesetz des Kantons Zürich.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -237,10 +248,26 @@
    "name": "Trüllikon",
    "kanton": "CH-ZH",
    "website": "http://www.truellikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "http://www.truellikon.ch/_doc/7074544",
+   "dokument_titel": "5 - Polizeiverordnung vom 01.04.2015",
+   "stellen": [
+    {
+     "artikel": "Art. 16 Campieren und Nächtigen im Freien",
+     "text": "Art. 16 Campieren und Nächtigen im Freien Das Campieren in Zelten, Wohnwagen und dergleichen sowie das Nächtigen im Freien auf öffentlichem Grund bedarf einer Bewilligung des Gemeinderates. -- 6 of 10 -- Polizeiverordnung Gemeinde Trüllikon Seite 7 von 10",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 21 Nachtruhe",
+     "text": "Art. 21 Nachtruhe Die Nachtruhe dauert von 22.00 bis 06.00 Uhr. Während der Sommerzeit jeweils freitags und samstags bzw. an Vorabenden von öffentlichen Ruhetagen dauert die Nachtruhe von 23.00 bis 06.00 Uhr. Jede lärmverursachende Handlung im Freien, in Zelten und in Fahrnisbauten ist während der Nachtruhe verboten. Lärm im Innern von Gebäuden darf Dritte nicht belästigen. Der Gemeinderat kann Ausnahmen bewilligen. Gehen die Nachtruhestörungen von Verpflegungs- oder Vergnügungsstätten aus, kann die Polizei den Betrieb für die betreffende Nacht schliessen.",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art. 24 Singen, Musizieren, Lautsprecher, Verstärkeranlagen",
+     "text": "Art. 24 Singen, Musizieren, Lautsprecher, Verstärkeranlagen Das Singen, Musizieren oder der Gebrauch von Tonwiedergabegeräten, Lautsprechern, Verstärkeranlagen und ähnlichen Geräten hat zu jeder Tages- und Nachtzeit so zu erfolgen, dass Drittpersonen nicht in unzumutbarer Weise gestört werden. Während der Nachtruhe gemäss Art. 21 ist in Wohngebieten das Singen, Musizieren und der Gebrauch von Tonwiedergabegeräten, Lautsprechern, Verstärkeranlagen und ähnlichen Geräten im Freien, in Zelten und Fahrnisbauten verboten. Der Gemeinderat kann Ausnahmen bewilligen.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -248,10 +275,26 @@
    "name": "Truttikon",
    "kanton": "CH-ZH",
    "website": "http://www.truttikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.truttikon.ch/_rte/information/1376797",
+   "dokument_titel": "Polizeiverordnung",
+   "stellen": [
+    {
+     "artikel": "Art. 16 Campieren und Nächtigen im Freien",
+     "text": "Art. 16 Campieren und Nächtigen im Freien Das Campieren in Zelten, Wohnwagen und dergleichen sowie das Nächtigen im Freien auf öffentlichem Grund bedarf einer Bewilligung des Gemeinderates.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 21 Nachtruhe",
+     "text": "Art. 21 Nachtruhe 1 Die Nachtruhe dauert von 22.00 bis 06.00 Uhr. Während der Sommerzeit jeweils freitags und samstags bzw. an Vorabenden von öffentlichen Ruhetagen dauert die Nachtruhe von 23.00 bis 06.00 Uhr. 2 Jede lärmverursachende Handlung im Freien, in Zelten und in Fahrnisbauten ist während der Nachtruhe verboten. Lärm im Innern von Gebäuden darf Dritte nicht belästigen.12 3 Der Gemeinderat kann Ausnahmen bewilligen. 4 Gehen die Nachtruhestörungen von Verpflegungs- oder Vergnügungsstätten aus, kann die Polizei den Betrieb für die betreffende Nacht schliessen.",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art. 24 Singen, Musizieren, Lautsprecher, Verstärkeranlagen",
+     "text": "Art. 24 Singen, Musizieren, Lautsprecher, Verstärkeranlagen 1 Das Singen, Musizieren oder der Gebrauch von Tonwiedergabegeräten, Laut- sprechern, Verstärkeranlagen und ähnlichen Geräten hat zu jeder Tages- und Nachtzeit so zu erfolgen, dass Drittpersonen nicht in unzumutbarer Weise gestört werden. 12 Bei grober Verletzung der Nachtruhe: kantonales Straf- und Justizvollzugsgesetz: § 7 lit. a 13 Bei Verursachen von störendem Lärm durch Bauarbeiten zwischen 19.00 Uhr und 07.00 Uhr: kantonale Baulärmverordnung, § 4a Abs. 1 -- 9 of 12 -- 9 2 Während der Nachtruhe gemäss Art. 21 ist in Wohngebieten das Singen, Musi- zieren und der Gebrauch von Tonwiedergabegeräten, Lautsprechern, Verstärker- anlagen und ähnlichen Geräten im Freien, in Zelten und Fahrnisbauten verboten. 3 Der Gemeinderat kann Ausnahmen bewilligen.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -259,10 +302,8 @@
    "name": "Volken",
    "kanton": "CH-ZH",
    "website": "http://www.volken.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -344,7 +385,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -394,7 +435,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -405,7 +446,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -416,7 +457,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -438,7 +479,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -449,7 +490,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -479,10 +520,8 @@
    "name": "Buchs (ZH)",
    "kanton": "CH-ZH",
    "website": "http://www.buchs-zh.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -512,10 +551,21 @@
    "name": "Dielsdorf",
    "kanton": "CH-ZH",
    "website": "http://www.dielsdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.dielsdorf.ch/_rte/information/2932063",
+   "dokument_titel": "Polizeiverordnung Politische Gemeinde Dielsdorf",
+   "stellen": [
+    {
+     "artikel": "Art. 19 Campieren und Aufstellen von Wohnwagen, Fahrende",
+     "text": "Art. 19 Campieren und Aufstellen von Wohnwagen, Fahrende Das Campieren oder das Aufstellen von Zelten, Wohnwagen und dergleichen auf öffentlichem Grund und in Waldungen ist verboten. Der Sicherheitsvorsteher kann in besonderen Fällen Ausnahmen bewilligen.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 29 Lautsprecher, Verstärkeranlagen",
+     "text": "Art. 29 Lautsprecher, Verstärkeranlagen 1 Der Betrieb von Lautsprechern, Megaphonen und anderen Verstärkeranlagen ist im Freien, in Zelten und anderen Fahrnisbauten verboten. 2 Obige Anlagen sind in Gebäuden zu jeder Tages- und Nachtzeit so zu gebrauchen, dass Drittpersonen nicht in unzumutbarer Weise gestört werden. 3 Der Sicherheitsvorsteher kann Ausnahmen bewilligen.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {

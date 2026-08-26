@@ -336,13 +336,29 @@ const AUSGABE = resolve(ZIEL, `browser${KANTON ? `-${KANTON}` : ''}.json`)
 
 console.log(`Browser-Recherche für ${offen.length} Gemeinden, ${GLEICHZEITIG} gleichzeitig …`)
 
-const browser = await chromium.launch({ channel: 'chrome', headless: true })
+let browser = await chromium.launch({ channel: 'chrome', headless: true })
 const ergebnisse = []
 let fertig = 0
 const warteschlange = [...offen]
 // Nach einer Reihe von Abweisungen desselben Anbieters wird nicht weiter
 // angeklopft. Weiterzumachen brächte nichts und wäre unanständig.
 const waechter = sperrWaechter(8)
+
+/**
+ * Eine Zusage mit Frist.
+ *
+ * Playwright bricht einzelne Aufrufe ab, aber nicht den Ablauf als Ganzes:
+ * stirbt Chrome zwischendurch, kann `newContext` hängen, ohne je zu antworten.
+ * Beim ersten Anlauf stand der Lauf deshalb neun Stunden bei null Gemeinden.
+ * Nach dieser Frist geht es weiter, notfalls ohne Ergebnis für diese Gemeinde.
+ */
+function mitFrist(zusage, ms, text) {
+  let uhr
+  return Promise.race([
+    zusage.finally(() => clearTimeout(uhr)),
+    new Promise((_, ab) => { uhr = setTimeout(() => ab(new Error(text)), ms) }),
+  ])
+}
 
 async function arbeiter() {
   while (warteschlange.length) {
@@ -359,28 +375,45 @@ async function arbeiter() {
       fertig++
       continue
     }
+
+    // Stirbt Chrome, hängt jeder weitere Aufruf. Einmal neu starten ist
+    // billiger als ein Lauf, der stumm stehenbleibt.
+    if (!browser.isConnected()) {
+      console.log('  Chrome ist weg — wird neu gestartet.')
+      browser = await chromium.launch({ channel: 'chrome', headless: true })
+    }
+
     const freigeben = await anstehen(anbieter)
     let r
+    let nochmal = false
     try {
-      r = await eineGemeinde(browser, g)
-      // Ein Verbindungsfehler ist kein Befund über die Gemeinde. Warten und
-      // dieselbe Gemeinde noch einmal — sonst steht am Ende ein Ergebnis da,
-      // das nur die eigene Leitung beschreibt.
-      if (NETZFEHLER.test(r.fehler ?? '') && !(await netzDa())) {
-        if (await aufNetzWarten()) {
-          warteschlange.unshift(g)
-          continue
-        }
+      r = await mitFrist(eineGemeinde(browser, g), 150000, 'Gesamtfrist überschritten')
+    } catch (e) {
+      r = {
+        bfs: g.bfs, name: g.name, kanton: g.kanton, website: g.website,
+        stellen: [], fehler: `unerwartet: ${(e.message || '').slice(0, 70)}`, weg: 'browser',
+      }
+    } finally {
+      // Immer freigeben. Vorher lag die Freigabe hinter einem `continue` im
+      // Netzwarte-Zweig — wurde er genommen, hing die Kette dieses Anbieters
+      // für immer, und mit ihr fast der ganze Lauf.
+      freigeben()
+    }
+
+    // Ein Verbindungsfehler ist kein Befund über die Gemeinde. Warten und
+    // dieselbe Gemeinde noch einmal — aber ohne die Sperre zu halten.
+    if (NETZFEHLER.test(r.fehler ?? '') && !(await netzDa())) {
+      if (await aufNetzWarten()) {
+        warteschlange.unshift(g)
+        nochmal = true
+      } else {
         console.log('  Netz bleibt weg — Lauf wird abgebrochen.')
         warteschlange.length = 0
         break
       }
-    } catch (e) {
-      r = { bfs: g.bfs, name: g.name, kanton: g.kanton, website: g.website, stellen: [], fehler: `unerwartet: ${e.message.slice(0, 70)}`, weg: 'browser' }
     }
-    freigeben()
-    // Ein Sperrsignal ist kein Befund über die Gemeinde — es zählt auf den
-    // Anbieter, nicht auf sie.
+    if (nochmal) continue
+
     const abgewiesen = SPERRE.test(r.fehler ?? '')
     waechter.melde(anbieter, abgewiesen)
     if (abgewiesen) r.fehler = ANBIETERSPERRE
