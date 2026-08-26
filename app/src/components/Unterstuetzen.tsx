@@ -18,9 +18,14 @@
  *
  * Ein Ko-fi-Link lädt nichts nach und meldet nichts — Ko-fi erfährt vom
  * Besuch erst, wenn jemand tatsächlich klickt.
+ *
+ * Zwei Auftritte, weil die beiden Ansichten verschieden viel Platz haben:
+ * das Band auf der Startseite darf ausholen, die Blase an der Karte nicht.
+ * Der Text der Blase ist deshalb nicht gekürzt, sondern eigens geschrieben —
+ * gekürzte Fassungen klingen immer nach Restposten.
  */
-import { ExternalLink, Heart, Sprout } from 'lucide-react'
-import { Button } from '../ui'
+import { useEffect, useRef, useState } from 'react'
+import { ExternalLink, Heart, Sprout, X } from 'lucide-react'
 
 /* ------------------------------------------------------------ Konfiguration */
 
@@ -40,35 +45,132 @@ export const KOFI_URL = `https://ko-fi.com/${KOFI_NAME}`
  *
  * Wird der Anteil im Stripe-Dashboard geändert oder abgeschaltet, gehört
  * diese Konstante mitgeändert. Eine Zusage, die nicht mehr stimmt, ist
- * schlimmer als gar keine.
+ * schlimmer als gar keine. Der Anteil steht nur einmal da, damit die kurze
+ * und die lange Fassung nicht auseinanderlaufen können.
  */
 export const KLIMA_ANTEIL = '1 %'
 export const KLIMA_ZUSAGE =
   `${KLIMA_ANTEIL} jeder Zahlung geht über Stripe Climate in die dauerhafte Entnahme von CO₂ aus der Atmosphäre.`
+export const KLIMA_ZUSAGE_KURZ =
+  `${KLIMA_ANTEIL} jeder Zahlung geht über Stripe Climate in dauerhafte CO₂-Entnahme.`
 
-/* -------------------------------------------------------------------- Knopf */
+/* --------------------------------------------------------------- Ko-fi-Link */
+
+const KOFI_KNOPF =
+  'inline-flex w-full items-center justify-center gap-2 rounded-mittel ' +
+  'bg-gletscher-300 px-4 text-fliess font-medium text-ink-950 shadow-[var(--shadow-1)] ' +
+  'transition-[background-color,transform] duration-[160ms] ease-[var(--ease-heraus)] ' +
+  'hover:bg-gletscher-200 active:translate-y-px'
 
 /**
- * Der stille Eingang in der Kopfzeile der Karte. Icon-only bis Tablet: die
- * Kopfzeile ist dort schon voll, und wer spenden will, findet ein Herz.
+ * Der Weg zu Ko-fi ist ein echter Anker und kein `window.open` — nur so
+ * funktionieren Mittelklick, „in neuem Tab öffnen" und die Statuszeile, die
+ * vor dem Klick zeigt, wohin es geht. Bei einem Spendenlink ist genau das
+ * die Zusicherung, die jemand sehen will.
+ */
+function KofiLink({ hoehe = 'h-11' }: { hoehe?: string }) {
+  return (
+    <a href={KOFI_URL} target="_blank" rel="noreferrer noopener" className={`${KOFI_KNOPF} ${hoehe}`}>
+      <Heart size={16} strokeWidth={2} aria-hidden />
+      Auf Ko-fi unterstützen
+    </a>
+  )
+}
+
+function Kleingedrucktes({ className = '' }: { className?: string }) {
+  return (
+    <p className={`flex items-center gap-1.5 text-mikro text-ink-500 ${className}`}>
+      <ExternalLink size={11} strokeWidth={2.5} aria-hidden />
+      Einmalig, kein Abo, kein Konto nötig
+    </p>
+  )
+}
+
+/* -------------------------------------------------------------------- Blase */
+
+/**
+ * Der Auftritt an der Karte — dort verbringen die meisten ihre Zeit, dort
+ * stand vorher nur ein Herz ohne Erklärung.
+ *
+ * Als aufklappende Blase und nicht als Dauerstreifen: Die Kartenansicht hat
+ * über der Karte schon Kopfzeile, Haftungshinweis und Filterleiste. Eine
+ * vierte Zeile, die bei jedem Besuch um Geld bittet, kostet mehr Vertrauen,
+ * als sie einbringt — und Kartenfläche ist draussen das Knappste.
  */
 export function UnterstuetzenKnopf({ className = '' }: { className?: string }) {
+  const [offen, setOffen] = useState(false)
+  const huelle = useRef<HTMLDivElement>(null)
+
+  // Escape und ein Klick daneben schliessen — beides erwartet man von einer
+  // Blase, und ohne sie bliebe sie auf dem Telefon über der Karte stehen.
+  useEffect(() => {
+    if (!offen) return
+    const beiTaste = (e: KeyboardEvent) => { if (e.key === 'Escape') setOffen(false) }
+    const beiZeiger = (e: PointerEvent) => {
+      if (!huelle.current?.contains(e.target as Node)) setOffen(false)
+    }
+    window.addEventListener('keydown', beiTaste)
+    window.addEventListener('pointerdown', beiZeiger)
+    return () => {
+      window.removeEventListener('keydown', beiTaste)
+      window.removeEventListener('pointerdown', beiZeiger)
+    }
+  }, [offen])
+
   return (
-    <a
-      href={KOFI_URL}
-      target="_blank"
-      rel="noreferrer noopener"
-      title="CampBuddy unterstützen"
-      className={`inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-mittel px-2.5
-                  text-fliess font-medium text-ink-300
-                  transition-[background-color,color] duration-[160ms] ease-[var(--ease-heraus)]
-                  hover:bg-flaeche-3 hover:text-gletscher-300
-                  focus-visible:text-gletscher-300 ${className}`}
-    >
-      <Heart size={17} strokeWidth={2} aria-hidden />
-      <span className="hidden lg:inline">Unterstützen</span>
-      <span className="lg:hidden sr-only">CampBuddy unterstützen</span>
-    </a>
+    <div ref={huelle} className={`relative shrink-0 ${className}`}>
+      <button
+        onClick={() => setOffen((v) => !v)}
+        aria-expanded={offen}
+        aria-label="CampBuddy unterstützen"
+        title="CampBuddy unterstützen"
+        className={`inline-flex h-9 items-center justify-center gap-2 rounded-mittel px-2.5
+                    text-fliess font-medium
+                    transition-[background-color,color] duration-[160ms] ease-[var(--ease-heraus)]
+                    hover:bg-flaeche-3 hover:text-gletscher-300
+                    ${offen ? 'bg-flaeche-3 text-gletscher-300' : 'text-ink-300'}`}
+      >
+        <Heart size={17} strokeWidth={2} aria-hidden />
+        <span className="hidden lg:inline">Unterstützen</span>
+      </button>
+
+      {offen && (
+        <div
+          role="dialog"
+          aria-label="CampBuddy unterstützen"
+          className="absolute right-0 top-full z-50 mt-2 w-[19rem] overflow-hidden rounded-gross
+                     border border-kante bg-flaeche-2/97 shadow-[var(--shadow-4)] backdrop-blur-md"
+        >
+          <div className="flex items-center gap-2 border-b border-kante px-3.5 py-2.5">
+            <Heart size={15} strokeWidth={2} className="shrink-0 text-gletscher-300" aria-hidden />
+            <span className="flex-1 text-klein font-semibold text-ink-100">
+              Kostenlos — und bleibt es
+            </span>
+            <button
+              onClick={() => setOffen(false)}
+              aria-label="Schliessen"
+              className="-mr-1 rounded-klein p-1 text-ink-500 transition-colors duration-[160ms]
+                         hover:bg-flaeche-3 hover:text-ink-100"
+            >
+              <X size={15} strokeWidth={2.25} aria-hidden />
+            </button>
+          </div>
+
+          <div className="space-y-3 px-3.5 pb-3.5 pt-3">
+            <p className="text-klein leading-relaxed text-ink-300">
+              Jede Einstufung auf dieser Karte ist von Hand nachgelesen, belegt und mit einem
+              Datum versehen. Wer das nützlich findet, kann etwas dalassen.
+            </p>
+            <p className="flex items-start gap-2 text-mikro leading-relaxed text-ink-400">
+              <Sprout size={13} strokeWidth={2} className="mt-0.5 shrink-0 text-gletscher-400" aria-hidden />
+              <span>{KLIMA_ZUSAGE_KURZ}</span>
+            </p>
+            <KofiLink hoehe="h-10" />
+            <Kleingedrucktes className="justify-center" />
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -76,15 +178,10 @@ export function UnterstuetzenKnopf({ className = '' }: { className?: string }) {
 
 /**
  * Die ausführliche Bitte, einmal auf der Startseite über der Fusszeile.
- * Genau ein solcher Block — eine Karte, die bei jedem Besuch um Geld bittet,
- * verliert schneller Vertrauen, als die Spende einbringt.
  */
 export function UnterstuetzenBand() {
   return (
-    <section
-      aria-labelledby="unterstuetzen-titel"
-      className="border-t border-kante bg-flaeche-2"
-    >
+    <section aria-labelledby="unterstuetzen-titel" className="border-t border-kante bg-flaeche-2">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-10 sm:px-8
                       md:flex-row md:items-center md:justify-between md:gap-10">
         <div className="min-w-0">
@@ -105,19 +202,9 @@ export function UnterstuetzenBand() {
           </p>
         </div>
 
-        <div className="shrink-0">
-          <Button
-            variante="primaer"
-            groesse="gross"
-            icon={Heart}
-            onClick={() => window.open(KOFI_URL, '_blank', 'noopener,noreferrer')}
-          >
-            Auf Ko-fi unterstützen
-          </Button>
-          <p className="mt-2.5 flex items-center gap-1.5 text-mikro text-ink-500 md:justify-center">
-            <ExternalLink size={11} strokeWidth={2.5} aria-hidden />
-            Einmalig, kein Abo, kein Konto nötig
-          </p>
+        <div className="shrink-0 md:w-60">
+          <KofiLink />
+          <Kleingedrucktes className="mt-2.5 md:justify-center" />
         </div>
       </div>
     </section>
