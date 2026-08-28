@@ -37,16 +37,28 @@ const hier = dirname(fileURLToPath(import.meta.url))
  * Sie hier mitzunehmen bliese jede Sicherung auf 15 MB auf, ohne etwas zu
  * retten, was nicht schon gerettet wäre.
  */
+/*
+  Jede Zeile trägt ihren Primärschlüssel mit, weil danach sortiert wird.
+
+  Das ist keine Kosmetik: Blättern ohne feste Reihenfolge ist kaputt.
+  PostgreSQL darf Zeilen bei zwei Abfragen in verschiedener Reihenfolge
+  liefern, und dann enthält Seite 2 Zeilen aus Seite 1, während andere ganz
+  fehlen — in einer Sicherung der schlimmstmögliche Fehler, weil er
+  aussieht wie Erfolg.
+
+  Die drei Verknüpfungstabellen haben einen zusammengesetzten Schlüssel und
+  gar keine `id`-Spalte. Genau daran ist der erste Lauf gescheitert.
+*/
 const TABELLEN = [
-  'profiles',
-  'routes',
-  'trips',
-  'kommentare',
-  'likes',
-  'kommentar_likes',
-  'favorites',
-  'eigene_punkte',
-  'meldungen',
+  { name: 'profiles',        schluessel: 'id' },
+  { name: 'routes',          schluessel: 'id' },
+  { name: 'trips',           schluessel: 'id' },
+  { name: 'kommentare',      schluessel: 'id' },
+  { name: 'likes',           schluessel: 'user_id,route_id' },
+  { name: 'kommentar_likes', schluessel: 'user_id,kommentar_id' },
+  { name: 'favorites',       schluessel: 'user_id,route_id' },
+  { name: 'eigene_punkte',   schluessel: 'id' },
+  { name: 'meldungen',       schluessel: 'id' },
 ]
 
 const SEITE = 1000
@@ -88,12 +100,13 @@ if (!SECRET) {
   process.exit(2)
 }
 
-async function alleZeilen(tabelle) {
+async function alleZeilen(tabelle, schluessel) {
   const alle = []
+  const sortierung = schluessel.split(',').map((s) => `${s}.asc`).join(',')
   for (let n = 0; n < 1000; n++) {
     const von = n * SEITE
     const antwort = await fetch(
-      `${URL_}/rest/v1/${tabelle}?select=*&order=id&offset=${von}&limit=${SEITE}`,
+      `${URL_}/rest/v1/${tabelle}?select=*&order=${sortierung}&offset=${von}&limit=${SEITE}`,
       { headers: { apikey: SECRET, Authorization: `Bearer ${SECRET}` } },
     )
     if (!antwort.ok) {
@@ -115,28 +128,43 @@ const gruen = '\x1b[32m', rot = '\x1b[31m', grau = '\x1b[90m', aus = '\x1b[0m'
 console.log(`\n  Sicherung  ${grau}${ziel}${aus}\n`)
 
 let gesamt = 0
-let fehler = 0
 const uebersicht = {}
+const gescheitert = {}
 
-for (const tabelle of TABELLEN) {
+for (const { name, schluessel } of TABELLEN) {
   try {
-    const zeilen = await alleZeilen(tabelle)
+    const zeilen = await alleZeilen(name, schluessel)
     const text = JSON.stringify(zeilen, null, 2)
-    writeFileSync(join(ziel, `${tabelle}.json`), text)
-    uebersicht[tabelle] = zeilen.length
+    writeFileSync(join(ziel, `${name}.json`), text)
+    uebersicht[name] = zeilen.length
     gesamt += text.length
-    console.log(`  ${gruen}✓${aus} ${tabelle.padEnd(18)} ${String(zeilen.length).padStart(6)} Zeilen`)
+    console.log(`  ${gruen}✓${aus} ${name.padEnd(18)} ${String(zeilen.length).padStart(6)} Zeilen`)
   } catch (e) {
-    fehler++
-    console.log(`  ${rot}✗ ${tabelle.padEnd(18)}${aus} ${grau}${e.message}${aus}`)
+    gescheitert[name] = e.message
+    console.log(`  ${rot}✗ ${name.padEnd(18)}${aus} ${grau}${e.message}${aus}`)
   }
 }
 
+/*
+  Die Übersicht sagt ausdrücklich, ob die Sicherung vollständig ist.
+
+  Eine halbe Sicherung ist gefährlicher als gar keine: das Verzeichnis sieht
+  in einem halben Jahr genauso aus wie ein vollständiges, und wer daraus
+  wiederherstellt, merkt das Fehlende erst, wenn es weg ist. Deshalb steht
+  das Urteil in der Datei, nicht nur im Terminal, das längst geschlossen ist.
+*/
+const vollstaendig = Object.keys(gescheitert).length === 0
 writeFileSync(join(ziel, 'uebersicht.json'), JSON.stringify({
   zeitpunkt: new Date().toISOString(),
   projekt: URL_,
+  vollstaendig,
   zeilen: uebersicht,
+  ...(vollstaendig ? {} : { gescheitert }),
 }, null, 2))
 
 console.log(`\n  ${(gesamt / 1024 / 1024).toFixed(2)} MB in ${ziel}\n`)
-if (fehler > 0) process.exit(1)
+if (!vollstaendig) {
+  console.error(`  ${rot}Unvollständig — ${Object.keys(gescheitert).join(', ')} fehlen.${aus}`)
+  console.error(`  ${grau}Steht auch in uebersicht.json unter "vollstaendig": false.${aus}\n`)
+  process.exit(1)
+}
