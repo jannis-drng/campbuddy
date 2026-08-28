@@ -189,7 +189,13 @@ function passendesMuster(stelle) {
   const k = kern(stelle.text)
   for (const m of muster.muster) {
     if ((m.erkennt ?? []).length === 0) continue
-    if (m.nur_im_titel && !TITEL_THEMA.test(stelle.artikel ?? '')) continue
+    // Auch den Anfang des Artikels prüfen, nicht nur die geparste Überschrift.
+    // Waadtländer Reglemente setzen den Titel als Randnotiz *vor* die Nummer
+    // („Camping et caravaning Art. 25 - Il est interdit…"); die Zerlegung
+    // erkennt ihn dann nicht als Überschrift, und der einschlägigste Artikel
+    // fiel ausgerechnet durch die Prüfung, die ihn schützen sollte.
+    const kopfzone = `${stelle.artikel ?? ''} ${(stelle.text ?? '').slice(0, 120)}`
+    if (m.nur_im_titel && !TITEL_THEMA.test(kopfzone)) continue
     // Die zweite Notbremse gegen zusammengeklebte Artikel, und die feinere:
     // ein sauber getrennter Artikel ueber Wohnwagen ist kurz. Wo die
     // Artikeltrennung versagt hat, entsteht ein Block von vielen hundert

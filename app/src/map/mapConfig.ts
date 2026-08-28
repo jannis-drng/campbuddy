@@ -154,6 +154,34 @@ export const BASEMAPS: Record<BasemapKey, Basemap> = {
 
 export const DEFAULT_BASEMAP: BasemapKey = 'outdoor'
 
+/* ------------------------------------------------- Kacheln der Vorschaubilder */
+
+const VORSCHAU_HOSTS = ['a', 'b', 'c']
+
+/**
+ * Dieselbe Kachel über mehrere Hosts — in der Reihenfolge der Versuche.
+ *
+ * Die Vorschaubilder der Touren (`components/RoutenVorschau`) bauen ihre Karte
+ * aus einzelnen Kacheln zusammen. Der erste Eintrag ist die reguläre Adresse:
+ * er hängt an `x + y`, damit benachbarte Kacheln auf verschiedene Hosts fallen
+ * und eine Vorschau nicht als Ganzes an einem einzigen hängt. Die weiteren
+ * Einträge sind die zweite und dritte Chance derselben Kachel — beantwortet
+ * ein Host gerade nicht, tut es vielleicht der nächste.
+ *
+ * Bewusst dieselbe Quelle wie die Karte „Outdoor": eine Vorschau soll aussehen
+ * wie das, was man beim Antippen bekommt. Zur Last, die das erzeugt, steht
+ * alles Weitere in `map/kachelLader.ts` und im Kopf der `RoutenVorschau`.
+ */
+export function vorschauKacheln(z: number, x: number, y: number): string[] {
+  const start = (x + y) % VORSCHAU_HOSTS.length
+  return VORSCHAU_HOSTS.map(
+    (_, i) => `https://${VORSCHAU_HOSTS[(start + i) % VORSCHAU_HOSTS.length]}.tile.opentopomap.org/${z}/${x}/${y}.png`,
+  )
+}
+
+/** Herkunftshinweis unter einem Vorschaubild — klein, aber vorhanden. */
+export const VORSCHAU_HINWEIS = '© OpenTopoMap, OSM'
+
 /** Welche Hintergrundkarten stehen in dieser Region zur Wahl? */
 export function basemapsFor(region: string): Basemap[] {
   return Object.values(BASEMAPS).filter((b) => !b.regions || b.regions.includes(region))

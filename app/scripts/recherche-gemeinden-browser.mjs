@@ -26,7 +26,7 @@ import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
 import {
   SPERRE, anbieterVon, anstehen, dokumentKandidaten, fundstellen, hole, holeDokument, links,
-  pdfText, sammlungsRang, sperrWaechter,
+  ocrText, ocrVerfuegbar, pdfText, sammlungsRang, sperrWaechter,
 } from './lib/reglemente.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -227,6 +227,7 @@ async function eineGemeinde(browser, g) {
     }
 
     // Alles zusammengetragen, jetzt einmal sauber ordnen und entdoppeln.
+    const nichtLesbar = []
     const gesehen = new Set()
     const geordnet = dokumentKandidaten(kandidaten).filter(([u]) => !gesehen.has(u) && gesehen.add(u))
 
@@ -253,13 +254,29 @@ async function eineGemeinde(browser, g) {
           dok.daten = gefunden
         }
         if (dok.daten.length > 12 * 1024 * 1024) continue
-        const text = await pdfText(dok.daten)
-        if (!text || text.length < 400) continue
+        let text = await pdfText(dok.daten)
+        let gelesen = 'text'
+
+        // Kein Text heisst nicht: kein Inhalt. 242 Gemeinden veröffentlichen
+        // ihr Reglement als reinen Scan; für die bisherige Suche waren sie
+        // leer, obwohl die Regel schwarz auf weiss darinsteht. Der Umweg über
+        // die Zeichenerkennung ist teuer, deshalb erst hier — wenn feststeht,
+        // dass es anders nicht geht.
+        if ((!text || text.length < 400) && OCR && dok.typ === 'pdf') {
+          nichtLesbar.push(url)
+          text = await ocrText(dok.daten).catch(() => '')
+          gelesen = 'ocr'
+        }
+        if (!text || text.length < 400) { nichtLesbar.push(url); continue }
         const stellen = fundstellen(text)
         if (stellen.length > 0) {
           ergebnis.dokument = url
           ergebnis.dokument_titel = titel || null
           ergebnis.stellen = stellen
+          // Ob der Text aus der Datei kam oder aus der Zeichenerkennung, gehört
+          // festgehalten: OCR verliest sich, und wer die Fundstelle später
+          // prüft, soll wissen, wie genau er hinschauen muss.
+          if (gelesen === 'ocr') ergebnis.gelesen = 'ocr'
           return ergebnis
         }
         if (!ergebnis.dokument) { ergebnis.dokument = url; ergebnis.dokument_titel = titel || null }
@@ -276,6 +293,10 @@ async function eineGemeinde(browser, g) {
       ergebnis.fehler = ergebnis.dokument
         ? 'Reglement gelesen, keine Stelle zum Übernachten'
         : `Kandidaten gefunden (${geordnet.length}), keiner lesbar`
+      // Die Adressen der unlesbaren Dateien mitschreiben. Ohne sie liess sich
+      // später nicht einmal nachsehen, woran es lag — man musste die ganze
+      // Suche wiederholen, um an ein einziges PDF zu kommen.
+      if (nichtLesbar.length > 0) ergebnis.unlesbar = [...new Set(nichtLesbar)].slice(0, 6)
     }
     return ergebnis
   } finally {
@@ -297,12 +318,18 @@ const bisher = JSON.parse(readFileSync(KANDIDATEN, 'utf8')).ergebnisse
 /** Der eine Text für „nicht die Gemeinde, sondern ihr Anbieter hat abgelehnt". */
 const ANBIETERSPERRE = 'Anbieter sperrt uns aus'
 const WIEDERHOLEN = process.argv.includes('--wiederholen')
+/** Gezielt einzelne Gemeinden, z. B. zum Nachprüfen einer Änderung. */
+const NUR_BFS = (arg('bfs') ?? '').split(',').filter(Boolean).map(Number)
+/** Zeichenerkennung für eingescannte Reglemente. Mit --ohne-ocr abschaltbar. */
+const OCR = !process.argv.includes('--ohne-ocr') && await ocrVerfuegbar()
 const frueher = WIEDERHOLEN && existsSync(resolve(ROOT, 'import/recherche/browser.json'))
   ? JSON.parse(readFileSync(resolve(ROOT, 'import/recherche/browser.json'), 'utf8')).ergebnisse
   : []
 
 let offen
-if (WIEDERHOLEN) {
+if (NUR_BFS.length) {
+  offen = bisher.filter((r) => NUR_BFS.includes(r.bfs))
+} else if (WIEDERHOLEN) {
   // Sowohl die rohe Fehlermeldung als auch die zusammengefasste Fassung: die
   // 693 Einträge aus dem ersten Lauf wurden auf einen sprechenden Text
   // umgeschrieben, und ein Filter, der nur die alten Meldungen kennt, findet

@@ -9,6 +9,10 @@
  * hinge es vom Abrufweg ab, welche Rechtslage die Karte zeigt.
  */
 import { promises as dnsPromises } from 'node:dns'
+import { spawn } from 'node:child_process'
+import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { PDFParse } from 'pdf-parse'
 
 const { lookup } = dnsPromises
@@ -245,22 +249,118 @@ export function dokumentKandidaten(gefundene) {
   for (const [u, t] of gefundene) {
     const zusammen = `${u} ${t}`
     const endung = /\.pdf($|\?)/i.test(u)
-    const passt = DOKUMENT.test(zusammen)
-    const polizei = /polizei|police|polizia/i.test(zusammen)
-    if (!endung && !passt) continue
-    // Nur die Endung ohne thematischen Bezug ist zu schwach — sonst landet
-    // jedes Formular und jedes Protokoll in der Liste.
-    if (endung && !passt) continue
+    if (!endung && !DOKUMENT.test(zusammen)) continue
     if (KEIN_ERLASS.test(u) && !endung) continue
-    // „Reglement" oder „Ordnung" im Linktext ist das stärkste Einzelmerkmal:
-    // so heisst der Erlass selbst, nicht die Seite, die von ihm handelt.
-    const erlassWort = /reglement|règlement|regolamento|verordnung|ordnung|gesetz|erlass|statut/i.test(zusammen)
-    bewertet.push([u, t, (erlassWort ? 8 : 0) + (polizei ? 4 : 0) + (endung ? 2 : 0) + (passt ? 1 : 0)])
+    const punkte = dokumentRang(zusammen, endung)
+    if (punkte <= AUSSCHUSS) continue
+    bewertet.push([u, t, punkte])
   }
   bewertet.sort((a, b) => b[2] - a[2])
-  // Doppelte Adressen fliegen raus, die Reihenfolge bleibt.
   const gesehen = new Set()
   return bewertet.filter(([u]) => !gesehen.has(u) && gesehen.add(u)).map(([u, t]) => [u, t])
+}
+
+/** Ab hier lohnt sich der Abruf nicht mehr. */
+const AUSSCHUSS = -10
+
+/**
+ * Wie gut ein Dokument nach dem Polizeireglement aussieht.
+ *
+ * Die erste Fassung wog das blosse Wort „Reglement" höher als „Polizei" — und
+ * zog damit systematisch das Falsche: von 578 Gemeinden, bei denen ein
+ * Reglement gelesen wurde und nichts zum Übernachten darinstand, war nur bei
+ * 36 Prozent überhaupt ein Polizeireglement dabei. Der Rest waren
+ * Baureglemente und Gemeindeordnungen. Die Campingregel steht aber fast immer
+ * im Polizeireglement, und das haben wir schlicht nie geöffnet.
+ *
+ * Deshalb entscheidet jetzt das Thema, nicht die Wortart. Und die Themen, die
+ * sicher nichts beitragen — Abfall, Friedhof, Wasser, Gebühren —, kosten so
+ * viele Punkte, dass sie gar nicht erst abgerufen werden.
+ */
+export function dokumentRang(text, istPdf = true) {
+  let p = istPdf ? 2 : 0
+  if (/polizeireglement|polizei-?reglement|règlement\s*(de\s*)?police|regolamento\s*(di\s*)?polizia/i.test(text)) p += 20
+  else if (/polizei|police|polizia/i.test(text)) p += 12
+  if (/gemeindeordnung|allgemeines\s*reglement|règlement\s*g[ée]n[ée]ral|regolamento\s*generale/i.test(text)) p += 8
+  if (/reglement|règlement|regolamento|verordnung|ordnung|gesetz|erlass|statut/i.test(text)) p += 5
+  if (/camping|campier|campeggio/i.test(text)) p += 6
+
+  // Bauen und Zonen regeln, wo ein Campingplatz stehen darf — nicht, ob man
+  // eine Nacht im Zelt verbringen darf. Gelegentlich steht dort doch etwas,
+  // deshalb Abzug statt Ausschluss.
+  if (/baureglement|bau-?\s*und\s*zonen|nutzungsplan|zonenreglement|bauordnung|plan\s*d.affectation/i.test(text)) p -= 8
+
+  // Diese Erlasse tragen sicher nichts bei.
+  if (/abfall|entsorgung|friedhof|bestattung|wasser|abwasser|kanalisation|feuerwehr|schul|personal|besoldung|steuer|geb[üu]hren|tarif|finanz|energie|d[ée]chets|cimeti[èe]re|eaux|pompiers|[ée]cole|imp[ôo]t/i.test(text)) p -= 25
+  // Formulare, Protokolle, Jahresberichte
+  if (/formular|gesuch|antrag|protokoll|jahresbericht|budget|rechnung|einladung|traktand/i.test(text)) p -= 25
+  return p
+}
+
+/* ---------------------------------------------------------------- OCR */
+
+/**
+ * Eingescannte Reglemente lesbar machen.
+ *
+ * 242 Gemeinden veröffentlichen ihr Reglement als reines Bild — abfotografiert
+ * oder eingescannt, ohne Textebene. Für die bisherige Suche waren sie leer und
+ * damit stumm, obwohl die Regel schwarz auf weiss dasteht.
+ *
+ * Der Weg führt über zwei Werkzeuge: `pdftoppm` rendert die Seiten zu Bildern,
+ * `tesseract` liest sie. Beides läuft lokal, es geht nichts an einen Dienst
+ * heraus. Gerendert wird mit 200 dpi in Graustufen — genug für gesetzten
+ * Fliesstext und deutlich schneller als die volle Auflösung.
+ *
+ * Die Sprache steht nicht fest: ein Reglement aus dem Wallis kann deutsch oder
+ * französisch sein. Tesseract bekommt deshalb alle drei Landessprachen
+ * gleichzeitig; das kostet etwas Zeit und erspart eine Fehlentscheidung, die
+ * den ganzen Text unbrauchbar machen würde.
+ */
+const OCR_SPRACHEN = 'deu+fra+ita'
+const OCR_SEITEN = 40
+
+export async function ocrText(daten) {
+  const spur = await mkdtemp(join(tmpdir(), 'campbuddy-ocr-'))
+  const pdf = join(spur, 'quelle.pdf')
+  try {
+    await writeFile(pdf, daten)
+    // Erst rendern …
+    await lauf('pdftoppm', ['-gray', '-r', '200', '-f', '1', '-l', String(OCR_SEITEN), pdf, join(spur, 'seite')])
+    const bilder = (await readdir(spur)).filter((f) => f.endsWith('.pgm') || f.endsWith('.ppm')).sort()
+    if (bilder.length === 0) return ''
+    // … dann lesen. Alle Seiten in einem Durchgang über eine Dateiliste:
+    // Tesseract je Seite zu starten kostet mehr Zeit im Startvorgang als im Lesen.
+    const liste = join(spur, 'seiten.txt')
+    await writeFile(liste, bilder.map((b) => join(spur, b)).join('\n'))
+    await lauf('tesseract', [liste, join(spur, 'ergebnis'), '-l', OCR_SPRACHEN, '--psm', '1'])
+    return await readFile(join(spur, 'ergebnis.txt'), 'utf8').catch(() => '')
+  } finally {
+    await rm(spur, { recursive: true, force: true }).catch(() => {})
+  }
+}
+
+/** Ein Hilfsprogramm aufrufen und auf sein Ende warten. */
+function lauf(befehl, argumente, fristMs = 240000) {
+  return new Promise((fertig, scheitern) => {
+    const kind = spawn(befehl, argumente, { stdio: 'ignore' })
+    const frist = setTimeout(() => { kind.kill('SIGKILL'); scheitern(new Error(`${befehl}: Frist abgelaufen`)) }, fristMs)
+    kind.on('error', (e) => { clearTimeout(frist); scheitern(e) })
+    kind.on('close', (code) => {
+      clearTimeout(frist)
+      code === 0 ? fertig() : scheitern(new Error(`${befehl}: Abbruch mit ${code}`))
+    })
+  })
+}
+
+/** Steht OCR auf diesem Rechner zur Verfügung? */
+export async function ocrVerfuegbar() {
+  try {
+    await lauf('tesseract', ['--version'], 10000)
+    await lauf('pdftoppm', ['-v'], 10000)
+    return true
+  } catch {
+    return false
+  }
 }
 
 /* ------------------------------------------------------------ Anbieter */
