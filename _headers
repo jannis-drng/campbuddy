@@ -1,0 +1,100 @@
+# CampBuddy — HTTP-Kopfzeilen für Cloudflare Pages.
+#
+# Diese Datei ist eine Vorlage, keine Auslieferung: `https://dtujvpwibvwvgaxwnhrr.supabase.co` wird beim Build
+# aus VITE_SUPABASE_URL eingesetzt (siehe vite.config.ts). Das fertige `_headers`
+# landet in dist/ — Cloudflare Pages liest es dort und macht daraus echte
+# Antwort-Kopfzeilen. GitHub Pages ignoriert die Datei stillschweigend, deshalb
+# stört sie in der Übergangszeit nicht.
+#
+# Kopfzeilen sind der einzige Teil der Absicherung, der nicht im Code stehen
+# kann: keine Zeile JavaScript kann verhindern, dass die Seite in einem fremden
+# iframe landet oder dass ein eingeschleustes Skript Daten abfliessen lässt.
+# Das entscheidet der Server.
+
+/*
+  # --- Content-Security-Policy -------------------------------------------
+  # Die wichtigste Zeile. `script-src 'self'` heisst: es läuft ausschliesslich
+  # JavaScript, das von dieser Domain kommt. Ein eingeschleustes <script>-Tag
+  # oder ein onclick-Attribut wird vom Browser verweigert — auch dann, wenn es
+  # eine Lücke in unserem Code an die Seite geschafft hat. Der Build erzeugt
+  # keine Inline-Skripte (geprüft: alle <script> tragen ein src), deshalb
+  # kostet uns diese Strenge nichts.
+  #
+  # Seit Inter selbst ausgeliefert wird, steht in `font-src` und `style-src`
+  # kein fremder Host mehr. Das ist nicht nur eine Zeile weniger: eine Schrift
+  # von einem Drittanbieter verrät diesem jeden Seitenaufruf, und das
+  # Stylesheet dafür blockierte das Rendern.
+  #
+  # `style-src` braucht 'unsafe-inline': MapLibre positioniert Marker über
+  # style-Attribute, React setzt style={{…}}, und die 404-Seite trägt ihr CSS
+  # inline, damit sie auch dann steht, wenn das Bundle kaputt ist. Bei Styles
+  # ist das vertretbar — Stil kann keine Daten versenden.
+  #
+  # Die einzige fremde Skriptquelle ist das Beacon von Cloudflare Web
+  # Analytics. Cloudflare fügt es der Seite beim Ausliefern selbst hinzu —
+  # ohne diesen Eintrag verweigert der Browser es, und die Messung erhebt
+  # nichts. Es setzt keine Cookies und meldet an
+  # `https://cloudflareinsights.com/cdn-cgi/rum`, deshalb steht dieser Host
+  # auch in `connect-src`. Wer die Messung nicht will, schaltet sie im
+  # Cloudflare-Dashboard ab (Web Analytics) und streicht beide Einträge
+  # hier wieder — die Seite braucht sie nicht.
+  #
+  # Alles Übrige ist die Liste der Dienste, die die Karte tatsächlich lädt:
+  # Kartenkacheln (OpenTopoMap, swisstopo, OpenFreeMap), Schriften für die
+  # Kartenbeschriftung (openmaptiles), Wetter (Open-Meteo), Routing (Valhalla,
+  # OSRM, ORS, GraphHopper) und Supabase. Kommt ein Dienst dazu, muss er hier
+  # eingetragen werden — sonst blockiert der Browser ihn, und die Konsole sagt
+  # auch genau das.
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org https://wmts.geo.admin.ch https://tiles.openfreemap.org https://dtujvpwibvwvgaxwnhrr.supabase.co; connect-src 'self' https://dtujvpwibvwvgaxwnhrr.supabase.co https://cloudflareinsights.com https://api.open-meteo.com https://valhalla1.openstreetmap.de https://routing.openstreetmap.de https://api.openrouteservice.org https://graphhopper.com https://tiles.openfreemap.org https://fonts.openmaptiles.org https://wmts.geo.admin.ch https://a.tile.opentopomap.org https://b.tile.opentopomap.org https://c.tile.opentopomap.org; worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
+
+  # --- Einbettung und Sniffing -------------------------------------------
+  # frame-ancestors oben erledigt das für heutige Browser; X-Frame-Options ist
+  # der Nachsatz für ältere. Beide sagen dasselbe: CampBuddy wird nirgends
+  # eingerahmt. Das schützt gegen Clickjacking — eine unsichtbar überlagerte
+  # Seite, auf der jemand „Route löschen" klickt, ohne es zu sehen.
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+
+  # --- Datensparsamkeit ---------------------------------------------------
+  # Beim Klick auf eine Hütten- oder Gemeindeseite erfährt das Ziel nur noch
+  # die Domain, nicht den vollen Pfad. Welche Fläche jemand angesehen hat,
+  # bleibt hier.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # `geolocation=(self)`, weil die Karte einen Standort-Knopf hat
+  # (MapLibre GeolocateControl, MapView.tsx) — `self` erlaubt ihn uns und
+  # verwehrt ihn eingebetteten Fremdinhalten. Alles Übrige steht auf leer:
+  # was die App nicht braucht, soll auch keine eingeschleuste Zeile anfordern
+  # können. Kommt später eine Foto-Aufnahme über die Kamera dazu, muss
+  # `camera=(self)` hier ergänzt werden — sonst schweigt die Funktion.
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=(), usb=(), midi=(), magnetometer=(), gyroscope=(), accelerometer=(), browsing-topics=()
+
+  # Trennt unseren Browsing-Kontext von fremden Fenstern — relevant, sobald
+  # Login-Flows in Popups laufen.
+  Cross-Origin-Opener-Policy: same-origin
+
+  # --- HSTS ----------------------------------------------------------------
+  # Zwei Jahre nur noch HTTPS. Bewusst OHNE `preload`: das trägt die Domain in
+  # eine im Browser fest eingebaute Liste ein und ist praktisch nicht mehr
+  # rückgängig zu machen. Erst setzen, wenn die Domain samt aller Subdomains
+  # dauerhaft auf HTTPS läuft.
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+
+# Assets tragen einen Inhalts-Hash im Namen. Ändert sich der Inhalt, ändert
+# sich der Name — deshalb darf der Browser die alte Datei ewig behalten.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Das Einstiegsdokument dagegen nie cachen, sonst zeigt ein Wiederbesuch nach
+# einem Deploy die alten Asset-Namen und die Seite bleibt weiss.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Der Service Worker ebenso wenig — und aus demselben Grund, nur schärfer.
+# Er trägt die Liste der vorzuwärmenden Dateien und den Cache-Namen des
+# jeweiligen Builds. Eine gecachte alte Fassung hiesse: der Browser hält an
+# einem Cache fest, den es nicht mehr gibt, und liefert nach einem Deploy
+# beliebig alte Dateien aus. Browser behandeln sw.js von sich aus vorsichtig,
+# aber darauf soll sich diese Auslieferung nicht verlassen müssen.
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
