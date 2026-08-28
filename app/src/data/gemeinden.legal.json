@@ -1,6 +1,6 @@
 {
   "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
-  "_stand": "2026-08-24",
+  "_stand": "2026-08-26",
   "gemeinden": {
     "1": {
       "status": "forbidden",
@@ -184,6 +184,106 @@
       "last_verified": "2026-08-24",
       "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
     },
+    "157": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren mit Zelten, Wohnwagen und Ähnlichem sowie das Nächtigen im Freien auf öffentlichem Grund brauchen ausserhalb besonders bezeichneter oder eingerichteter Plätze eine Bewilligung des Ressorts Sicherheit.",
+      "conditions": "Das Reglement nennt das Nächtigen im Freien ausdrücklich. Es trifft in diesem Artikel keine Aussage zu privatem Grund oder offenem Feuer.",
+      "source": "Kommunale Rechtssammlung Oetwil am See, Art. 15 Campieren und Nächtigen im Freien",
+      "source_url": "https://www.oetwil.ch/politik/rechtssammlung.html/28/opendcategory/32",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
+    },
+    "195": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren mit Zelt, Wohnwagen, Wohnmobil oder Fahrnisbaute ist auf öffentlichem Grund ausserhalb besonders bezeichneter Campingplätze verboten.",
+      "conditions": "Auf privatem Grund muss die Nutzung durch Campieren baurechtlich zulässig sein. Das zuständige Ressort kann Ausnahmen bewilligen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Kommunale Rechtssammlung Maur, Art. 18 Campieren",
+      "source_url": "https://www.maur.ch/verwaltung/systematische-rechtssammlung.html/699/opendcategory/260",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26"
+    },
+    "199": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren sowie das Aufstellen von Wohnwagen, Wohnmobilen und Fahrnisbauten zu Wohnzwecken sind auf öffentlichem Grund verboten.",
+      "conditions": "In begründeten Fällen können Ausnahmen bewilligt werden. Der Artikel trifft keine Aussage zu privatem Grund oder offenem Feuer.",
+      "source": "Kommunale Rechtssammlung Volketswil, Art. 20 Campieren",
+      "source_url": "https://www.volketswil.ch/politik/systematische-rechtssammlung.html/381/opendcategory/405",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26"
+    },
+    "211": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelten und Campieren auf öffentlichem Grund sind bewilligungspflichtig.",
+      "conditions": "Der Artikel trifft keine Aussage zu privatem Grund oder offenem Feuer.",
+      "source": "Kommunale Rechtssammlung Altikon, Art. 42 Zelten und Campieren",
+      "source_url": "https://www.altikon.ch/politik/rechtssammlung.html/353/opendcategory/66",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "226": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Wohnwagen und Ähnlichem sind auf öffentlichem Grund und in Waldungen ohne Bewilligung des Polizeivorstands verboten.",
+      "conditions": "Auf privatem Grund braucht es die Bewilligung der Grundeigentümerschaft. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeiverordnung Schlatt (ZH), Art. 48 Camping",
+      "source_url": "https://www.schlatt-zh.ch/wp-content/uploads/2019/05/Polizeiverordnung2003.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26"
+    },
+    "228": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Das Aufstellen von Zelten, Wohnwagen, Wohnmobilen und Ähnlichem auf öffentlichem Grund ist bewilligungspflichtig.",
+      "conditions": "Nicht in Turbenthal wohnhafte Personen brauchen zum Zelten und Campieren auf privatem Grund sowohl die Bewilligung des Gemeinderates als auch die Zustimmung der Grundeigentümerschaft. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Kommunale Rechtssammlung Turbenthal, Art. 25 Zelten und Campieren",
+      "source_url": "https://www.turbenthal.ch/systematische-rechtssammlung.html/125/opendcategory/80",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "246": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren sowie das Aufstellen von Zelten, Wohnwagen und Ähnlichem sind auf öffentlichem, öffentlich zugänglichem Grund und in Waldungen verboten.",
+      "conditions": "Der Gemeinderat kann im Einzelfall Ausnahmen bewilligen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Kommunale Rechtssammlung Oetwil an der Limmat, Art. 25 Campieren und Aufstellen von Wohnwagen",
+      "source_url": "https://www.oetwiladl.ch/page/357/opendcategory/239",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26"
+    },
+    "248": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren mit Zelten, Wohnwagen und Ähnlichem sowie das Nächtigen im Freien auf öffentlichem Grund brauchen ausserhalb besonders bezeichneter oder eingerichteter Plätze eine Bewilligung des zuständigen Ressorts.",
+      "conditions": "Das Reglement nennt das Nächtigen im Freien ausdrücklich. Es trifft in diesem Artikel keine Aussage zu privatem Grund oder offenem Feuer.",
+      "source": "Polizeiverordnung Uitikon, Art. 14 Campieren und Nächtigen im Freien",
+      "source_url": "https://www.uitikon.ch/_rte/information/2272690",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
+    },
     "301": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -209,6 +309,18 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "409": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist nur mit einer Bewilligung der Gemeinde erlaubt; dies gilt auch für Fahrende.",
+      "conditions": "Für privates Gelände regelt der Artikel nur die gewerbsmässige Bereitstellung als Campingplatz. Zum offenen Feuer trifft das Reglement keine Aussage.",
+      "source": "Reglement über die Aufgaben der Polizeiorgane der Gemeinde Hindelbank, Art. 11 Camping und Fahrende",
+      "source_url": "https://www.hindelbank.ch/de/verwaltung/dokumente/dokumente/Reglemente-Verordnungen/Reglement-ueber-die-Aufgaben-der-Polizeiorgane-der-Gemeinde-Hindelbank-vom-1.-Januar-2026.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26"
     },
     "435": {
       "status": "forbidden",
@@ -312,6 +424,19 @@
       "source_url": "https://www.3715.ch/public/upload/assets/678/Ortspolizeireglement_rev._1.1.2021.pdf?fp=1",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "572": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ist auf öffentlichem Grund nur an den von der Gemeindepolizei bezeichneten Stellen erlaubt; das Aufstellen von Wohnwagen ist gebührenpflichtig.",
+      "conditions": "Wer privaten Boden gewerbsmässig für Campingzwecke bereitstellt, braucht eine Baubewilligung. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement Bönigen, Art. 31 Camping",
+      "source_url": "https://boenigen.ch/services/polizeireglement/",
+      "review_status": "quelle",
+      "last_verified": "2026-08-26",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "735": {

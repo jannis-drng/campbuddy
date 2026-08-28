@@ -220,8 +220,11 @@ function zonen() {
         vehicle_allowed: e?.vehicle_allowed ?? 'unknown',
         fire_allowed: e?.fire_allowed ?? 'unknown',
         conditions: e?.conditions ?? null,
-        source: f.properties.source,
-        source_url: f.properties.source_url,
+        // OSM bleibt die Geometriequelle. Für eine von Hand belegte
+        // Rechtseinstufung muss aber die Rechtsquelle gezeigt werden — nicht
+        // bloss der Dienst, von dem der Umriss stammt.
+        source: e?.source ?? f.properties.source,
+        source_url: e?.source_url ?? f.properties.source_url,
         last_verified: e?.last_verified ?? null,
         review_status: e?.review_status ?? 'entwurf',
         notes: e?.notes ?? null,

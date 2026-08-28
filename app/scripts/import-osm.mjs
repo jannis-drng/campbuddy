@@ -29,7 +29,12 @@ import { fileURLToPath } from 'node:url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
-const REGION = process.env.REGION ?? 'CH-VS'
+// Die ausgelieferte Karte und ihr Snapshot sind schweizweit. Der frühere
+// Wallis-Standard stammte aus dem MVP und liess ausgerechnet den BAFU-Import
+// scheitern, weil dessen amtliche Inventare nur für den Landesimport gekachelt
+// werden. Eine einzelne Region wird weiterhin bewusst mit `REGION=CH-VS`
+// (oder einem anderen ISO-Code) angefordert.
+const REGION = process.env.REGION ?? 'CH'
 /**
  * Overpass-Server, in dieser Reihenfolge.
  *
@@ -637,24 +642,23 @@ async function bafuSeiten(layer, kachel) {
 }
 
 /**
- * Geometrie eines BAFU-Objekts auf Ringe herunterbrechen und vereinfachen.
+ * Geometrie eines BAFU-Objekts vereinfachen, ohne Löcher oder Teilflächen zu
+ * verlieren.
  *
  * Auf `type` allein ist kein Verlass: im Bestand stecken vereinzelt Objekte,
  * deren Verschachtelung nicht zum angegebenen Typ passt. Deshalb wird die
  * Tiefe gemessen statt geglaubt — und alles, was keine Fläche ist, sauber
- * ausgelassen statt den Lauf abzubrechen.
+ * ausgelassen statt den Lauf abzubrechen. Anders als die frühere Fassung
+ * bleibt ein Innenring aber beim zugehörigen Polygon: Ein See oder eine
+ * Exklave im Schutzgebiet darf auf der Karte nicht versehentlich mitgefärbt
+ * werden.
  */
 function bafuGeometrie(geometry) {
   if (!geometry?.coordinates) return null
 
   const tiefe = (a) => (Array.isArray(a) ? 1 + tiefe(a[0]) : 0)
   const t = tiefe(geometry.coordinates)
-  let ringe
-  if (t === 4) ringe = geometry.coordinates.flat()        // MultiPolygon
-  else if (t === 3) ringe = geometry.coordinates          // Polygon
-  else return null                                        // Punkt, Linie, Unfug
-
-  const vereinfacht = ringe
+  const vereinfachtesPolygon = (polygon) => polygon
     .filter((r) => Array.isArray(r) && r.length > 3 && Array.isArray(r[0]))
     .map((r) => vereinfacheRing(
       r.filter((pt) => Array.isArray(pt) && pt.length >= 2)
@@ -663,10 +667,24 @@ function bafuGeometrie(geometry) {
     ))
     .filter((r) => r.length > 3)
 
-  if (vereinfacht.length === 0) return null
-  return vereinfacht.length === 1
-    ? { type: 'Polygon', coordinates: vereinfacht }
-    : { type: 'MultiPolygon', coordinates: vereinfacht.map((r) => [r]) }
+  if (t === 3) {
+    const polygon = vereinfachtesPolygon(geometry.coordinates)
+    return polygon.length > 0 ? { type: 'Polygon', coordinates: polygon } : null
+  }
+  if (t === 4) {
+    const multipolygon = geometry.coordinates
+      .map(vereinfachtesPolygon)
+      .filter((polygon) => polygon.length > 0)
+    return multipolygon.length > 0
+      ? { type: 'MultiPolygon', coordinates: multipolygon }
+      : null
+  }
+  return null // Punkt, Linie, Unfug
+}
+
+/** Aus Polygonen und Multipolygonen eine gemeinsame Mehrfachfläche bilden. */
+function alsMehrfachflaeche(geometry) {
+  return geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates
 }
 
 async function importBafu() {
@@ -679,10 +697,14 @@ async function importBafu() {
   for (const kachel of kacheln(REGION)) {
     jagd.push(...await bafuSeiten('ch.bafu.bundesinventare-jagdbanngebiete', kachel))
   }
-  const jagdEindeutig = new Map(jagd.map((f) => [f.featureId ?? f.id, f]))
+  // Die Abfrage erfolgt in Kacheln. Ein Jagdbanngebiet, das über eine
+  // Kachelgrenze reicht, kommt deshalb mehrfach zurück — teils mit derselben,
+  // teils mit einer weiteren Teilgeometrie. Die Objekt-Nr. ist der amtliche
+  // Schlüssel und muss am Ende genau eine Kartenfläche ergeben.
+  const jagdGruppen = new Map()
   let wildschaden = 0
 
-  for (const f of jagdEindeutig.values()) {
+  for (const f of jagd) {
     const p = f.properties ?? {}
     // Ein Wildschadenperimeter regelt, wer für Wildschäden aufkommt — er sagt
     // nichts über Zutritt oder Übernachten. Ihn als Verbotszone zu zeigen wäre
@@ -691,8 +713,19 @@ async function importBafu() {
     const geometry = bafuGeometrie(f.geometry)
     if (!geometry) continue
 
+    const schluessel = String(p.objektnummer ?? f.featureId ?? f.id)
+    const vorhanden = jagdGruppen.get(schluessel)
+    if (vorhanden) {
+      vorhanden.teilflaechen.push(...alsMehrfachflaeche(geometry))
+    } else {
+      jagdGruppen.set(schluessel, { eigenschaften: p, teilflaechen: alsMehrfachflaeche(geometry) })
+    }
+  }
+
+  for (const [schluessel, gruppe] of jagdGruppen) {
+    const p = gruppe.eigenschaften
     const integral = /integral/i.test(p.typ_de ?? '')
-    const id = `bafu-jagdbann-${p.objektnummer ?? f.featureId}`
+    const id = `bafu-jagdbann-${schluessel}`
     zonen.push({
       type: 'Feature',
       id,
@@ -701,20 +734,23 @@ async function importBafu() {
         source: 'BAFU — Bundesinventar der eidgenössischen Jagdbanngebiete',
         source_url: p.refobjblatt ?? 'https://www.bafu.admin.ch/jagdbanngebiete',
       },
-      geometry,
+      geometry: { type: 'MultiPolygon', coordinates: gruppe.teilflaechen },
     })
     recht[id] = {
       status: 'forbidden',
       tent_allowed: 'no',
       vehicle_allowed: 'no',
-      fire_allowed: 'no',
+      // Das BAFU nennt das freie Zelten und Campieren ausdrücklich. Ein
+      // pauschales Feuerverbot ergibt sich daraus aber nicht; das hängt am
+      // Objektblatt, kantonalem Recht und der aktuellen Waldbrandgefahr.
+      fire_allowed: 'unknown',
       conditions: `Eidgenössisches Jagdbanngebiet (${p.typ_de}), Objekt Nr. ${p.objektnummer}`
         + `${p.flaeche_ha ? `, ${Math.round(p.flaeche_ha)} ha` : ''}. `
         + (integral
           ? 'Integrale Schutzbestimmungen — der Schutz gilt uneingeschränkt.'
           : 'Partielle Schutzbestimmungen — welche im Einzelnen gelten, steht im Objektblatt.')
-        + ' Diese Gebiete schützen Wild vor Störung (VEJ, SR 922.31); Übernachten im Gelände ist damit unvereinbar.',
-      notes: 'Amtliches Bundesinventar. Nicht selbst vor Ort geprüft; die genauen Bestimmungen stehen im verlinkten Objektblatt.',
+        + ' Freies Zelten und Campieren sind in eidgenössischen Jagdbanngebieten verboten (BAFU / VEJ, SR 922.31).',
+      notes: 'Amtliches Bundesinventar. Zum offenen Feuer trifft diese Einstufung keine Aussage; das verlinkte Objektblatt, lokale Signale und die Waldbrandgefahr sind massgeblich.',
       review_status: 'quelle',
       last_verified: heute,
     }
@@ -756,8 +792,11 @@ async function importBafu() {
       // hört irgendwann auf hinzusehen.
       status: verbindlich && zutrittsverbot ? 'forbidden' : 'tolerated',
       tent_allowed: verbindlich && zutrittsverbot ? 'no' : 'conditional',
-      vehicle_allowed: 'no',
-      fire_allowed: 'no',
+      // Eine Wildruhezone regelt nicht automatisch Strassenverkehr oder
+      // Feuer. Diese Werte nur aus der Schutzkategorie abzuleiten wäre eine
+      // erfundene Rechtsauskunft.
+      vehicle_allowed: 'unknown',
+      fire_allowed: 'unknown',
       conditions: [
         p.best_de ? `Bestimmung: ${p.best_de}.` : null,
         p.schutzs_de ? `Status: ${p.schutzs_de}.` : null,
@@ -1147,95 +1186,23 @@ async function importKantonsrecht() {
   }
 }
 
-/* ---------------- Rechtslage: konservativ ableiten ---------------- */
+/* ---------------- Rechtslage: nur mit Rechtsquelle ---------------- */
 
 /**
- * Rechtliche Ersteinstufung aus den OSM-Merkmalen — und nur so weit, wie die
- * Merkmale tragen.
- *
- * Vierhundert Schutzgebiete lassen sich nicht einzeln recherchieren, und
- * Erfundenes ist in diesem Projekt tabu. Also wird nur dort etwas behauptet,
- * wo OpenStreetMap ein eindeutiges Signal liefert, und der Fehler geht immer
- * in die sichere Richtung: im Zweifel „verboten" statt „erlaubt". Eine Karte,
- * die zu Unrecht warnt, kostet einen Umweg; eine, die zu Unrecht erlaubt,
- * kostet eine Anzeige.
- *
- * Alles andere bleibt ohne Eintrag und erscheint dadurch als „ungeklärt" —
- * das ist eine Information, keine Lücke.
- *
- * Jeder abgeleitete Eintrag trägt `review_status: 'entwurf'`, kein Prüfdatum
- * und im Bedingungstext die Regel, aus der er stammt. Handgeschriebene
- * Einträge werden nie überschrieben.
+ * OSM liefert Geometrie und Hinweise auf eine Schutzkategorie, aber keine
+ * verbindliche Camping-, Fahrzeug- oder Feuerregel. Eine Ableitung daraus
+ * wäre genau die Sorte plausibler, aber falscher Rechtsauskunft, die diese
+ * Karte nicht geben darf. Darum bleiben OSM-Flächen ohne belegten Eintrag
+ * neutral; farbig werden sie erst mit Quelle und Prüfdatum.
  */
-const STRENGE_SCHUTZKLASSEN = new Set(['1a', '1b', '2', '4'])
-
-/**
- * Die Ableitungsregeln, von streng nach mild.
- *
- * Jede Regel nennt, woran sie erkennt, und was daraus folgt — beides landet
- * wörtlich im Bedingungstext der Zone, damit jede Behauptung ihre Herkunft
- * mitträgt. Geprüft wird der Reihe nach; die erste passende Regel gewinnt.
- *
- * Warum Jagdbanngebiete und Wildruhezonen streng behandelt werden: ihr
- * Schutzzweck ist ausdrücklich die Ruhe des Wildes. Eine Nacht im Gelände ist
- * genau die Störung, gegen die sie erlassen wurden — auch dort, wo kein
- * Schild „Zelten verboten" steht.
- */
-const REGELN = [
-  {
-    trifft: (t) => t.leisure === 'nature_reserve' || t.boundary === 'national_park',
-    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'Naturschutzgebiet oder Nationalpark',
-    folgerung: 'Übernachten im Freien ist dort in der Schweiz in der Regel untersagt.',
-  },
-  {
-    trifft: (t) => /jagdbann/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
-    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'Eidgenössisches Jagdbanngebiet',
-    folgerung: 'Diese Gebiete schützen Wild vor Störung (VEJ, SR 922.31); Übernachten im Gelände ist damit in aller Regel unvereinbar.',
-  },
-  {
-    trifft: (t) => /wildruhe|wildschutz/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
-    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'Wildruhezone beziehungsweise Wildschutzgebiet',
-    folgerung: 'Solche Zonen sollen Wild ungestört lassen — vielerorts nur im Winterhalbjahr, dann aber verbindlich.',
-  },
-  {
-    trifft: (t) => /moor|ried|auengebiet|aue\b/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
-    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: 'Moor-, Ried- oder Auengebiet',
-    folgerung: 'Flächen von nationaler Bedeutung sind bundesrechtlich geschützt und trittempfindlich; Zelten und Feuer sind dort untersagt.',
-  },
-  {
-    trifft: (t) => STRENGE_SCHUTZKLASSEN.has(String(t.protect_class ?? '')),
-    status: 'forbidden', zelt: 'no', fahrzeug: 'no', feuer: 'no',
-    grund: (t) => `Streng geschütztes Gebiet (IUCN-Schutzkategorie ${t.protect_class})`,
-    folgerung: 'Übernachten im Freien ist dort in der Regel untersagt.',
-  },
-  {
-    // Die einzige Regel, die nicht auf „verboten" hinausläuft: Landschaftsschutz
-    // und regionale Naturpärke sind grossflächig und kennen kein pauschales
-    // Zeltverbot — aber Kernzonen und Reservate darin sehr wohl.
-    trifft: (t) => String(t.protect_class ?? '') === '5'
-      || /landschaftsschutz|naturpark|landschaftspark/i.test(String(t.protection_title ?? '') + String(t.name ?? '')),
-    status: 'tolerated', zelt: 'conditional', fahrzeug: 'no', feuer: 'conditional',
-    grund: 'Landschaftsschutzgebiet oder regionaler Naturpark',
-    folgerung: 'Kein pauschales Zeltverbot — Kernzonen, Reservate und Wildruhezonen innerhalb der Fläche sind aber ausgenommen, und Fahrzeuge ausserhalb bewilligter Plätze bleiben untersagt.',
-  },
-]
-
-function ableitung(f) {
-  const t = f.properties
-  const regel = REGELN.find((r) => r.trifft(t))
-  if (!regel) return null
-  return {
-    status: regel.status,
-    zelt: regel.zelt,
-    fahrzeug: regel.fahrzeug,
-    feuer: regel.feuer,
-    grund: typeof regel.grund === 'function' ? regel.grund(t) : regel.grund,
-    folgerung: regel.folgerung,
-  }
+function belegteEinstufung(eintrag) {
+  return Boolean(
+    eintrag
+    && eintrag.review_status
+    && eintrag.last_verified
+    && eintrag.source
+    && eintrag.source_url,
+  )
 }
 
 async function importRecht() {
@@ -1247,31 +1214,15 @@ async function importRecht() {
 
   const ziel = resolve(AUSGABE, 'zones', `${REGION}.legal.json`)
   const bestand = existsSync(ziel) ? JSON.parse(readFileSync(ziel, 'utf8')).zones ?? {} : {}
-
-  let neu = 0
-  let behalten = 0
-  let ungeklaert = 0
-
-  for (const f of geo.features) {
-    if (bestand[f.id]) { behalten++; continue }
-    const ab = ableitung(f)
-    if (!ab) { ungeklaert++; continue }
-    bestand[f.id] = {
-      status: ab.status,
-      tent_allowed: ab.zelt,
-      vehicle_allowed: ab.fahrzeug,
-      fire_allowed: ab.feuer,
-      conditions: `${ab.grund}. ${ab.folgerung}`,
-      notes: 'Diese Einstufung folgt der Schutzkategorie der Fläche und ist nicht durch ein einzelnes amtliches Dokument belegt. Beschilderung vor Ort und die Auskunft der Gemeinde gehen ihr vor.',
-      review_status: 'entwurf',
-      last_verified: null,
-    }
-    neu++
-  }
+  const ids = new Set(geo.features.map((f) => f.id))
+  const belegte = Object.fromEntries(
+    Object.entries(bestand).filter(([id, eintrag]) => ids.has(id) && belegteEinstufung(eintrag)),
+  )
+  const verworfen = Object.keys(bestand).length - Object.keys(belegte).length
 
   mkdirSync(dirname(ziel), { recursive: true })
-  writeFileSync(ziel, JSON.stringify({ zones: bestand }, null, 2) + '\n')
-  console.log(`Rechtslage: ${neu} abgeleitet, ${behalten} bestehende unverändert, ${ungeklaert} bleiben ungeklärt -> ${ziel}`)
+  writeFileSync(ziel, JSON.stringify({ zones: belegte }, null, 2) + '\n')
+  console.log(`Rechtslage: ${Object.keys(belegte).length} belegte Einstufungen behalten, ${verworfen} unbelegte entfernt; ${geo.features.length - Object.keys(belegte).length} bleiben ungeklärt -> ${ziel}`)
 }
 
 /* ---------------- Alpen: umschliessendes Rechteck ---------------- */

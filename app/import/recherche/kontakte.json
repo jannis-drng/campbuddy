@@ -1,0 +1,185 @@
+{
+ "stand": "2026-08-28",
+ "ergebnisse": [
+  {
+   "bfs": 2,
+   "name": "Affoltern am Albis",
+   "kanton": "CH-ZH",
+   "website": "https://www.stadtaffoltern.ch/",
+   "email": "stadtkanzlei@stadtaffoltern.ch",
+   "quelle": "https://www.stadtaffoltern.ch/_rtm/impressum",
+   "fehler": null
+  },
+  {
+   "bfs": 131,
+   "name": "Adliswil",
+   "kanton": "CH-ZH",
+   "website": "https://www.adliswil.ch",
+   "email": "einwohnerwesen@adliswil.ch",
+   "quelle": "https://www.adliswil.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 241,
+   "name": "Aesch (ZH)",
+   "kanton": "CH-ZH",
+   "website": "https://www.aesch-zh.ch/",
+   "email": "gemeindeverwaltung@aesch-zh.ch",
+   "quelle": "https://www.aesch-zh.ch/",
+   "fehler": null
+  },
+  {
+   "bfs": 321,
+   "name": "Aarwangen",
+   "kanton": "CH-BE",
+   "website": "https://www.aarwangen.ch",
+   "email": "einwohnerdienste@aarwangen.ch",
+   "quelle": "https://www.aarwangen.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 401,
+   "name": "Aefligen",
+   "kanton": "CH-BE",
+   "website": "https://www.aefligen.ch",
+   "email": "gemeinde@aefligen.ch",
+   "quelle": "https://www.aefligen.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 562,
+   "name": "Aeschi bei Spiez",
+   "kanton": "CH-BE",
+   "website": "https://www.aeschi.ch",
+   "email": null,
+   "quelle": null,
+   "fehler": "keine Adresse gefunden"
+  },
+  {
+   "bfs": 731,
+   "name": "Aegerten",
+   "kanton": "CH-BE",
+   "website": "https://www.aegerten.ch",
+   "email": "gemeinde@aegerten.ch",
+   "quelle": "https://www.aegerten.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 951,
+   "name": "Affoltern im Emmental",
+   "kanton": "CH-BE",
+   "website": "http://www.affolternimemmental.ch",
+   "email": null,
+   "quelle": null,
+   "fehler": "keine Adresse gefunden"
+  },
+  {
+   "bfs": 1021,
+   "name": "Aesch (LU)",
+   "kanton": "CH-LU",
+   "website": "https://www.aesch-lu.ch",
+   "email": "gemeinde@aesch-lu.ch",
+   "quelle": "https://www.aesch-lu.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 1051,
+   "name": "Adligenswil",
+   "kanton": "CH-LU",
+   "website": "https://www.adligenswil.ch",
+   "email": null,
+   "quelle": null,
+   "fehler": "keine Adresse gefunden"
+  },
+  {
+   "bfs": 2421,
+   "name": "Aedermannsdorf",
+   "kanton": "CH-SO",
+   "website": "http://www.aedermannsdorf.ch",
+   "email": "vw@aedermannsdorf.ch",
+   "quelle": "http://www.aedermannsdorf.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 2511,
+   "name": "Aeschi (SO)",
+   "kanton": "CH-SO",
+   "website": "http://www.aeschi-so.ch",
+   "email": "info@aeschi-so.ch",
+   "quelle": "http://www.aeschi-so.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 2761,
+   "name": "Aesch",
+   "kanton": "CH-BL",
+   "website": "https://www.aesch.bl.ch/",
+   "email": "gemeindeverwaltung@aesch.bl.ch",
+   "quelle": "https://www.aesch.bl.ch/",
+   "fehler": null
+  },
+  {
+   "bfs": 4001,
+   "name": "Aarau",
+   "kanton": "CH-AG",
+   "website": "https://www.aarau.ch/",
+   "email": "quartierentwicklung@aarau.ch",
+   "quelle": "https://www.aarau.ch/leben/quartierentwicklung/telli.html/563",
+   "fehler": null
+  },
+  {
+   "bfs": 4221,
+   "name": "Abtwil",
+   "kanton": "CH-AG",
+   "website": "http://www.abtwilag.ch",
+   "email": "gemeinde@abtwilag.ch",
+   "quelle": "http://www.abtwilag.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 4271,
+   "name": "Aarburg",
+   "kanton": "CH-AG",
+   "website": "https://www.aarburg.ch/",
+   "email": null,
+   "quelle": null,
+   "fehler": "keine Adresse gefunden"
+  },
+  {
+   "bfs": 4551,
+   "name": "Aadorf",
+   "kanton": "CH-TG",
+   "website": "https://www.aadorf.ch/",
+   "email": "gemeindeverwaltung@aadorf.ch",
+   "quelle": "https://www.aadorf.ch/",
+   "fehler": null
+  },
+  {
+   "bfs": 4711,
+   "name": "Affeltrangen",
+   "kanton": "CH-TG",
+   "website": "http://www.affeltrangen.ch",
+   "email": "info@affeltrangen.ch",
+   "quelle": "http://www.affeltrangen.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 5048,
+   "name": "Acquarossa",
+   "kanton": "CH-TI",
+   "website": "http://www.acquarossa.ch",
+   "email": "utc@acquarossa.ch",
+   "quelle": "http://www.acquarossa.ch",
+   "fehler": null
+  },
+  {
+   "bfs": 5621,
+   "name": "Aclens",
+   "kanton": "CH-VD",
+   "website": "https://www.aclens.ch",
+   "email": "commune@aclens.ch",
+   "quelle": "https://www.aclens.ch",
+   "fehler": null
+  }
+ ]
+}

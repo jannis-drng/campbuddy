@@ -1,5 +1,5 @@
 {
- "stand": "2026-08-26",
+ "stand": "2026-08-28",
  "ergebnisse": [
   {
    "bfs": 2,
@@ -601,10 +601,10 @@
    "name": "Niederglatt",
    "kanton": "CH-ZH",
    "website": "http://www.niederglatt.zh.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.niederglatt-zh.ch/_rte/information/2726219",
+   "dokument_titel": "Gemeindeordnung der politischen Gemeinde Niederglatt",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -612,10 +612,10 @@
    "name": "Niederhasli",
    "kanton": "CH-ZH",
    "website": "https://www.niederhasli.ch/",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.niederhasli.ch/_rtr/dokument_3462149",
+   "dokument_titel": "Nutzungsbedingungen",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 403",
    "weg": "browser"
   },
   {
@@ -637,7 +637,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -645,10 +645,8 @@
    "name": "Regensdorf",
    "kanton": "CH-ZH",
    "website": "http://www.regensdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -659,7 +657,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -670,7 +668,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -681,7 +679,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -692,7 +690,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -703,7 +701,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -714,7 +712,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -725,7 +723,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -736,7 +734,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -747,7 +745,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -755,10 +753,10 @@
    "name": "Grüningen",
    "kanton": "CH-ZH",
    "website": "https://www.grueningen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.grueningen.ch/public/upload/assets/5061/Polizeistundenverl%C3%A4ngerung%20-%20Gesuch.pdf?fp=1586864108804",
+   "dokument_titel": "Polizeistundenverlängerung - Gesuch",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -766,10 +764,8 @@
    "name": "Hinwil",
    "kanton": "CH-ZH",
    "website": "http://www.hinwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -780,7 +776,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -791,7 +787,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_NAME_NOT_RESOLVED at https://w | Chrome htt",
    "weg": "browser"
   },
   {
@@ -802,7 +798,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -813,7 +809,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -824,7 +820,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: net::ERR_NETWORK_IO_SUSPENDED at http:/ | Chrome htt",
    "weg": "browser"
   },
   {
@@ -835,7 +831,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -846,7 +842,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -857,7 +853,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -868,7 +864,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -887,10 +883,26 @@
    "name": "Oetwil am See",
    "kanton": "CH-ZH",
    "website": "http://www.oetwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.oetwil.ch/politik/rechtssammlung.html/28/opendcategory/32",
+   "dokument_titel": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr & Feuerpolizei / Tierschutz",
+   "stellen": [
+    {
+     "artikel": "Art. 15 Das Campieren in Zelten, Wohnwagen und dergleichen sowie das Nächtigen",
+     "text": "Art. 15 Das Campieren in Zelten, Wohnwagen und dergleichen sowie das Nächtigen im Freien auf öffentlichem Grund ausserhalb besonders bezeichneter oder hierfür eingerichteter Plätze bedarf einer Bewilligung des Ressorts Sicherheit. Campieren und Nächtigen im Freien",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 21 Die Nachtruhe dauert von 22.00 bis 07.00 Uhr.",
+     "text": "Art. 21 Die Nachtruhe dauert von 22.00 bis 07.00 Uhr. Jede lärmverursachende Handlung im Freien, in Zelten und in Fahrnisbauten ist während der Nachtruhe verboten. Lärm im Innern von Gebäuden darf Dritte nicht belästigen. Das Ressort Sicherheit kann Ausnahmen bewilligen. Gehen die Nachtruhestörungen von Verpflegungs- oder Vergnügungsstätten aus, kann die Polizei den Betrieb für die betreffende Nacht schliessen. Nachtruhe",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art. 24 Das Singen, Musizieren oder der Gebrauch von Tonwiedergabegeräten,",
+     "text": "Art. 24 Das Singen, Musizieren oder der Gebrauch von Tonwiedergabegeräten, Lautsprechern, Verstärkeranlagen und ähnlichen Geräten hat zu jeder Tags- und Nachtzeit so zu erfolgen, dass Drittpersonen nicht in unzumutbarer Weise gestört werden. Während der Nachtruhe von 22.00 bis 07.00 Uhr ist in Wohngebieten das Singen, Musizieren und der Gebrauch von Tonwiedergabegeräten, Lautsprechern, Verstärkeranlagen und ähnlichen Geräten im Freien, in Zelten und Fahrnisbauten verboten. Das Ressort Sicherheit kann Ausnahmen bewilligen. Singen, Musizieren, Lautsprecher, Verstärkeranlagen 16 Lärmige Bauarbeiten können nur für die Zeit zwischen 12.00 bis 13.00 Uhr gestützt auf die Polizeiverordnung geahndet werden. Verursachen von störendem Baulärm in den Abend- und Nachstunden, definiert zwischen 19.00 bis 07.00 Uhr ist nach kantonaler Verordnung über den Baulärm zu ahnden (§4 a Abs. 1) und wird gemäss Ziffer 5 Verordnung über das kantonalrechtliche Ordnungsbussenverfahren (KOBV) mit CHF 50.00 gebüsst. Entsprechend wird auch die Busse für Lärm über die Mittagszeit auf CHF 50.00 angesetzt. 17 Die Bestimmung betreffend Entsorgen an öffentlichen Altstoff-Sammelstellen ist aufgrund des übergeordneten Rechts obsolet. Dieser Übertretungstatbestand wird gemäss geltendem Bundesrecht (Art. 12 Abs. 1 lit. c i.V.m. Art. 61 Abs. 1 lit. a, Umweltschutzgesetz [USG; SR 814.01]) geahndet und nach Ziffer 9001 ",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -901,7 +913,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: fetch failed",
    "weg": "browser"
   },
   {
@@ -912,7 +924,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: fetch failed",
    "weg": "browser"
   },
   {
@@ -923,7 +935,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -934,7 +946,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -945,7 +957,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -956,7 +968,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -964,10 +976,8 @@
    "name": "Fällanden",
    "kanton": "CH-ZH",
    "website": "http://www.faellanden.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -975,10 +985,8 @@
    "name": "Greifensee",
    "kanton": "CH-ZH",
    "website": "https://www.greifensee.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -986,10 +994,16 @@
    "name": "Maur",
    "kanton": "CH-ZH",
    "website": "http://www.maur.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.maur.ch/verwaltung/systematische-rechtssammlung.html/699/opendcategory/260",
+   "dokument_titel": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr & Feuerpolizei / Tierschutz",
+   "stellen": [
+    {
+     "artikel": "Art. 18 Campieren",
+     "text": "Art. 18 Campieren Das Campieren in Zelten, Wohnwagen, Wohnmobilen, Fahrnisbauten oder der- gleichen ist auf öffentlichem Grund, ausserhalb besonders bezeichneter oder hierfür eingerichteter Campingplätze, verboten. Auf privatem Grund muss die Nutzung durch Campieren baurechtlich erlaubt sein. Das Ressort Sicherheit kann Ausnahmen bewilligen. 8 Vgl. insbesondere die Verordnung über das Stationieren von Schiffen des Kantons Zürich, § 4 Abs. 1 und §§ 10 ff. -- 9 of 16 -- 8/14",
+     "im_titel": true
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -997,10 +1011,8 @@
    "name": "Mönchaltorf",
    "kanton": "CH-ZH",
    "website": "http://www.moenchaltorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1008,10 +1020,8 @@
    "name": "Uster",
    "kanton": "CH-ZH",
    "website": "https://www.uster.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1019,10 +1029,31 @@
    "name": "Volketswil",
    "kanton": "CH-ZH",
    "website": "http://www.volketswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.volketswil.ch/politik/systematische-rechtssammlung.html/381/opendcategory/405",
+   "dokument_titel": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr & Feuerpolizei / Tierschutz",
+   "stellen": [
+    {
+     "artikel": "Art. 20 Campieren",
+     "text": "Art. 20 Campieren 1 Das Campieren oder das Aufstellen von Wohnwagen, Wohn- mobilen und Fahrnisbauten zu Wohnzwecken ist auf öffentli- chem Grund verboten. 2 In begründeten Fällen können Ausnahmen bewilligt werden.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 9 Lärm",
+     "text": "Art. 9 Lärm 1 Während der Nachtruhe ist jegliches die Ruhe oder den Schlaf störendes Verhalten im Innern von Gebäuden, im Freien, in Fahrnisbauten und in Zelten verboten. 2 Während der übrigen Zeiten dürfen Dritte durch lärmintensi- ves Verhalten nicht erheblich belästigt werden. 3 Ausnahmen bedürfen einer Bewilligung.",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art. 15 Lautsprecher und Verstärkeranlagen",
+     "text": "Art. 15 Lautsprecher und Verstärkeranlagen 1 Das Verwenden von Lautsprechern, Megafonen und Verstär- keranlagen im Freien, in Zelten und in anderen Fahrnisbauten hat so zu erfolgen, dass Drittpersonen nicht in unzumutbarer Weise gestört werden. 2 Im Rahmen von Veranstaltungen und Anlässen bedarf es ei- ner Bewilligung. 3 Die Bestimmungen nach Abs. 1 und 2 gelten auch für Perso- nen, die musizieren oder singen. Landwirt- schaft Kirchengeläut Feuerwerk Motorspiel- zeuge Lautsprecher, Musizieren, Singen -- 6 of 11 -- 5 — IV. Schutz des öffentlichen und privaten Grundes sowie des Eigentums",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art. 23 Bewilligungen",
+     "text": "Art. 23 Bewilligungen 1 Bewilligungen dürfen nur verweigert werden, wenn einer be- willigungspflichtigen Tätigkeit polizeiliche Gründe entgegenste- hen. Campieren Anzeigen, Plakate, In- schriften Schliessungs- stunde Bewilligungen -- 8 of 11 -- 7 — 2 Bewilligungen können an Bedingungen geknüpft und mit Auf- lagen versehen werden. 3 Bewilligungen können entzogen werden, wenn die Vorausset- zungen für ihre Erteilung nicht mehr gegeben sind oder wenn Auflagen nicht eingehalten werden. 4 Bewilligungsgesuche sind in der Regel schriftlich, spätestens 20 Tage vor der Veranstaltung, einzureichen und zu begrün- den.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -1030,10 +1061,26 @@
    "name": "Altikon",
    "kanton": "CH-ZH",
    "website": "http://www.altikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.altikon.ch/politik/rechtssammlung.html/353/opendcategory/66",
+   "dokument_titel": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr & Feuerpolizei / Tierschutz",
+   "stellen": [
+    {
+     "artikel": "Art. 42 Zelten und Campieren",
+     "text": "Art. 42 Zelten und Campieren Das Zelten und Campieren auf öffentlichem Grund ist bewilligungspflichtig.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 38 Singen, Musizieren etc.",
+     "text": "Art. 38 Singen, Musizieren etc. Singen, Musizieren und der Gebrauch von Lautsprecher- und Verstärkeranlagen sind von 22.00 Uhr bis 07.00 Uhr im Freien, sowie in Zelten und anderen provisorischen Bauten verboten. In der übrigen Zeit dürfen Drittpersonen dadurch nicht belästigt werden. Der Gemeinderat kann in besonderen Fällen weitergehende zeitliche Einschränkungen anordnen oder Ausnahmen bewilligen.",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art. 51 Abstellen von Fahrzeugen auf öffentlichem Grund",
+     "text": "Art. 51 Abstellen von Fahrzeugen auf öffentlichem Grund Das Parkieren von Lastwagen, Wohnwagen, Fahrzeuganhängern und Booten auf öffentlichen Strassen und Plätzen während mehr als 24 Stunden ist bewilligungspflichtig. Vorschriftswidrig oder ohne vorschriftsgemässe Kontrollschilder auf öffentlichem Grund parkierte Fahrzeuge (Motorfahrzeuge, Fahrräder, Anhänger, Wohnmobile, Boote usw.) sowie Fahrzeuge und Gegenstände, die öffentliche Arbeiten oder eine rechtmässige Benützung des öffentlichen Grundes behindern oder gefährden, können die Polizeiorgane wegschaffen oder wegschaffen lassen, sofern der Besitzer oder Halter innert nützlicher Frist nicht erreicht werden kann oder die Anordnungen der Polizeiorgane nicht befolgt werden. Der Besitzer oder Halter hat die Kosten zu bezah- len, die durch die polizeilichen Massnahmen entstehen. Der Gemeinderat kann generelle Einschränkungen wie Beschränkung der Parkdauer oder ein Gebührenreglement für das Parkieren (Tag/Nacht) erlassen. -- 11 of 15 -- 11",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -1044,7 +1091,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1055,7 +1102,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1066,7 +1113,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1077,7 +1124,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -1088,7 +1135,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1099,7 +1146,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -1110,7 +1157,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1121,7 +1168,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1132,7 +1179,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1143,7 +1190,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1151,10 +1198,21 @@
    "name": "Turbenthal",
    "kanton": "CH-ZH",
    "website": "http://www.turbenthal.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.turbenthal.ch/systematische-rechtssammlung.html/125/opendcategory/80",
+   "dokument_titel": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr & Feuerpolizei / Tierschutz",
+   "stellen": [
+    {
+     "artikel": "Art. 25 Zelten und Campieren",
+     "text": "Art. 25 Zelten und Campieren Das Aufstellen von Zelten, Wohnwagen, Wohnmobilen und dergleichen auf öffentlichem Grund ist bewilligungspflichtig. Das Zelten und Campieren auf privatem Grund von nicht in Turbenthal wohnhaften Personen bedarf der Bewilligung des Gemeinderates und zusätzlich der Zustimmung des Grundeigentümers.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 46 Singen, Musizieren, Tonwiedergabegeräte",
+     "text": "Art. 46 Singen, Musizieren, Tonwiedergabegeräte Das Singen, Musizieren oder der Gebrauch von Tonwiedergabegeräten, Lautsprechern und Verstärkeranlagen etc. hat zu jeder Tages- und Nachtzeit so zu erfolgen, dass Drittpersonen nicht in unzumutbarer Weise gestört werden. Während der Ruhezeit von 22.00 bis 07.00 Uhr ist im Wohngebiet das Singen, Musizieren und der Gebrauch von Tonwiedergabegeräten etc. im Freien verboten. Der Gemeinderat kann in besonderen Fällen weitergehende Einschränkungen anordnen. Gesuche um Ausnahmebewilligung sind an das Polizeisekretariat zu richten. Lautsprecher, Megaphone und andere Verstärkeranlagen dürfen im Freien, in Zelten und anderen Fahrnisbauten nur mit Bewilligung des Gemeinderates verwendet werden. Die Bewilligung ist zu verweigern, wenn diese Geräte hauptsächlich für kommerzielle Reklamezwecke verwendet werden sollen.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -1165,7 +1223,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1176,7 +1234,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1187,7 +1245,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: net::ERR_NETWORK_IO_SUSPENDED at http:/ | Chrome htt",
    "weg": "browser"
   },
   {
@@ -1198,7 +1256,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -1206,10 +1264,8 @@
    "name": "Oberengstringen",
    "kanton": "CH-ZH",
    "website": "http://www.oberengstringen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1217,10 +1273,21 @@
    "name": "Oetwil an der Limmat",
    "kanton": "CH-ZH",
    "website": "http://www.oetwil-limmat.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.oetwiladl.ch/page/357/opendcategory/239",
+   "dokument_titel": "Ebene 1: 05 Öffentliche Ordnung & Sicherheit: Polizei / Zivilschutz Feuerwehr & Feuerpolizei / Tierschutz",
+   "stellen": [
+    {
+     "artikel": "Art. 25 Campieren, Aufstellen von Wohnwagen und dergleichen",
+     "text": "Art. 25 Campieren, Aufstellen von Wohnwagen und dergleichen 1 Das Campieren oder das Aufstellen von Zelten, Wohnwagen und dergleichen auf öffentlichem, öffentlich zugänglichem Grund und Waldungen ist verboten. Bei Zuwiderhandlung kann der Gemeinderat die Wegweisung verfügen. 2 Der Sicherheitsvorstand kann im Einzelfall Ausnahmen bewilligen. 3 Im Weiteren gelten die kantonalen Vorschriften betreffend Wohnwagen und Zeltplätze.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 34 Lautsprecher, Verstärkeranlagen",
+     "text": "Art. 34 Lautsprecher, Verstärkeranlagen 1 Der störende Betrieb von Lautsprechern, Megaphonen und anderen Verstärkeranlagen ist im Freien, in Zelten und anderen Fahrnisbauten verboten. 2 Der Sicherheitsvorstand kann im Einzelfall Ausnahmen bewilligen.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -1231,7 +1298,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (4), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -1239,10 +1306,26 @@
    "name": "Uitikon",
    "kanton": "CH-ZH",
    "website": "http://www.uitikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.uitikon.ch/_rte/information/2272690",
+   "dokument_titel": "Polizeiverordnung inkl. Verordnung über das gemeinderechtliche Ordnungsbussenverfahren mit zugehöriger Bussenliste",
+   "stellen": [
+    {
+     "artikel": "Art. 14 Das Campieren in Zelten, Wohnwagen und dergleichen sowie",
+     "text": "Art. 14 Das Campieren in Zelten, Wohnwagen und dergleichen sowie das Nächtigen im Freien auf öffentlichem Grund ausserhalb besonders bezeichneter oder dafür eingerichteter Plätze bedarf einer Bewilligung des zuständigen Ressorts.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 20 1 Die Nachtruhe dauert von 22.00 bis 07.00 Uhr.",
+     "text": "Art. 20 1 Die Nachtruhe dauert von 22.00 bis 07.00 Uhr. 2 Jede lärmverursachende Handlung im Freien, in Zelten und in Fahrnisbauten ist während der Nachtruhe verboten. Lärm im Innern von Gebäuden darf Dritte nicht belästigen. 3 Das zuständige Ressort kann Ausnahmen bewilligen. 4 Gehen die Nachtruhestörungen von Verpflegungs- und/oder Vergnügungsstätten aus, kann die Polizei den Betrieb für die betreffende Nacht schliessen.",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art. 23 1 Das Singen, Musizieren oder der Gebrauch von Tonwieder-",
+     "text": "Art. 23 1 Das Singen, Musizieren oder der Gebrauch von Tonwieder- gabegeräten, Lautsprechern, Verstärkeranlagen und ähnlichen Geräten hat zu jeder Tages- und Nachtzeit so zu erfolgen, dass Drittpersonen nicht in unzumutbarer Weise gestört werden. Nachtruhe Allgemeine Ruhezeiten Lärmverbot Singen, Musizieren, Lautsprecher, Verstärkeranlagen -- 11 of 24 -- 12 2 Während der Nachtruhe von 22.00 bis 07.00 Uhr ist in Wohngebieten das Singen, Musizieren und der Gebrauch von Tonwiedergabegeräten, Lautsprechern, Verstärkeranlagen und ähnlichen Geräten im Freien, in Zelten, Fahrzeugen und Fahr- nisbauten verboten. 3 Das zuständige Ressort kann weitergehende Einschränkun- gen anordnen oder Ausnahmen bewilligen.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -1253,7 +1336,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1264,7 +1347,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1272,10 +1355,10 @@
    "name": "Andelfingen",
    "kanton": "CH-ZH",
    "website": "https://www.andelfingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.andelfingen.ch/_rte/information/675050",
+   "dokument_titel": "Gemeindeordnung",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -1286,7 +1369,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1319,7 +1402,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1374,7 +1457,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1385,7 +1468,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1429,7 +1512,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1473,7 +1556,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1495,7 +1578,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1517,7 +1600,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1539,7 +1622,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1611,7 +1694,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://o: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1622,7 +1705,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1633,7 +1716,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1655,7 +1738,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1754,7 +1837,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1765,7 +1848,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -1776,7 +1859,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1787,7 +1870,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1798,7 +1881,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1809,7 +1892,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1820,7 +1903,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1831,7 +1914,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1839,10 +1922,10 @@
    "name": "Romont (BE)",
    "kanton": "CH-BE",
    "website": "http://www.romont-jb.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.romont-jb.ch/wp-content/uploads/2017/03/R%C3%A8glement-de-police-communale.pdf",
+   "dokument_titel": "Règlement de police communale",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -1853,7 +1936,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1864,7 +1947,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1875,7 +1958,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1886,7 +1969,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1897,7 +1980,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1908,7 +1991,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 404",
    "weg": "browser"
   },
   {
@@ -1919,7 +2002,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1930,7 +2013,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1938,10 +2021,21 @@
    "name": "Bönigen",
    "kanton": "CH-BE",
    "website": "https://www.boenigen.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://boenigen.ch/services/polizeireglement/",
+   "dokument_titel": "weiter",
+   "stellen": [
+    {
+     "artikel": "Art. 31 Camping",
+     "text": "Art. 31 Camping 1 Auf öffentlichem Grund ist das Campieren nur an den von der Gemeindepolizei bezeich- neten Stellen gestattet. Das Aufstellen von Wohnwagen ist gebührenpflichtig. 2 Wer privaten Boden gewerbsmässig für Campingzwecke zur Verfügung stellt, benötigt eine Baubewilligung. 3 Die Bewilligung für einen Campingplatz berechtigt, ein Grundstück für vorübergehendes Wohnen in Zelten, Wohnwagen und ähnlichen Einrichtungen zur Verfügung zu stellen. 4 Der Campingbetrieb richtet sich nach dem Campingreglement. 5 Die Vorschriften über das Campingwesen gelten auch für Fahrende.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Art. 34 Abstellen von Fahrzeugen auf öffentlichem Grund",
+     "text": "Art. 34 Abstellen von Fahrzeugen auf öffentlichem Grund 1 Fahrzeuge, welche über keine vorschriftsgemässen Kontrollschilder verfügen, dürfen nicht auf öffentlichem Grund abgestellt werden. In besonderen Fällen kann die Gemein- depolizei Ausnahmen bewilligen. 2 Das Dauerparkieren von nichtmotorisierten Fahrzeugen (Wohnwagen, Anhänger etc.) auf öffentlichem Grund bedarf einer Bewilligung der Gemeindepolizei.",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -1952,7 +2046,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1963,7 +2057,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -1971,10 +2065,10 @@
    "name": "Habkern",
    "kanton": "CH-BE",
    "website": "https://www.habkern.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.habkern.ch/dmxDaten/gemeinde/online_schalter/Baureglement_1995_aktuelle_fassung.pdf",
+   "dokument_titel": "Baureglement Habkern",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -1985,7 +2079,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1996,7 +2090,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2007,7 +2101,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2018,7 +2112,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2029,7 +2123,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2040,7 +2134,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2051,7 +2145,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2062,7 +2156,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2073,7 +2167,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2084,7 +2178,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2092,10 +2186,10 @@
    "name": "Niederhünigen",
    "kanton": "CH-BE",
    "website": "http://www.niederhuenigen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.niederhuenigen.ch/sites/default/files/service-2025/Baureglement.pdf",
+   "dokument_titel": "Baureglement 2025 (827.37 KB)",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2106,7 +2200,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2117,7 +2211,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2172,7 +2266,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2183,7 +2277,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2194,7 +2288,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2205,7 +2299,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (4), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2216,7 +2310,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2227,7 +2321,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2238,7 +2332,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2249,7 +2343,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (11), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2257,10 +2351,10 @@
    "name": "Orpund",
    "kanton": "CH-BE",
    "website": "http://www.orpund.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.police.be.ch/de/start/dienstleistungen/bewilligungen-gesuche.html",
+   "dokument_titel": "Benutzung öffentlichen Grundes (für Veranstaltungen) - Bewilligung beantragen",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2271,7 +2365,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2279,10 +2373,10 @@
    "name": "Schwadernau",
    "kanton": "CH-BE",
    "website": "http://www.schwadernau.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.schwadernau.ch/sites/default/files/service-2026/Baureglement.pdf",
+   "dokument_titel": "Baureglement (2.44 MB)",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2290,10 +2384,21 @@
    "name": "Studen (BE)",
    "kanton": "CH-BE",
    "website": "https://www.studen.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.studen.ch/appl/download.php?objid=11279718&id=61743954&nr=1&filename=Ortspolizeireglement_2024.pdf&usid=7537&cmd=viewinline",
+   "dokument_titel": "Ortspolizeireglement 2024.pdf (PDF, 409 KB)",
+   "stellen": [
+    {
+     "artikel": "Art. 11 1 Umzüge, Demonstrationen, Kundgebungen und Versammlun-",
+     "text": "Art. 11 1 Umzüge, Demonstrationen, Kundgebungen und Versammlun- gen auf öffentlichem Grund bedürfen einer Bewilligung. 2 Entsprechende Gesuche sind spätestens zweiWochen vor der Veranstaltung einzureichen, unter Angabe der Art und des Zeit- punktes der Veranstaltung, der dazu benützten Verkehrswege sowie der verantwortlichen Person. 3ln besonderen Fällen, insbesondere bei Kundgebungen aus ak- tuellem, politischem Anlass oder bei der Ausübung von verfas- sungsmässigen Rechten, kann die Frist nach Absatz2 unter- schritten werden. o Beim Erteilen der Bewilligung ist auf die Bedürfnisse der öf- fentlichen Sicherheit und Ordnung sowie des Verkehrs Rück- sicht zu nehmen. 5 Es ist untersagt, an nicht bewilligten oder ausdrücklich verbo- tenen Veranstaltungen wissentlich teilzunehmen oder zur Teil- nahme aufzurufen. -- 5 of 11 -- Verbot von Camping Reklamen auf öffentli- chem Grund Bettelei Grundsatz",
+     "im_titel": false
+    },
+    {
+     "artikel": "Art.12 1 Auf öffentlichem Grund ist das Übernachten in Fahrzeugen und",
+     "text": "Art.12 1 Auf öffentlichem Grund ist das Übernachten in Fahrzeugen und Zelten (Campieren) ausserhalb der speziell dafür vorgesehenen Flächen verboten. 2 Die Gemeinde kann in begrundeten Fällen Ausnahmen bewilli- gen. Die Bewilligung kann unter dem Vorbehalt erteilt werden, dass für allfällige Ersatzvornahmen (insbesondere Reinigung) Si- cherheit geleistet wird.",
+     "im_titel": false
+    }
+   ],
+   "fehler": "PDF: HTTP 403",
    "weg": "browser"
   },
   {
@@ -2304,7 +2409,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2315,7 +2420,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2326,7 +2431,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2337,7 +2442,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2348,7 +2453,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2359,7 +2464,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 429",
    "weg": "browser"
   },
   {
@@ -2370,7 +2475,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2381,7 +2486,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2392,7 +2497,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2403,7 +2508,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2414,7 +2519,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: fetch failed",
    "weg": "browser"
   },
   {
@@ -2425,7 +2530,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2436,7 +2541,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2447,7 +2552,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2455,10 +2560,10 @@
    "name": "Eggiwil",
    "kanton": "CH-BE",
    "website": "https://www.eggiwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.eggiwil.ch/inhalte/pdf/reglemente/GO_Eggiwil_01.01.2019_-_Gemeindeordnung.pdf",
+   "dokument_titel": "Gemeindeordnung",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2466,10 +2571,10 @@
    "name": "Langnau im Emmental",
    "kanton": "CH-BE",
    "website": "https://www.langnau-ie.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.langnau-ie.ch/politik-verwaltung/reglemente-und-verordnungen.html/65/opendcategory/76",
+   "dokument_titel": "Ebene 1: 4) Polizei-, Feuerwehr-, Markt- und Zivilschutzwesen",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2480,7 +2585,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2491,7 +2596,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2502,7 +2607,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2513,7 +2618,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (9), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2524,7 +2629,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2532,10 +2637,16 @@
    "name": "Fahrni",
    "kanton": "CH-BE",
    "website": "https://www.gemeinde-fahrni.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.gemeinde-fahrni.ch/Online-Schalter/Reglemente?act=download&path=%2Fmedia%2Farchive1%2F&file=Baureglement_Gemeinde_Fahrni.pdf",
+   "dokument_titel": "Baureglement_Gemeinde_Fahrni.pdf",
+   "stellen": [
+    {
+     "artikel": "Art. 18 Landschaftsschongebiete",
+     "text": "Art. 18 Landschaftsschongebiete 1 Die Landschaftsschongebiete umfassen Gebiete von besonderer Ei- genart und Empfindlichkeit: Geländerippen, -kuppen, Senken und Sättel, reich stru kturierte N atu r- u nd Kulturlandschaften, wertvol le Lebensrä ume für Tier- und Pflanzenwelt. Sie sollen von störenden Eingriffen freigehalten werden. 2 Als Landschaftsschongebiete bezeichnet sind: a) der Hubel westlich des Weilers Lueg b) die Kuppe Wachthubel-Port-Allmend, c) der Rotachegraben mit angrenzenden Waldpartien d) der Zulggraben. 3 Die landwirtschaftliche Nutzung ist gewährleistet. Bauten und Anlagen sind zugelassen, wenn sie für die Bewirtschaftung notwendig sind, zur Revitalisierung der Landschaft beitragen und sich gut in das Landschafts- bild einfügen. 4 Alle Vorkehrungen, die dem Schutzzweck widersprechen, z.B. Terrain- veränderungen (Abgrabungen, Auffüllungen), Eingriffe in den Wasserhaus- halt, das Entfernen der Gehölze mitsamt der Wurzeln sowie Aufforstungen sind nicht gestattet. 5 Nicht zugelassen sind insbesondere Zucht- und Mastbetriebe sowie Gärtnereien, Ba umsch ulen, Gewächshä user, M ateriala blagerungs- und -entnahmestel len, Campingp lätze, Wohn mobi le und Wohnwagen sowie alle Massnahmen, welche die landschaftliche Vielfalt beeinträchtigen. 6 Unbefestigte Flurwege sind wasserdurchlässig zu erhalten; ausgenom- men sind Zufahrten zu bewohnten Gebäuden. 31 -- 31 of 66 -- 3",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -2546,7 +2657,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2557,7 +2668,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 404",
    "weg": "browser"
   },
   {
@@ -2568,7 +2679,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2576,10 +2687,10 @@
    "name": "Eriswil",
    "kanton": "CH-BE",
    "website": "https://www.eriswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.eriswil.ch/inhalte/Gemeindeversammlungen/20201202/Gemeindebaureglement__Genehmigungsexemplar_.pdf",
+   "dokument_titel": "Baureglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2590,7 +2701,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2601,7 +2712,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2612,7 +2723,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2623,7 +2734,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2634,7 +2745,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2645,7 +2756,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2656,7 +2767,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2667,7 +2778,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2678,7 +2789,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2689,7 +2800,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2700,7 +2811,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2711,7 +2822,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2722,7 +2833,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2730,10 +2841,10 @@
    "name": "Entlebuch",
    "kanton": "CH-LU",
    "website": "http://www.entlebuch.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.entlebuch.ch/public/upload/assets/2165/Bau-%20und%20Zonenreglement.pdf?fp=1627904492631",
+   "dokument_titel": "Bau- und Zonenreglement.pdf",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2741,10 +2852,10 @@
    "name": "Flühli",
    "kanton": "CH-LU",
    "website": "http://www.fluehli.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://polizei.lu.ch/organisation/verwaltungspolizei/passbuero",
+   "dokument_titel": "Passbüro des Kantons Luzern",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2755,7 +2866,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2766,7 +2877,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2777,7 +2888,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2788,7 +2899,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2799,7 +2910,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2810,7 +2921,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2818,10 +2929,10 @@
    "name": "Eschenbach (LU)",
    "kanton": "CH-LU",
    "website": "https://www.eschenbach-luzern.ch/",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://polizei.lu.ch/dienstleistungen/downloads/downloads_waffen",
+   "dokument_titel": "Waffen, Sprengstoffe und Pyrotechnik",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2832,7 +2943,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2843,7 +2954,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 404",
    "weg": "browser"
   },
   {
@@ -2854,7 +2965,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2865,7 +2976,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2876,7 +2987,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2887,7 +2998,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2898,7 +3009,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2906,10 +3017,10 @@
    "name": "Ebikon",
    "kanton": "CH-LU",
    "website": "http://www.ebikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.ebikon.ch/topics/finanzen-steuern/finanzen/budget-2025/budget-2025-anhang-c-finanzkompetenzen-gem-gemeindeordnung",
+   "dokument_titel": "Budget 2025 Anhang C: Finanzkompetenzen",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -2920,7 +3031,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2931,7 +3042,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -2942,7 +3053,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -2953,7 +3064,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2964,7 +3075,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (9), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2975,7 +3086,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -2986,7 +3097,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (14), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -2997,7 +3108,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -3008,7 +3119,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -3019,7 +3130,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3030,7 +3141,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -3041,7 +3152,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3052,7 +3163,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -3063,7 +3174,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -3074,7 +3185,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3085,7 +3196,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3096,7 +3207,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -3104,10 +3215,16 @@
    "name": "Schenkon",
    "kanton": "CH-LU",
    "website": "http://www.schenkon.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.schenkon.ch/public/upload/assets/2374/Bau-%20und%20Zonenreglement%20vom%2025.11.2022%20.pdf?fp=1",
+   "dokument_titel": "Bau- und Zonenreglement",
+   "stellen": [
+    {
+     "artikel": "Art. 20 Naturschutzzone",
+     "text": "Art. 20 Naturschutzzone (§ 60 PBG) 1 Die kommunalen Naturschutzzonen bezwecken die Erhaltung schützens- werter Gebiete, die als Lebensräume von Tieren und Pflanzen bedeutend sind. 2 In den kommunalen Naturschutzzonen sind nur Massnahmen zulässig, die den ökologischen Wert erhalten oder erhöhen. Namentlich untersagt sind: a) Bauten, Anlagen und Einrichtungen jeder Art, b) das Aufstellen von Zelten, Wohnwagen, Kleinbauten und dergleichen, c) Terrainveränderungen, Materialablagerungen, d) das Entfernen von Kleinstrukturen und besonderen Lebensraumni- schen, e) Entwässerungen oder andere Veränderungen des Wasserhaushaltes, f) das Ausgraben, Entfernen oder Zerstören von standortgerechten ein- heimischen Pflanzen und Pflanzenbeständen sowie das Aufforsten oder Anlegen neuer Baumbestände (ausgenommen forstwirtschaftliche Nutzungen gemäss Abs. 5), g) das Stören, Fangen oder Töten von Tieren, vorbehältlich der Bestim- mungen über die Jagd und Fischerei, h) Sportveranstaltungen, i) Der private oder gewerbliche Gartenbau, j) Das Betreten der Gebiete abseits der vorhandenen Wege. Bestehende Anlagen und Einrichtungen dürfen unterhalten werden. 3 Die kommunale Naturschutzzone a umfasst Feuchtgebiete und Weiher. In dieser Zone wird die landwirtschaftliche Nutzung wie folgt beschränkt: - keine Düngung und Beweidung, - Grundsätzlich nur Schnittnutzung, mindestens 1 x jährlich. - Abführen des Sc",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -3118,7 +3235,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3129,7 +3246,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -3137,10 +3254,8 @@
    "name": "Triengen",
    "kanton": "CH-LU",
    "website": "https://www.triengen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3151,7 +3266,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3159,10 +3274,10 @@
    "name": "Altishofen",
    "kanton": "CH-LU",
    "website": "https://www.altishofen.ch/",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.altishofen.ch/public/upload/assets/812/Bau-%20und%20Zonenreglement%20Altishofen%202024.pdf?fp=1",
+   "dokument_titel": "Bau- und Zonenreglement Altishofen 2024 [PDF, 254 KB]",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3170,10 +3285,8 @@
    "name": "Egolzwil",
    "kanton": "CH-LU",
    "website": "https://www.egolzwil.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3184,7 +3297,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3192,10 +3305,8 @@
    "name": "Menznau",
    "kanton": "CH-LU",
    "website": "https://www.menznau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3206,7 +3317,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3214,10 +3325,10 @@
    "name": "Pfaffnau",
    "kanton": "CH-LU",
    "website": "http://www.pfaffnau.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://polizei.lu.ch/organisation/verwaltungspolizei/passbuero",
+   "dokument_titel": "Pass/ID",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3225,10 +3336,8 @@
    "name": "Reiden",
    "kanton": "CH-LU",
    "website": "http://www.reiden.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3236,10 +3345,8 @@
    "name": "Roggliswil",
    "kanton": "CH-LU",
    "website": "https://www.roggliswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3247,10 +3354,8 @@
    "name": "Altdorf (UR)",
    "kanton": "CH-UR",
    "website": "https://www.altdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3258,10 +3363,8 @@
    "name": "Bürglen (UR)",
    "kanton": "CH-UR",
    "website": "https://www.buerglen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3269,10 +3372,8 @@
    "name": "Hospental",
    "kanton": "CH-UR",
    "website": "https://www.hospental.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3280,10 +3381,8 @@
    "name": "Sisikon",
    "kanton": "CH-UR",
    "website": "http://www.sisikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3291,10 +3390,8 @@
    "name": "Unterschächen",
    "kanton": "CH-UR",
    "website": "https://www.unterschaechen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3302,10 +3399,8 @@
    "name": "Einsiedeln",
    "kanton": "CH-SZ",
    "website": "https://www.einsiedeln.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3313,10 +3408,8 @@
    "name": "Gersau",
    "kanton": "CH-SZ",
    "website": "https://www.gersau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3324,10 +3417,8 @@
    "name": "Freienbach",
    "kanton": "CH-SZ",
    "website": "https://www.freienbach.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3335,10 +3426,8 @@
    "name": "Küssnacht (SZ)",
    "kanton": "CH-SZ",
    "website": "https://www.kuessnacht.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3349,7 +3438,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3360,7 +3449,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -3371,7 +3460,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3379,10 +3468,8 @@
    "name": "Schübelbach",
    "kanton": "CH-SZ",
    "website": "https://www.schuebelbach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3390,10 +3477,8 @@
    "name": "Arth",
    "kanton": "CH-SZ",
    "website": "https://www.arth.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3401,10 +3486,8 @@
    "name": "Illgau",
    "kanton": "CH-SZ",
    "website": "https://www.illgau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3412,10 +3495,16 @@
    "name": "Lauerz",
    "kanton": "CH-SZ",
    "website": "https://www.lauerz.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.lauerz.ch/storage/c6550cdb7381f36a6e61860441bc338ff9aeaf4f7a5df2dddbd0c74873438941",
+   "dokument_titel": "Baureglement 2022 (RRB Nr. 764 2022, 18.10.2022)",
+   "stellen": [
+    {
+     "artikel": "Art. 48 Intensiverholungszone",
+     "text": "Art. 48 Intensiverholungszone Campingplatz IZC 1 Die Intensiverholungszone Campingplatz bezweckt den Betrieb eines öffentli- chen Campingplatzes. Gestattet sind das Aufstellen von Wohnwagen und Zelten sowie die Erstellung der notwendigen infrastrukturellen Bauten und Anlagen für den Campingbetrieb. 2 Leicht demontierbare Anbauten und Vorbauten an Wohnwagen sind gestattet, dürfen aber nicht mehr als die Hälfte der Wohnwagenfläche ausma- chen. 3 Das Aufstellen von sogenannten Mobilheimen auf Campingplätzen ist nicht ge- stattet. Darunter fallen insbesondere Konstruktionen, die nicht auf eigenen Rädern transportiert werden können oder die am Standort auf eigens dazu errichteten Fundamenten bzw. Unterlagen ruhen oder die nach Kon- struktion den Charakter von eigentlichen Ferienhäusern besitzen. 4 Kantonale Vorschriften sowie gestützt darauf erteilte Betriebsbewilligungen bleiben vorbehalten. 5 Der Intensiverholungszone Campingplatz ist die Empfindlichkeitsstufe II zuge- ordnet. 6 Pro Wohnwagen oder Zeltplatz muss eine Abstellfläche von mind. 15 m2 für Motorfahrzeuge ausgewiesen werden. 7 Die Bestimmungen der Intensiverholungszone Campingplatz (Art. 48) gelten auch für bestehende Campingplätze in anderen Bauzonen. -- 17 of 29 -- 18",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -3423,10 +3512,8 @@
    "name": "Morschach",
    "kanton": "CH-SZ",
    "website": "http://www.morschach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3434,10 +3521,8 @@
    "name": "Oberiberg",
    "kanton": "CH-SZ",
    "website": "https://www.oberiberg.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3445,10 +3530,8 @@
    "name": "Riemenstalden",
    "kanton": "CH-UR",
    "website": "https://www.riemenstalden.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3456,10 +3539,8 @@
    "name": "Schwyz",
    "kanton": "CH-SZ",
    "website": "https://www.gemeindeschwyz.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3467,10 +3548,8 @@
    "name": "Alpnach",
    "kanton": "CH-OW",
    "website": "https://www.alpnach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3478,10 +3557,8 @@
    "name": "Engelberg",
    "kanton": "CH-OW",
    "website": "https://www.gde-engelberg.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3489,10 +3566,10 @@
    "name": "Giswil",
    "kanton": "CH-OW",
    "website": "http://www.giswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.giswil.ch/_rte/publikation/17964",
+   "dokument_titel": "Bau und Zonenreglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3500,10 +3577,8 @@
    "name": "Kerns",
    "kanton": "CH-OW",
    "website": "https://www.kerns.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3511,10 +3586,10 @@
    "name": "Lungern",
    "kanton": "CH-OW",
    "website": "https://www.lungern.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.lungern.ch/_rte/publikation/100332",
+   "dokument_titel": "Bau- und Zonenreglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3522,10 +3597,10 @@
    "name": "Sachseln",
    "kanton": "CH-OW",
    "website": "https://www.sachseln.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.sachseln.ch/_rte/publikation/3427",
+   "dokument_titel": "Baureglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3533,10 +3608,8 @@
    "name": "Sarnen",
    "kanton": "CH-OW",
    "website": "https://www.sarnen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3544,10 +3617,10 @@
    "name": "Beckenried",
    "kanton": "CH-NW",
    "website": "https://www.beckenried.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.beckenried.ch/_rte/publikation/23520",
+   "dokument_titel": "Bau- und Zonenordnung Beckenried Reglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3555,10 +3628,8 @@
    "name": "Buochs",
    "kanton": "CH-NW",
    "website": "https://www.buochs.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3566,10 +3637,8 @@
    "name": "Ennetbürgen",
    "kanton": "CH-NW",
    "website": "http://www.ennetbuergen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3577,10 +3646,8 @@
    "name": "Ennetmoos",
    "kanton": "CH-NW",
    "website": "https://www.ennetmoos.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3591,7 +3658,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3599,10 +3666,8 @@
    "name": "Oberdorf (NW)",
    "kanton": "CH-NW",
    "website": "http://www.oberdorf-nw.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3610,10 +3675,8 @@
    "name": "Stans",
    "kanton": "CH-NW",
    "website": "http://www.stans.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3621,10 +3684,10 @@
    "name": "Stansstad",
    "kanton": "CH-NW",
    "website": "https://www.stansstad.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.stansstad.ch/public/upload/assets/941/Bau-%20und%20Zonenreglement.pdf?fp=1",
+   "dokument_titel": "Bau- und Zonenreglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3632,10 +3695,8 @@
    "name": "Glarus Süd",
    "kanton": "CH-GL",
    "website": "http://www.glarus-sued.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3646,7 +3707,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3654,10 +3715,8 @@
    "name": "Baar",
    "kanton": "CH-ZG",
    "website": "https://www.baar.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3665,10 +3724,8 @@
    "name": "Cham",
    "kanton": "CH-ZG",
    "website": "https://www.cham.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3679,7 +3736,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3690,7 +3747,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3698,10 +3755,8 @@
    "name": "Neuheim",
    "kanton": "CH-ZG",
    "website": "https://www.neuheim.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3709,10 +3764,8 @@
    "name": "Oberägeri",
    "kanton": "CH-ZG",
    "website": "http://www.oberaegeri.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3720,10 +3773,10 @@
    "name": "Risch-Rotkreuz",
    "kanton": "CH-ZG",
    "website": "https://www.zg.ch/behoerden/gemeinden/risch-rotkreuz",
-   "dokument": null,
+   "dokument": "https://www.zg.ch/behoerden/gemeinden/risch-rotkreuz/politik/rechtssammlung/1-stabstellen-praesidiales/100-gemeindeordnung/download",
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -3734,7 +3787,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3745,7 +3798,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (6), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3756,7 +3809,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3767,7 +3820,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -3778,7 +3831,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3789,7 +3842,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3800,7 +3853,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3808,10 +3861,8 @@
    "name": "Cheyres-Châbles",
    "kanton": "CH-FR",
    "website": "http://www.cheyres-chables.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3819,10 +3870,8 @@
    "name": "Fétigny-Ménières",
    "kanton": "CH-FR",
    "website": "https://fetigny-menieres.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3830,10 +3879,8 @@
    "name": "Billens-Hennens",
    "kanton": "CH-FR",
    "website": "http://www.billens-hennens.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3841,10 +3888,8 @@
    "name": "Le Châtelard",
    "kanton": "CH-FR",
    "website": "http://www.le-chatelard.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3852,10 +3897,8 @@
    "name": "Châtonnaye",
    "kanton": "CH-FR",
    "website": "https://www.chatonnaye.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3863,10 +3906,8 @@
    "name": "Grangettes",
    "kanton": "CH-FR",
    "website": "https://grangettes-pres-romont.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3877,7 +3918,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3885,10 +3926,8 @@
    "name": "Mézières (FR)",
    "kanton": "CH-FR",
    "website": "https://www.mezieres-fr.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3896,10 +3935,8 @@
    "name": "Romont",
    "kanton": "CH-FR",
    "website": "https://www.romont.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3907,10 +3944,8 @@
    "name": "Rue",
    "kanton": "CH-FR",
    "website": "https://www.rue.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3918,10 +3953,8 @@
    "name": "Villaz",
    "kanton": "CH-FR",
    "website": "https://www.communevillaz.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3929,10 +3962,8 @@
    "name": "Haut-Intyamon",
    "kanton": "CH-FR",
    "website": "https://www.haut-intyamon.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3943,7 +3974,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -3954,7 +3985,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3962,10 +3993,8 @@
    "name": "Bulle",
    "kanton": "CH-FR",
    "website": "https://www.bulle.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3973,10 +4002,8 @@
    "name": "Châtel-sur-Montsalvens",
    "kanton": "CH-FR",
    "website": "https://www.chatel-montsalvens.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3987,7 +4014,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -3998,7 +4025,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4009,7 +4036,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4020,7 +4047,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4031,7 +4058,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4042,7 +4069,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4053,7 +4080,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4064,7 +4091,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -4075,7 +4102,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4086,7 +4113,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4097,7 +4124,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4108,7 +4135,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4119,7 +4146,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4130,7 +4157,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4141,7 +4168,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4152,7 +4179,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4163,7 +4190,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4174,7 +4201,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4185,7 +4212,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4196,7 +4223,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4207,7 +4234,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4218,7 +4245,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4226,10 +4253,10 @@
    "name": "Kleinbösingen",
    "kanton": "CH-FR",
    "website": "http://www.kleinboesingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.kleinboesingen.ch/uploads/6/Planung-Baureglement.pdf.html",
+   "dokument_titel": "Planungs- und Bau-Reglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -4237,10 +4264,10 @@
    "name": "Muntelier",
    "kanton": "CH-FR",
    "website": "https://www.muntelier.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.muntelier.ch/Verwaltung/Reglemente/index.php/;focus=HSTPTP_cm4all_com_widgets_News_6689427&path=?m=d&a=20200225173116-1767&cp=1#HSTPTP_cm4all_com_widgets_News_6689427",
+   "dokument_titel": "Gemeindebaureglement März 2019 - Genehmigt 21.09.2022",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -4251,7 +4278,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4262,7 +4289,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4270,10 +4297,8 @@
    "name": "Bösingen",
    "kanton": "CH-FR",
    "website": "https://www.boesingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4281,10 +4306,8 @@
    "name": "Heitenried",
    "kanton": "CH-FR",
    "website": "https://www.heitenried.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4292,10 +4315,8 @@
    "name": "Plaffeien",
    "kanton": "CH-FR",
    "website": "https://www.plaffeien.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4303,10 +4324,8 @@
    "name": "Plasselb",
    "kanton": "CH-FR",
    "website": "https://www.plasselb.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4314,10 +4333,8 @@
    "name": "Rechthalten",
    "kanton": "CH-FR",
    "website": "http://www.rechthalten.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4325,10 +4342,8 @@
    "name": "St. Silvester",
    "kanton": "CH-FR",
    "website": "http://www.stsilvester.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4336,10 +4351,8 @@
    "name": "St. Ursen",
    "kanton": "CH-FR",
    "website": "http://www.stursen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4347,10 +4360,8 @@
    "name": "Schmitten (FR)",
    "kanton": "CH-FR",
    "website": "http://www.schmitten.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4358,10 +4369,8 @@
    "name": "Tafers",
    "kanton": "CH-FR",
    "website": "https://www.tafers.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4369,10 +4378,10 @@
    "name": "Tentlingen",
    "kanton": "CH-FR",
    "website": "http://www.tentlingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.tentlingen.ch/uploads/180/Planungs-_und_Baureglement.pdf.html",
+   "dokument_titel": "Planungs- und Baureglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -4380,10 +4389,8 @@
    "name": "Ueberstorf",
    "kanton": "CH-FR",
    "website": "http://www.ueberstorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4391,10 +4398,8 @@
    "name": "Remaufens",
    "kanton": "CH-FR",
    "website": "http://www.remaufens.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4405,7 +4410,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4413,10 +4418,10 @@
    "name": "Egerkingen",
    "kanton": "CH-SO",
    "website": "http://www.egerkingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.egerkingen.ch/_rtr/publikation_14403",
+   "dokument_titel": "Gemeindeordnung Bürgergemeinde",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -4424,10 +4429,8 @@
    "name": "Niederbuchsiten",
    "kanton": "CH-SO",
    "website": "https://www.niederbuchsiten.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4435,10 +4438,8 @@
    "name": "Oensingen",
    "kanton": "CH-SO",
    "website": "http://www.oensingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4446,10 +4447,8 @@
    "name": "Aedermannsdorf",
    "kanton": "CH-SO",
    "website": "http://www.aedermannsdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4457,10 +4456,8 @@
    "name": "Balsthal",
    "kanton": "CH-SO",
    "website": "https://www.balsthal.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4468,10 +4465,10 @@
    "name": "Herbetswil",
    "kanton": "CH-SO",
    "website": "https://www.herbetswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.herbetswil.ch/_rte/publikation/111527",
+   "dokument_titel": "Baureglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -4479,10 +4476,8 @@
    "name": "Matzendorf",
    "kanton": "CH-SO",
    "website": "http://www.matzendorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4490,10 +4485,10 @@
    "name": "Mümliswil-Ramiswil",
    "kanton": "CH-SO",
    "website": "https://www.muemliswil-ramiswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.muemliswil-ramiswil.ch/public/upload/assets/220/Gemeindeordnung.pdf?fp=5",
+   "dokument_titel": "Gemeindeordnung [pdf, 248 KB]",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -4501,10 +4496,8 @@
    "name": "Lüterkofen-Ichertswil",
    "kanton": "CH-SO",
    "website": "https://www.lueterkofen-ichertswil.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4512,10 +4505,8 @@
    "name": "Schnottwil",
    "kanton": "CH-SO",
    "website": "https://www.schnottwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4523,10 +4514,8 @@
    "name": "Lüsslingen-Nennigkofen",
    "kanton": "CH-SO",
    "website": "https://www.luesslingen-nennigkofen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4534,10 +4523,8 @@
    "name": "Buchegg",
    "kanton": "CH-SO",
    "website": "https://www.buchegg-so.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4548,7 +4535,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4559,7 +4546,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -4570,7 +4557,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4578,10 +4565,8 @@
    "name": "Seewen",
    "kanton": "CH-SO",
    "website": "https://www.seewen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4589,10 +4574,8 @@
    "name": "Lostorf",
    "kanton": "CH-SO",
    "website": "http://www.lostorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4600,10 +4583,8 @@
    "name": "Niedergösgen",
    "kanton": "CH-SO",
    "website": "https://www.niedergoesgen.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4611,10 +4592,8 @@
    "name": "Obergösgen",
    "kanton": "CH-SO",
    "website": "https://www.obergoesgen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4625,7 +4604,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (4), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4633,10 +4612,8 @@
    "name": "Aeschi (SO)",
    "kanton": "CH-SO",
    "website": "http://www.aeschi-so.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4647,7 +4624,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4655,10 +4632,8 @@
    "name": "Bolken",
    "kanton": "CH-SO",
    "website": "http://www.bolken.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4666,10 +4641,8 @@
    "name": "Deitingen",
    "kanton": "CH-SO",
    "website": "http://www.deitingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4677,10 +4650,10 @@
    "name": "Etziken",
    "kanton": "CH-SO",
    "website": "http://etziken.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.etziken.ch/public/upload/assets/1217/Gemeindeordnung.pdf?fp=1",
+   "dokument_titel": "Gemeindeordnung.pdf",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -4691,7 +4664,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4702,7 +4675,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4710,10 +4683,8 @@
    "name": "Luterbach",
    "kanton": "CH-SO",
    "website": "http://www.luterbach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4721,10 +4692,8 @@
    "name": "Subingen",
    "kanton": "CH-SO",
    "website": "https://www.subingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4732,10 +4701,8 @@
    "name": "Bettlach",
    "kanton": "CH-SO",
    "website": "https://www.bettlach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4743,10 +4710,8 @@
    "name": "Grenchen",
    "kanton": "CH-SO",
    "website": "https://www.grenchen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4754,10 +4719,8 @@
    "name": "Hubersdorf",
    "kanton": "CH-SO",
    "website": "http://www.hubersdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4768,7 +4731,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -4776,10 +4739,8 @@
    "name": "Oberdorf (SO)",
    "kanton": "CH-SO",
    "website": "https://www.oberdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4787,10 +4748,8 @@
    "name": "Däniken",
    "kanton": "CH-SO",
    "website": "http://www.daeniken.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4798,10 +4757,8 @@
    "name": "Dulliken",
    "kanton": "CH-SO",
    "website": "http://www.dulliken.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4809,10 +4766,8 @@
    "name": "Fulenbach",
    "kanton": "CH-SO",
    "website": "http://www.fulenbach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4823,7 +4778,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: fetch failed",
    "weg": "browser"
   },
   {
@@ -4831,10 +4786,8 @@
    "name": "Hägendorf",
    "kanton": "CH-SO",
    "website": "http://www.haegendorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4845,7 +4798,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: The operation was aborted due to timeout",
    "weg": "browser"
   },
   {
@@ -4856,7 +4809,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4864,10 +4817,8 @@
    "name": "Schönenwerd",
    "kanton": "CH-SO",
    "website": "https://www.schoenenwerd.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -4878,7 +4829,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4889,7 +4840,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4900,7 +4851,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4911,7 +4862,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -4922,7 +4873,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4933,7 +4884,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (3), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4944,7 +4895,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -4955,7 +4906,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4966,7 +4917,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -4977,7 +4928,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (35), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4988,7 +4939,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (15), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -4999,7 +4950,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5010,7 +4961,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5018,10 +4969,10 @@
    "name": "Binningen",
    "kanton": "CH-BL",
    "website": "https://www.binningen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.binningen.ch/public/upload/assets/5959/Gemeindeordnung.pdf?fp=8",
+   "dokument_titel": "Gemeindeordnung [pdf]",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 403",
    "weg": "browser"
   },
   {
@@ -5032,7 +4983,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (6), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5043,7 +4994,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5054,7 +5005,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5065,7 +5016,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5076,7 +5027,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5087,7 +5038,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (14), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5098,7 +5049,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5109,7 +5060,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5120,7 +5071,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5128,10 +5079,10 @@
    "name": "Laufen",
    "kanton": "CH-BL",
    "website": "https://www.laufen-bl.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.laufen-bl.ch/public/upload/assets/1531/700%20Polizeireglement.pdf?fp=1",
+   "dokument_titel": "700 Polizeireglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -5142,7 +5093,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5153,7 +5104,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5161,10 +5112,10 @@
    "name": "Füllinsdorf",
    "kanton": "CH-BL",
    "website": "https://www.fuellinsdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.fuellinsdorf.ch/public/upload/assets/5944/Polizeireglement%20ab%2014.06.2026.pdf?fp=1",
+   "dokument_titel": "Polizeireglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -5175,7 +5126,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5186,7 +5137,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 403",
    "weg": "browser"
   },
   {
@@ -5197,7 +5148,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5208,7 +5159,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: HTTP 403",
    "weg": "browser"
   },
   {
@@ -5219,7 +5170,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5227,10 +5178,10 @@
    "name": "Kilchberg (BL)",
    "kanton": "CH-BL",
    "website": "https://www.kilchberg-bl.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.zeglingen.ch/sites/default/files/2020-01/polizeireglement.pdf",
+   "dokument_titel": "Polizeireglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -5238,10 +5189,10 @@
    "name": "Rünenberg",
    "kanton": "CH-BL",
    "website": "http://www.ruenenberg.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.zeglingen.ch/sites/default/files/2020-01/polizeireglement.pdf",
+   "dokument_titel": "Polizeireglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -5252,7 +5203,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5263,7 +5214,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5274,7 +5225,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5285,7 +5236,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5296,7 +5247,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5307,7 +5258,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5315,10 +5266,10 @@
    "name": "Reigoldswil",
    "kanton": "CH-BL",
    "website": "https://www.reigoldswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.reigoldswil.ch/de/behoerden-und-kommissionen/reglemente/polizeireglement.pdf",
+   "dokument_titel": "Polizeireglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -5326,10 +5277,10 @@
    "name": "Titterten",
    "kanton": "CH-BL",
    "website": "https://www.titterten.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.titterten.ch/de/verwaltung/reglemente/Gemeindeordnung-Buergergemeinde-Titterten.pdf",
+   "dokument_titel": "Gemeindeordnung Bürgergemeinde Titterten",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -5340,7 +5291,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5351,7 +5302,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5362,7 +5313,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5373,7 +5324,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (5), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5384,7 +5335,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (1), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5395,7 +5346,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5406,7 +5357,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5417,7 +5368,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5428,7 +5379,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (13), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5439,7 +5390,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5450,7 +5401,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5461,7 +5412,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5469,10 +5420,16 @@
    "name": "Hallau",
    "kanton": "CH-SH",
    "website": "https://www.hallau.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://hallau.ch/CMS/get/file/4aded3f5-7324-40b9-8d22-3c4f9b80b019",
+   "dokument_titel": "510.1 Reglement über das Polizeiwesen",
+   "stellen": [
+    {
+     "artikel": "Art. 23 Das Aufstellen von Wohnmobilen, Wohnwagen und Zelten auf öffentlichem Grund ist",
+     "text": "Art. 23 Das Aufstellen von Wohnmobilen, Wohnwagen und Zelten auf öffentlichem Grund ist nur auf den dafür bezeichneten Plätzen zulässig. Die Gemeindeverwaltung kann Ausnahme- bewilligungen erteilen. Rettungsgeräte Fundsachen Kostenersatz bei Fehlalarm Gesteigerter Gemeinge- brauch Nachtparkieren Rettungsein- richtungen Wegschaf f en v on Fahrzeugen und Gegen- ständen Plakate, Reklamen Campieren -- 4 of 5 -- Polizeireglement der Gemeinde Hallau Seite 4",
+     "im_titel": true
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -5483,7 +5440,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5494,7 +5451,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -5505,7 +5462,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5516,7 +5473,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5527,7 +5484,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5538,7 +5495,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5546,10 +5503,10 @@
    "name": "Gais",
    "kanton": "CH-AR",
    "website": "https://www.gais.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.gais.ch/service-verwaltung/online-schalter?file=files/downloads-01-gais/Gemeindekanzlei/Reglemente/Baureglement.pdf&cid=11567",
+   "dokument_titel": "Baureglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -5560,7 +5517,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5571,7 +5528,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5582,7 +5539,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5593,7 +5550,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5604,7 +5561,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5615,7 +5572,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5626,7 +5583,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5637,7 +5594,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -5692,7 +5649,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5747,7 +5704,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5758,7 +5715,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5786,7 +5743,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5814,7 +5771,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5825,7 +5782,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5836,7 +5793,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5858,7 +5815,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5869,7 +5826,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5880,7 +5837,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5891,7 +5848,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5902,7 +5859,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5913,7 +5870,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5924,7 +5881,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -5935,7 +5892,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5946,7 +5903,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5957,7 +5914,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5968,7 +5925,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5979,7 +5936,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -5990,7 +5947,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6012,7 +5969,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6034,7 +5991,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6045,7 +6002,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6056,7 +6013,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6067,7 +6024,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6111,7 +6068,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6122,7 +6079,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6133,7 +6090,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6155,7 +6112,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6166,7 +6123,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6177,7 +6134,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6199,7 +6156,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6265,7 +6222,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6375,7 +6332,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6408,7 +6365,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6419,7 +6376,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6430,7 +6387,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6441,7 +6398,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6452,7 +6409,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6513,7 +6470,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6673,7 +6630,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6684,7 +6641,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6717,7 +6674,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6728,7 +6685,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6739,7 +6696,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6750,7 +6707,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6772,7 +6729,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6816,7 +6773,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -6893,7 +6850,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -6959,7 +6916,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -7033,10 +6990,8 @@
    "name": "Berikon",
    "kanton": "CH-AG",
    "website": "https://www.berikon.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7044,10 +6999,8 @@
    "name": "Bremgarten",
    "kanton": "CH-AG",
    "website": "https://www.bremgarten.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7088,10 +7041,8 @@
    "name": "Hägglingen",
    "kanton": "CH-AG",
    "website": "https://www.haegglingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7132,10 +7083,8 @@
    "name": "Sarmenstorf",
    "kanton": "CH-AG",
    "website": "https://www.sarmenstorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7143,10 +7092,8 @@
    "name": "Tägerig",
    "kanton": "CH-AG",
    "website": "http://www.taegerig.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7154,10 +7101,8 @@
    "name": "Uezwil",
    "kanton": "CH-AG",
    "website": "https://www.uezwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7165,10 +7110,8 @@
    "name": "Villmergen",
    "kanton": "CH-AG",
    "website": "https://www.villmergen.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7231,10 +7174,8 @@
    "name": "Hausen (AG)",
    "kanton": "CH-AG",
    "website": "https://www.hausen.swiss",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7242,10 +7183,8 @@
    "name": "Mandach",
    "kanton": "CH-AG",
    "website": "https://www.mandach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7352,10 +7291,8 @@
    "name": "Schöftland",
    "kanton": "CH-AG",
    "website": "https://www.schoeftland.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7385,10 +7322,8 @@
    "name": "Eiken",
    "kanton": "CH-AG",
    "website": "http://www.eiken.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7396,10 +7331,8 @@
    "name": "Frick",
    "kanton": "CH-AG",
    "website": "https://www.frick.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7407,10 +7340,8 @@
    "name": "Gansingen",
    "kanton": "CH-AG",
    "website": "http://www.gansingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7418,10 +7349,8 @@
    "name": "Gipf-Oberfrick",
    "kanton": "CH-AG",
    "website": "https://www.gipf-oberfrick.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7429,10 +7358,8 @@
    "name": "Kaisten",
    "kanton": "CH-AG",
    "website": "https://www.kaisten.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7440,10 +7367,8 @@
    "name": "Laufenburg",
    "kanton": "CH-AG",
    "website": "https://www.laufenburg.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7451,10 +7376,8 @@
    "name": "Oberhof",
    "kanton": "CH-AG",
    "website": "http://www.oberhof.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7473,10 +7396,8 @@
    "name": "Schwaderloch",
    "kanton": "CH-AG",
    "website": "http://www.schwaderloch.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7484,10 +7405,8 @@
    "name": "Sisseln",
    "kanton": "CH-AG",
    "website": "https://www.sisseln.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7495,10 +7414,8 @@
    "name": "Böztal",
    "kanton": "CH-AG",
    "website": "https://www.boeztal.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7539,10 +7456,8 @@
    "name": "Fahrwangen",
    "kanton": "CH-AG",
    "website": "http://www.fahrwangen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7583,10 +7498,8 @@
    "name": "Lenzburg",
    "kanton": "CH-AG",
    "website": "https://www.lenzburg.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7605,10 +7518,8 @@
    "name": "Othmarsingen",
    "kanton": "CH-AG",
    "website": "https://www.othmarsingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7616,10 +7527,8 @@
    "name": "Rupperswil",
    "kanton": "CH-AG",
    "website": "https://www.rupperswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7627,10 +7536,8 @@
    "name": "Schafisheim",
    "kanton": "CH-AG",
    "website": "http://www.schafisheim.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7726,10 +7633,8 @@
    "name": "Buttwil",
    "kanton": "CH-AG",
    "website": "http://www.buttwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7825,10 +7730,8 @@
    "name": "Kaiseraugst",
    "kanton": "CH-AG",
    "website": "https://www.kaiseraugst.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7836,10 +7739,8 @@
    "name": "Magden",
    "kanton": "CH-AG",
    "website": "https://www.magden.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7858,10 +7759,8 @@
    "name": "Stein",
    "kanton": "CH-AG",
    "website": "http://www.gemeinde-stein.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7869,10 +7768,8 @@
    "name": "Aarburg",
    "kanton": "CH-AG",
    "website": "https://www.aarburg.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7891,10 +7788,8 @@
    "name": "Brittnau",
    "kanton": "CH-AG",
    "website": "http://www.brittnau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7935,10 +7830,8 @@
    "name": "Rothrist",
    "kanton": "CH-AG",
    "website": "https://www.rothrist.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7946,10 +7839,8 @@
    "name": "Safenwil",
    "kanton": "CH-AG",
    "website": "https://www.safenwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7968,10 +7859,8 @@
    "name": "Fisibach",
    "kanton": "CH-AG",
    "website": "http://www.fisibach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7979,10 +7868,8 @@
    "name": "Full-Reuenthal",
    "kanton": "CH-AG",
    "website": "https://www.full-reuenthal.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -7990,10 +7877,8 @@
    "name": "Leibstadt",
    "kanton": "CH-AG",
    "website": "http://www.leibstadt.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8001,10 +7886,8 @@
    "name": "Leuggern",
    "kanton": "CH-AG",
    "website": "https://www.leuggern.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8012,10 +7895,8 @@
    "name": "Mellikon",
    "kanton": "CH-AG",
    "website": "https://www.mellikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8023,10 +7904,8 @@
    "name": "Schneisingen",
    "kanton": "CH-AG",
    "website": "https://www.schneisingen.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8067,10 +7946,8 @@
    "name": "Egnach",
    "kanton": "CH-TG",
    "website": "https://www.egnach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8078,10 +7955,8 @@
    "name": "Horn",
    "kanton": "CH-SG",
    "website": "https://www.horn.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8111,10 +7986,8 @@
    "name": "Salmsach",
    "kanton": "CH-TG",
    "website": "http://www.salmsach.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8122,10 +7995,8 @@
    "name": "Amriswil",
    "kanton": "CH-TG",
    "website": "https://www.amriswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8133,10 +8004,8 @@
    "name": "Bischofszell",
    "kanton": "CH-TG",
    "website": "https://www.bischofszell.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8144,10 +8013,8 @@
    "name": "Erlen",
    "kanton": "CH-TG",
    "website": "http://www.erlen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8254,10 +8121,8 @@
    "name": "Thundorf",
    "kanton": "CH-TG",
    "website": "http://www.thundorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8265,10 +8130,8 @@
    "name": "Altnau",
    "kanton": "CH-TG",
    "website": "https://www.altnau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8276,10 +8139,8 @@
    "name": "Bottighofen",
    "kanton": "CH-TG",
    "website": "https://www.bottighofen.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8348,10 +8209,8 @@
    "name": "Münsterlingen",
    "kanton": "CH-TG",
    "website": "https://www.muensterlingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8425,10 +8284,8 @@
    "name": "Schönholzerswilen",
    "kanton": "CH-TG",
    "website": "https://www.schoenholzerswilen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8480,10 +8337,8 @@
    "name": "Hüttwilen",
    "kanton": "CH-TG",
    "website": "http://www.huettwilen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8491,10 +8346,8 @@
    "name": "Mammern",
    "kanton": "CH-TG",
    "website": "https://www.mammern.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8524,10 +8377,8 @@
    "name": "Salenstein",
    "kanton": "CH-TG",
    "website": "https://www.salenstein.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -8535,10 +8386,8 @@
    "name": "Steckborn",
    "kanton": "CH-TG",
    "website": "https://www.steckborn.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10192,10 +10041,8 @@
    "name": "Chavannes-de-Bogis",
    "kanton": "CH-VD",
    "website": "http://www.chavannes-de-bogis.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10203,10 +10050,8 @@
    "name": "Commugny",
    "kanton": "CH-VD",
    "website": "https://www.commugny.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10214,10 +10059,8 @@
    "name": "Coppet",
    "kanton": "CH-VD",
    "website": "https://www.coppet.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10247,10 +10090,8 @@
    "name": "Founex",
    "kanton": "CH-VD",
    "website": "https://www.founex.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10258,10 +10099,8 @@
    "name": "Gingins",
    "kanton": "CH-VD",
    "website": "https://www.gingins.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10269,10 +10108,8 @@
    "name": "Givrins",
    "kanton": "CH-VD",
    "website": "https://www.givrins.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10280,10 +10117,8 @@
    "name": "Mies",
    "kanton": "CH-VD",
    "website": "http://www.mies.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10291,10 +10126,26 @@
    "name": "La Rippe",
    "kanton": "CH-VD",
    "website": "https://www.larippe.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.larippe.ch/n932",
+   "dokument_titel": "Police",
+   "stellen": [
+    {
+     "artikel": "Article 66 Camping et caravaning",
+     "text": "Article 66 Camping et caravaning 1II est interdit de camper sur la voie publique ou ses abords. 2Sur Ie domaine prive. Ie camping occasionnel n'est permis qu'avec I'accord du proprietaire, du locataire, du fermier ou du possesseur a un autre titre de I'immeuble. L'autorisation de la municipalite est obligatoire pour toute duree excedant quatre jours. L'autorisation peut etre refusee notamment lorsque Ie campeur ne peut benefjcier d'installations sanitaires a proximite. 3 La municipalite est competente pour adopter un reglement sur Ie camping et Ie caravanlng.",
+     "im_titel": true
+    },
+    {
+     "artikel": "Article 67 Entreposage des roulottes et autres vehicules non habites",
+     "text": "Article 67 Entreposage des roulottes et autres vehicules non habites II est interdit d'entreposer sur Ie domaine public des roulottes et autres vehicutes pouvant servir de logement, sauf autorisation de la Municipalite. L'entreposage sur Ie domaine prive est autorise pour autant qu'ils ,ne servent pas de logement. Leur stationnement sur Ie domaine prive/ est autorise pour une duree limitee, moyennant une autorisation de la municipalite. 11.02-Reglement general de police de la commune de La Rippe/version-finale 26.08.2019/27/40 -- 27 of 40 -- SECTION 4 - DE LA POLICE DES MINEURS",
+     "im_titel": true
+    },
+    {
+     "artikel": "Article 65 Actes contraires a la decence",
+     "text": "Article 65 Actes contraires a la decence 1 Tout acte ou habillement contraire a la decence ou a la morale publique est interdit. 2 L'article 58 est applicable en cas de contravention a cette interdiction. SECTION 3 - DE LA POLICE DU CAMPING ET DU CARAVANING",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -10302,10 +10153,8 @@
    "name": "Saint-Cergue",
    "kanton": "CH-VD",
    "website": "https://www.st-cergue.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10313,10 +10162,8 @@
    "name": "Signy-Avenex",
    "kanton": "CH-VD",
    "website": "http://www.signy-avenex.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10327,7 +10174,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -10335,10 +10182,8 @@
    "name": "Bavois",
    "kanton": "CH-VD",
    "website": "https://www.bavois.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10346,10 +10191,8 @@
    "name": "Bofflens",
    "kanton": "CH-VD",
    "website": "https://www.bofflens.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10357,10 +10200,8 @@
    "name": "Chavornay",
    "kanton": "CH-VD",
    "website": "http://www.chavornay.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10368,10 +10209,8 @@
    "name": "Les Clées",
    "kanton": "CH-VD",
    "website": "https://www.lesclees.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10379,10 +10218,8 @@
    "name": "Juriens",
    "kanton": "CH-VD",
    "website": "https://www.juriens.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10390,10 +10227,8 @@
    "name": "Valeyres-sous-Rances",
    "kanton": "CH-VD",
    "website": "https://www.valeyres-sous-rances.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10401,10 +10236,8 @@
    "name": "Vallorbe",
    "kanton": "CH-VD",
    "website": "https://www.vallorbe.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10412,10 +10245,8 @@
    "name": "Corcelles-le-Jorat",
    "kanton": "CH-VD",
    "website": "https://www.corcelles-le-jorat.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10423,10 +10254,8 @@
    "name": "Ropraz",
    "kanton": "CH-VD",
    "website": "http://www.ropraz.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10434,10 +10263,31 @@
    "name": "Servion",
    "kanton": "CH-VD",
    "website": "http://www.servion.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.servion.ch/n1050",
+   "dokument_titel": "Règlement de police",
+   "stellen": [
+    {
+     "artikel": "Article 9 En matière réglementaire",
+     "text": "Article 9 En matière réglementaire 1 La Municipalité est I'autorité compétente pour exécuter le présent règlement. 2 Elle arrête : a. les dispositions d'application du présent règlement qui lui sont déléguées par le Conseil communal ; b. les tarifs pour la délivrance des autorisations en application du présent règlement et pour toutes autres prestations, notamment les actes, les décisions et les interventions de l'autorité compétente, pris en application du présent règlement ; c. en cas d'urgence, les directives complémentaires ou les mesures adéquates. t L'article 94 al.2 de la loi du 28 février 1956 sur les communes est réservé. SECTION 4 ASSISTANCE AUX AUTORITES",
+     "im_titel": false
+    },
+    {
+     "artikel": "Article 26 lnterdiction de périmètre",
+     "text": "Article 26 lnterdiction de périmètre 1 La Municipalité peut définir des zones du domaine public auxquelles l'accès est restreint ou interdit. 2 La Municipalité peut définir des zones du domaine public dans lesquelles elle peut limiter à certaines heures ou interdire : a. la consommation de substances alcooliques ou alcoolisées ; b. les réunions ; c. la vente de produits ou de services ; d. la distribution de supports publicitaires, à vocation politique, religieuse ou dans des domaines apparentés ; e. la prostitution. 3 La Municipalité ou I'autorité délégataire compétente peut renvoyer temporairement des personnes d'une zone ou leur en interdire I'accès : a. si elles sont menacées d'un danger grave et imminent ; b. s'il y a de sérieuses raisons de soupçonner qu'elles ou d'autres personnes faisant manifestement partie du même attroupement menacent ou troublent la sécurité et I'ordre public; c. si elles gênent les interventions visant au maintien ou au rétablissement de la sécurité et de l'ordre, en particulier les interventions de la police, des services de défense contre I'incendie et de secours ; d. si elles empêchent ou gênent le corps de police dans l'application de décisions exécutoires ou qu'elles s'ingèrent dans son action ; -- 12 of 47 -- e. si elles font ou tentent de faire échec à l'action du corps de police; ou f. si elles y ont commis des actes de nature à compromettr",
+     "im_titel": false
+    },
+    {
+     "artikel": "Article 35 Police de la circulation",
+     "text": "Article 35 Police de la circulation t Sous réserve des dispositions fédérales et cantonales applicables, la Municipalité ou I'autorité délégataire est compétente pour régler la circulation et le stationnement sur le domaine public communal et sur la voie publique. 2 La Municipalité ou l'autorité délégataire peut, par règlement, soumettre à restriction ou à interdiction de circulation ou de stationnement certains périmètres du domaine public ou de la voie publique. 3 Les interdictions et les restrictions portant sur les parties de la voie publique dépendant du domaine privé doivent faire I'objet d'une autorisation préalable du propriétaire, du possesseur ou de la personne disposant d'un droit d'usage exclusif, sauf en cas d'urgence.",
+     "im_titel": false
+    },
+    {
+     "artikel": "Article 60 Parcs publics",
+     "text": "Article 60 Parcs publics 1 La Municipalité est compétente pour adopter un règlement concernant l'accès aux parcs publics, leur utilisation et les activités qui y sont autorisées. 2 La Municipalité peut nommer des collaborateurs affectés à la surveillance des parcs (gardes- parcs). CHAPITRE II ORDRE, SECURITE, TRANQUILLITE ET MORALE PUBLICS SECTION 1 ORDRE, SECURITE ET TRANQUILLITE PUBLICS",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -10445,10 +10295,8 @@
    "name": "Oron",
    "kanton": "CH-VD",
    "website": "https://www.oron.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10456,10 +10304,8 @@
    "name": "Chevroux",
    "kanton": "CH-VD",
    "website": "http://www.chevroux.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10467,10 +10313,8 @@
    "name": "Trey",
    "kanton": "CH-VD",
    "website": "https://www.trey.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10478,10 +10322,8 @@
    "name": "Château-d'Oex",
    "kanton": "CH-VD",
    "website": "https://www.chateaudoex-admin.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10489,10 +10331,8 @@
    "name": "Allaman",
    "kanton": "CH-VD",
    "website": "https://www.allaman.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10500,10 +10340,8 @@
    "name": "Burtigny",
    "kanton": "CH-VD",
    "website": "https://www.burtigny.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10511,10 +10349,8 @@
    "name": "Dully",
    "kanton": "CH-VD",
    "website": "http://www.dully.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10525,7 +10361,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -10533,10 +10369,8 @@
    "name": "Le Lieu",
    "kanton": "CH-VD",
    "website": "https://www.lelieu.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10544,10 +10378,8 @@
    "name": "Démoret",
    "kanton": "CH-VD",
    "website": "https://www.demoret.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10555,10 +10387,8 @@
    "name": "Molondin",
    "kanton": "CH-VD",
    "website": "https://www.molondin.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10566,10 +10396,8 @@
    "name": "Ursins",
    "kanton": "CH-VD",
    "website": "https://www.ursins.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10577,10 +10405,16 @@
    "name": "Eggerberg",
    "kanton": "CH-VS",
    "website": "https://www.eggerberg.ch",
-   "dokument": null,
-   "dokument_titel": null,
-   "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "dokument": "https://www.eggerberg.ch/?action=get_file&id=33&resource_link_id=66",
+   "dokument_titel": "Bau- und Zonenreglement (GBR)",
+   "stellen": [
+    {
+     "artikel": "Art. 5 Bewilligungspflichtige Bauvorhaben",
+     "text": "Art. 5 Bewilligungspflichtige Bauvorhaben Alle Bauten, Anlagen und Vorkehren, die unter die Bestimmungen der bau- und pla- nungsrechtlich relevanten Gesetzgebung fallen, erfordern eine Baubewilligung. Die- ses Erfordernis gilt für folgende Bauvorhaben: 1. Die Erstellung, den Wiederaufbau, die Änderung sowie die Vergrösserung von Gebäuden, Gebäudeteilen und ihren Anbauten; 2. Den totalen oder teilweisen Abbruch bestehender Bauten und Anlagen; 3. Die Erstellung und Erweiterung von anderen Bauten und Anlagen, wie von: 2 Bau- und Zonenreglement der Gemeinde Eggerberg -- 4 of 49 -- a) Lager- und Verteilungsanlagen für Treib- und Schmierstoffe sowie der Gasver- sorgung (Tankanlagen, Behälter, Silos und dergleichen); b) Heizungseinrichtungen oder solche der Energieversorgung, Türmen und freistehenden Kaminen, Antennen, Parabolantennen, Transformatoren- sowie Freiluftanlagen; c) Privatstrassen und anderen Kunstbauten, Zufahrten, Rampen, Parkplätzen und Leitungen; d) Mauern und Einfriedungen e) Anlagen für die Beseitigung der Abwässer und des Kehrichts sowie von Misthöfen, Jauchegruben und Biogasanlagen f) Treibhäusern, landwirtschaftlichen und industriellen Silos; g) Ablagerungs- und Abstellplätzen unter freiem Himmel, namentlich für gewerb- liche und industrielle Erzeugnisse, Maschinen und ausgediente Fahrzeuge sowie die dauerhafte Lagerung von Materialien, wie Baumaterialien, Eisen u",
+     "im_titel": false
+    }
+   ],
+   "fehler": null,
    "weg": "browser"
   },
   {
@@ -10588,10 +10422,8 @@
    "name": "Naters",
    "kanton": "CH-VS",
    "website": "https://www.naters.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10599,10 +10431,8 @@
    "name": "Ried-Brig",
    "kanton": "CH-VS",
    "website": "https://www.ried-brig.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10610,10 +10440,8 @@
    "name": "Neind",
    "kanton": "CH-VS",
    "website": "http://www.nendaz.org",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10621,10 +10449,8 @@
    "name": "Bourg-Saint-Pierre",
    "kanton": "CH-VS",
    "website": "https://www.bourg-saint-pierre.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10632,10 +10458,8 @@
    "name": "Liddes",
    "kanton": "CH-VS",
    "website": "https://www.liddes.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10643,10 +10467,8 @@
    "name": "Val de Bagnes",
    "kanton": "CH-VS",
    "website": "https://www.valdebagnes.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10654,10 +10476,8 @@
    "name": "Bellwald",
    "kanton": "CH-VS",
    "website": "https://gemeinde.bellwald.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10665,10 +10485,8 @@
    "name": "Binn",
    "kanton": "CH-VS",
    "website": "https://www.binn.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10676,10 +10494,10 @@
    "name": "Ernen",
    "kanton": "CH-VS",
    "website": "https://www.ernen.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.ernen.ch/gemeinde/?action=get_file&id=16&resource_link_id=1b2",
+   "dokument_titel": "Polizeireglement",
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -10687,10 +10505,8 @@
    "name": "Fiesch",
    "kanton": "CH-VS",
    "website": "https://www.gemeinde-fiesch.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10709,10 +10525,8 @@
    "name": "Lax",
    "kanton": "CH-VS",
    "website": "http://www.lax.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10720,10 +10534,8 @@
    "name": "Vex",
    "kanton": "CH-VS",
    "website": "http://www.vex.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -10734,7 +10546,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "PDF: fetch failed",
    "weg": "browser"
   },
   {
@@ -10745,7 +10557,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
@@ -10756,7 +10568,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Anbieter sperrt uns aus",
+   "fehler": "kein passendes Reglement gefunden",
    "weg": "browser"
   },
   {
