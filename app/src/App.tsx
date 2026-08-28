@@ -41,12 +41,13 @@ import {
   entwurfAbholen, entwurfSichern, entwurfVerwerfen, entwurfWartet, type Tourentwurf,
 } from './services/entwurf'
 import {
-  aktualisiereTour, brauchtNamenswahl, ladeProfil, linkErgebnisAuslesen, saveTour, useSession,
+  aktualisiereTour, brauchtNamenswahl, ladeEigenenVerlauf, ladeProfil, linkErgebnisAuslesen,
+  saveTour, useSession,
   type GespeicherteEtappe, type LinkErgebnis, type Profil,
 } from './services/account'
 import { BenutzernameDialog } from './components/BenutzernameDialog'
 import type { PackStaende } from './affiliate/packlist'
-import { ORT_UMKREIS_M, type Ortsfilter } from './services/community'
+import { ladeVerlauf, ORT_UMKREIS_M, type Ortsfilter } from './services/community'
 import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
 import { Auswahl, Button, Segmente } from './ui'
 
@@ -542,11 +543,18 @@ export default function App() {
     }
   }
 
-  /** Eine eigene Tour zum Ändern auf die Karte holen. */
-  const tourBearbeiten = (tour: Tour) => {
+  /**
+   * Eine eigene Tour zum Ändern auf die Karte holen.
+   *
+   * Der Verlauf wird nachgeladen: die Tourenliste kennt seit Migration 0024
+   * nur die ausgedünnte Vorschau, und wer eine Tour *bearbeitet*, bekäme
+   * sonst eine Route, die schon beim Öffnen ihre Kehren verloren hat.
+   */
+  const tourBearbeiten = async (tour: Tour) => {
+    const verlauf = await ladeEigenenVerlauf(tour.id)
     routeLaden(
-      (tour.geometry?.coordinates ?? []) as Position[],
-      (tour.waypoints ?? []) as Position[],
+      (verlauf.geometry?.coordinates ?? []) as Position[],
+      (verlauf.waypoints ?? []) as Position[],
       { id: tour.id, name: tour.name },
     )
   }
@@ -1006,10 +1014,12 @@ export default function App() {
             onPunktLoeschen={(punkt) => void punktEntfernen(punkt)}
             onTourOeffnen={(tour) => {
               setSelection(null)
-              routeLaden(
-                (tour.geometry?.coordinates ?? []) as Position[],
-                (tour.waypoints ?? []) as Position[],
-              )
+              // Erst hier den echten Weg holen — die Liste im Infofenster
+              // trägt nur die Vorschau.
+              void ladeVerlauf(tour.id).then((verlauf) => routeLaden(
+                ((verlauf.geometry ?? tour.vorschau)?.coordinates ?? []) as Position[],
+                (verlauf.waypoints ?? []) as Position[],
+              ))
             }}
             onAlleTouren={tourenBeiOrt}
             onAlsWegpunkt={(position, ort) => {

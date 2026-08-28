@@ -39,7 +39,8 @@ import {
 import {
   coldestNight, daysFromToday, loadForecast, MAX_FORECAST_DAYS, sliceToTrip, type Forecast,
 } from '../services/weather'
-import { aktualisiereTour, etappenLesen } from '../services/account'
+import { aktualisiereTour, etappenLesen, ladeEigenenVerlauf } from '../services/account'
+import { ladeVerlauf } from '../services/community'
 import type { PublicTour, Tour } from '../services/supabase'
 import { Button, Eingabe, Feld, Hinweis, IconButton, Label, Segmente } from '../ui'
 import { Packliste } from './Packliste'
@@ -123,12 +124,30 @@ export function TourFenster({
     [tour],
   )
 
+  /*
+    Für alles in diesem Fenster reicht die ausgedünnte Fassung: das
+    Vorschaubild ist 200 Pixel hoch, und für die Wettervorhersage zählt nur
+    der erste Punkt. Der volle Verlauf wäre hier vierzig Kilobyte für nichts.
+  */
   const geometry = useMemo(
-    () => (tour.geometry?.coordinates ?? []) as Position[],
-    [tour.geometry],
+    () => ((tour.vorschau ?? tour.geometry)?.coordinates ?? []) as Position[],
+    [tour.vorschau, tour.geometry],
   )
   const hatWeg = geometry.length >= 2
-  const aufKarte = () => onAufKarte(geometry, (tour.waypoints ?? []) as Position[])
+
+  /*
+    Auf die Karte gehört dagegen der echte Weg — dort sieht man jede
+    weggelassene Kehre. Deshalb wird er genau hier nachgeladen, für diese eine
+    Tour. Geht das schief, wandert die Vorschau auf die Karte: ein grober Weg
+    ist immer noch besser als ein Knopf, der nichts tut.
+  */
+  const aufKarte = async () => {
+    const verlauf = eigen ? await ladeEigenenVerlauf(tour.id) : await ladeVerlauf(tour.id)
+    onAufKarte(
+      (verlauf.geometry?.coordinates as Position[] | undefined) ?? geometry,
+      (verlauf.waypoints ?? []) as Position[],
+    )
+  }
 
   /*
     Die Höhe der höchsten Nacht kommt aus dem Höhenprofil und wird deshalb

@@ -38,6 +38,18 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   **Supabase ist ausschliesslich für Nutzerbezogenes zuständig** — Konten, Touren, Kommentare,
   Meldungen, eigene Punkte. Wer Kartendaten wieder aus der Datenbank holt, holt sich beides
   zurück: Egress-Kosten pro Besuch und den 1000-Zeilen-Deckel.
+- **Die Kartentabellen sind nicht mehr über die API lesbar** (Migration 0023). `zones`,
+  `points`, `gemeinden`, `nature`, `peaks`, `gear_items` haben keine Lese-Policy und kein
+  `grant` mehr — sie sind der Fundus für den Import, nicht die Auslieferung. Wer dort wieder
+  `select` freigibt, legt 15 MB ohne Anmeldung ins Netz und zahlt sie aus demselben
+  Egress-Kontingent wie die echten Besucher.
+- **Übersichtslisten laden `vorschau`, nie `geometry`** (Migration 0024). Jede Tour trägt
+  ihren Verlauf zweimal: vollständig für die Karte, auf 120 Punkte ausgedünnt für das
+  Vorschaubild — 22 kB statt 932 kB über alle Touren. Die Spaltenlisten stehen als
+  `LISTEN_SPALTEN` / `EIGENE_LISTEN_SPALTEN` in `app/src/services/supabase.ts`; der volle
+  Weg kommt über `ladeVerlauf` (fremde Tour) bzw. `ladeEigenenVerlauf` (eigene), und zwar
+  erst dann, wenn jemand die Tour tatsächlich auf die Karte legt, kopiert oder bearbeitet.
+  Ein `select('*')` auf `routes` oder `oeffentliche_routen` in einer Liste ist ein Rückfall.
 - **PostgREST liefert höchstens 1000 Zeilen, stillschweigend.** Genau daran fehlten live über
   tausend Gemeinden und mehrere hundert Schutzgebiete, monatelang, ohne Fehlermeldung. Jede
   Abfrage, die mehr als eine Handvoll Zeilen erwarten kann, geht über `alleZeilen` aus

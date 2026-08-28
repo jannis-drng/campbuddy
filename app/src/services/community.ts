@@ -19,7 +19,10 @@
  *     erkennt sie, ob es weitergeht, ohne die Gesamtzahl zählen zu lassen.
  */
 import type { Position } from '../data/geo'
-import { getSupabase, type Kommentar, type KommentarKnoten, type PublicTour } from './supabase'
+import {
+  getSupabase, verlaufLaden, LISTEN_SPALTEN,
+  type Kommentar, type KommentarKnoten, type PublicTour, type Verlauf,
+} from './supabase'
 import { alleZeilen } from './deckel'
 import { istSchemaFehlt } from './account'
 
@@ -115,7 +118,7 @@ export async function listCommunityTouren(
     return { touren: gefiltert, mehr: false, gesamt: gefiltert.length }
   }
 
-  let q = sb.from('oeffentliche_routen').select('*', { count: 'estimated' })
+  let q = sb.from('oeffentliche_routen').select(LISTEN_SPALTEN, { count: 'estimated' })
 
   const suche = filter.suche.trim()
   if (suche) {
@@ -255,6 +258,14 @@ export async function listKommentare(
     // Antworten immer aufsteigend: innerhalb eines Strangs liest man von oben
     // nach unten, auch wenn die Ursprünge nach „neueste zuerst" sortiert sind.
     .order('created_at', { ascending: true })
+    /*
+      Gedeckelt, weil diese Abfrage sonst als einzige im Haus unbegrenzt wäre:
+      zwanzig Stränge mal beliebig vielen Antworten. Bei den heutigen Mengen
+      greift die Grenze nie; sie steht für den Tag, an dem unter einer Tour
+      eine Diskussion mit tausend Beiträgen hängt — dann fehlen die letzten,
+      statt dass die Seite stehenbleibt.
+    */
+    .limit(500)
 
   return {
     straenge: baumBauen(ursprunge, (nachfahren ?? []) as Kommentar[]),
@@ -394,7 +405,9 @@ export async function listTourenBei(
   if (!sb) return []
   const { data, error } = await sb.rpc('touren_bei', {
     lon: position[0], lat: position[1], umkreis_m: umkreisM, max_anzahl: maxAnzahl,
-  })
+  // Auch hier nur die Listenspalten: die Funktion gibt den vollen Zeilentyp
+  // der View zurück, und ohne diese Auswahl käme die Geometrie doch wieder mit.
+  }).select(LISTEN_SPALTEN)
   if (error) {
     if (istSchemaFehlt(error) || /function .* does not exist|schema cache/i.test(error.message)) return []
     throw new Error(error.message)
@@ -411,4 +424,21 @@ function uebersetze(meldung: string): string {
     return 'Das klappt gerade nicht. Versuch es später noch einmal.'
   }
   return meldung
+}
+
+/* ------------------------------------------------------------- Verlauf */
+
+/**
+ * Den vollen Verlauf einer geteilten Tour nachholen.
+ *
+ * Die Übersicht kennt von jeder Tour nur die ausgedünnte `vorschau` — genug
+ * fürs Bild, zu grob für die Karte. Dieser Aufruf steht deshalb an genau den
+ * Stellen, an denen der Weg wirklich gebraucht wird: „Auf Karte", das
+ * Höhenprofil, der GPX-Export. Eine Tour, keine Liste.
+ *
+ * Fehlt die Tour (inzwischen zurückgezogen), kommt ein leerer Verlauf zurück
+ * statt eines Fehlers: die Karte bleibt dann stehen, wo sie ist.
+ */
+export async function ladeVerlauf(routeId: string): Promise<Verlauf> {
+  return verlaufLaden('oeffentliche_routen', routeId)
 }

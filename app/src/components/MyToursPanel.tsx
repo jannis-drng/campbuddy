@@ -19,12 +19,13 @@ import {
 import type { Position } from '../data/geo'
 import { isSupabaseConfigured, type PublicTour, type Tour } from '../services/supabase'
 import {
-  deleteTour, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
+  deleteTour, ladeEigenenVerlauf, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
   setTourPublic, tourKopieren,
 } from '../services/account'
 import { Badge, Button, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
 import { TourFenster } from './TourFenster'
+import { ladeVerlauf } from '../services/community'
 
 interface Props {
   session: Session | null
@@ -87,11 +88,23 @@ export function MyToursPanel({
 
   useEffect(() => { void laden() }, [laden])
 
-  const aufKarte = (t: Tour | PublicTour) =>
+  /*
+    Der Verlauf kommt erst beim Antippen. Die Liste hat ihn nicht: sie lädt
+    nur die ausgedünnte Vorschau, sonst wären vierzig gespeicherte Touren
+    anderthalb Megabyte für vierzig Bildchen.
+
+    Eigene Touren gehen über die Basistabelle, gemerkte über die öffentliche
+    View — `user_id` steht nur an den eigenen, das unterscheidet beide sicher.
+  */
+  const aufKarte = async (t: Tour | PublicTour) => {
+    const verlauf = 'user_id' in t
+      ? await ladeEigenenVerlauf(t.id)
+      : await ladeVerlauf(t.id)
     onLoadRoute(
-      (t.geometry?.coordinates ?? []) as Position[],
-      (t.waypoints ?? []) as Position[],
+      ((verlauf.geometry ?? t.vorschau)?.coordinates ?? []) as Position[],
+      (verlauf.waypoints ?? []) as Position[],
     )
+  }
 
   const zuruecknehmen = async (t: Tour) => {
     try {

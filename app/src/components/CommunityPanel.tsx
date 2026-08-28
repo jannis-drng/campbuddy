@@ -29,7 +29,7 @@ import { REGIONS } from '../data/regions'
 import { isSupabaseConfigured, type PublicTour } from '../services/supabase'
 import { addFavorite, ladeProfil, listFavoriteIds, removeFavorite } from '../services/account'
 import {
-  listCommunityTouren, listLikeIds, setLike, verfuegbareRegionen,
+  ladeVerlauf, listCommunityTouren, listLikeIds, setLike, verfuegbareRegionen,
   LAENGENKLASSEN, SORTIERUNGEN, STANDARD_FILTER,
   type CommunityFilter, type Laengenklasse, type Ortsfilter, type Sortierung,
 } from '../services/community'
@@ -171,11 +171,21 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
     setOffen((o) => (o && o.id === id ? anpassen(o) : o))
   }
 
-  const aufKarte = (tour: PublicTour) => {
+  /*
+    Der volle Verlauf kommt erst hier, nicht schon mit der Liste.
+    Die Übersicht kennt von jeder Tour nur die ausgedünnte Vorschau — genug
+    fürs Bild, zu grob für die Karte. Beim Antippen wird die eine Tour
+    nachgeladen, statt zwölf volle Verläufe auf Verdacht zu holen.
+
+    Kommt nichts zurück (Tour inzwischen zurückgezogen), bleibt die Vorschau
+    als Notnagel: lieber ein grober Weg auf der Karte als gar keiner.
+  */
+  const aufKarte = async (tour: PublicTour) => {
     setOffen(null)
+    const verlauf = await ladeVerlauf(tour.id)
     onLoadRoute(
-      (tour.geometry?.coordinates ?? []) as Position[],
-      (tour.waypoints ?? []) as Position[],
+      ((verlauf.geometry ?? tour.vorschau)?.coordinates ?? []) as Position[],
+      (verlauf.waypoints ?? []) as Position[],
     )
   }
 

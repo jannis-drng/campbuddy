@@ -814,7 +814,7 @@ function TourenHier({
                 className="flex w-full items-center gap-2.5 rounded-mittel bg-flaeche-1 p-2 text-left transition-colors duration-[160ms] hover:bg-flaeche-3 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <RoutenVorschau
-                  geometry={(t.geometry?.coordinates ?? []) as Position[]}
+                  geometry={((t.vorschau ?? t.geometry)?.coordinates ?? []) as Position[]}
                   breite={160} hoehe={100} rund="alle" linie={2}
                   className="w-16 shrink-0"
                 />

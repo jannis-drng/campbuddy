@@ -12,7 +12,10 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { Position } from '../data/geo'
 import type { TripParams } from '../data/types'
-import { getSupabase, type PublicTour, type Tour } from './supabase'
+import {
+  getSupabase, verlaufLaden, EIGENE_LISTEN_SPALTEN, LISTEN_SPALTEN,
+  type PublicTour, type Tour, type Verlauf,
+} from './supabase'
 import type { PackStaende } from '../affiliate/packlist'
 import type { Uebernachtung } from '../data/hiking'
 import { alleZeilen } from './deckel'
@@ -356,9 +359,12 @@ export async function listTouren(): Promise<Tour[]> {
   if (!sb) return []
   // Geblättert, nicht abgeschnitten: PostgREST hört von sich aus bei 1000
   // Zeilen auf, ohne das zu sagen (siehe deckel.ts).
+  // Ohne `geometry` und `waypoints`: die Liste zeichnet nur Vorschaubilder,
+  // und wer vierzig gespeicherte Touren hat, lud bisher anderthalb Megabyte
+  // für vierzig Bildchen (Migration 0024). Der Weg kommt über `ladeVerlauf`.
   return alleZeilen<Tour>((von, bis) => sb
     .from('routes')
-    .select('*')
+    .select(EIGENE_LISTEN_SPALTEN)
     .order('created_at', { ascending: false })
     .range(von, bis))
 }
@@ -486,8 +492,12 @@ export async function tourKopieren(
   name: string,
   eckdaten?: TourEckdaten,
 ): Promise<Tour> {
-  const geometry = (vorlage.geometry?.coordinates ?? []) as Position[]
-  const waypoints = (vorlage.waypoints ?? []) as Position[]
+  // Nachgeladen, nicht aus der Vorlage genommen: kommt sie aus einer
+  // Übersichtsliste, trägt sie nur die ausgedünnte Vorschau — und eine Kopie
+  // mit hundertzwanzig statt viertausend Punkten wäre eine andere Tour.
+  const verlauf = await verlaufLaden('oeffentliche_routen', vorlage.id)
+  const geometry = ((verlauf.geometry ?? vorlage.geometry)?.coordinates ?? []) as Position[]
+  const waypoints = (verlauf.waypoints ?? vorlage.waypoints ?? []) as Position[]
   return saveTour(name, vorlage.region, geometry, waypoints, {
     distance_m: vorlage.distance_m,
     ascent_m: vorlage.ascent_m,
@@ -590,7 +600,7 @@ export async function listFavoriteTouren(): Promise<PublicTour[]> {
   if (ids.length === 0) return []
   const { data, error } = await sb
     .from('oeffentliche_routen')
-    .select('*')
+    .select(LISTEN_SPALTEN)
     .in('id', ids)
     .order('veroeffentlicht_am', { ascending: false, nullsFirst: false })
   if (istSchemaFehlt(error)) return []
@@ -782,4 +792,15 @@ export function linkErgebnisAuslesen(): LinkErgebnis | null {
     return { art: 'passwort-neu', meldung: 'Du bist angemeldet. Setze jetzt unten ein neues Passwort.' }
   }
   return { art: 'bestaetigt', meldung: 'E-Mail bestätigt. Du bist angemeldet.' }
+}
+
+/**
+ * Den vollen Verlauf einer eigenen Tour nachholen.
+ *
+ * Gegenstück zu `ladeVerlauf` in `community.ts`, nur über die Basistabelle
+ * statt über die View — eine eigene Tour muss auch dann ladbar sein, wenn sie
+ * nie geteilt wurde. Die RLS sorgt dafür, dass es die eigene bleibt.
+ */
+export async function ladeEigenenVerlauf(routeId: string): Promise<Verlauf> {
+  return verlaufLaden('routes', routeId)
 }

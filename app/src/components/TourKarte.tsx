@@ -134,10 +134,15 @@ interface Props {
 }
 
 export function TourKarte({ tour, onOeffnen, aktionen, marke, autorZeigen = true }: Props) {
+  // Die ausgedünnte Fassung, nicht der volle Verlauf: eine Kartenvorschau ist
+  // 640×360 Pixel gross, da liegen die Punkte eines gerouteten Alpenwegs zu
+  // Hunderten auf demselben Pixel (Migration 0024). `geometry` steht in einer
+  // Liste ohnehin nicht zur Verfügung — es fällt hier nur zurück, wenn die
+  // Karte aus einer einzeln geladenen Tour gebaut wird.
   // Stabile Referenz, sonst läuft die Memoisierung der Vorschau ins Leere.
   const geometrie = useMemo(
-    () => (tour.geometry?.coordinates ?? []) as Position[],
-    [tour.geometry],
+    () => ((tour.vorschau ?? tour.geometry)?.coordinates ?? []) as Position[],
+    [tour.vorschau, tour.geometry],
   )
 
   return (
@@ -260,7 +265,11 @@ export function ZaehlerKnopf({
  * anzuspringen gab. Das sah aus wie ein kaputter Zoom.
  */
 export function hatWeg(tour: PublicTour | Tour): boolean {
-  return (tour.geometry?.coordinates?.length ?? 0) >= 2
+  // Gefragt wird `vorschau`, weil das die Spalte ist, die eine Liste
+  // tatsächlich geladen hat. `geometry` wäre dort undefiniert und der Knopf
+  // grundlos ausgegraut.
+  const punkte = (tour.vorschau ?? tour.geometry)?.coordinates?.length ?? 0
+  return punkte >= 2
 }
 
 /** Der Weg von der Karte zurück auf die Karte. */

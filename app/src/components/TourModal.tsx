@@ -60,7 +60,7 @@ export function TourModal({
 
   if (!tour) return null
 
-  const geometrie = (tour.geometry?.coordinates ?? []) as Position[]
+  const geometrie = ((tour.vorschau ?? tour.geometry)?.coordinates ?? []) as Position[]
 
   return (
     <div
