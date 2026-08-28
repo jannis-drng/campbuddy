@@ -387,6 +387,24 @@ function mitFrist(zusage, ms, text) {
   ])
 }
 
+/**
+ * Zwischenstand sichern — ergänzend, nie ersetzend.
+ *
+ * Auch der Zwischenspeicher las die Datei nicht, sondern schrieb nur die
+ * Ergebnisse des laufenden Durchgangs. Bei einem Teillauf war der Bestand
+ * damit schon nach den ersten 25 Gemeinden weg, lange vor dem Ende.
+ */
+function schreibeZwischenstand() {
+  const bisherige = existsSync(AUSGABE)
+    ? JSON.parse(readFileSync(AUSGABE, 'utf8')).ergebnisse
+    : []
+  const alle = [
+    ...bisherige.filter((a) => !ergebnisse.some((b) => b.bfs === a.bfs)),
+    ...ergebnisse,
+  ]
+  writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse: alle }, null, 1) + '\n')
+}
+
 async function arbeiter() {
   while (warteschlange.length) {
     const g = warteschlange.shift()
@@ -449,7 +467,7 @@ async function arbeiter() {
     if (fertig % 25 === 0 || fertig === offen.length) {
       const mit = ergebnisse.filter((x) => x.stellen.length > 0).length
       console.log(`  ${fertig}/${offen.length} — ${mit} mit Fundstelle`)
-      writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse }, null, 1) + '\n')
+      schreibeZwischenstand()
     }
   }
 }
@@ -459,9 +477,20 @@ await browser.close()
 
 // Beim Wiederholen die früheren Befunde behalten und nur die ersetzen, die
 // jetzt neu erhoben wurden.
-const zusammen = WIEDERHOLEN
-  ? [...frueher.filter((a) => !ergebnisse.some((b) => b.bfs === a.bfs)), ...ergebnisse]
-  : ergebnisse
+// Immer zusammenführen, nie ersetzen.
+//
+// Vorher galt das nur im Wiederholmodus. Ein gezielter Lauf über 15 Gemeinden
+// hat die Datei deshalb mit 15 Einträgen überschrieben und 1056 Ergebnisse
+// samt 46 Fundstellen gelöscht — Arbeit von Stunden, weg in einer Sekunde,
+// ohne Fehlermeldung. Ein Teillauf darf grundsätzlich nur ergänzen; wer
+// wirklich bei null anfangen will, löscht die Datei von Hand.
+const bestand = existsSync(AUSGABE)
+  ? JSON.parse(readFileSync(AUSGABE, 'utf8')).ergebnisse
+  : []
+const zusammen = [
+  ...bestand.filter((a) => !ergebnisse.some((b) => b.bfs === a.bfs)),
+  ...ergebnisse,
+]
 zusammen.sort((a, b) => (a.bfs ?? 0) - (b.bfs ?? 0))
 writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse: zusammen }, null, 1) + '\n')
 

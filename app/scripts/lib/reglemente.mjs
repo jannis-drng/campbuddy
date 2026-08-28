@@ -279,6 +279,11 @@ const AUSSCHUSS = -10
  */
 export function dokumentRang(text, istPdf = true) {
   let p = istPdf ? 2 : 0
+
+  // Die Kantonspolizei ist nicht das Polizeireglement der Gemeinde. Ihr
+  // Kürzel „kapo" liess den Verweis auf kapo.zh.ch als bestes Dokument
+  // gewinnen — eine Behördenseite, auf der kein einziger Erlass steht.
+  if (/kapo\.|kantonspolizei|police\s*cantonale|stadtpolizei|polizei\.zh\.ch|suisse-?police/i.test(text)) return -30
   if (/polizeireglement|polizei-?reglement|règlement\s*(de\s*)?police|regolamento\s*(di\s*)?polizia/i.test(text)) p += 20
   else if (/polizei|police|polizia/i.test(text)) p += 12
   if (/gemeindeordnung|allgemeines\s*reglement|règlement\s*g[ée]n[ée]ral|regolamento\s*generale/i.test(text)) p += 8

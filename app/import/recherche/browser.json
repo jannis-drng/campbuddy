@@ -17,10 +17,10 @@
    "name": "Bonstetten",
    "kanton": "CH-ZH",
    "website": "http://www.bonstetten.ch",
-   "dokument": "https://www.bonstetten.ch/_rte/information/980389",
-   "dokument_titel": "Gemeindeordnung",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -127,10 +127,10 @@
    "name": "Dachsen",
    "kanton": "CH-ZH",
    "website": "http://www.dachsen.ch",
-   "dokument": "https://www.dachsen.ch/_rte/information/1406638",
-   "dokument_titel": "Gemeindeordnung der Politischen Gemeinde",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -149,10 +149,10 @@
    "name": "Flaach",
    "kanton": "CH-ZH",
    "website": "https://www.flaach.ch",
-   "dokument": "https://camping.tcs.ch/de/campingplaetze/tcs-camping-flaach-am-rhein/",
-   "dokument_titel": "Zum Eintrag: Camping Flaach",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -601,10 +601,10 @@
    "name": "Niederglatt",
    "kanton": "CH-ZH",
    "website": "http://www.niederglatt.zh.ch",
-   "dokument": "https://www.niederglatt-zh.ch/_rte/information/2726219",
-   "dokument_titel": "Gemeindeordnung der politischen Gemeinde Niederglatt",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -1355,10 +1355,10 @@
    "name": "Andelfingen",
    "kanton": "CH-ZH",
    "website": "https://www.andelfingen.ch",
-   "dokument": "https://www.andelfingen.ch/_rte/information/675050",
-   "dokument_titel": "Gemeindeordnung",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -1421,7 +1421,7 @@
    "name": "Bargen (BE)",
    "kanton": "CH-BE",
    "website": "https://www.bargen-be.ch",
-   "dokument": "https://www.burger-bargen.ch/app/download/9188343075/Nutzungsreglement_2019a+%28Original%29.pdf?t=1738619770",
+   "dokument": "https://www.burger-bargen.ch/app/download/9188342075/Organisationsreglement_2019a+%28Original%29.pdf?t=1738619770",
    "dokument_titel": "Reglemente",
    "stellen": [],
    "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
@@ -1476,8 +1476,8 @@
    "name": "Radelfingen",
    "kanton": "CH-BE",
    "website": "http://www.radelfingen.ch",
-   "dokument": "https://www.radelfingen.ch/wAssets/docs/Website-Radelfingen/Themen/Reglemente-und-Verordnungen/Baureglement-Pruefung-AGR.pdf",
-   "dokument_titel": "Baureglement neu (zur Prüfung beim AGR hängig)",
+   "dokument": "https://www.radelfingen.ch/wAssets/docs/Website-Radelfingen/Themen/Reglemente-und-Verordnungen/Organisationsverordnung.pdf",
+   "dokument_titel": "Organisationsverordnung",
    "stellen": [],
    "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
