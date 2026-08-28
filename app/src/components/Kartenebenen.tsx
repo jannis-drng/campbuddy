@@ -16,7 +16,7 @@
  */
 import { useEffect, useState } from 'react'
 import { Layers, X } from 'lucide-react'
-import type { ActivityMode } from '../data/types'
+import type { MapFilters } from '../data/types'
 import type { BasemapKey } from '../map/mapConfig'
 import { Label } from '../ui'
 import { BasemapSwitcher } from './BasemapSwitcher'
@@ -26,10 +26,16 @@ interface Props {
   region: string
   basemap: BasemapKey
   onBasemapChange: (key: BasemapKey) => void
-  activity: ActivityMode
+  /**
+   * Die Symbolebenen werden hier nicht nur erklärt, sondern auch geschaltet —
+   * siehe den Kopf von `Legend.tsx`. Deshalb der ganze Filterzustand statt nur
+   * der Aktivität.
+   */
+  filters: MapFilters
+  onFiltersChange: (f: MapFilters) => void
 }
 
-export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Props) {
+export function Kartenebenen({ region, basemap, onBasemapChange, filters, onFiltersChange }: Props) {
   const [offen, setOffen] = useState(false)
 
   // Auf dem Telefon deckt die Blase halbe Karte ab — Escape ist der übliche
@@ -61,7 +67,7 @@ export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Pro
       <button
         onClick={() => setOffen((v) => !v)}
         aria-expanded={offen}
-        aria-label="Kartenwahl und Legende"
+        aria-label="Kartenwahl, Ebenen und Legende"
         className={`pointer-events-auto flex h-9 w-9 shrink-0 items-center justify-center
                     rounded-mittel border border-kante bg-flaeche-2/92 shadow-[var(--shadow-2)]
                     backdrop-blur-md transition-colors duration-[160ms] sm:hidden
@@ -77,7 +83,7 @@ export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Pro
                      backdrop-blur-md sm:hidden"
         >
           <div className="flex shrink-0 items-center gap-2 border-b border-kante px-3 py-2.5">
-            <span className="flex-1 text-klein font-semibold text-ink-100">Karte &amp; Legende</span>
+            <span className="flex-1 text-klein font-semibold text-ink-100">Karte &amp; Ebenen</span>
             <button
               onClick={() => setOffen(false)}
               aria-label="Schliessen"
@@ -94,7 +100,7 @@ export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Pro
               <BasemapSwitcher region={region} value={basemap} onChange={onBasemapChange} breit />
             </div>
             <div className="border-t border-kante pt-3">
-              <LegendeInhalt activity={activity} />
+              <LegendeInhalt activity={filters.activity} filters={filters} onChange={onFiltersChange} />
             </div>
           </div>
         </div>
@@ -105,7 +111,7 @@ export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Pro
         <BasemapSwitcher region={region} value={basemap} onChange={onBasemapChange} />
       </div>
       <div className="hidden min-h-0 sm:flex">
-        <Legende activity={activity} />
+        <Legende activity={filters.activity} filters={filters} onChange={onFiltersChange} />
       </div>
     </div>
   )
