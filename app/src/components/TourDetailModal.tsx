@@ -292,7 +292,15 @@ export function TourDetailModal({
           </div>
         </header>
 
-        <div className="space-y-7 overflow-y-auto px-5 py-5">
+{/*
+          `overflow-x-hidden` ist kein Schmuck: ein Kasten mit `overflow-y: auto`
+          bekommt vom Browser automatisch auch `overflow-x: auto`. Ragte darin
+          irgendetwas ein paar Pixel über die Breite - eine Kachelreihe, eine
+          lange Zahl -, liess sich das Fenster auf dem Telefon seitlich
+          wegschieben, und das Wischen nach unten kippte dabei in die
+          Waagerechte. Vertikal scrollen, waagerecht nichts: so ist es gemeint.
+        */}
+        <div className="space-y-7 overflow-y-auto overflow-x-hidden px-5 py-5">
           {/* ---- Legalität zuerst: das ist der Kern der App ---- */}
           <section>
             <h3 className="mb-1.5 text-fliess font-semibold text-ink-200">Wo darfst du schlafen?</h3>

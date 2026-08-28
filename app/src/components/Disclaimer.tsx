@@ -75,9 +75,16 @@ export function Haftungshinweis({ className = '' }: { className?: string }) {
         <div
           role="dialog"
           aria-label="Orientierungshilfe, keine Rechtsgarantie"
-          className="absolute left-0 top-full z-50 mt-2 w-[24rem] max-w-[calc(100vw-2rem)]
-                     overflow-hidden rounded-gross border border-geduldet-500/25
-                     bg-flaeche-2/97 shadow-[var(--shadow-4)] backdrop-blur-md"
+          /*
+            Auf dem Telefon hängt die Blase nicht an der Marke, sondern am
+            Bildschirm: an der Marke ausgerichtet begann sie 40 px vom linken
+            Rand und stand mit ihren 24 rem zur Hälfte draussen. `fixed` mit
+            beiden Kanten lässt sie genau so breit werden, wie Platz ist.
+          */
+          className="fixed inset-x-3 top-[3.25rem] z-50 overflow-hidden rounded-gross
+                     border border-geduldet-500/25 bg-flaeche-2/97 shadow-[var(--shadow-4)]
+                     backdrop-blur-md sm:absolute sm:inset-x-auto sm:left-0 sm:top-full
+                     sm:mt-2 sm:w-[24rem]"
         >
           <div className="space-y-2 px-4 py-3 text-klein leading-relaxed text-ink-300">
             <p className="font-semibold text-geduldet-400">

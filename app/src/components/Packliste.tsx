@@ -97,7 +97,7 @@ export function Packliste({ packlist, staende, onStand, personen }: Props) {
                       </span>
                       <span className="shrink-0 text-klein text-ink-500">
                         {weight_g != null && `${formatWeight(weight_g)} · `}
-                        {item.price_hint ?? '—'}
+                        {item.price_hint ?? '-'}
                       </span>
                     </div>
                     <p className="mt-1 text-klein leading-relaxed text-ink-400">{item.rationale}</p>

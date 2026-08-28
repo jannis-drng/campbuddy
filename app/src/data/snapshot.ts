@@ -47,7 +47,7 @@ const laufend = new Map<string, Promise<unknown>>()
 
 export class SnapshotFehlt extends Error {
   constructor(name: string) {
-    super(`Snapshot-Datei ${name} fehlt — 'npm run snapshot' vergessen?`)
+    super(`Snapshot-Datei ${name} fehlt - 'npm run snapshot' vergessen?`)
   }
 }
 
@@ -92,7 +92,7 @@ export async function ladeJson<T>(name: string): Promise<T> {
  */
 function meckern(name: string, fehler: unknown) {
   if (!import.meta.env.DEV) return
-  console.warn(`[snapshot] ${name} konnte nicht geladen werden — diese Ebene bleibt leer.`, fehler)
+  console.warn(`[snapshot] ${name} konnte nicht geladen werden - diese Ebene bleibt leer.`, fehler)
 }
 
 /* ------------------------------------------------------------- Kacheln */

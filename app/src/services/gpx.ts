@@ -72,7 +72,7 @@ const escapeXml = (s: string) =>
 /**
  * Exportiert die gezeichnete Route wieder als GPX.
  *
- * Benannte Wegpunkte kommen als `<wpt>` mit — genau die Hütten, Gipfel und
+ * Benannte Wegpunkte kommen als `<wpt>` mit - genau die Hütten, Gipfel und
  * Wasserstellen, die jemand bewusst angetippt hat. Ohne sie käme im fremden
  * Planer eine nackte Linie an, und die Entscheidung "hier wird übernachtet"
  * müsste dort noch einmal getroffen werden. Namenlose Klicks auf freie Fläche

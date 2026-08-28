@@ -133,7 +133,7 @@ export function MyToursPanel({
   return (
     <Seite
       titel="Deine Touren"
-      beschreibung="Was du geplant und was du dir gemerkt hast. Geplant wird auf der Karte."
+      beschreibung="Was du geplant und was du dir gemerkt hast."
       breite="breit"
       aktion={<Button variante="primaer" icon={MapIcon} onClick={onZurKarte}>Zur Karte</Button>}
     >
@@ -174,7 +174,7 @@ export function MyToursPanel({
               <Leer
                 icon={MapIcon}
                 titel="Noch keine Tour gespeichert"
-                text="Zeichne auf der Karte einen Verlauf, öffne „Tour auswerten“ und speichere sie dort — samt Dauer, Ausrüstung und Wetter."
+                text="Zeichne auf der Karte einen Verlauf, öffne „Tour auswerten“ und speichere sie dort - samt Dauer, Ausrüstung und Wetter."
                 aktion={<Button variante="primaer" icon={MapIcon} onClick={onZurKarte}>Zur Karte</Button>}
               />
             ) : (
@@ -387,7 +387,7 @@ function TeilenDialog({
   return (
     <Dialog offen={tour !== null} titel="Tour teilen" onClose={onClose}>
       <p className="text-fliess leading-relaxed text-ink-300">
-        Sichtbar werden Name, Verlauf, Kenndaten und deine Beschreibung — als
+        Sichtbar werden Name, Verlauf, Kenndaten und deine Beschreibung - als
         {' '}<span className="font-medium text-ink-100">{anzeigename?.trim() || 'dein Benutzername'}</span>.
         Deine E-Mail-Adresse wird nie veröffentlicht. Zurücknehmen kannst du das jederzeit.
       </p>
@@ -422,7 +422,7 @@ function LoeschDialog({
   return (
     <Dialog offen={tour !== null} titel="Tour löschen" onClose={onClose}>
       <p className="text-fliess leading-relaxed text-ink-300">
-        „{tour?.name}“ wird endgültig gelöscht — mit Verlauf, Kenndaten und, falls geteilt,
+        „{tour?.name}“ wird endgültig gelöscht - mit Verlauf, Kenndaten und, falls geteilt,
         allen Likes und Kommentaren dazu. Das lässt sich nicht rückgängig machen.
       </p>
       <div className="mt-4 flex flex-wrap justify-end gap-2">

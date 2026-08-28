@@ -334,7 +334,15 @@ export function TourFenster({
           </div>
         </header>
 
-        <div className="space-y-6 overflow-y-auto px-5 py-5">
+{/*
+          `overflow-x-hidden` ist kein Schmuck: ein Kasten mit `overflow-y: auto`
+          bekommt vom Browser automatisch auch `overflow-x: auto`. Ragte darin
+          irgendetwas ein paar Pixel über die Breite - eine Kachelreihe, eine
+          lange Zahl -, liess sich das Fenster auf dem Telefon seitlich
+          wegschieben, und das Wischen nach unten kippte dabei in die
+          Waagerechte. Vertikal scrollen, waagerecht nichts: so ist es gemeint.
+        */}
+        <div className="space-y-6 overflow-y-auto overflow-x-hidden px-5 py-5">
           {fehler && (
             <Hinweis ton="fehler" icon={TriangleAlert}>
               Das liess sich nicht speichern: {fehler}
@@ -344,7 +352,7 @@ export function TourFenster({
           {!eigen && (
             <Hinweis ton="info" icon={Copy}>
               Diese Tour gehört jemand anderem. Datum, Dauer und Ausrüstung kannst du hier für
-              dich durchspielen — behalten werden sie erst, wenn du die Tour als eigene
+              dich durchspielen - behalten werden sie erst, wenn du die Tour als eigene
               übernimmst.
             </Hinweis>
           )}
@@ -497,13 +505,13 @@ export function TourFenster({
               <p className="rounded-mittel border border-dashed border-kante px-3 py-3 text-klein leading-relaxed text-ink-500">
                 {eigen
                   ? trip.days > 1
-                    ? `Für diese Tour sind keine Nachtlager festgelegt. Geplant sind ${trip.days} Tage — wo die Nächte liegen, wählst du auf der Karte.`
+                    ? `Für diese Tour sind keine Nachtlager festgelegt. Geplant sind ${trip.days} Tage - wo die Nächte liegen, wählst du auf der Karte.`
                     : 'Für diese Tour sind keine Nachtlager festgelegt. Eine Tagestour braucht keine; für mehrere Tage wählst du sie auf der Karte.'
                   : 'Wo die Urheberin übernachtet, gehört zu ihrer Planung und wird nicht mitveröffentlicht. Übernimm die Tour, dann legst du deine eigenen Nächte fest.'}
               </p>
             )}
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Ob dort übernachtet werden darf, sagt die Karte — nicht diese Liste.
+              Ob dort übernachtet werden darf, sagt die Karte - nicht diese Liste.
             </p>
           </section>
 
@@ -515,13 +523,13 @@ export function TourFenster({
             </h3>
             {versatz == null ? (
               <Hinweis ton="info">
-                Für diese Tour ist kein Startdatum gesetzt — ohne Zeitraum gibt es keine
+                Für diese Tour ist kein Startdatum gesetzt - ohne Zeitraum gibt es keine
                 Vorhersage. Die Ausrüstung unten rechnet solange mit Erfahrungswerten für die
                 Jahreszeit.
               </Hinweis>
             ) : vorbei ? (
               <Hinweis ton="info">
-                Der Zeitraum dieser Tour liegt zurück. Eine Vorhersage gibt es dafür nicht mehr —
+                Der Zeitraum dieser Tour liegt zurück. Eine Vorhersage gibt es dafür nicht mehr -
                 die Ausrüstung unten rechnet mit Erfahrungswerten für die Jahreszeit.
               </Hinweis>
             ) : (
@@ -550,7 +558,7 @@ export function TourFenster({
                   ? partial
                     ? 'Aus der Vorhersage für den Teil des Zeitraums abgeleitet, der noch im 16-Tage-Fenster liegt.'
                     : 'Aus der Vorhersage für deinen Reisezeitraum abgeleitet.'
-                  : `Aus Jahreszeit und Höhe geschätzt — für den Zeitraum liegt keine Vorhersage vor (Open-Meteo reicht ${MAX_FORECAST_DAYS} Tage voraus).`}
+                  : `Aus Jahreszeit und Höhe geschätzt - für den Zeitraum liegt keine Vorhersage vor (Open-Meteo reicht ${MAX_FORECAST_DAYS} Tage voraus).`}
               </span>
             </p>
 
@@ -581,7 +589,7 @@ export function TourFenster({
 
           <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
             Diese Angaben ersetzen keine eigene Tourenplanung. Prüfe Wetterbericht, Lawinenlage und
-            Kondition unabhängig — und ob Übernachten an deinem Ziel überhaupt zulässig ist.
+            Kondition unabhängig - und ob Übernachten an deinem Ziel überhaupt zulässig ist.
           </p>
         </div>
 

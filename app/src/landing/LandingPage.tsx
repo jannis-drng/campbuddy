@@ -258,7 +258,7 @@ function Hero({ onStart, zuAnker }: { onStart: () => void; zuAnker: (id: string)
             CampBuddy zeigt dir auf der Karte, wo Übernachten in der Natur
             <strong className="font-semibold text-erlaubt-400"> erlaubt</strong>,
             <strong className="font-semibold text-geduldet-400"> geduldet</strong> oder
-            <strong className="font-semibold text-verboten-400"> verboten</strong> ist —
+            <strong className="font-semibold text-verboten-400"> verboten</strong> ist -
             Fläche für Fläche, mit Quelle und Datum.
           </p>
 
@@ -328,7 +328,7 @@ function Kennzahlen() {
       hinweis: 'Ausserhalb der Schutzgebiete entscheidet fast immer die Gemeinde',
     },
     {
-      wert: gipfelGesamt ? zahl(gipfelGesamt) : '—',
+      wert: gipfelGesamt ? zahl(gipfelGesamt) : '-',
       label: 'Gipfel zur Orientierung',
       hinweis: 'Dazu Quellen, Seen und Aussichtspunkte auf der Wanderkarte',
     },
@@ -377,12 +377,12 @@ const LUECKE: { icon: LucideIcon; titel: string; text: string }[] = [
   {
     icon: MapPinned,
     titel: 'Spot-Sammlungen zeigen Erfahrungen',
-    text: 'Park4Night und iOverlander sagen dir, wo schon jemand geschlafen hat. Nicht, ob er es durfte — und nicht, was seither beschlossen wurde.',
+    text: 'Park4Night und iOverlander sagen dir, wo schon jemand geschlafen hat. Nicht, ob er es durfte - und nicht, was seither beschlossen wurde.',
   },
   {
     icon: ScrollText,
     titel: 'Amtliche Karten kennen die Regel',
-    text: 'Geoportale und Verordnungen haben die Antwort. Nur eben verteilt auf Bund, Kanton und Gemeinde — nicht auf deiner Route.',
+    text: 'Geoportale und Verordnungen haben die Antwort. Nur eben verteilt auf Bund, Kanton und Gemeinde - nicht auf deiner Route.',
   },
 ]
 
@@ -481,10 +481,10 @@ function Funktionen() {
       <Funktion
         kapitel="Rechtslage auf der Karte"
         titel="Jede Fläche sagt dir, was gilt"
-        text="Antippen genügt. Zelt, Fahrzeug und Feuer stehen einzeln da — erlaubt, bedingt, verboten oder ausdrücklich als ungeklärt markiert."
+        text="Antippen genügt. Zelt, Fahrzeug und Feuer stehen einzeln da - erlaubt, bedingt, verboten oder ausdrücklich als ungeklärt markiert."
         punkte={[
           'Bedingungen im Klartext statt im Verordnungsdeutsch: „nur oberhalb der Waldgrenze", „ausserhalb der Kernzonen".',
-          'Die Rechtsgrundlage steht als Link daneben — du kannst jede Aussage nachlesen.',
+          'Die Rechtsgrundlage steht als Link daneben - du kannst jede Aussage nachlesen.',
           'Ausserhalb eingezeichneter Flächen gilt, was Gemeinde und Kanton sagen, nicht stillschweigend „erlaubt".',
         ]}
         visual={
@@ -537,8 +537,8 @@ function Funktionen() {
 
       <Funktion
         kapitel="Schlafplätze"
-        titel={`Hütte, Zeltplatz, Stellplatz — ${zahl(punkteGesamt)} Orte`}
-        text={`${punkteJeArt('hut')} Hütten, ${punkteJeArt('campsite')} Campingplätze und ${punkteJeArt('vehicle_spot')} Stellplätze fürs Fahrzeug — landesweit erfasst und filterbar nach dem, wie du unterwegs bist.`}
+        titel={`Hütte, Zeltplatz, Stellplatz - ${zahl(punkteGesamt)} Orte`}
+        text={`${punkteJeArt('hut')} Hütten, ${punkteJeArt('campsite')} Campingplätze und ${punkteJeArt('vehicle_spot')} Stellplätze fürs Fahrzeug - landesweit erfasst und filterbar nach dem, wie du unterwegs bist.`}
         punkte={[
           'Filter nach Übernachtungsart: nur Zelt, nur Fahrzeug, nur wo Feuer erlaubt ist.',
           'Die Etappenplanung setzt jeden Tag an einem Punkt mit Dach oder legalem Platz ab.',
@@ -561,11 +561,11 @@ function Funktionen() {
         gedreht
         kapitel="Vorbereitung"
         titel="Wetter und Packliste aus deinen Eckdaten"
-        text="Startdatum, Dauer, Personenzahl, Schlafhöhe und Übernachtungsart genügen — daraus entstehen Packliste und Verpflegungsmenge."
+        text="Startdatum, Dauer, Personenzahl, Schlafhöhe und Übernachtungsart genügen - daraus entstehen Packliste und Verpflegungsmenge."
         punkte={[
           'Die Vorhersage für deinen Reisezeitraum bestimmt Schlafsack und Kleidung mit.',
           'Verpflegung grob gerechnet: Kalorien pro Tag mal Tage mal Personen.',
-          'Gewicht pro Teil und in der Summe — damit vorher klar ist, was du wirklich trägst.',
+          'Gewicht pro Teil und in der Summe - damit vorher klar ist, was du wirklich trägst.',
         ]}
         visual={
           <Foto
@@ -589,7 +589,7 @@ const SCHRITTE: { icon: LucideIcon; titel: string; text: string }[] = [
   {
     icon: MountainSnow,
     titel: 'Karte öffnen',
-    text: 'Ohne Konto, ohne Einwilligungsdialog, ohne Umweg — die Karte steht sofort da.',
+    text: 'Ohne Konto, ohne Einwilligungsdialog, ohne Umweg - die Karte steht sofort da.',
   },
   {
     icon: ShieldCheck,
@@ -599,7 +599,7 @@ const SCHRITTE: { icon: LucideIcon; titel: string; text: string }[] = [
   {
     icon: Route,
     titel: 'Route zeichnen oder laden',
-    text: 'Wegpunkte auf der Karte setzen — oder die GPX-Datei aus deinem Tourenplaner importieren.',
+    text: 'Wegpunkte auf der Karte setzen - oder die GPX-Datei aus deinem Tourenplaner importieren.',
   },
   {
     icon: CloudSun,
@@ -648,7 +648,7 @@ const FAELLE: { icon: LucideIcon; titel: string; text: string; marke: string }[]
     icon: Tent,
     titel: 'Das spontane Wochenend-Biwak',
     marke: 'Zelt',
-    text: 'Freitagabend, eine Nacht oberhalb der Waldgrenze. Du prüfst, ob dein Wunschplatz in einem Reservat oder einer Wildruhezone liegt — und findest die nächste geduldete Fläche, falls doch.',
+    text: 'Freitagabend, eine Nacht oberhalb der Waldgrenze. Du prüfst, ob dein Wunschplatz in einem Reservat oder einer Wildruhezone liegt - und findest die nächste geduldete Fläche, falls doch.',
   },
   {
     icon: Route,
@@ -660,7 +660,7 @@ const FAELLE: { icon: LucideIcon; titel: string; text: string; marke: string }[]
     icon: Truck,
     titel: 'Die Nacht im Fahrzeug',
     marke: 'Camper',
-    text: 'Für Fahrzeuge gelten strengere Regeln als fürs Zelt — die Karte trennt das. Du filterst auf legale Stellplätze statt auf Wiesen, auf denen dich morgens jemand weckt.',
+    text: 'Für Fahrzeuge gelten strengere Regeln als fürs Zelt - die Karte trennt das. Du filterst auf legale Stellplätze statt auf Wiesen, auf denen dich morgens jemand weckt.',
   },
 ]
 
@@ -671,7 +671,7 @@ function Anwendungsfaelle() {
         <Kapitel>Anwendungsfälle</Kapitel>
         <Sektionstitel>Drei Wege, wie die Karte benutzt wird</Sektionstitel>
         <p className="mt-4 text-vorspann text-ink-300">
-          Ob eine Nacht, eine Woche oder das Fahrzeug — die Frage bleibt dieselbe,
+          Ob eine Nacht, eine Woche oder das Fahrzeug - die Frage bleibt dieselbe,
           die Antwort nicht.
         </p>
       </Einblenden>
@@ -721,7 +721,7 @@ function Grundlage() {
           <div className="mt-7 space-y-3">
             {[
               { status: 'entwurf' as const, datum: null, text: 'Aus dem übergeordneten Rechtsrahmen abgeleitet, ohne amtliches Dokument. Auf der Karte am gestrichelten Rand erkennbar.' },
-              { status: 'quelle' as const, datum: '2026-08-19', text: 'Durch ein amtliches Inventar, eine Verordnung oder ein Gemeindereglement belegt — der Beleg ist verlinkt.' },
+              { status: 'quelle' as const, datum: '2026-08-19', text: 'Durch ein amtliches Inventar, eine Verordnung oder ein Gemeindereglement belegt - der Beleg ist verlinkt.' },
               { status: 'vor-ort' as const, datum: '2026-08-19', text: 'Zusätzlich vor Ort nachgesehen: Beschilderung und Lage stimmen mit der Einstufung überein.' },
             ].map((s) => (
               <div key={s.status} className="flex flex-col gap-2 rounded-mittel border border-kante bg-flaeche-1 px-4 py-3.5 sm:flex-row sm:items-start sm:gap-4">
@@ -737,7 +737,7 @@ function Grundlage() {
             <Landmark size={16} strokeWidth={2} className="mt-px shrink-0 text-gletscher-400" aria-hidden />
             <p className="text-klein leading-relaxed text-ink-400">
               <strong className="font-semibold text-ink-200">Wo nichts belegt ist, wird nichts behauptet.</strong>{' '}
-              Zuständig sind Bund, Kanton und Gemeinde — und die feinste Ebene entscheidet.
+              Zuständig sind Bund, Kanton und Gemeinde - und die feinste Ebene entscheidet.
               Liegt für eine Gemeinde kein Reglement vor, bleibt ihre Fläche ungefüllt, und die
               Karte gibt dir stattdessen Webseite und E-Mail der Gemeinde. Eine geratene Farbe
               wäre hier das Schlechteste, was sie tun könnte.
@@ -793,7 +793,7 @@ const FRAGEN: { frage: string; antwort: ReactNode }[] = [
   },
   {
     frage: 'Kann ich mich auf die Farben verlassen?',
-    antwort: 'Sie sind eine sorgfältig belegte Orientierungshilfe, keine Rechtsgarantie. Beschilderung vor Ort und die Auskunft der Gemeinde gehen immer vor — und jede Fläche zeigt dir, wie gut sie belegt ist.',
+    antwort: 'Sie sind eine sorgfältig belegte Orientierungshilfe, keine Rechtsgarantie. Beschilderung vor Ort und die Auskunft der Gemeinde gehen immer vor - und jede Fläche zeigt dir, wie gut sie belegt ist.',
   },
   {
     frage: 'Was, wenn für meine Gemeinde nichts hinterlegt ist?',
@@ -801,7 +801,7 @@ const FRAGEN: { frage: string; antwort: ReactNode }[] = [
   },
   {
     frage: 'Kann ich meine Route aus einem anderen Planer mitbringen?',
-    antwort: 'Ja, als GPX-Datei — und genauso wieder heraus, für komoot, Organic Maps, OsmAnd oder das GPS-Gerät.',
+    antwort: 'Ja, als GPX-Datei - und genauso wieder heraus, für komoot, Organic Maps, OsmAnd oder das GPS-Gerät.',
   },
 ]
 
@@ -847,7 +847,7 @@ function Schluss({ onStart }: { onStart: () => void }) {
         <Einblenden als="div" className="mx-auto max-w-2xl">
           <Sektionstitel>Die nächste Nacht ist geplant.<br />Die Rechtslage auch.</Sektionstitel>
           <p className="mt-5 text-vorspann text-ink-200">
-            Karte öffnen, Fläche antippen, Route ziehen. Kein Konto nötig — das brauchst du erst,
+            Karte öffnen, Fläche antippen, Route ziehen. Kein Konto nötig - das brauchst du erst,
             wenn du Touren speichern willst.
           </p>
           <div className="mt-9 flex justify-center">
@@ -873,7 +873,7 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
             <span className="text-ueberschrift font-semibold tracking-tight text-ink-50">CampBuddy</span>
           </div>
           <p className="mt-3 max-w-xs text-klein leading-relaxed text-ink-400">
-            Die Legalitätskarte fürs Übernachten in der Natur — plus die Tourplanung drumherum.
+            Die Legalitätskarte fürs Übernachten in der Natur - plus die Tourplanung drumherum.
           </p>
         </div>
 
@@ -919,7 +919,7 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
           </p>
           <p className="flex items-center gap-1.5">
             <Ban size={12} strokeWidth={2.5} aria-hidden />
-            Keine Rechtsgarantie — prüfe die Lage vor Ort.
+            Keine Rechtsgarantie - prüfe die Lage vor Ort.
           </p>
         </div>
       </div>

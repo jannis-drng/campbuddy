@@ -84,7 +84,7 @@ export function AccountPanel({
         <Leer
           icon={UserRound}
           titel="Für diese Karte brauchst du kein Konto"
-          text="Karte, Rechtslage, Routenplanung und Auswertung stehen dir vollständig offen — auch ohne Anmeldung."
+          text="Karte, Rechtslage, Routenplanung und Auswertung stehen dir vollständig offen - auch ohne Anmeldung."
         />
       </Seite>
     )
@@ -322,7 +322,7 @@ function AnmeldeAnsicht({
       if (registrieren) {
         const { bestaetigungNoetig } = await signUpWithPassword(email.trim(), passwort)
         setHinweis(bestaetigungNoetig
-          ? 'Fast fertig — bestätige den Link in deiner E-Mail. Danach wählst du deinen Benutzernamen.'
+          ? 'Fast fertig - bestätige den Link in deiner E-Mail. Danach wählst du deinen Benutzernamen.'
           : 'Konto angelegt.')
         setPasswort('')
       } else {
@@ -379,7 +379,7 @@ function AnmeldeAnsicht({
         <div className="mb-4">
           <Hinweis ton="erfolg" icon={Bookmark}>
             <strong className="font-semibold">Deine Tour ist gesichert.</strong> Sie steht
-            nach der Anmeldung wieder da — samt Etappen und Packliste. Auch der Weg zurück
+            nach der Anmeldung wieder da - samt Etappen und Packliste. Auch der Weg zurück
             zur Karte kostet sie nicht.
           </Hinweis>
         </div>
@@ -485,7 +485,7 @@ function AnmeldeAnsicht({
           eines nur zum Speichern, Teilen und Merken.
         </Zusage>
         <Zusage icon={ShieldCheck}>
-          Gespeichert wird nur, was du selbst anlegst — kein Tracking, keine Weitergabe.
+          Gespeichert wird nur, was du selbst anlegst - kein Tracking, keine Weitergabe.
         </Zusage>
         <Zusage icon={Lock}>
           Deine Daten liegen auf Servern in der EU.
@@ -611,11 +611,10 @@ function AngemeldeteAnsicht({
               {profil?.anzeigename?.trim() || session.user.email}
             </p>
             {/* Nicht abgeschnitten, sondern umbrechend: auf dem Telefon ist
-                „über E-Mail · dabe…" keine Auskunft mehr. */}
+                „dabei seit …" sonst keine Auskunft mehr. */}
             <p className="text-klein leading-relaxed text-ink-500">
-              {profil?.anzeigename?.trim() && <>{session.user.email} · </>}
-              über {providerName}
-              {seit && <> · dabei seit {seit}</>}
+              {profil?.anzeigename?.trim() && <>{session.user.email}</>}
+              {seit && <>{profil?.anzeigename?.trim() ? ' · ' : ''}dabei seit {seit}</>}
             </p>
           </div>
           <Badge ton={bezahlt ? 'akzent' : 'neutral'} icon={bezahlt ? BadgeCheck : undefined}>
@@ -653,7 +652,7 @@ function AngemeldeteAnsicht({
         beschreibung={nochUebergang
           ? <>
               Dein Konto heisst noch{' '}
-              <span className="font-medium text-ink-200">{profil?.anzeigename}</span> — den
+              <span className="font-medium text-ink-200">{profil?.anzeigename}</span> - den
               Namen hat es beim Anlegen bekommen. Wähle einen eigenen: er steht an jeder Tour,
               die du teilst, und an jedem Kommentar. Deine E-Mail-Adresse wird nie
               veröffentlicht.
@@ -666,8 +665,7 @@ function AngemeldeteAnsicht({
             <span className="font-medium text-ink-100">
               {gesperrtBis.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
             </span>{' '}
-            möglich. Dein Name ist die einzige öffentliche Kennung deines Kontos — wer ihn
-            beliebig oft wechseln kann, bei dem sagt er nichts mehr aus.
+            möglich.
           </Hinweis>
         ) : (
           <form onSubmit={nameSpeichern} className="space-y-3">
@@ -678,7 +676,7 @@ function AngemeldeteAnsicht({
               label="Name"
               hinweis={nochUebergang
                 ? `${NAME_MIN}–${NAME_MAX} Zeichen. Die erste eigene Wahl ist frei; erst ein späterer Wechsel ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`
-                : `${NAME_MIN}–${NAME_MAX} Zeichen. Eine Umbenennung wirkt sofort auf alle deine geteilten Touren und Kommentare — und ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`}
+                : `${NAME_MIN}–${NAME_MAX} Zeichen. Eine Umbenennung wirkt sofort auf alle deine geteilten Touren und Kommentare - und ist danach ${UMBENENNEN_SPERRE_TAGE} Tage lang gesperrt.`}
             />
             <div className="flex flex-wrap items-center gap-2">
               <Button type="submit" variante={nochUebergang ? 'primaer' : 'sekundaer'} groesse="gross"
@@ -700,8 +698,8 @@ function AngemeldeteAnsicht({
         icon={KeyRound}
         titel={provider === 'email' ? 'Passwort ändern' : 'Passwort setzen'}
         beschreibung={provider === 'email'
-          ? 'Das neue Passwort gilt sofort; angemeldet bleibst du auf diesem Gerät.'
-          : `Du meldest dich über ${providerName} an. Ein Passwort ist zusätzlich möglich — dann geht beides.`}
+          ? undefined
+          : `Du meldest dich über ${providerName} an. Ein Passwort ist zusätzlich möglich - dann geht beides.`}
       >
         <form onSubmit={passwortSetzen} className="space-y-2.5">
           <div className="flex flex-wrap items-start gap-2">

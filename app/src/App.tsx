@@ -199,7 +199,7 @@ export default function App() {
       touren: 'Deine Touren',
       konto: session ? 'Konto' : 'Anmelden',
     }[view]
-    document.title = `${titel} — CampBuddy`
+    document.title = `${titel} - CampBuddy`
   }, [view, session])
 
   const region = getRegion(regionCode)
@@ -492,13 +492,27 @@ export default function App() {
           etappen,
         }
         const wegpunkte = gpxTrack ? [] : wegpunktOrte
+        /*
+          Gespeichert wird der Kanton, nicht das Land.
+
+          `region` trug bisher immer „CH" - die Region, in der die Karte
+          gerade stand. Damit war das Feld in der Community ein Filter über
+          genau einen Wert. Der Kanton des Startpunkts ist die Angabe, nach
+          der jemand tatsächlich sucht („was gibt es im Wallis"), und die
+          Kantonsflächen liegen auf dieser Ansicht ohnehin schon geladen.
+
+          Ausserhalb der Schweiz oder ohne gezeichneten Weg bleibt es beim
+          Regionscode: eine erfundene Zuordnung wäre schlechter als eine
+          grobe.
+        */
+        const tourRegion = kantonAn(routeGeometry[0] ?? [0, 0])?.code ?? regionCode
         if (bearbeiteteTour) {
           await aktualisiereTour(bearbeiteteTour.id, {
-            name, geometry: routeGeometry, waypoints: wegpunkte, ...eck,
+            name, region: tourRegion, geometry: routeGeometry, waypoints: wegpunkte, ...eck,
           })
           setBearbeiteteTour({ id: bearbeiteteTour.id, name })
         } else {
-          await saveTour(name, regionCode, routeGeometry, wegpunkte, eck)
+          await saveTour(name, tourRegion, routeGeometry, wegpunkte, eck)
         }
         // Die Tour liegt jetzt in der Datenbank; der Zwischenspeicher hat
         // seinen Zweck erfüllt und darf nicht beim nächsten Laden wieder

@@ -338,8 +338,8 @@ function RegionBody({
               : `Für ${gemeinde.name} liegt kein Reglement vor.`}
           </strong>{' '}
           {gemeindeRecht
-            ? 'Das gefundene Reglement regelt nur einen Teil — was oben steht, ist alles, was es hergibt.'
-            : 'Über das Übernachten im Freien entscheidet hier die Gemeinde — was unten steht, ist der übergeordnete Rahmen und ersetzt ihre Auskunft nicht.'}
+            ? 'Das gefundene Reglement regelt nur einen Teil - was oben steht, ist alles, was es hergibt.'
+            : 'Über das Übernachten im Freien entscheidet hier die Gemeinde - was unten steht, ist der übergeordnete Rahmen und ersetzt ihre Auskunft nicht.'}
           {' '}Am schnellsten kommst du weiter, indem du direkt dort nachfragst.
           {(gemeinde.website || gemeinde.email) && (
             <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -377,7 +377,7 @@ function RegionBody({
           <strong className="font-semibold">Für diesen Kanton liegt keine eigene Regelung vor.</strong>{' '}
           Zuständig ist hier {kanton.name}
           {kanton.code && ` (${kanton.code})`}, dazu die Gemeinde. Was unten steht, ist der
-          landesweite Rahmen — er ersetzt die kantonale Auskunft nicht. Erkundige dich vor
+          landesweite Rahmen - er ersetzt die kantonale Auskunft nicht. Erkundige dich vor
           Ort oder beim Kanton.
         </Hinweis>
       )}
@@ -429,7 +429,7 @@ function RegionBody({
           <p className="mt-2 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
             Rechtsgrundlagen der Wildruhezonen in diesem Kanton, aus {grundlagen.quelle}
             {' '}(Stand {grundlagen.stand}). Sie sagen, welches Recht hier den Wildschutz
-            regelt — nicht, ob und wo gezeltet werden darf.
+            regelt - nicht, ob und wo gezeltet werden darf.
           </p>
         </section>
       )}
@@ -481,13 +481,13 @@ function RegionBody({
       {datenFehler ? (
         <Hinweis ton="warnung" icon={FileWarning}>
           <strong className="font-semibold">Die Schutzgebiete konnten nicht geladen werden.</strong>{' '}
-          Was du siehst, ist deshalb unvollständig — eine leere Fläche heisst hier
+          Was du siehst, ist deshalb unvollständig - eine leere Fläche heisst hier
           nicht, dass dort nichts gilt. Lade die Seite neu, sobald du wieder Netz hast.
         </Hinweis>
       ) : (
         <Hinweis ton="warnung" icon={FileWarning}>
           Von {stats.total} Schutzgebieten auf dieser Karte sind{' '}
-          <strong className="font-semibold">{stats.entwurf} nicht amtlich belegt</strong> — sie
+          <strong className="font-semibold">{stats.entwurf} nicht amtlich belegt</strong> - sie
           tragen einen gestrichelten Rand.
         </Hinweis>
       )}
@@ -627,7 +627,7 @@ function NaturBody({ feature }: { feature: NatureFeature }) {
     <div className="space-y-5 px-5 py-4">
       {!feature.benannt && (
         <p className="text-klein leading-relaxed text-ink-400">
-          In OpenStreetMap ohne Namen erfasst — angezeigt wird die Gattung.
+          In OpenStreetMap ohne Namen erfasst - angezeigt wird die Gattung.
         </p>
       )}
 
@@ -708,7 +708,7 @@ function EigenBody({
 
       <p className="rounded-mittel border border-kante bg-flaeche-1 px-3 py-2.5 text-mikro
                     normal-case leading-relaxed tracking-normal text-ink-400">
-        Eigene Markierung — keine geprüfte Angabe und keine Aussage über die Rechtslage.
+        Eigene Markierung - keine geprüfte Angabe und keine Aussage über die Rechtslage.
         Was an dieser Stelle rechtlich gilt, steht in der Zone darunter.
       </p>
     </div>
@@ -858,7 +858,7 @@ function PeakBody({ peak }: { peak: Peak }) {
       </div>
       <p className="text-klein leading-relaxed text-ink-400">
         Gipfel aus OpenStreetMap. Ob in der Nähe übernachtet werden darf, sagt die
-        Legalitäts-Ebene — ein Gipfel ist keine Erlaubnis.
+        Legalitäts-Ebene - ein Gipfel ist keine Erlaubnis.
       </p>
       {peak.source_url && (
         <a

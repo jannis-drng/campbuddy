@@ -13,11 +13,11 @@ import { GEAR_ITEMS } from './gearItems'
 const HINT_BY_STATUS: Record<LegalStatus, { text: string; items: string[] } | null> = {
   forbidden: null,
   allowed: {
-    text: 'Hier darfst du regulär übernachten — Zelt und Kocher sind unproblematisch.',
+    text: 'Hier darfst du regulär übernachten - Zelt und Kocher sind unproblematisch.',
     items: ['leichtzelt', 'schlafsack-3jahres', 'isomatte', 'gaskocher'],
   },
   tolerated: {
-    text: 'Geduldet heisst: unauffällig bleiben. Spät aufbauen, früh abbauen, keine Spuren — dafür ist ein Biwaksack besser geeignet als ein auffälliges Zelt.',
+    text: 'Geduldet heisst: unauffällig bleiben. Spät aufbauen, früh abbauen, keine Spuren - dafür ist ein Biwaksack besser geeignet als ein auffälliges Zelt.',
     items: ['biwaksack', 'isomatte', 'gaskocher', 'muellbeutel'],
   },
   unknown: {
@@ -34,7 +34,7 @@ export function GearHint({ status, onOpenPlanner }: { status: LegalStatus; onOpe
       <section className="flex gap-2.5 rounded-mittel border border-kante bg-flaeche-1 px-3 py-2.5">
         <Ban size={15} strokeWidth={2} className="mt-px shrink-0 text-verboten-400" aria-hidden />
         <p className="text-klein leading-relaxed text-ink-400">
-          Hier ist Übernachten untersagt — deshalb gibt es an dieser Stelle bewusst keine
+          Hier ist Übernachten untersagt - deshalb gibt es an dieser Stelle bewusst keine
           Ausrüstungsempfehlung. Such dir einen Platz ausserhalb der Zone.
         </p>
       </section>
@@ -57,7 +57,7 @@ export function GearHint({ status, onOpenPlanner }: { status: LegalStatus; onOpe
         {teile.map((teil) => (
           <li key={teil.id} className="flex items-baseline justify-between gap-3 text-klein">
             <span className="text-ink-200">{teil.name}</span>
-            <span className="shrink-0 text-ink-500">{teil.price_hint ?? '—'}</span>
+            <span className="shrink-0 text-ink-500">{teil.price_hint ?? '-'}</span>
           </li>
         ))}
       </ul>

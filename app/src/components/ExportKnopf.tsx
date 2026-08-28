@@ -196,7 +196,7 @@ function ExportDialog({
           */}
           <p className="rounded-mittel bg-flaeche-1 p-3 text-mikro normal-case leading-relaxed
                         tracking-normal text-ink-500">
-            komoot und Strava lassen keine direkte Übertragung von aussen zu — komoot hat keine
+            komoot und Strava lassen keine direkte Übertragung von aussen zu - komoot hat keine
             offene Schnittstelle, Strava nimmt über seine nur aufgezeichnete Aktivitäten an,
             keine geplanten Routen. CampBuddy legt die Datei deshalb bereit und öffnet die
             Seite, auf der sie hingehört; hineinziehen musst du sie dort selbst.

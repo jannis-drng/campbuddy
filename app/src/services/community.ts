@@ -26,7 +26,7 @@ import {
 import { alleZeilen } from './deckel'
 import { istSchemaFehlt } from './account'
 
-export type Sortierung = 'neu' | 'beliebt' | 'besprochen' | 'lang' | 'kurz'
+export type Sortierung = 'neu' | 'beliebt' | 'besprochen' | 'lang' | 'kurz' | 'tage-wenig' | 'tage-viel'
 
 export const SORTIERUNGEN: { wert: Sortierung; label: string }[] = [
   { wert: 'neu', label: 'Neueste' },
@@ -34,6 +34,29 @@ export const SORTIERUNGEN: { wert: Sortierung; label: string }[] = [
   { wert: 'besprochen', label: 'Meist besprochen' },
   { wert: 'lang', label: 'Längste' },
   { wert: 'kurz', label: 'Kürzeste' },
+  /*
+    Nach Tagen, nicht nach Kilometern: „ich habe ein langes Wochenende" ist
+    die Frage, mit der jemand hier ankommt. 40 km können zwei Tage sein oder
+    vier - das steht in `days` und in keiner Entfernung.
+  */
+  { wert: 'tage-wenig', label: 'Wenigste Tage' },
+  { wert: 'tage-viel', label: 'Meiste Tage' },
+]
+
+/**
+ * Wildcampen oder Hüttentour - die Frage, die vor allen anderen kommt.
+ *
+ * Sie liest die Spalte `shelter`, in der die Tourplanung ohnehin schon
+ * festhält, wie übernachtet wird. „Zelt" und „Biwak" sind beide draussen und
+ * werden deshalb zu einer Auswahl zusammengefasst; wer sie unterscheiden
+ * will, sieht es an der Tour selbst.
+ */
+export type Nachtlager = 'alle' | 'draussen' | 'huette'
+
+export const NACHTLAGER: { wert: Nachtlager; label: string; spalten: string[] }[] = [
+  { wert: 'alle', label: 'Zelt und Hütte', spalten: [] },
+  { wert: 'draussen', label: 'Wildcampen', spalten: ['zelt', 'biwak'] },
+  { wert: 'huette', label: 'Hüttentour', spalten: ['huette'] },
 ]
 
 /** Längenklassen, wie sie jemand beim Suchen denkt — nicht in Metern. */
@@ -58,6 +81,8 @@ export interface CommunityFilter {
   /** Regionscode, oder null für „alle Regionen". */
   region: string | null
   laenge: Laengenklasse
+  /** Wildcampen, Hüttentour oder beides. */
+  nachtlager: Nachtlager
   /** Nur Touren mit gezeichnetem Verlauf — die ohne haben kein Kartenbild. */
   nurMitWeg: boolean
   sortierung: Sortierung
@@ -70,7 +95,8 @@ export interface CommunityFilter {
 }
 
 export const STANDARD_FILTER: CommunityFilter = {
-  suche: '', region: null, laenge: 'alle', nurMitWeg: false, sortierung: 'neu', ort: null,
+  suche: '', region: null, laenge: 'alle', nachtlager: 'alle', nurMitWeg: false,
+  sortierung: 'neu', ort: null,
 }
 
 /** Wie viele Karten eine Seite trägt. Drei Spalten × vier Reihen. */
@@ -87,6 +113,13 @@ export interface Seitenergebnis {
    * die stimmt, solange sie klein ist, und die nie teuer wird.
    */
   gesamt: number | null
+}
+
+/** Passt die Übernachtungsart einer Tour zur gewählten Auswahl? */
+function passtNachtlager(wahl: Nachtlager, shelter: string | null): boolean {
+  const eintrag = NACHTLAGER.find((n) => n.wert === wahl)
+  if (!eintrag || eintrag.spalten.length === 0) return true
+  return shelter != null && eintrag.spalten.includes(shelter)
 }
 
 /**
@@ -111,6 +144,7 @@ export async function listCommunityTouren(
     const suchbegriff = filter.suche.trim().toLowerCase()
     const gefiltert = nah.filter((t) => {
       if (filter.region && t.region !== filter.region) return false
+      if (!passtNachtlager(filter.nachtlager, t.shelter)) return false
       if (filter.nurMitWeg && t.distance_m == null) return false
       if (!suchbegriff) return true
       return `${t.name} ${t.beschreibung ?? ''}`.toLowerCase().includes(suchbegriff)
@@ -130,6 +164,9 @@ export async function listCommunityTouren(
   if (filter.region) q = q.eq('region', filter.region)
   if (filter.nurMitWeg) q = q.not('distance_m', 'is', null)
 
+  const nachtlager = NACHTLAGER.find((n) => n.wert === filter.nachtlager)
+  if (nachtlager && nachtlager.spalten.length > 0) q = q.in('shelter', nachtlager.spalten)
+
   const klasse = LAENGENKLASSEN.find((k) => k.wert === filter.laenge)
   if (klasse && filter.laenge !== 'alle') {
     q = q.gte('distance_m', klasse.von)
@@ -148,6 +185,17 @@ export async function listCommunityTouren(
       break
     case 'kurz':
       q = q.order('distance_m', { ascending: true, nullsFirst: false })
+      break
+    /*
+      `nullsFirst: false` in beiden Richtungen: Touren ohne Tagesangabe
+      gehören ans Ende, nicht an die Spitze von „Wenigste Tage" - eine
+      fehlende Angabe ist kein Tagesausflug.
+    */
+    case 'tage-wenig':
+      q = q.order('days', { ascending: true, nullsFirst: false })
+      break
+    case 'tage-viel':
+      q = q.order('days', { ascending: false, nullsFirst: false })
       break
     default:
       q = q.order('veroeffentlicht_am', { ascending: false, nullsFirst: false })
@@ -418,7 +466,7 @@ export async function listTourenBei(
 /** Postgres-Meldungen sind für Entwickler geschrieben, nicht für Wanderer. */
 function uebersetze(meldung: string): string {
   if (/row-level security/i.test(meldung)) {
-    return 'Dafür fehlt die Berechtigung — bist du noch angemeldet, und ist die Tour noch geteilt?'
+    return 'Dafür fehlt die Berechtigung - bist du noch angemeldet, und ist die Tour noch geteilt?'
   }
   if (/relation .* does not exist|schema cache|column .* does not exist/i.test(meldung)) {
     return 'Das klappt gerade nicht. Versuch es später noch einmal.'

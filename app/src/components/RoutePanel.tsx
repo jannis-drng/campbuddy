@@ -226,7 +226,7 @@ export function RoutePanel({
         )}
         {markieren && (
           <Hinweis ton="info" icon={Camera}>
-            Tippe die Stelle in der Karte an, die du markieren willst — Aussicht, Schlafplatz,
+            Tippe die Stelle in der Karte an, die du markieren willst - Aussicht, Schlafplatz,
             Wasserstelle oder Foto.
           </Hinweis>
         )}
@@ -245,7 +245,7 @@ export function RoutePanel({
         {routed && !routed.snapped && waypointCount >= 2 && (
           <Hinweis ton="warnung" icon={TriangleAlert}>
             Kein Weg-Routing möglich ({routed.fallbackReason}). Die Stopps sind nur gerade
-            verbunden — Länge und Auswertung sind dadurch ungenau.
+            verbunden - Länge und Auswertung sind dadurch ungenau.
           </Hinweis>
         )}
         {error && <Hinweis ton="fehler" icon={TriangleAlert}>{error}</Hinweis>}
@@ -311,7 +311,7 @@ export function RoutePanel({
               <span className="font-semibold text-ink-50">{formatKm(laenge)}</span>
               {' · '}
               <span className="font-semibold text-ink-50">
-                {stats ? formatDauer(stats.duration_s) : hoehenBusy ? '…' : '—'}
+                {stats ? formatDauer(stats.duration_s) : hoehenBusy ? '…' : '-'}
               </span>
             </p>
             <Button
@@ -332,7 +332,7 @@ export function RoutePanel({
               <div>
                 <Label>Gehzeit</Label>
                 <p className="mt-0.5 text-titel font-semibold text-ink-50">
-                  {stats ? formatDauer(stats.duration_s) : hoehenBusy ? '…' : '—'}
+                  {stats ? formatDauer(stats.duration_s) : hoehenBusy ? '…' : '-'}
                 </p>
               </div>
             </div>

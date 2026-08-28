@@ -39,7 +39,7 @@ export const VENDORS: Record<string, Vendor> = {
     label: 'Händler',
     partnerId: '',
     linkTemplate: '{url}',
-    commissionHint: '—',
+    commissionHint: '-',
   },
 }
 

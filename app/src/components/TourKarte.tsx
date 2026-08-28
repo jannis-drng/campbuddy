@@ -16,7 +16,7 @@ import type { PublicTour, Tour } from '../services/supabase'
 import { RoutenVorschau } from './RoutenVorschau'
 
 export const formatKm = (m: number | null | undefined) =>
-  m == null ? '—' : m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
+  m == null ? '-' : m >= 1000 ? `${(m / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(m)} m`
 
 /** Deutsches Datum, kurz. Null bleibt null — kein erfundenes Datum. */
 export const formatDatum = (iso: string | null | undefined) =>

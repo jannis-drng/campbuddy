@@ -46,7 +46,7 @@ export function WeatherPanel({ forecast, loading, error, targetElevation, outOfR
   if (outOfRange) {
     return (
       <Hinweis ton="info">
-        Dein Startdatum liegt weiter als 16 Tage in der Zukunft — so weit reicht keine seriöse
+        Dein Startdatum liegt weiter als 16 Tage in der Zukunft - so weit reicht keine seriöse
         Vorhersage. Die Packliste rechnet solange mit Erfahrungswerten für die gewählte Jahreszeit.
       </Hinweis>
     )
@@ -98,7 +98,7 @@ export function WeatherPanel({ forecast, loading, error, targetElevation, outOfR
 
       {partial && (
         <Hinweis ton="warnung" className="mt-2.5">
-          Nur der Anfang deiner Tour liegt im Vorhersagefenster — die späteren Tage sind nicht abgedeckt.
+          Nur der Anfang deiner Tour liegt im Vorhersagefenster - die späteren Tage sind nicht abgedeckt.
         </Hinweis>
       )}
 
@@ -108,7 +108,7 @@ export function WeatherPanel({ forecast, loading, error, targetElevation, outOfR
         {versatz === 0
           ? ' deine Tourhöhe entspricht dem.'
           : ` die Werte sind auf ${targetElevation} m umgerechnet (${versatz > 0 ? '+' : ''}${versatz} m, rund 0,65 °C je 100 m).`}{' '}
-        Im Gebirge ist das eine Näherung — Wind, Hangneigung und Kaltluftseen können deutlich abweichen.
+        Im Gebirge ist das eine Näherung - Wind, Hangneigung und Kaltluftseen können deutlich abweichen.
       </p>
     </div>
   )

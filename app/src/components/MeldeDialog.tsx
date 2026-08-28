@@ -82,7 +82,7 @@ export function MeldeDialog({ offen, zielArt, zielId, zielName, onClose }: Props
             <p className="mt-3 font-medium text-ink-50">Meldung ist angekommen.</p>
             <p className="mt-1 text-klein leading-relaxed text-ink-400">
               Sie wird von Hand geprüft. Bei einer falschen Rechtsangabe hilft dein Hinweis
-              der Karte am meisten — danke dafür.
+              der Karte am meisten - danke dafür.
             </p>
           </div>
         ) : (

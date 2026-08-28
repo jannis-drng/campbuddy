@@ -110,7 +110,7 @@ export function schwierigkeit(distance_m: number, ascent_m: number): {
     stufe,
     begruendung:
       `${km.toFixed(1).replace('.', ',')} km und ${hm} Höhenmeter im Aufstieg. ` +
-      'Bewertet ist nur die Kondition — wie ausgesetzt oder gesichert der Weg ist, ' +
+      'Bewertet ist nur die Kondition - wie ausgesetzt oder gesichert der Weg ist, ' +
       'geht aus den Daten nicht hervor.',
   }
 }

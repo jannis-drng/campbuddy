@@ -94,7 +94,7 @@ export function EtappenPlaner({
         {etappen.length === 0 ? (
           <p className="text-klein leading-relaxed text-ink-400">
             {selbst
-              ? 'Noch keine Nacht gewählt — die Tour gilt als Tagesmarsch. Hak unten an, wo du schlafen willst.'
+              ? 'Noch keine Nacht gewählt - die Tour gilt als Tagesmarsch. Hak unten an, wo du schlafen willst.'
               : 'Die Tour passt in einen Tag; der Vorschlag teilt sie deshalb nicht auf.'}
           </p>
         ) : (
@@ -122,7 +122,7 @@ export function EtappenPlaner({
                   ) : e.nummer === etappen.length ? (
                     `Ziel erreicht, auf ${e.endhoehe_m} m.`
                   ) : (
-                    'Keine erfasste Übernachtung in der Nähe — hier zählt die Rechtslage der Zone.'
+                    'Keine erfasste Übernachtung in der Nähe - hier zählt die Rechtslage der Zone.'
                   )}
                 </p>
               </li>
@@ -146,7 +146,7 @@ export function EtappenPlaner({
           <Hinweis ton="info" icon={MapPin}>
             Entlang dieser Route ist nichts erfasst, woran sich eine Nacht festmachen liesse.
             Setz auf der Karte einen Stopp an der Stelle, an der du schlafen willst, oder
-            markiere sie als eigenen Schlafplatz — beides erscheint dann hier.
+            markiere sie als eigenen Schlafplatz - beides erscheint dann hier.
           </Hinweis>
         ) : (
           <ul className="divide-y divide-kante overflow-hidden rounded-mittel border border-kante">

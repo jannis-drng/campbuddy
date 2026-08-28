@@ -71,7 +71,7 @@ export function TourModal({
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-riesig border border-kante bg-flaeche-2 shadow-[var(--shadow-4)] sm:rounded-riesig">
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto overflow-x-hidden">
           {/* ---- Bild als Kopf, mit dem Titel darin ---- */}
           <div className="relative">
             <RoutenVorschau geometry={geometrie} breite={800} hoehe={340} rund="alle"
@@ -140,7 +140,7 @@ export function TourModal({
             {/* ---- Was hier NICHT drinsteht ---- */}
             <Hinweis ton="warnung" icon={TriangleAlert}>
               Diese Tour stammt von einem Nutzer, nicht von CampBuddy. Ob entlang des Verlaufs
-              übernachtet werden darf, sagt dir die Legalitäts-Ebene auf der Karte — nicht die
+              übernachtet werden darf, sagt dir die Legalitäts-Ebene auf der Karte - nicht die
               Tatsache, dass jemand die Tour geteilt hat.
             </Hinweis>
 

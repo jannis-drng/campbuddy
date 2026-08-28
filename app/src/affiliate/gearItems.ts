@@ -48,13 +48,13 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'biwaksack', name: 'Biwaksack', category: 'Schlafen', seasons: ALL, min_temp: null,
     shelter: ['biwak'], per: 'person', weight_g: 400, vendor: 'bergfreunde', affiliate_url: null,
     price_hint: '60–160 €', essential: true,
-    rationale: 'Biwakieren ohne aufgebautes Zelt ist rechtlich meist die mildere Variante — schnell abgebaut und kaum sichtbar.',
+    rationale: 'Biwakieren ohne aufgebautes Zelt ist rechtlich meist die mildere Variante - schnell abgebaut und kaum sichtbar.',
   },
   {
     id: 'leichtzelt', name: 'Leichtes Zelt', category: 'Schlafen', seasons: ALL, min_temp: null,
     shelter: ['zelt'], per: 'gruppe', weight_g: 1900, vendor: 'bergfreunde', affiliate_url: null,
     price_hint: '180–500 €', essential: true,
-    rationale: 'Nur dort aufstellen, wo Zelten erlaubt oder ausdrücklich geduldet ist — die Karte zeigt es dir.',
+    rationale: 'Nur dort aufstellen, wo Zelten erlaubt oder ausdrücklich geduldet ist - die Karte zeigt es dir.',
   },
   {
     id: 'schlafsack-sommer', group: 'schlafsack', name: 'Schlafsack (Komfort ca. 5 °C)', category: 'Schlafen',
@@ -78,7 +78,7 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'huettenschlafsack', name: 'Hüttenschlafsack', category: 'Schlafen', seasons: ALL,
     min_temp: null, shelter: ['huette'], per: 'person', weight_g: 200, vendor: 'decathlon',
     affiliate_url: null, price_hint: '15–40 €', essential: true,
-    rationale: 'In bewirtschafteten Hütten Pflicht — Decken sind vorhanden, ein eigener Inlett-Sack aber vorgeschrieben.',
+    rationale: 'In bewirtschafteten Hütten Pflicht - Decken sind vorhanden, ein eigener Inlett-Sack aber vorgeschrieben.',
   },
   {
     id: 'isomatte', name: 'Isomatte (R-Wert ≥ 3)', category: 'Schlafen', seasons: ALL,
@@ -98,7 +98,7 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'packsack', name: 'Wasserdichte Packsäcke', category: 'Rucksack', seasons: ALL,
     min_temp: null, shelter: null, per: 'person', weight_g: 120, vendor: 'decathlon',
     affiliate_url: null, price_hint: '15–40 €', essential: false,
-    rationale: 'Ein nasser Schlafsack beendet die Tour — Trockenhalten ist wichtiger als Regenschutz aussen.',
+    rationale: 'Ein nasser Schlafsack beendet die Tour - Trockenhalten ist wichtiger als Regenschutz aussen.',
   },
 
   // ---- Kochen ----
@@ -106,7 +106,7 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'gaskocher', name: 'Gaskocher', category: 'Kochen', seasons: ALL, min_temp: null,
     shelter: ['zelt', 'biwak'], per: 'gruppe', weight_g: 300, vendor: 'decathlon',
     affiliate_url: null, price_hint: '25–90 €', essential: true,
-    rationale: 'In Zonen mit Feuerverbot die einzige zulässige Art zu kochen — und das ist im Wallis die Regel, nicht die Ausnahme.',
+    rationale: 'In Zonen mit Feuerverbot die einzige zulässige Art zu kochen - und das ist im Wallis die Regel, nicht die Ausnahme.',
   },
   {
     id: 'gaskartusche', name: 'Gaskartuschen', category: 'Kochen', seasons: ALL, min_temp: null,
@@ -138,7 +138,7 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'hardshell', name: 'Regenjacke (Hardshell)', category: 'Kleidung', seasons: ALL,
     min_temp: null, shelter: null, per: 'person', weight_g: 400, vendor: 'bergfreunde',
     affiliate_url: null, price_hint: '120–400 €', essential: true,
-    rationale: 'Im Gebirge schlägt das Wetter schnell um — auch bei bester Vorhersage.',
+    rationale: 'Im Gebirge schlägt das Wetter schnell um - auch bei bester Vorhersage.',
   },
   {
     id: 'daunenjacke', name: 'Isolationsjacke', category: 'Kleidung', seasons: ALL, min_temp: 12,
@@ -150,7 +150,7 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'muetze-handschuhe', name: 'Mütze & Handschuhe', category: 'Kleidung', seasons: ALL,
     min_temp: 10, shelter: null, per: 'person', weight_g: 150, vendor: 'decathlon',
     affiliate_url: null, price_hint: '25–70 €', essential: true,
-    rationale: 'Über den Kopf geht ein erheblicher Teil der Wärme verloren — auch im Schlafsack.',
+    rationale: 'Über den Kopf geht ein erheblicher Teil der Wärme verloren - auch im Schlafsack.',
   },
   {
     id: 'wechselwaesche', name: 'Wechselwäsche & Wandersocken', category: 'Kleidung', seasons: ALL,
@@ -182,7 +182,7 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'powerbank', name: 'Powerbank', category: 'Navigation', seasons: ALL, min_temp: null,
     shelter: null, per: 'person', weight_g: 250, vendor: 'decathlon', affiliate_url: null,
     price_hint: '25–70 €', essential: false,
-    rationale: 'Kälte halbiert die Akkulaufzeit — im Winter Gerät und Powerbank körpernah tragen.',
+    rationale: 'Kälte halbiert die Akkulaufzeit - im Winter Gerät und Powerbank körpernah tragen.',
   },
   {
     id: 'erste-hilfe', name: 'Erste-Hilfe-Set', category: 'Sicherheit', seasons: ALL,
@@ -206,6 +206,6 @@ export const GEAR_ITEMS: GearItem[] = [
     id: 'trowel', name: 'Kleine Schaufel', category: 'Hygiene', seasons: ALL, min_temp: null,
     shelter: ['zelt', 'biwak'], per: 'gruppe', weight_g: 60, vendor: 'bergfreunde',
     affiliate_url: null, price_hint: '10–25 €', essential: false,
-    rationale: 'Notdurft mindestens 60 m von Gewässern entfernt vergraben — Teil des Grundes, warum Biwakieren geduldet bleibt.',
+    rationale: 'Notdurft mindestens 60 m von Gewässern entfernt vergraben - Teil des Grundes, warum Biwakieren geduldet bleibt.',
   },
 ]

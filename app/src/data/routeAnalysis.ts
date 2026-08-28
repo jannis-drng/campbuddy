@@ -115,7 +115,7 @@ export function summarise(analysis: RouteAnalysis, baseline: LegalStatus): strin
     const label = { allowed: 'erlaubt', tolerated: 'geduldet', forbidden: 'verboten', unknown: 'ungeklärt' }[baseline]
     parts.push(
       `${Math.round(analysis.unmappedShare * 100)} % der Strecke liegen ausserhalb eingezeichneter ` +
-      `Flächen — dort gilt nur der allgemeine Grundsatz der Region (${label}).`,
+      `Flächen - dort gilt nur der allgemeine Grundsatz der Region (${label}).`,
     )
   }
 

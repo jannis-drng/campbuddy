@@ -25,13 +25,13 @@ import {
   Bookmark, Compass, Heart, MapPin, MessageCircle, Search, SlidersHorizontal, TriangleAlert, X,
 } from 'lucide-react'
 import type { Position } from '../data/geo'
-import { REGIONS } from '../data/regions'
+import { KANTON_NAMEN } from '../data/kantoneNamen'
 import { isSupabaseConfigured, type PublicTour } from '../services/supabase'
 import { addFavorite, ladeProfil, listFavoriteIds, removeFavorite } from '../services/account'
 import {
-  ladeVerlauf, listCommunityTouren, listLikeIds, setLike, verfuegbareRegionen,
-  LAENGENKLASSEN, SORTIERUNGEN, STANDARD_FILTER,
-  type CommunityFilter, type Laengenklasse, type Ortsfilter, type Sortierung,
+  ladeVerlauf, listCommunityTouren, listLikeIds, setLike,
+  LAENGENKLASSEN, NACHTLAGER, SORTIERUNGEN, STANDARD_FILTER,
+  type CommunityFilter, type Laengenklasse, type Nachtlager, type Ortsfilter, type Sortierung,
 } from '../services/community'
 import { Auswahl, Button, Eingabe, Hinweis, Leer, Seite, Segmente } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
@@ -54,14 +54,12 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
   const [touren, setTouren] = useState<PublicTour[]>([])
   const [seite, setSeite] = useState(0)
   const [mehr, setMehr] = useState(false)
-  const [gesamt, setGesamt] = useState<number | null>(null)
   const [laedt, setLaedt] = useState(true)
   const [fehler, setFehler] = useState<string | null>(null)
 
   const [likes, setLikes] = useState<Set<string>>(new Set())
   const [favoriten, setFavoriten] = useState<Set<string>>(new Set())
   const [anzeigename, setAnzeigename] = useState<string | null>(null)
-  const [regionen, setRegionen] = useState<string[]>([])
   const [offen, setOffen] = useState<PublicTour | null>(null)
   const [filterOffen, setFilterOffen] = useState(false)
 
@@ -100,7 +98,6 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
       if (marke !== laufendeAnfrage.current) return
       setTouren((alt) => (anhaengen ? [...alt, ...ergebnis.touren] : ergebnis.touren))
       setMehr(ergebnis.mehr)
-      setGesamt(ergebnis.gesamt)
       setFehler(null)
     } catch (e) {
       if (marke !== laufendeAnfrage.current) return
@@ -117,11 +114,6 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
     setSeite(0)
     void laden(0, false)
   }, [laden])
-
-  useEffect(() => {
-    if (!isSupabaseConfigured) return
-    verfuegbareRegionen().then(setRegionen).catch(() => {})
-  }, [])
 
   useEffect(() => {
     if (!session) { setLikes(new Set()); setFavoriten(new Set()); setAnzeigename(null); return }
@@ -200,7 +192,7 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
 
   if (!isSupabaseConfigured) {
     return (
-      <Seite titel="Community" beschreibung="Touren, die andere geteilt haben.">
+      <Seite titel="Community" beschreibung="Touren, die andere Wanderer geteilt haben.">
         <Leer
           icon={Compass}
           titel="Noch keine geteilten Touren"
@@ -213,7 +205,7 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
   return (
     <Seite
       titel="Community"
-      beschreibung="Touren, die andere geteilt haben — mit Verlauf, Kenndaten und dem, was Leute dazu sagen."
+      beschreibung="Touren, die andere Wanderer geteilt haben."
       breite="breit"
     >
       {/* ---- Suche und Filter ---- */}
@@ -277,16 +269,34 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
           Auf dem Telefon zugeklappt, ab Tablet immer da: dort ist Platz, und
           ein Filter, den man erst aufklappen muss, wird nicht benutzt.
         */}
-        <div className={`${filterOffen ? 'grid' : 'hidden'} grid-cols-1 gap-3 sm:grid sm:grid-cols-[auto_auto_minmax(0,1fr)] sm:items-center`}>
+        <div className={`${filterOffen ? 'grid' : 'hidden'} grid-cols-1 gap-3 sm:grid sm:grid-cols-[auto_auto_auto_minmax(0,1fr)] sm:items-center`}>
           <Auswahl
             value={filter.region ?? ''}
             onChange={(e) => setFilter((f) => ({ ...f, region: e.target.value || null }))}
-            aria-label="Region"
+            aria-label="Kanton"
             className="w-full sm:w-auto"
           >
-            <option value="">Alle Regionen</option>
-            {regionen.map((r) => (
-              <option key={r} value={r}>{REGIONS[r]?.name ?? r}</option>
+            {/*
+              Die 26 Kantone, fest aufgezählt - vorher standen hier die
+              Regionscodes, die in geteilten Touren zufällig vorkamen, und das
+              war bei einer jungen Sammlung genau ein Eintrag: „Schweiz".
+              Eine Auswahl mit einem Eintrag ist keine. Wo eine Tour liegt,
+              schreibt die Karte beim Speichern in `region` (siehe App.tsx).
+            */}
+            <option value="">Alle Kantone</option>
+            {KANTON_NAMEN.map(([code, name]) => (
+              <option key={code} value={code}>{name}</option>
+            ))}
+          </Auswahl>
+
+          <Auswahl
+            value={filter.nachtlager}
+            onChange={(e) => setFilter((f) => ({ ...f, nachtlager: e.target.value as Nachtlager }))}
+            aria-label="Übernachtung"
+            className="w-full sm:w-auto"
+          >
+            {NACHTLAGER.map((n) => (
+              <option key={n.wert} value={n.wert}>{n.label}</option>
             ))}
           </Auswahl>
 
@@ -321,14 +331,18 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
+          {/*
+            Ohne Gesamtzahl: eine junge Sammlung, die „7 geteilte Touren"
+            meldet, wirbt gegen sich selbst. Beim Laden und bei einer
+            Ortssuche steht hier weiterhin etwas — dort ist die Zahl eine
+            Antwort auf eine gestellte Frage, keine Bilanz.
+          */}
           <p className="text-klein text-ink-500" role="status">
             {laedt && touren.length === 0
               ? 'Wird geladen …'
               : filter.ort
                 ? `${touren.length} ${touren.length === 1 ? 'Tour' : 'Touren'} in der Nähe`
-                : gesamt != null
-                  ? `${gesamt.toLocaleString('de-DE')} ${gesamt === 1 ? 'geteilte Tour' : 'geteilte Touren'}`
-                  : `${touren.length} geteilte Touren`}
+                : ''}
           </p>
           {filterAktiv && (
             <Button
@@ -351,7 +365,7 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
           <Leer
             icon={MapPin}
             titel={`Noch keine Tour bei ${filter.ort.name}`}
-            text={`Im Umkreis von ${filter.ort.umkreisM / 1000} km hat noch niemand eine Tour geteilt. Plane eine auf der Karte — dann steht hier deine.`}
+            text={`Im Umkreis von ${filter.ort.umkreisM / 1000} km hat noch niemand eine Tour geteilt. Plane eine auf der Karte - dann steht hier deine.`}
             aktion={<Button variante="sekundaer" onClick={ortLoesen}>Alle Touren zeigen</Button>}
           />
         ) : filterAktiv ? (
@@ -434,7 +448,7 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
 
       <Hinweis ton="warnung" icon={TriangleAlert}>
         Geteilte Touren stammen von Nutzern, nicht von CampBuddy. Ob Übernachten entlang einer
-        Tour zulässig ist, sagt dir die Legalitäts-Ebene auf der Karte — nicht die Tatsache,
+        Tour zulässig ist, sagt dir die Legalitäts-Ebene auf der Karte - nicht die Tatsache,
         dass jemand die Tour geteilt hat.
       </Hinweis>
 

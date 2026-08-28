@@ -103,7 +103,7 @@ export function namensformPruefen(kandidat: string): NamensUrteil | null {
   if (!NAME_FORM.test(n)) {
     return {
       ok: false, art: 'zeichen',
-      meldung: 'Erlaubt sind Buchstaben, Ziffern, Punkt, Strich und Unterstrich — und das erste Zeichen muss ein Buchstabe oder eine Ziffer sein.',
+      meldung: 'Erlaubt sind Buchstaben, Ziffern, Punkt, Strich und Unterstrich - und das erste Zeichen muss ein Buchstabe oder eine Ziffer sein.',
     }
   }
   return null
@@ -252,12 +252,12 @@ function uebersetzeFehler(fehler: { message: string; code?: string } | string): 
     // Passwörter oder Adressen zu variieren, weil ihm etwas Rotes entgegenkommt.
     case 'unexpected_failure':
       return istMailfehler(nachricht)
-        ? 'Die E-Mail konnte nicht verschickt werden — das liegt am Mailversand, nicht an deiner Eingabe. Versuch es in ein paar Minuten noch einmal.'
+        ? 'Die E-Mail konnte nicht verschickt werden - das liegt am Mailversand, nicht an deiner Eingabe. Versuch es in ein paar Minuten noch einmal.'
         : nachricht
   }
 
   if (istMailfehler(nachricht)) {
-    return 'Die E-Mail konnte nicht verschickt werden — das liegt am Mailversand, nicht an deiner Eingabe. Versuch es in ein paar Minuten noch einmal.'
+    return 'Die E-Mail konnte nicht verschickt werden - das liegt am Mailversand, nicht an deiner Eingabe. Versuch es in ein paar Minuten noch einmal.'
   }
 
   // Ältere Auth-Versionen liefern keinen Code — dann bleibt der Text.
@@ -455,6 +455,8 @@ export async function aktualisiereTour(
   patch: {
     name?: string
     beschreibung?: string | null
+    /** Der Kanton, in dem die Tour beginnt - siehe `tourRegion` in App.tsx. */
+    region?: string
     geometry?: Position[]
     waypoints?: Position[]
   } & TourEckdaten,
@@ -464,6 +466,7 @@ export async function aktualisiereTour(
   const zeile: Record<string, unknown> = eckdatenZeile(patch)
   if (patch.name !== undefined) zeile.name = patch.name
   if (patch.beschreibung !== undefined) zeile.beschreibung = patch.beschreibung
+  if (patch.region !== undefined) zeile.region = patch.region
   if (patch.geometry !== undefined) {
     zeile.geometry = { type: 'LineString', coordinates: patch.geometry }
   }
@@ -528,13 +531,13 @@ function uebersetzeSpeicherfehler(meldung: string): string {
     return 'Dieser Verlauf ist zu gross zum Speichern. Teile die Tour in Etappen auf.'
   }
   if (/routes_beschreibung_check/i.test(meldung)) {
-    return 'Die Beschreibung ist zu lang — höchstens 2000 Zeichen.'
+    return 'Die Beschreibung ist zu lang - höchstens 2000 Zeichen.'
   }
   if (/violates check constraint/i.test(meldung)) {
-    return 'Ein Wert liegt ausserhalb des zulässigen Bereichs — prüfe Dauer, Personenzahl und Schlafhöhe.'
+    return 'Ein Wert liegt ausserhalb des zulässigen Bereichs - prüfe Dauer, Personenzahl und Schlafhöhe.'
   }
   if (/row-level security/i.test(meldung)) {
-    return 'Dafür fehlt die Berechtigung — bist du noch angemeldet?'
+    return 'Dafür fehlt die Berechtigung - bist du noch angemeldet?'
   }
   if (/column .* does not exist|schema cache/i.test(meldung)) {
     return 'Die Tour lässt sich gerade nicht speichern. Versuch es später noch einmal.'
@@ -789,7 +792,7 @@ export function linkErgebnisAuslesen(): LinkErgebnis | null {
     aufraeumen()
     const meldung =
       fehlerCode === 'otp_expired'
-        ? 'Der Link ist abgelaufen oder wurde schon benutzt. E-Mail-Links gelten nur begrenzt und nur einmal — fordere unten einen neuen an.'
+        ? 'Der Link ist abgelaufen oder wurde schon benutzt. E-Mail-Links gelten nur begrenzt und nur einmal - fordere unten einen neuen an.'
         : fehlerCode === 'access_denied'
           ? 'Die Anmeldung wurde abgebrochen oder abgelehnt.'
           : (p.get('error_description') ?? 'Der Link konnte nicht eingelöst werden.').replace(/\+/g, ' ')

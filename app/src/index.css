@@ -245,6 +245,19 @@ h1, h2, h3 { font-variant-numeric: normal; }
 @media (min-width: 640px) {
   .karte.karte-leiste-unten .maplibregl-ctrl-bottom-left { padding-bottom: 3.75rem; }
 }
+/*
+  Aufgeklappt legte sich die Herkunftsangabe hinter den Knopf „Route planen":
+  MapLibre gibt seinen Bedienelementen z-index 2, der Knopf steht auf 10. Auf
+  dem Telefon war damit die halbe Lizenzangabe unlesbar - und die Nennung ist
+  keine Zierde, sie ist die Bedingung der ODbL. Die untere rechte Ecke gehört
+  deshalb nach vorn; zugeklappt ist sie ohnehin nur ein ⓘ am anderen Rand.
+*/
+.karte .maplibregl-ctrl-bottom-right { z-index: 20; }
+/* Und sie bleibt im Bild, statt über die linke Kante hinauszuwachsen. */
+.karte .maplibregl-ctrl-attrib.maplibregl-compact-show {
+  max-width: calc(100vw - 2.5rem);
+}
+
 .karte .maplibregl-ctrl-bottom-right,
 .karte .maplibregl-ctrl-top-right {
   right: var(--karte-rechts);

@@ -46,7 +46,7 @@ export function ZeichenLeiste({ modus, stopps, hatRoute, onUndo, onClear, onFert
             {zeichnet
               ? stopps === 0
                 ? 'Tippe für den ersten Stopp'
-                : `${stopps} ${stopps === 1 ? 'Stopp' : 'Stopps'} — weiter tippen`
+                : `${stopps} ${stopps === 1 ? 'Stopp' : 'Stopps'} - weiter tippen`
               : 'Tippe die Stelle an'}
           </span>
         </p>

@@ -46,13 +46,13 @@ export const EXPORT_ZIELE: ExportZiel[] = [
     id: 'komoot',
     name: 'komoot',
     url: 'https://www.komoot.com/upload',
-    schritt: 'Datei wählen — komoot legt sie als geplante Tour an.',
+    schritt: 'Datei wählen - komoot legt sie als geplante Tour an.',
   },
   {
     id: 'strava',
     name: 'Strava',
     url: 'https://www.strava.com/maps/create',
-    schritt: 'Im Routenplaner auf "Hochladen" — Strava rastet die Spur auf seine Wege.',
+    schritt: 'Im Routenplaner auf "Hochladen" - Strava rastet die Spur auf seine Wege.',
   },
   {
     id: 'garmin',

@@ -231,7 +231,7 @@ export function PunktDialog({
             />
             <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
               Wird vor dem Hochladen verkleinert. Dabei fallen auch die versteckten
-              Kameradaten weg — der Ort des Punktes ist der, den du gesetzt hast.
+              Kameradaten weg - der Ort des Punktes ist der, den du gesetzt hast.
             </p>
           </div>
 
@@ -259,7 +259,7 @@ export function PunktDialog({
               </span>
               <span className="mt-0.5 block text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
                 Standard ist privat. Veröffentlicht sind Name, Notiz, Ort und Foto für alle
-                sichtbar — auch ohne Konto.
+                sichtbar - auch ohne Konto.
               </span>
             </span>
           </button>

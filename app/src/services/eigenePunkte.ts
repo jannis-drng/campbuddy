@@ -189,7 +189,7 @@ export async function fotoAdresse(pfad: string): Promise<string | null> {
 
 function uebersetze(meldung: string): string {
   if (/row-level security|violates row-level/i.test(meldung)) {
-    return 'Dafür fehlt die Berechtigung — bist du angemeldet?'
+    return 'Dafür fehlt die Berechtigung - bist du angemeldet?'
   }
   if (/relation .* does not exist|schema cache/i.test(meldung)) {
     return 'Eigene Punkte lassen sich gerade nicht speichern. Versuch es später noch einmal.'

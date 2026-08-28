@@ -232,7 +232,7 @@ export function TripPlanner({
             ? partial
               ? 'Aus der Vorhersage für den Teil des Zeitraums abgeleitet, der noch im 16-Tage-Fenster liegt.'
               : 'Aus der Vorhersage für deinen Reisezeitraum abgeleitet.'
-            : `Aus der Jahreszeit geschätzt — dein Zeitraum liegt ausserhalb des Vorhersagefensters (Open-Meteo reicht ${MAX_FORECAST_DAYS} Tage voraus).`}
+            : `Aus der Jahreszeit geschätzt - dein Zeitraum liegt ausserhalb des Vorhersagefensters (Open-Meteo reicht ${MAX_FORECAST_DAYS} Tage voraus).`}
         </p>
       </section>
 
@@ -255,7 +255,7 @@ export function TripPlanner({
 
       <p className="rounded-mittel bg-geduldet-500/10 p-3 text-klein leading-relaxed text-geduldet-200/90">
         Die Packliste ersetzt keine eigene Tourenplanung. Prüfe Wetterbericht, Lawinenlage und
-        Kondition unabhängig — und ob Übernachten an deinem Ziel überhaupt zulässig ist.
+        Kondition unabhängig - und ob Übernachten an deinem Ziel überhaupt zulässig ist.
       </p>
     </div>
   )

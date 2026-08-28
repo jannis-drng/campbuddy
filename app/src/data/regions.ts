@@ -16,12 +16,12 @@ export const REGIONS: Record<string, Region> = {
     bounds: [5.96, 45.82, 10.49, 47.81],
     legal_framework: {
       summary:
-        'In der Schweiz gibt es kein landesweites Verbot des Biwakierens — aber auch keine ' +
+        'In der Schweiz gibt es kein landesweites Verbot des Biwakierens - aber auch keine ' +
         'landesweite Erlaubnis. Massgeblich sind drei Ebenen: Bundesrecht zu Schutzgebieten ' +
         '(Naturschutzgebiete, eidgenössische Jagdbanngebiete, Moorlandschaften), kantonales ' +
         'Recht und kommunale Regelungen. Die Kantone handhaben das sehr unterschiedlich: in ' +
         'weiten Teilen der Alpen gilt ein einzelnes Nachtbiwak oberhalb der Waldgrenze, ' +
-        'ausserhalb von Schutzgebieten und abseits von Wildruhezonen, als geduldet — anderswo ' +
+        'ausserhalb von Schutzgebieten und abseits von Wildruhezonen, als geduldet - anderswo ' +
         'bestehen ausdrückliche Verbote. Innerhalb von Naturschutzgebieten, eidgenössischen ' +
         'Jagdbanngebieten und Wildruhezonen ist Übernachten in der Regel untersagt. Camping ' +
         'mit Fahrzeug ausserhalb bewilligter Plätze ist durchgehend strenger geregelt als ein ' +
@@ -35,7 +35,7 @@ export const REGIONS: Record<string, Region> = {
         { label: 'Verordnung über die eidgenössischen Jagdbanngebiete (VEJ, SR 922.31)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/2570_2570_2570/de' },
         { label: 'Verordnung über den Schutz der Hoch- und Übergangsmoore (SR 451.32)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/350_350_350/de' },
         { label: 'Wildruhezonen Schweiz (Bundesamt für Umwelt BAFU)', url: 'https://www.wildruhezonen.ch/' },
-        { label: 'Schweizerischer Alpen-Club SAC — Biwakieren', url: 'https://www.sac-cas.ch/de/ausbildung-und-sicherheit/tourenplanung/' },
+        { label: 'Schweizerischer Alpen-Club SAC - Biwakieren', url: 'https://www.sac-cas.ch/de/ausbildung-und-sicherheit/tourenplanung/' },
       ],
     },
   },
