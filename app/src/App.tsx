@@ -1015,8 +1015,7 @@ export default function App() {
             region={regionCode}
             basemap={basemap}
             onBasemapChange={setBasemap}
-            filters={filters}
-            onFiltersChange={setFilters}
+            activity={filters.activity}
           />
           <InfoPanel
             selection={selection}
