@@ -50,6 +50,22 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   Weg kommt über `ladeVerlauf` (fremde Tour) bzw. `ladeEigenenVerlauf` (eigene), und zwar
   erst dann, wenn jemand die Tour tatsächlich auf die Karte legt, kopiert oder bearbeitet.
   Ein `select('*')` auf `routes` oder `oeffentliche_routen` in einer Liste ist ein Rückfall.
+- **Rechte sind ab Migration 0025 einzeln vergeben, nicht pauschal.** Der Supabase-Standard
+  (`grant all` an `anon` und `authenticated`, RLS als einziges Tor) gilt hier nicht mehr:
+  ein Zugriff braucht jetzt *beides* — ein Recht und eine zustimmende Regel. Wer eine
+  Abfrage auf eine neue Tabelle ergänzt, ergänzt dort auch den `grant`, sonst kommt ein
+  klarer Fehler statt einer stillen Lücke. `profiles` ist spaltenweise vergeben: geschrieben
+  wird nur `anzeigename`, damit niemand sein eigenes Abo einschaltet.
+- **`npm run pruefen --prefix app` beweist die Sicherheitsannahmen von aussen**
+  (`scripts/backend-pruefen.mjs`, 26 Prüfungen mit dem öffentlichen Schlüssel: Kartendaten
+  zu, Views ohne `user_id`, kein Schreiben ohne Konto, Trigger nicht als RPC aufrufbar).
+  Pflichtschritt, bevor eine Änderung an Regeln, Rechten oder Views live geht — dieselbe
+  Rolle wie `vorschau-kopfzeilen.mjs` vor einer CSP-Änderung.
+- **`SUPABASE_SECRET_KEY=… npm run sichern --prefix app` sichert die Nutzerdaten** nach
+  `sicherung/<zeitstempel>/` (nicht im Git). Auf dem Free-Plan gibt es keinen zugesicherten
+  Wiederherstellungsweg: Tagessicherungen werden zwar genommen, sind aber erst nach einem
+  Upgrade zugänglich. Die Rechtsdaten stehen in Git und im Import-Verzeichnis; unersetzlich
+  sind Touren, Kommentare, eigene Punkte und Profile. Regelmässig laufen lassen.
 - **PostgREST liefert höchstens 1000 Zeilen, stillschweigend.** Genau daran fehlten live über
   tausend Gemeinden und mehrere hundert Schutzgebiete, monatelang, ohne Fehlermeldung. Jede
   Abfrage, die mehr als eine Handvoll Zeilen erwarten kann, geht über `alleZeilen` aus

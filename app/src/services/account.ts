@@ -521,6 +521,15 @@ function uebersetzeSpeicherfehler(meldung: string): string {
   if (/null value in column|violates not-null/i.test(meldung)) {
     return 'Ein Pflichtfeld der Tour war leer. Gib ihr einen Namen und versuche es noch einmal.'
   }
+  // Die Grössenbremsen aus Migration 0025 zuerst, sonst fielen sie unter die
+  // allgemeine Antwort darunter und schickten jemanden zu Dauer und
+  // Personenzahl, während in Wahrheit der Weg zu lang ist.
+  if (/routes_geometry_klein|routes_waypoints_klein/i.test(meldung)) {
+    return 'Dieser Verlauf ist zu gross zum Speichern. Teile die Tour in Etappen auf.'
+  }
+  if (/routes_beschreibung_check/i.test(meldung)) {
+    return 'Die Beschreibung ist zu lang — höchstens 2000 Zeichen.'
+  }
   if (/violates check constraint/i.test(meldung)) {
     return 'Ein Wert liegt ausserhalb des zulässigen Bereichs — prüfe Dauer, Personenzahl und Schlafhöhe.'
   }

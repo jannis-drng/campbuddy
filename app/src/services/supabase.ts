@@ -20,11 +20,66 @@ export const isSupabaseConfigured = Boolean(url && key)
 
 let client: SupabaseClient | null = null
 
+/**
+ * Wie oft ein Leseversuch wiederholt wird, und mit welchem Abstand.
+ *
+ * Drei Versuche, dazwischen 400 und 1200 Millisekunden. Das überbrückt genau
+ * die Sorte Störung, um die es hier geht: ein Funkloch beim Losfahren, ein
+ * kurzer Aussetzer im Zug, ein Serverfehler beim Aufwachen der Instanz.
+ * Länger zu warten hiesse, eine Oberfläche minutenlang im Ladezustand stehen
+ * zu lassen — dann ist eine ehrliche Fehlermeldung das Bessere.
+ */
+const VERSUCHE = 3
+const WARTEN_MS = [400, 1200]
+
+/**
+ * Ein `fetch`, das abgebrochene Leseversuche wiederholt.
+ *
+ * **Nur GET und HEAD.** Ein abgebrochener Schreibversuch sieht von hier aus
+ * genauso aus wie ein nie angekommener — die Anfrage kann den Server längst
+ * erreicht und die Zeile angelegt haben, bevor die Verbindung zusammenbrach.
+ * Ein zweiter Versuch legte sie dann ein zweites Mal an. Bei jemandem, der im
+ * Gebirge eine Tour speichert, hiesse das: dieselbe Tour zweimal in der
+ * Liste, ohne dass er etwas falsch gemacht hätte. Lieber ein Fehler, den man
+ * sieht, als ein Duplikat, das man erst später bemerkt.
+ *
+ * Wiederholt wird bei Transportfehlern (`fetch` wirft) und bei den
+ * Antwortcodes, die ausdrücklich „gleich nochmal" bedeuten: 429, 502, 503,
+ * 504. Ein 4xx wird nicht wiederholt — der Fehler liegt dann an der Anfrage
+ * und der zweite Versuch scheitert genauso.
+ */
+async function fetchMitWiederholung(
+  eingabe: RequestInfo | URL, init?: RequestInit,
+): Promise<Response> {
+  const methode = (init?.method ?? 'GET').toUpperCase()
+  const wiederholbar = methode === 'GET' || methode === 'HEAD'
+
+  let letzterFehler: unknown
+  for (let versuch = 0; versuch < (wiederholbar ? VERSUCHE : 1); versuch++) {
+    if (versuch > 0) {
+      await new Promise((r) => setTimeout(r, WARTEN_MS[versuch - 1] ?? 1200))
+    }
+    try {
+      const antwort = await fetch(eingabe, init)
+      if (!wiederholbar || ![429, 502, 503, 504].includes(antwort.status)) return antwort
+      letzterFehler = new Error(`HTTP ${antwort.status}`)
+      // Der letzte Durchgang gibt die Antwort heraus statt zu werfen: die
+      // Aufrufer übersetzen Supabase-Fehler in Sätze für Menschen, und ein
+      // geworfener Transportfehler käme dort als Rohtext an.
+      if (versuch === VERSUCHE - 1) return antwort
+    } catch (e) {
+      letzterFehler = e
+    }
+  }
+  throw letzterFehler instanceof Error ? letzterFehler : new Error('Netzwerkfehler')
+}
+
 export function getSupabase(): SupabaseClient | null {
   if (!isSupabaseConfigured) return null
   if (!client) {
     client = createClient(url!, key!, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      global: { fetch: fetchMitWiederholung },
     })
   }
   return client
