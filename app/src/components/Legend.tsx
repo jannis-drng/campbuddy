@@ -1,6 +1,23 @@
 /**
  * Legende der Kartenebenen.
  *
+ * Sie war einmal doppelt so lang und reichte am Zeiger bis an den unteren
+ * Kartenrand. Gekürzt an drei Stellen, ohne dass eine Auskunft verloren geht:
+ *
+ *  - **Zone und Gemeinde in einer Zeile.** „Erlaubt · Geduldet · Verboten"
+ *    stand zweimal untereinander, einmal in den Zonentönen, einmal in den
+ *    tieferen Gemeindetönen — acht Zeilen für vier Wörter. Jetzt trägt jede
+ *    Zeile beide Kästchen nebeneinander, und die Spaltenüberschrift sagt,
+ *    welches wofür steht. Nebenbei lernt man so, dass es zwei Ebenen gibt.
+ *  - **Die Schraffur wird einmal erklärt, nicht zweimal.** Sie stand als
+ *    eigene Zeile *und* als Fussnote.
+ *  - **Die Symbole stehen zu zweit nebeneinander** statt sieben Zeilen tief.
+ *
+ * Die Schalter dafür bleiben, wo sie sind: in der Filterleiste. Legende und
+ * Schalter zusammenzulegen war einmal versucht und wieder verworfen — beim
+ * Nachschlagen will man nichts umlegen, und ein Klick auf eine Erklärung, der
+ * die Karte ändert, ist eine Falle.
+ *
  * Die Legende bringt ihre Lage nicht mehr selbst mit — sie steht dort, wo auch
  * die Wahl der Hintergrundkarte steht (siehe `Kartenebenen`). Beides sind
  * Auskünfte über dieselbe Karte; sie an zwei gegenüberliegende Ecken zu
@@ -11,7 +28,7 @@
  * Ebenen-Blase und braucht keinen zweiten Klappmechanismus.
  */
 import { useState } from 'react'
-import { ChevronDown, Droplet, Eye, Layers, Star, Tent, Truck, Waves } from 'lucide-react'
+import { ChevronDown, Droplet, Eye, Layers, Star, Tent, Truck } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ActivityMode } from '../data/types'
 import { GEMEINDE_COLORS, STATUS_COLORS } from '../map/mapConfig'
@@ -36,28 +53,18 @@ const BEZUG: Record<ActivityMode, string> = {
   fire: 'Regel für offenes Feuer',
 }
 
-const ZONEN = [
-  ['Erlaubt', STATUS_COLORS.allowed],
-  ['Geduldet', STATUS_COLORS.tolerated],
-  ['Verboten', STATUS_COLORS.forbidden],
-  ['Ungeklärt', STATUS_COLORS.unknown],
-] as const
-
 /**
- * Die Gemeindeebene, und was ihre zwei Darstellungen bedeuten.
- *
- * Der Unterschied zwischen voller Fläche und Schraffur ist keine Spielerei,
- * sondern die wichtigste Auskunft dieser Karte über sich selbst: die eine
- * Einstufung ist mit einem amtlichen Dokument belegt, die andere bloss
- * abgeleitet. Deshalb steht er in der Legende, und deshalb steht dabei, was er
- * heisst.
+ * Eine Zeile je Einstufung, mit beiden Farbwelten nebeneinander: links die
+ * Zone (Schutzgebiet), rechts die Gemeinde. `gemeinde: null` heisst „ohne
+ * Füllung" — die Gemeindeebene kennt kein eigenes Grau für „ungeklärt", sie
+ * lässt die Fläche schlicht leer.
  */
-const GEMEINDEN = [
-  ['Erlaubt', GEMEINDE_COLORS.allowed, true],
-  ['Geduldet', GEMEINDE_COLORS.tolerated, true],
-  ['Verboten', GEMEINDE_COLORS.forbidden, true],
-  ['… schraffiert: ohne Beleg', GEMEINDE_COLORS.forbidden, false],
-] as const
+const EINSTUFUNGEN: [string, string, string | null][] = [
+  ['Erlaubt', STATUS_COLORS.allowed, GEMEINDE_COLORS.allowed],
+  ['Geduldet', STATUS_COLORS.tolerated, GEMEINDE_COLORS.tolerated],
+  ['Verboten', STATUS_COLORS.forbidden, GEMEINDE_COLORS.forbidden],
+  ['Ungeklärt', STATUS_COLORS.unknown, null],
+]
 
 /** Dieselbe Schraffur wie auf der Karte, nur als Kachel im Kästchen. */
 function schraffurStil(farbe: string) {
@@ -68,17 +75,18 @@ function schraffurStil(farbe: string) {
   }
 }
 
-const PUNKTE: [string, string, LucideIcon | typeof Huettenzeichen][] = [
+/**
+ * Die Kartensymbole, kurz benannt. „Trinkwasser, Quelle" und „See, Wasserfall"
+ * waren zwei Zeilen für dieselbe Ebene und sind eine geworden; die langen
+ * Namen sind auf das Wort gekürzt, das die Karte selbst benutzt.
+ */
+const SYMBOLE: [string, string, LucideIcon | typeof Huettenzeichen][] = [
   ['Hütte', SYMBOL_FARBEN.hut, Huettenzeichen],
-  ['Campingplatz', SYMBOL_FARBEN.campsite, Tent],
+  ['Camping', SYMBOL_FARBEN.campsite, Tent],
   ['Stellplatz', SYMBOL_FARBEN.vehicle_spot, Truck],
-]
-
-const NATUR: [string, string, LucideIcon][] = [
-  ['Trinkwasser, Quelle', SYMBOL_FARBEN.drinking_water, Droplet],
-  ['See, Wasserfall', SYMBOL_FARBEN.lake, Waves],
-  ['Aussichtspunkt', SYMBOL_FARBEN.viewpoint, Eye],
-  ['Eigene Markierung', SYMBOL_FARBEN.eigen, Star],
+  ['Wasser', SYMBOL_FARBEN.drinking_water, Droplet],
+  ['Aussicht', SYMBOL_FARBEN.viewpoint, Eye],
+  ['Eigene', SYMBOL_FARBEN.eigen, Star],
 ]
 
 /**
@@ -123,85 +131,79 @@ export function Legende({ activity }: { activity: ActivityMode }) {
 export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
   return (
     <div className="space-y-3">
-          <div>
-            <Label className="mb-1.5">{BEZUG[activity]}</Label>
-            <div className="space-y-1.5">
-              {ZONEN.map(([label, farbe]) => (
-                <div key={label} className="flex items-center gap-2 text-klein text-ink-300">
-                  <span
-                    className="h-3 w-3 shrink-0 rounded-[3px] border"
-                    style={{ backgroundColor: `${farbe}55`, borderColor: farbe }}
-                    aria-hidden
-                  />
-                  {label}
-                </div>
-              ))}
+      <div>
+        <Label className="mb-1">{BEZUG[activity]}</Label>
+        {/*
+          Die Zeile darüber ist der ganze Trick: ohne sie wären zwei Kästchen
+          nebeneinander bloss zwei Farben, mit ihr sind sie zwei
+          Zuständigkeitsebenen — und dass die feinere die Gemeinde ist, ist
+          die Aussage, auf die es bei dieser Karte ankommt.
+        */}
+        <p className="mb-1 text-mikro normal-case tracking-normal text-ink-500">
+          links Zone · rechts Gemeinde
+        </p>
+        <div className="space-y-1">
+          {EINSTUFUNGEN.map(([label, zone, gemeinde]) => (
+            <div key={label} className="flex items-center gap-2 text-klein text-ink-300">
+              <span
+                className="h-3 w-3 shrink-0 rounded-[3px] border"
+                style={{ backgroundColor: `${zone}55`, borderColor: zone }}
+                aria-hidden
+              />
+              <span
+                className="h-3 w-3 shrink-0 rounded-[3px] border"
+                style={gemeinde
+                  ? { backgroundColor: `${gemeinde}55`, borderColor: gemeinde }
+                  : { backgroundColor: 'transparent', borderColor: GEMEINDE_COLORS.unknown, borderStyle: 'dashed' }}
+                aria-hidden
+              />
+              {label}
             </div>
-          </div>
+          ))}
+        </div>
+        <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
+          Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Ohne Füllung: keine
+          bekannte Regel — antippen zeigt den Kontakt.
+        </p>
+      </div>
 
-          <div className="border-t border-kante pt-2.5">
-            <Label className="mb-1.5">Gemeinde</Label>
-            <div className="space-y-1.5">
-              {GEMEINDEN.map(([label, farbe, voll]) => (
-                <div key={label} className="flex items-center gap-2 text-klein text-ink-300">
-                  <span
-                    className="h-3 w-3 shrink-0 rounded-[3px] border"
-                    style={voll ? { backgroundColor: `${farbe}55`, borderColor: farbe } : schraffurStil(farbe)}
-                    aria-hidden
-                  />
-                  {label}
-                </div>
-              ))}
+      {/*
+        Die wichtigste Auskunft dieser Karte über sich selbst: die eine
+        Einstufung ist mit einem amtlichen Dokument belegt, die andere bloss
+        abgeleitet. Sie stand einmal als Zeile und noch einmal als Fussnote.
+      */}
+      <p className="flex items-center gap-2 border-t border-kante pt-2.5 text-mikro
+                    normal-case leading-snug tracking-normal text-ink-500">
+        <span
+          className="h-3 w-3 shrink-0 rounded-[3px] border"
+          style={schraffurStil(GEMEINDE_COLORS.forbidden)}
+          aria-hidden
+        />
+        Schraffiert oder gestrichelt: Einstufung ohne amtlichen Beleg
+      </p>
+
+      <div className="border-t border-kante pt-2.5">
+        <Label className="mb-1.5">Symbole</Label>
+        {/*
+          Zwei Spalten statt sieben Zeilen. Die Namen sind kurz genug, dass
+          nichts umbricht; wer schalten will, findet dieselben Wörter in der
+          Filterleiste wieder.
+        */}
+        <div className="grid grid-cols-2 gap-x-2 gap-y-1.5">
+          {SYMBOLE.map(([label, farbe, Zeichen]) => (
+            <div key={label} className="flex items-center gap-1.5 text-klein text-ink-300">
+              <span
+                className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+                style={{ backgroundColor: farbe, color: '#0B1214' }}
+                aria-hidden
+              >
+                <Zeichen className="h-2.5 w-2.5" />
+              </span>
+              {label}
             </div>
-            <p className="mt-1.5 text-mikro normal-case leading-relaxed tracking-normal text-ink-500">
-              Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Ohne Füllung: keine
-              bekannte Regel — antippen zeigt den Kontakt.
-            </p>
-          </div>
-
-          <div className="border-t border-kante pt-2.5">
-            <Label className="mb-1.5">Übernachten</Label>
-            <div className="space-y-1.5">
-              {PUNKTE.map(([label, farbe, Zeichen]) => (
-                <div key={label} className="flex items-center gap-2 text-klein text-ink-300">
-                  <span
-                    className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
-                    style={{ backgroundColor: farbe, color: '#0B1214' }}
-                    aria-hidden
-                  >
-                    <Zeichen className="h-2.5 w-2.5" />
-                  </span>
-                  {label}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="border-t border-kante pt-2.5">
-            <Label className="mb-1.5">Unterwegs</Label>
-            <div className="space-y-1.5">
-              {NATUR.map(([label, farbe, Zeichen]) => (
-                <div key={label} className="flex items-center gap-2 text-klein text-ink-300">
-                  <span
-                    className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
-                    style={{ backgroundColor: farbe, color: '#0B1214' }}
-                    aria-hidden
-                  >
-                    <Zeichen className="h-2.5 w-2.5" />
-                  </span>
-                  {label}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <p className="flex items-start gap-2 border-t border-kante pt-2.5 text-mikro
-                        normal-case leading-snug tracking-normal text-ink-500">
-            <svg viewBox="0 0 20 6" className="mt-1.5 h-1 w-5 shrink-0" aria-hidden>
-              <line x1="0" y1="3" x2="20" y2="3" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" />
-            </svg>
-            Gestrichelter Rand oder Schraffur: Einstufung ohne amtlichen Beleg
-          </p>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
