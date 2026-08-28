@@ -40,14 +40,22 @@ export function Haftungshinweis({ className = '' }: { className?: string }) {
       <button
         onClick={() => setOffen((v) => !v)}
         aria-expanded={offen}
-        className={`flex h-7 w-full min-w-0 items-center gap-1.5 rounded-full border
+        className={`flex h-7 min-w-0 items-center gap-1.5 rounded-full border
                     border-geduldet-500/25 px-2 text-mikro font-medium normal-case sm:px-2.5
                     tracking-normal text-geduldet-400 transition-colors duration-[160ms]
                     hover:bg-geduldet-500/[0.12]
                     ${offen ? 'bg-geduldet-500/[0.14]' : 'bg-geduldet-500/[0.07]'}`}
       >
         <Info size={12} strokeWidth={2.25} className="shrink-0" aria-hidden />
-        <span className="truncate">Orientierungshilfe, keine Rechtsgarantie</span>
+        {/*
+          Auf dem Telefon nur das erste Wort. Zwischen Logo und „Unterstütze
+          uns" bleiben dort rund 145 px; der ganze Satz passte nur, wenn eines
+          von beiden weichen musste — und ein abgeschnittenes „…keine
+          Rechtsg…" ist schlechter als ein ganzes Wort. Der vollständige Satz
+          steht als erste Zeile in der Blase, einen Tipp entfernt.
+        */}
+        <span className="truncate sm:hidden">Orientierungshilfe</span>
+        <span className="hidden truncate sm:inline">Orientierungshilfe, keine Rechtsgarantie</span>
         {/*
           Auf dem Telefon fällt der Pfeil weg: er kostet 18 px, und die
           gekürzte Fassung „…keine Rechtsg…" wäre bei einem Haftungshinweis

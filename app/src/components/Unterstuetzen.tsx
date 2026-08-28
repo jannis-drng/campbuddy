@@ -198,12 +198,12 @@ export function UnterstuetzenKnopf({ className = '' }: { className?: string }) {
       >
         <Heart size={17} strokeWidth={2} aria-hidden />
         {/*
-          Erst ab Laptop mit Wort. Auf dem Telefon stand es früher da, weil die
-          Kopfzeile sonst fast leer war — seit der Haftungshinweis neben dem
-          Logo sitzt, ist sie es nicht mehr, und der Hinweis braucht die
-          Spalten dringender als die Bitte um Geld.
+          Sichtbar auf dem Telefon und ab Laptop, dazwischen nicht: im
+          Tablet-Bereich liegt die Segment-Navigation quer in der Kopfzeile und
+          braucht jede Spalte. Ein Herz allein sagt zu wenig — wofür man
+          zahlen soll, muss dastehen.
         */}
-        <span className="hidden lg:inline">Unterstütze uns</span>
+        <span className="inline sm:hidden lg:inline">Unterstütze uns</span>
       </button>
 
       {offen && (

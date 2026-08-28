@@ -817,7 +817,7 @@ export default function App() {
           damit er auf schmalen Bildschirmen kürzt statt die Kopfzeile zu
           sprengen.
         */}
-        <Haftungshinweis className="min-w-0 max-w-[22rem] flex-1 sm:flex-none sm:w-[19rem]" />
+        <Haftungshinweis className="min-w-0 shrink" />
 
         {/* Ab Tablet in der Kopfzeile; auf dem Telefon liegt die Navigation
             unten in Daumenreichweite (siehe Tableiste am Seitenende). */}
