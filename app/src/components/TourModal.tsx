@@ -10,7 +10,7 @@
  * der Karte. Der Hinweis steht deshalb nicht im Kleingedruckten, sondern dort,
  * wo jemand gerade beschliesst, diese Tour zu gehen.
  */
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
   Bookmark, CalendarDays, Clock, CornerDownRight, Flag, Heart, MessageCircle, Moon, Mountain,
@@ -58,9 +58,21 @@ export function TourModal({
 
   const [meldet, setMeldet] = useState<{ art: 'route' | 'kommentar'; id: string; name: string } | null>(null)
 
-  if (!tour) return null
+  /*
+    Stabile Referenz, sonst läuft die Memoisierung der Vorschau ins Leere.
 
-  const geometrie = ((tour.vorschau ?? tour.geometry)?.coordinates ?? []) as Position[]
+    Dieses Fenster zeichnet sich oft neu — die Kommentare treffen ein, ein Herz
+    wird gesetzt, jeder Tastenanschlag im Kommentarfeld. Stand hier ein frisch
+    gebautes Array, hielt die Vorschau das jedes Mal für einen anderen Verlauf,
+    verwarf ihre laufenden Kachelanfragen und begann von vorn. Sichtbar wurde
+    das als Kartenbild, das im geöffneten Fenster nicht fertig wurde.
+  */
+  const geometrie = useMemo(
+    () => ((tour?.vorschau ?? tour?.geometry)?.coordinates ?? []) as Position[],
+    [tour?.vorschau, tour?.geometry],
+  )
+
+  if (!tour) return null
 
   return (
     <div

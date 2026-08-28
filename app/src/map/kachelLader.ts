@@ -48,8 +48,22 @@ const ZEITGRENZE_MS = 10_000
 /** Wartezeit vor dem nächsten Versuch — Drosselung vergeht nur mit Zeit. */
 const PAUSE_MS = 400
 
-/** Schon geholt: Adresse → die Adresse, die geklappt hat (oder null). */
-const erledigt = new Map<string, string | null>()
+/**
+ * Wie lange eine gescheiterte Kachel in Ruhe gelassen wird.
+ *
+ * Ein Nein ist meist Drosselung, kein fehlendes Bild — es endgültig zu
+ * speichern hiesse, eine Lücke festzuschreiben. Es sofort wieder zu versuchen
+ * ist aber genauso falsch: die Vorschau fragt bei jedem Neuzeichnen erneut,
+ * und ein Fenster, das sich beim Tippen neu zeichnet, startete so im
+ * Sekundentakt neue Versuchsreihen — bis alle sechs Plätze davon belegt waren
+ * und keine andere Vorschau mehr durchkam.
+ */
+const SPERRE_MS = 30_000
+
+/** Schon geholt: Adresse → die Adresse, die geklappt hat. */
+const erledigt = new Map<string, string>()
+/** Zuletzt gescheitert: Adresse → Zeitpunkt. */
+const gescheitert = new Map<string, number>()
 /** Gerade unterwegs — damit zwei Karten dieselbe Kachel nicht doppelt holen. */
 const laufend = new Map<string, Promise<string | null>>()
 
@@ -126,16 +140,19 @@ export function ladeKachel(adressen: string[]): Promise<string | null> {
   const schonUnterwegs = laufend.get(schluessel)
   if (schonUnterwegs) return schonUnterwegs
 
+  const letztesNein = gescheitert.get(schluessel)
+  if (letztesNein !== undefined && Date.now() - letztesNein < SPERRE_MS) return Promise.resolve(null)
+
   const lauf = (async () => {
     await platzNehmen()
     try {
       const treffer = await durchprobieren(adressen)
-      /*
-        Nur den Erfolg dauerhaft merken. Ein Nein war meist Drosselung, und
-        die ist vorbei, wenn jemand die Seite später erneut ansieht — es als
-        endgültig zu speichern hiesse, eine Lücke festzuschreiben.
-      */
-      if (treffer) erledigt.set(schluessel, treffer)
+      if (treffer) {
+        erledigt.set(schluessel, treffer)
+        gescheitert.delete(schluessel)
+      } else {
+        gescheitert.set(schluessel, Date.now())
+      }
       return treffer
     } finally {
       laufend.delete(schluessel)

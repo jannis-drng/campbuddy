@@ -387,10 +387,40 @@ function RoutenVorschauInnen({
   )
 }
 
+/**
+ * Zwei Verläufe sind derselbe, wenn sie Punkt für Punkt übereinstimmen.
+ *
+ * Verglichen wird der Inhalt, nicht die Referenz — und das ist Absicht. Ein
+ * Aufrufer, der `geometry` beim Zeichnen frisch aufbaut, statt es zu
+ * memoisieren, sähe sonst bei jedem Neuzeichnen eine andere Tour: die
+ * Vorschau würfe ihre laufenden Kachelanfragen weg und finge von vorn an.
+ * Genau das ist im `TourModal` passiert, das sich neu zeichnet, sobald die
+ * Kommentare eintreffen oder jemand ins Kommentarfeld tippt.
+ *
+ * Der Durchlauf kostet nichts, was ins Gewicht fiele: ein paar hundert
+ * Zahlenvergleiche, und nur dann, wenn der Aufrufer ohnehin neu zeichnet.
+ * Verlassen sollte sich trotzdem niemand darauf — eine stabile Referenz
+ * spart auch diesen Durchlauf.
+ */
+function gleicherVerlauf(a: Position[], b: Position[]): boolean {
+  if (a === b) return true
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    if (a[i][0] !== b[i][0] || a[i][1] !== b[i][1]) return false
+  }
+  return true
+}
+
 /*
   Memoisiert, weil eine Übersichtsseite ein Dutzend davon trägt und jede
   Zustandsänderung darüber — ein anderer Stapel, ein geöffneter Dialog —
-  sonst alle neu zeichnen liesse. Die Aufrufer geben `geometry` als stabile
-  Referenz weiter (siehe `TourKarte`), sonst brächte das nichts.
+  sonst alle neu zeichnen liesse.
 */
-export const RoutenVorschau = memo(RoutenVorschauInnen)
+export const RoutenVorschau = memo(RoutenVorschauInnen, (alt, neu) =>
+  alt.breite === neu.breite &&
+  alt.hoehe === neu.hoehe &&
+  alt.className === neu.className &&
+  alt.rund === neu.rund &&
+  alt.linie === neu.linie &&
+  alt.abdunkeln === neu.abdunkeln &&
+  gleicherVerlauf(alt.geometry, neu.geometry))
