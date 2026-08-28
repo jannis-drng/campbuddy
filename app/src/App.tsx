@@ -9,7 +9,7 @@ import type {
   Wegpunkt, WegpunktArt, Zone,
 } from './data/types'
 import { MapView } from './map/MapView'
-import { DisclaimerBar } from './components/Disclaimer'
+import { Haftungshinweis } from './components/Disclaimer'
 import { FilterBar } from './components/FilterBar'
 import { InfoPanel, type Selection } from './components/InfoPanel'
 import { MyToursPanel } from './components/MyToursPanel'
@@ -797,7 +797,12 @@ export default function App() {
       (Touren, Community, Konto) bringen ihr eigenes `overflow-y-auto` mit.
     */
     <div className="flex h-dvh flex-col overflow-hidden bg-flaeche-1 text-ink-100">
-      <header className="flex h-14 shrink-0 items-center gap-4 border-b border-kante bg-flaeche-2 px-4">
+      {/*
+        Enger auf dem Telefon: dort teilen sich Logo, Haftungshinweis und Herz
+        eine Zeile von 375 px, und jede der drei 16-px-Lücken ging vom
+        Hinweistext ab — er brach als „…keine Rechtsg…" um.
+      */}
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-kante bg-flaeche-2 px-3 sm:gap-4 sm:px-4">
         {/* Wortmarke: das Zelt als Form, nicht als Emoji. */}
         <a href="./" className="flex min-w-0 items-center gap-2.5" aria-label="CampBuddy, Startseite">
           <Marke className="h-7 w-7 shrink-0" />
@@ -805,6 +810,14 @@ export default function App() {
             CampBuddy
           </span>
         </a>
+
+        {/*
+          Der Haftungshinweis steht neben dem Logo, nicht als eigenes Band
+          darunter — siehe `components/Disclaimer.tsx`. `min-w-0` ist nötig,
+          damit er auf schmalen Bildschirmen kürzt statt die Kopfzeile zu
+          sprengen.
+        */}
+        <Haftungshinweis className="min-w-0 max-w-[22rem] flex-1 sm:flex-none sm:w-[19rem]" />
 
         {/* Ab Tablet in der Kopfzeile; auf dem Telefon liegt die Navigation
             unten in Daumenreichweite (siehe Tableiste am Seitenende). */}
@@ -856,7 +869,6 @@ export default function App() {
         <UnterstuetzenKnopf className={mehrereRegionen ? '' : 'ml-auto sm:ml-0'} />
       </header>
 
-      <DisclaimerBar />
 
       {/*
         Beide Ansichten bleiben montiert und werden nur ein-/ausgeblendet.
