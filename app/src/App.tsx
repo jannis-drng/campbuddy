@@ -51,14 +51,26 @@ import { ladeVerlauf, ORT_UMKREIS_M, type Ortsfilter } from './services/communit
 import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
 import { Auswahl, Button, Segmente } from './ui'
 
+/**
+ * Die Karte startet ohne Symbolebenen.
+ *
+ * Sieben Ebenen gleichzeitig überdecken auf einem Telefonbildschirm genau
+ * das, weswegen jemand hier ist: die Einfärbung der Rechtslage. Wer Hütten,
+ * Wasser oder Gipfel sucht, schaltet sie über „Symbole" gezielt zu — das ist
+ * ein Griff, während das Wegräumen von sieben Ebenen sieben waren.
+ *
+ * Ausgenommen `showEigene`: selbst gesetzte Punkte und Fotos sind kein
+ * Kartenrauschen, sondern die eigene Arbeit. Sie unaufgefordert zu verstecken
+ * sähe aus, als wären sie verloren gegangen.
+ */
 const INITIAL_FILTERS: MapFilters = {
   activity: 'all',
-  showHuts: true,
-  showCampsites: true,
-  showVehicleSpots: true,
-  showPeaks: true,
-  showWater: true,
-  showViewpoints: true,
+  showHuts: false,
+  showCampsites: false,
+  showVehicleSpots: false,
+  showPeaks: false,
+  showWater: false,
+  showViewpoints: false,
   showEigene: true,
 }
 
@@ -855,7 +867,7 @@ export default function App() {
         <FilterBar
           filters={filters}
           onChange={setFilters}
-          counts={{ zones: allZones.length, points: points.length }}
+          counts={{ zones: allZones.length, points: allPoints.length }}
         />
         {/*
           Die beiden Klassen sagen den Kartenbedienelementen, wie viel Rand

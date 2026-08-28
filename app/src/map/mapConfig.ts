@@ -46,7 +46,7 @@ export function textFontFuer(glyphsUrl: string | null | undefined): string[] {
   return SCHRIFT_JE_SERVER.find(([host]) => glyphsUrl?.includes(host))?.[1] ?? TEXT_FONT
 }
 
-export type BasemapKey = 'outdoor' | 'landeskarte' | 'standard'
+export type BasemapKey = 'standard' | 'outdoor' | 'landeskarte'
 
 export interface Basemap {
   key: BasemapKey
@@ -85,14 +85,23 @@ function rasterStyle(
 }
 
 /**
- * Die wählbaren Hintergrundkarten.
+ * Die wählbaren Hintergrundkarten, in der Reihenfolge der Umschaltleiste.
  *
- * 'outdoor' ist der Standard: Höhenlinien, Wanderwege, Gipfel und Hütten sind
- * für dieses Projekt wichtiger als Strassennamen. OpenTopoMap ist ein
- * ehrenamtliches Projekt — bei stark steigender Nutzung gehört ein eigener
- * Kachelserver her, nicht mehr Last auf deren Infrastruktur.
+ * 'standard' steht vorn und ist die Voreinstellung: die Legalitätsebene ist
+ * der Inhalt dieser Karte, und sie liest sich am ruhigsten über einer
+ * zurückhaltenden Strassenkarte. Das Reliefbild von OpenTopoMap ist im
+ * Gelände wertvoll, als erster Eindruck aber laut — wer es braucht, schaltet
+ * einen Griff weit um. OpenTopoMap ist zudem ein ehrenamtliches Projekt: bei
+ * stark steigender Nutzung gehört ein eigener Kachelserver her, nicht mehr
+ * Last auf deren Infrastruktur.
  */
 export const BASEMAPS: Record<BasemapKey, Basemap> = {
+  standard: {
+    key: 'standard',
+    label: 'Standard',
+    hint: 'Strassenkarte',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+  },
   outdoor: {
     key: 'outdoor',
     label: 'Outdoor',
@@ -118,8 +127,8 @@ export const BASEMAPS: Record<BasemapKey, Basemap> = {
    *
    * Sie stand vorher nur im Wallis zur Verfügung — ohne Grund: swisstopo deckt
    * die ganze Schweiz ab, und die Schweiz ist die Fokusregion dieses Projekts.
-   * Standard bleibt OpenTopoMap, weil es alpenweit trägt und weil das
-   * Kartenbild sich nicht ungefragt ändern soll.
+   * Voreingestellt ist sie trotzdem nicht: sie endet an der Landesgrenze,
+   * die App aber nicht.
    */
   landeskarte: {
     key: 'landeskarte',
@@ -144,15 +153,9 @@ export const BASEMAPS: Record<BasemapKey, Basemap> = {
       [5.140242, 45.398181, 11.47757, 48.230651],
     ),
   },
-  standard: {
-    key: 'standard',
-    label: 'Standard',
-    hint: 'Strassenkarte',
-    style: 'https://tiles.openfreemap.org/styles/liberty',
-  },
 }
 
-export const DEFAULT_BASEMAP: BasemapKey = 'outdoor'
+export const DEFAULT_BASEMAP: BasemapKey = 'standard'
 
 /* ------------------------------------------------- Kacheln der Vorschaubilder */
 
