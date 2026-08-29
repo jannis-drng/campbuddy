@@ -1,4 +1,18 @@
 {
   "_hinweis": "Kantonale Regelungen zum Übernachten im Freien. Schlüssel ist der ISO-Code (z. B. 'CH-BE'). Leer heisst: für diesen Kanton wurde noch nicht recherchiert — und die Karte sagt das auch so. Eintragen nur mit Quelle und Prüfdatum, siehe README.",
-  "kantone": {}
+  "kantone": {
+    "CH-OW": {
+      "status": "allowed",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Obwalden regelt das Campieren als einziger Kanton in einem eigenen Gesetz — und erlaubt die einzelne Nacht ausdrücklich. Zelt, Wohnwagen und Wohnmobil dürfen zum einmaligen Übernachten ohne Bewilligung auch ausserhalb bewilligter Campingplätze aufgestellt werden, sofern keine öffentlichen oder privaten Interessen beeinträchtigt werden. Für mehr als eine Nacht gilt das Verbot nach Art. 6.",
+      "conditions": "Nur einmalig: das Gesetz erlaubt das Übernachten, nicht das Verweilen. Es erfolgt ausdrücklich auf eigenes Risiko. Auf dem Grundstück eines Wohnhauses ist vorübergehendes, unentgeltliches Campieren mit Einwilligung der Eigentümerschaft zulässig. In Schutzgebieten bleibt Campieren untersagt, und die Gemeinde kann Weitergehendes regeln — beides geht dieser Auskunft vor.",
+      "source": "Gesetz über das Campieren (GDB 971.4) vom 4. Dezember 2014, Art. 6 und Art. 8",
+      "source_url": "https://gdb.ow.ch/app/de/texts_of_law/971.4",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29"
+    }
+  },
+  "_stand": "2026-08-29"
 }

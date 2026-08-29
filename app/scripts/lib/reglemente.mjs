@@ -386,7 +386,24 @@ export async function ocrVerfuegbar() {
  * dadurch länger. Das ist der richtige Preis — die Gegenseite stellt diese
  * Dokumente freiwillig bereit.
  */
-const ANBIETER_PAUSE = 2500
+/**
+ * Wie lange zwischen zwei Abrufen beim selben Anbieter gewartet wird.
+ *
+ * 2,5 Sekunden waren zu wenig. Bei rund 1400 Gemeinden auf einem einzigen
+ * Hoster heisst das über tausend Anfragen aus einer Hand innerhalb einer
+ * Stunde — der Anbieter hat uns zum zweiten Mal ausgesperrt, und der Lauf
+ * verbrannte danach seine ganze Zeit in Zeitüberschreitungen, ohne einen
+ * einzigen Befund zu erzeugen.
+ *
+ * Zwölf Sekunden bedeuten für den Anbieter fünf Anfragen pro Minute, also
+ * weniger als ein einzelner Mensch beim Blättern erzeugt. Für uns heisst es:
+ * ein grosser Lauf dauert Tage statt Stunden. Das ist die richtige Reihenfolge
+ * der Rücksichtnahme — die Gegenseite stellt diese Dokumente freiwillig
+ * bereit, und ein gesperrter Lauf bringt ohnehin nichts.
+ *
+ * Über ANBIETER_PAUSE_MS anpassbar, etwa für einen kleinen, gezielten Lauf.
+ */
+const ANBIETER_PAUSE = Number(process.env.ANBIETER_PAUSE_MS ?? 12000)
 const letzterAbruf = new Map()
 const wartend = new Map()
 
