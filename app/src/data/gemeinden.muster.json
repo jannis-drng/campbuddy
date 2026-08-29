@@ -831,6 +831,177 @@
       "review_status": "quelle"
     },
     {
+      "id": "fr-usages-accrus-installation-caravanes-tentes",
+      "_gelesen_an": "Pont-la-Ville, Riaz, Val-de-Charmey, Morlon, Vuadens — Freiburger Musterreglement",
+      "erkennt": [
+        "soumis à autorisation",
+        "usages accrus",
+        "installation de"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "vs-campieren-und-parkieren-nur-bezeichnete-zonen",
+      "_gelesen_an": "Blatten, Ferden, Wiler (Lötschen) — wortgleich",
+      "erkennt": [
+        "campieren und parkieren von campern",
+        "bezeichneten zonen"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Parkieren von Wohnmobilen auf öffentlichem Grund sind nur in den Zonen erlaubt, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Ausserhalb dieser Zonen ist beides untersagt. Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "ne-vehicules-habitables-nur-mit-bewilligung",
+      "_gelesen_an": "Les Planchettes, La Sagne, Lignières — wortgleich",
+      "erkennt": [
+        "hicules habitables",
+        "autorisation du conseil communal"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere bewohnbare Fahrzeuge dürfen im Gemeindegebiet nur mit Bewilligung des Gemeinderats abgestellt werden; er bestimmt auch den Ort.",
+      "conditions": "Der Artikel regelt ausdrücklich Fahrzeuge. Zur Zeltfrage trifft er keine Aussage — dazu ist für diese Gemeinde nichts recherchiert.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "vd-interdit-camper-et-dormir-domaine-public",
+      "_gelesen_an": "Sullens, Jouxtens-Mézery (aus Scan gelesen)",
+      "_hinweis": "Nennt das Schlafen neben dem Campieren und erfasst ausdruecklich auch oeffentlich zugaenglichen Privatgrund.",
+      "erkennt": [
+        "interdit de camper et de dormir sur le domaine public"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Schlafen sind auf öffentlichem Grund und in dessen Umgebung verboten — und ebenso auf privatem Grund, der öffentlich zugänglich ist.",
+      "conditions": "Der Artikel nennt das Schlafen ausdrücklich; ein Biwak ohne Zelt ist mitgemeint. Dass er auch öffentlich zugänglichen Privatgrund erfasst, macht ihn strenger als die übliche Waadtländer Fassung.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "be-campieren-gemeindeparzellen-bewilligungspflichtig",
+      "_gelesen_an": "Hasle bei Burgdorf Art. 11",
+      "erkennt": [
+        "parzellen im besitze der gemeinde",
+        "campieren bewilligungspflichtig"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und auf Parzellen im Besitz der Gemeinde ist Campieren bewilligungspflichtig.",
+      "conditions": "Die Bewilligung ist vorher einzuholen. Zu übrigem Privatgrund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "be-campieren-gemeindeparzellen-untersagt",
+      "_gelesen_an": "Rüdtligen-Alchenflüh Art. 12",
+      "erkennt": [
+        "parzellen im besitze der ge",
+        "campieren",
+        "untersagt"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und auf Parzellen im Besitz der Gemeinde ist Campieren untersagt.",
+      "conditions": "Zu übrigem Privatgrund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "be-aufstellen-zu-wohnzwecken-verboten",
+      "_gelesen_an": "Münchenbuchsee Art. 22",
+      "_hinweis": "Der Artikel zielt auf das Wohnen, nicht auf die einzelne Nacht — deshalb steht die Einschraenkung ausdruecklich in den Bedingungen.",
+      "erkennt": [
+        "wohnmobilen, wohnwagen und zelten zu wohnzwecken",
+        "verboten"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnmobile, Wohnwagen und Zelte zu Wohnzwecken aufzustellen ist grundsätzlich verboten.",
+      "conditions": "Der Artikel spricht vom Aufstellen „zu Wohnzwecken\". Ob eine einzelne Übernachtung darunterfällt, sagt er nicht ausdrücklich — im Zweifel bei der Gemeinde nachfragen.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "fr-stationnement-prolonge-caravane",
+      "_gelesen_an": "Billens-Hennens, Mézières (FR) (aus Scan gelesen)",
+      "_hinweis": "Regelt ausdruecklich das laengere Abstellen — eine einzelne Nacht ist damit nicht erfasst. Gesamtstatus bleibt offen.",
+      "erkennt": [
+        "stationnement prolong",
+        "soumis à autorisation"
+      ],
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Das längere Abstellen eines Wohnwagens, Wohnmobils oder einer ähnlichen Einrichtung ist bewilligungspflichtig, nach der kantonalen Raumplanungs- und Baugesetzgebung.",
+      "conditions": "Der Artikel betrifft ausdrücklich das längere Abstellen; zu einer einzelnen Übernachtung und zur Zeltfrage sagt er nichts. Für diese Gemeinde ist darüber hinaus nichts recherchiert.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "de-campieren-oeffentlicher-grund-verboten-schlicht",
+      "_gelesen_an": "Hilterfingen Art. 18",
+      "_hinweis": "Die knappste und haeufigste deutsche Fassung. Steht bewusst weit hinten, damit genauere Muster zuerst greifen.",
+      "erkennt": [
+        "auf öffentlichem grund ist das campieren verboten"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist Campieren verboten.",
+      "conditions": "Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "de-uebernachten-in-fahrzeugen-oder-zelten-untersagt",
+      "_gelesen_an": "Scheuren Art. 14 (aus Scan gelesen)",
+      "_hinweis": "Nennt das Uebernachten ausdruecklich, nicht bloss das Aufstellen — fuer diese Karte die genauere Fassung.",
+      "erkennt": [
+        "bernachten in fah",
+        "zelten",
+        "untersagt"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist das Übernachten in Fahrzeugen oder Zelten untersagt. Der Artikel nennt das Übernachten ausdrücklich, nicht bloss das Aufstellen.",
+      "conditions": "Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
+      "id": "fr-camping-nur-auf-definierten-plaetzen",
+      "_gelesen_an": "Nods Art. 27",
+      "erkennt": [
+        "camping n'est autoris",
+        "que sur les places"
+      ],
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ist nur auf den Plätzen erlaubt, die der Gemeinderat dafür bestimmt hat.",
+      "conditions": "Ausserhalb dieser Plätze ist es untersagt. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "review_status": "quelle"
+    },
+    {
       "id": "nur-fahrzeuge-bewilligungspflichtig",
       "_gelesen_an": "Les Planchettes Art. 65 (NE), La Sagne, Lignières",
       "_hinweis": "Regelt ausdrücklich nur Fahrzeuge. Die Zeltfrage bleibt offen — deshalb bleibt der Gesamtstatus 'unknown' und die Fläche auf der Karte ungefüllt.",

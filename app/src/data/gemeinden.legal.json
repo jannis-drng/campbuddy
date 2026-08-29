@@ -466,6 +466,19 @@
       "last_verified": "2026-08-29",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
+    "406": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und auf Parzellen im Besitz der Gemeinde ist Campieren bewilligungspflichtig.",
+      "conditions": "Die Bewilligung ist vorher einzuholen. Zu übrigem Privatgrund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Herunterladen, Art. 9 Die Gemeindepolizeibehörde kann Veranstaltungen auf öffentlichem",
+      "source_url": "https://www.hasle.ch/inhalte/05_Verwaltung/Schalter/Gemeindepolizeireglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "be-campieren-gemeindeparzellen-bewilligungspflichtig"
+    },
     "409": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -477,6 +490,19 @@
       "source_url": "https://www.hindelbank.ch/de/verwaltung/dokumente/dokumente/Reglemente-Verordnungen/Reglement-ueber-die-Aufgaben-der-Polizeiorgane-der-Gemeinde-Hindelbank-vom-1.-Januar-2026.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-26"
+    },
+    "420": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und auf Parzellen im Besitz der Gemeinde ist Campieren untersagt.",
+      "conditions": "Zu übrigem Privatgrund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Reglement über die öffentliche Sicherheit (gültig ab 01.01.2003), Art. 10b Der Gemeinde anfallende Kosten für erbrachte",
+      "source_url": "https://www.ruedtligen-alchenflueh.ch/de/verwaltung/dokumente/dokumente/Reglement-ueber-die-oeffentliche-Sicherheit-2003-nachgefuehrt.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "be-campieren-gemeindeparzellen-untersagt"
     },
     "434": {
       "status": "forbidden",
@@ -621,6 +647,19 @@
       "last_verified": "2026-08-24",
       "_muster": "be-uebernachten-in-fahrzeugen-und-zelten-verboten"
     },
+    "546": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnmobile, Wohnwagen und Zelte zu Wohnzwecken aufzustellen ist grundsätzlich verboten.",
+      "conditions": "Der Artikel spricht vom Aufstellen „zu Wohnzwecken\". Ob eine einzelne Übernachtung darunterfällt, sagt er nicht ausdrücklich — im Zweifel bei der Gemeinde nachfragen.",
+      "source": "Polizeireglement (gültig ab 01. September 2011)…, Art. 21",
+      "source_url": "https://www.muenchenbuchsee.ch/wAssets/docs/Reglemente-und-Erlasse/Gemeindeerlasse/P/Polizeireglement-01.-September-2011.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "be-aufstellen-zu-wohnzwecken-verboten"
+    },
     "556": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -712,6 +751,19 @@
       "last_verified": "2026-08-29",
       "_muster": "fr-campement-roulottes-autorisation-ganzes-gebiet"
     },
+    "724": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ist nur auf den Plätzen erlaubt, die der Gemeinderat dafür bestimmt hat.",
+      "conditions": "Ausserhalb dieser Plätze ist es untersagt. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police de la commune mixte de Nods, Art. 26",
+      "source_url": "https://nods.ch/wp-content/uploads/2021/01/reglement_de_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-camping-nur-auf-definierten-plaetzen"
+    },
     "726": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -776,6 +828,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-29",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "747": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist das Übernachten in Fahrzeugen oder Zelten untersagt. Der Artikel nennt das Übernachten ausdrücklich, nicht bloss das Aufstellen.",
+      "conditions": "Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Gemeindepolizeireglement, Art. 13 I Schulpflichtige Kinder und Jugendliche dUrfen",
+      "source_url": "https://scheuren.ch/wp-content/uploads/2026/02/Gemeindepolizeireglement-neu-2023.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-uebernachten-in-fahrzeugen-oder-zelten-untersagt"
     },
     "749": {
       "status": "forbidden",
@@ -842,6 +907,19 @@
       "last_verified": "2026-08-29",
       "_muster": "gr-campieren-oeffentlich-verboten-ausnahmen"
     },
+    "929": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist Campieren verboten.",
+      "conditions": "Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement 2010, Art. 17",
+      "source_url": "https://www.hilterfingen.ch/Polizeireglement-2010.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-campieren-oeffentlicher-grund-verboten-schlicht"
+    },
     "932": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -868,6 +946,32 @@
       "last_verified": "2026-08-24",
       "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
     },
+    "2063": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Das längere Abstellen eines Wohnwagens, Wohnmobils oder einer ähnlichen Einrichtung ist bewilligungspflichtig, nach der kantonalen Raumplanungs- und Baugesetzgebung.",
+      "conditions": "Der Artikel betrifft ausdrücklich das längere Abstellen; zu einer einzelnen Übernachtung und zur Zeltfrage sagt er nichts. Für diese Gemeinde ist darüber hinaus nichts recherchiert.",
+      "source": "Télécharger (384.78 ko), Art. 7 Autorisations",
+      "source_url": "https://www.billens-hennens.ch/files/1741094570-27-02-2025-reglement-sur-le-stationnement-des-vehicules-sur-la-voie-publique-approuve-6634.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-stationnement-prolonge-caravane"
+    },
+    "2087": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Das längere Abstellen eines Wohnwagens, Wohnmobils oder einer ähnlichen Einrichtung ist bewilligungspflichtig, nach der kantonalen Raumplanungs- und Baugesetzgebung.",
+      "conditions": "Der Artikel betrifft ausdrücklich das längere Abstellen; zu einer einzelnen Übernachtung und zur Zeltfrage sagt er nichts. Für diese Gemeinde ist darüber hinaus nichts recherchiert.",
+      "source": "règlement communal sur le stationnement des véhicules sur la voie publique, Art. 11 Demande",
+      "source_url": "https://communeapp.ch/assets/idm_medias/33f23d279172713d43af93055d0782c6.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-stationnement-prolonge-caravane"
+    },
     "2124": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -881,6 +985,19 @@
       "last_verified": "2026-08-29",
       "_muster": "fr-camper-ou-stationner-caravanes-sans-autorisation"
     },
+    "2143": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "police, Art. 14 b) Autorisations et concessions",
+      "source_url": "http://www.morlon.ch/images/image/reglementscommunax/reglement_de_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
     "2145": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -893,6 +1010,123 @@
       "review_status": "quelle",
       "last_verified": "2026-08-29",
       "_muster": "fr-camper-ou-stationner-caravanes-sans-autorisation"
+    },
+    "2147": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "c. Règlement de police, Art. 15 Autorisations et concessions",
+      "source_url": "https://www.pont-la-ville.ch/v2/index.php/download_file/force/d5366449-aee1-4c8e-ba8a-c5dad115bc58/259",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2148": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Règlement de police, Art. 16 c) Autorisations et concessions",
+      "source_url": "https://riaz.ch/wp-content/uploads/bsk-pdf-manager/2025/11/RIAZ_Reglement_Police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2160": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Règlement de police, Art. 14 B. Autorisations et concessions",
+      "source_url": "https://www.vuadens.ch/wp-content/uploads/2020/08/Reglement-de-police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2162": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Règlement général de police, Art. 14 e) Autorisations et concessions",
+      "source_url": "https://www.bas-intyamon.ch/images/reglements/Reglement%20general%20de%20police%20approuve.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2163": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Télécharger, Art. 14b ) Autorisations et concessions",
+      "source_url": "https://val-de-charmey.ch/download/reglements-et-lois/?ind=1728409034716&filename=DSJ_-_approbation_reglement_police.PDF&wpdmdl=3011&refresh=6a91db28e9f911787943720",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2198": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Règlement général de police ACoPol, Art. 14 — b) autorisations et concessions",
+      "source_url": "https://granges-paccot.ch/wp-content/uploads/bsk-pdf-manager/2025/05/113.1-Reglement-general-de-police-ACoPol-2016.11.24.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2238": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Règlement communal de police, Art. 15 c) Autorisations et concessions",
+      "source_url": "https://www.bois-damont.ch/wp-content/uploads/2023/03/Reglement-police_approuve.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2254": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Règlement de police, Art. 15 e) Autorisations et concessions",
+      "source_url": "https://courtepin.ch/wp-content/uploads/2022/09/Reglement_police_FR.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
+    },
+    "2272": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile auf öffentlichem Grund aufzustellen gilt als gesteigerter Gemeingebrauch und ist bewilligungspflichtig. Ohne Bewilligung ist es nicht zulässig.",
+      "conditions": "Die Bewilligung erteilt die Gemeinde. Der Artikel betrifft öffentlichen Grund; zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Règlement communal de police, Art. 15 c) Autorisations et concessions",
+      "source_url": "https://www.miserycourtion.ch/wp-content/uploads/2022/09/R%C3%A8glement-de-police-version-d%C3%A9finitive.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-usages-accrus-installation-caravanes-tentes"
     },
     "2904": {
       "status": "forbidden",
@@ -1713,6 +1947,19 @@
       "last_verified": "2026-08-29",
       "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
+    "5501": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Schlafen sind auf öffentlichem Grund und in dessen Umgebung verboten — und ebenso auf privatem Grund, der öffentlich zugänglich ist.",
+      "conditions": "Der Artikel nennt das Schlafen ausdrücklich; ein Biwak ohne Zelt ist mitgemeint. Dass er auch öffentlich zugänglichen Privatgrund erfasst, macht ihn strenger als die übliche Waadtländer Fassung.",
+      "source": "Règlement communal de police, Art. 23 Il est interdit de camper et",
+      "source_url": "https://www.sullens.ch/images/pdf/Reglements/Reglement_communal_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-interdit-camper-et-dormir-domaine-public"
+    },
     "5503": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1894,6 +2141,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-entreposage-domaine-public"
+    },
+    "5585": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Schlafen sind auf öffentlichem Grund und in dessen Umgebung verboten — und ebenso auf privatem Grund, der öffentlich zugänglich ist.",
+      "conditions": "Der Artikel nennt das Schlafen ausdrücklich; ein Biwak ohne Zelt ist mitgemeint. Dass er auch öffentlich zugänglichen Privatgrund erfasst, macht ihn strenger als die übliche Waadtländer Fassung.",
+      "source": "Voir le document, Art. 22 La Municipalité peut interdire totalement ou",
+      "source_url": "https://www.jouxtens-mezery.ch/N817/reglement-de-police.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-interdit-camper-et-dormir-domaine-public"
     },
     "5587": {
       "status": "forbidden",
@@ -3143,6 +3403,19 @@
       "last_verified": "2026-08-29",
       "_muster": "de-nur-bezeichnete-zonen"
     },
+    "6192": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Parkieren von Wohnmobilen auf öffentlichem Grund sind nur in den Zonen erlaubt, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Ausserhalb dieser Zonen ist beides untersagt. Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement, Art. 6 Camping / Caravaning",
+      "source_url": "https://www.blatten-vs.ch/?action=get_file&id=19&resource_link_id=27c",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-campieren-und-parkieren-nur-bezeichnete-zonen"
+    },
     "6193": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3155,6 +3428,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "de-nur-bezeichnete-zonen"
+    },
+    "6195": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Parkieren von Wohnmobilen auf öffentlichem Grund sind nur in den Zonen erlaubt, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Ausserhalb dieser Zonen ist beides untersagt. Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement Ferden 2022, Art. 10 Camping / Caravaning",
+      "source_url": "https://www.ferden.ch/?action=get_file&id=15&resource_link_id=537",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-campieren-und-parkieren-nur-bezeichnete-zonen"
+    },
+    "6202": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Parkieren von Wohnmobilen auf öffentlichem Grund sind nur in den Zonen erlaubt, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Ausserhalb dieser Zonen ist beides untersagt. Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement, Art. 5 Camping / Caravaning",
+      "source_url": "https://www.wilervs.ch/?action=get_file&id=41&resource_link_id=13af",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-campieren-und-parkieren-nur-bezeichnete-zonen"
     },
     "6203": {
       "status": "forbidden",
@@ -3337,6 +3636,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-23"
     },
+    "6422": {
+      "status": "forbidden",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere bewohnbare Fahrzeuge dürfen im Gemeindegebiet nur mit Bewilligung des Gemeinderats abgestellt werden; er bestimmt auch den Ort.",
+      "conditions": "Der Artikel regelt ausdrücklich Fahrzeuge. Zur Zeltfrage trifft er keine Aussage — dazu ist für diese Gemeinde nichts recherchiert.",
+      "source": "reglement de police 2019 12 11, Art. 65",
+      "source_url": "https://www.les-planchettes.ch/files/1481/reglement-de-police-2019-12-11.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ne-vehicules-habitables-nur-mit-bewilligung"
+    },
+    "6423": {
+      "status": "forbidden",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere bewohnbare Fahrzeuge dürfen im Gemeindegebiet nur mit Bewilligung des Gemeinderats abgestellt werden; er bestimmt auch den Ort.",
+      "conditions": "Der Artikel regelt ausdrücklich Fahrzeuge. Zur Zeltfrage trifft er keine Aussage — dazu ist für diese Gemeinde nichts recherchiert.",
+      "source": "Règlement de police, Art. 66",
+      "source_url": "https://www.lasagne.ch/fileadmin/SICO/LaSagne/Documents/Reglements/Reglement_police_actualise_octobre_2015.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ne-vehicules-habitables-nur-mit-bewilligung"
+    },
     "6436": {
       "status": "forbidden",
       "tent_allowed": "unknown",
@@ -3349,6 +3674,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-29",
       "_muster": "ne-sejourner-vehicules-habitables-verboten"
+    },
+    "6456": {
+      "status": "forbidden",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere bewohnbare Fahrzeuge dürfen im Gemeindegebiet nur mit Bewilligung des Gemeinderats abgestellt werden; er bestimmt auch den Ort.",
+      "conditions": "Der Artikel regelt ausdrücklich Fahrzeuge. Zur Zeltfrage trifft er keine Aussage — dazu ist für diese Gemeinde nichts recherchiert.",
+      "source": "Règlement de police, Art. 54",
+      "source_url": "https://www.lignieres.ch/fileadmin/SICO/Lignieres/Documents/Politique/Recueil_systematique/Police/Reglement_de_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ne-vehicules-habitables-nur-mit-bewilligung"
     },
     "6511": {
       "status": "forbidden",
