@@ -121,3 +121,25 @@ Was kein Muster trifft, bleibt liegen. Das ist der Normalfall, kein Fehler.
   Wildruhezonen beruhen — der Faden, an dem eine Recherche anfängt.
 - Direkt nachfragen. `gemeinden/CH.json` führt `website` und `email` mit; die
   Karte zeigt beides im Infofeld an.
+
+
+## Was `erkennt` ist — und was nicht
+
+Die Einträge unter `erkennt` sind **wörtliche Textstücke, keine regulären
+Ausdrücke.** Sie werden normalisiert (klein, ohne Satzzeichen, einfache
+Leerzeichen) und dann als Teilzeichenkette gesucht.
+
+Ein Muster wie `p[âa]turages` trifft deshalb **nie** — es sucht wörtlich nach
+einer eckigen Klammer. Wer Schreibvarianten abdecken will, kürzt stattdessen
+auf den gemeinsamen Teil: `turages`.
+
+Dasselbe gilt für Endungen: `interdite` findet `interdit` nicht. Im Zweifel
+das kürzere, sichere Stück nehmen — die übrigen Einträge unter `erkennt`
+grenzen ohnehin ein.
+
+## Aus Scans gelesene Texte
+
+Fundstellen mit `gelesen: "ocr"` stammen aus eingescannten Reglementen. Die
+Zeichenerkennung verliest sich: `Wohnwagen` wird zu `Woh~wagen`, `vom` zu
+`vorn`, `Il est` zu `tl est`. Muster, die solche Texte treffen sollen, meiden
+die betroffenen Wörter und stützen sich auf unverstümmelte Nachbarschaft.

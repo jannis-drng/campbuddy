@@ -1,6 +1,6 @@
 {
   "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
-  "_stand": "2026-08-28",
+  "_stand": "2026-08-29",
   "gemeinden": {
     "1": {
       "status": "forbidden",
@@ -65,6 +65,19 @@
       "source_url": "https://www.berg-am-irchel.ch/site/assets/files/2043/polizeiverordnung_ab_01_01_2024.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
+    },
+    "26": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt oder Wohnwagen und auch das blosse Nächtigen im Freien brauchen auf öffentlichem Grund eine Bewilligung der Gemeinde, sobald man ausserhalb besonders bezeichneter oder eingerichteter Plätze übernachtet.",
+      "conditions": "Das Reglement nennt das Nächtigen im Freien ausdrücklich — ein einzelnes Biwak ohne Zelt ist also mitgemeint. Für regelmässiges Campieren erlässt der Gemeinderat ergänzende Vorschriften. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeiverordnung, Art. 13 Campieren und Nächtigen im Freien",
+      "source_url": "https://www.dorf.ch/public/upload/assets/179/Polizeiverordnung%20Dorf%202015%20unterschrieben.pdf?fp=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
     },
     "29": {
@@ -171,6 +184,19 @@
       "last_verified": "2026-08-28",
       "_muster": "zh-naechtigen-im-freien-oeffentlich-verboten-privat-mit-zustimmung"
     },
+    "59": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt oder Wohnwagen und auch das blosse Nächtigen im Freien brauchen auf öffentlichem Grund eine Bewilligung der Gemeinde, sobald man ausserhalb besonders bezeichneter oder eingerichteter Plätze übernachtet.",
+      "conditions": "Das Reglement nennt das Nächtigen im Freien ausdrücklich — ein einzelnes Biwak ohne Zelt ist also mitgemeint. Für regelmässiges Campieren erlässt der Gemeinderat ergänzende Vorschriften. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "510.1_Polizeiverordnung (3,3 MiB), Art. 14 Campieren und Nächtigen im Freien",
+      "source_url": "https://hochfelden.ch/politik/gesetzessammlung?file=files/content/pdf/reglemente/Systematische%20Rechtssammlung%20%28SR%29/510.1_Polizeiverordnung.pdf&cid=134065",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
+    },
     "65": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -235,6 +261,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "116": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt oder Wohnwagen und auch das blosse Nächtigen im Freien brauchen auf öffentlichem Grund eine Bewilligung der Gemeinde, sobald man ausserhalb besonders bezeichneter oder eingerichteter Plätze übernachtet.",
+      "conditions": "Das Reglement nennt das Nächtigen im Freien ausdrücklich — ein einzelnes Biwak ohne Zelt ist also mitgemeint. Für regelmässiges Campieren erlässt der Gemeinderat ergänzende Vorschriften. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeiverordnung, Art. 31 Campieren und Nächtigen im Freien",
+      "source_url": "https://www.grueningen.ch/public/upload/assets/1303/Polizeiverordnung_2012.pdf?fp=1552551172463",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-und-naechtigen-bewilligungspflichtig"
     },
     "135": {
       "status": "forbidden",
@@ -414,6 +453,19 @@
       "last_verified": "2026-08-24",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
+    "390": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement, Art. 19 ' Auf öffentlichem Grund ist",
+      "source_url": "https://www.meinisberg.ch/download/download/Polizeireglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
     "409": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -425,6 +477,19 @@
       "source_url": "https://www.hindelbank.ch/de/verwaltung/dokumente/dokumente/Reglemente-Verordnungen/Reglement-ueber-die-Aufgaben-der-Polizeiorgane-der-Gemeinde-Hindelbank-vom-1.-Januar-2026.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-26"
+    },
+    "434": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist es verboten, im Fahrzeug oder im Zelt zu übernachten. Der Artikel spricht das Übernachten ausdrücklich an, nicht bloss das Aufstellen.",
+      "conditions": "In begründeten Einzelfällen kann die Gemeinde eine Ausnahme bewilligen; sie kann mit Auflagen verbunden werden, etwa der Reinigung auf eigene Kosten. Wo die Gemeinde eigens Zonen dafür vorgesehen hat, gilt das Verbot nicht.",
+      "source": "Règlement de police municipale, Art. 9 ‘Il est interdit de passer",
+      "source_url": "https://www.courtelary.ch/wp-content/uploads/2022/06/Reglement-de-police-municipale.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "be-nuit-vehicule-ou-tente-verboten"
     },
     "435": {
       "status": "forbidden",
@@ -465,6 +530,19 @@
       "last_verified": "2026-08-24",
       "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
+    "444": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist es verboten, im Fahrzeug oder im Zelt zu übernachten. Der Artikel spricht das Übernachten ausdrücklich an, nicht bloss das Aufstellen.",
+      "conditions": "In begründeten Einzelfällen kann die Gemeinde eine Ausnahme bewilligen; sie kann mit Auflagen verbunden werden, etwa der Reinigung auf eigene Kosten. Wo die Gemeinde eigens Zonen dafür vorgesehen hat, gilt das Verbot nicht.",
+      "source": "Règlement de police locale, Art. 9 ‘Il est interdit de passer",
+      "source_url": "https://www.sonceboz.ch/wp-content/uploads/2026/03/07.0003_RPL.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "be-nuit-vehicule-ou-tente-verboten"
+    },
     "492": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -477,6 +555,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
+    },
+    "497": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Ortspolizeireglement, Art. 9 ' Auf öffentlichem Grund ist",
+      "source_url": "https://www.luescherz.ch/inhalte/05_Verwaltung/Schalter/Ortspolizeireglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "501": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "» Gemeindepolizeireglement (als PDF), Art. 9 ‘Auf öffentlichem Grund ist das Übernachten",
+      "source_url": "https://tschugg.ch/fileadmin/PDF/gemeindepolizeireglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "502": {
       "status": "forbidden",
@@ -517,6 +621,19 @@
       "last_verified": "2026-08-24",
       "_muster": "be-uebernachten-in-fahrzeugen-und-zelten-verboten"
     },
+    "556": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist nur mit Bewilligung der Gemeindepolizei gestattet.",
+      "conditions": "Wer privaten Boden gewerbsmässig zum Campieren zur Verfügung stellt, braucht zusätzlich eine Baubewilligung. Zum gelegentlichen Campieren auf Privatgrund trifft der Artikel keine Aussage.",
+      "source": "Gemeindepolizeireglement+2007+mit+Teilrevision+2023, Art. 6 Das Campieren auf öffentlichen Grund ist",
+      "source_url": "https://www.zielebach.ch/app/download/7996865511/Gemeindepolizeireglement+2007+mit+Teilrevision+2023.pdf?t=1777299349",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-campieren-oeffentlich-nur-mit-bewilligung-gemeindepolizei"
+    },
     "561": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -529,6 +646,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "567": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile zum Campieren ausserhalb behördlich bewilligter Camping- oder Stellplätze aufzustellen ist nicht gestattet.",
+      "conditions": "Je nach Reglement ist vereinzeltes, gelegentliches Campieren auf privatem Grund mit Einwilligung der Eigentümerschaft, Pächterin oder deren Vertretung möglich; für längere Aufenthalte kommt eine Bewilligung dazu. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Gemeindepolizeireglement1.12.704-Gemeindepolizeireglement-unterschrieben, Art. 8a 2' Zwischen 22.00 und 06",
+      "source_url": "https://www.reichenbach.ch/wAssets/docs/dienstleistungen/1.12.704-Gemeindepolizeireglement-unterschrieben.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
     },
     "572": {
       "status": "forbidden",
@@ -543,6 +673,45 @@
       "last_verified": "2026-08-26",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
+    "703": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Im Auto zu schlafen oder auf öffentlichem Grund zu campieren ist ausserhalb der dafür vorgesehenen Plätze verboten. Der Artikel nennt das Schlafen im Fahrzeug ausdrücklich.",
+      "conditions": "Die Verwaltungspolizei kann auf Gesuch hin eine Ausnahme bewilligen; sie kann mit Auflagen verbunden werden, etwa der Reinigung auf eigene Kosten.",
+      "source": "Règlement de police locale, Art. 11 \"Il est interdit de dormir dans",
+      "source_url": "https://www.reconvilier.ch/wp-content/uploads/2022/12/07.0003-Reglement-de-police-adminsitrative-2022-Vers-definitive-AM-22.06.27.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "be-dormir-voiture-ou-camping-domaine-public"
+    },
+    "706": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist es verboten, im Fahrzeug oder im Zelt zu übernachten. Der Artikel spricht das Übernachten ausdrücklich an, nicht bloss das Aufstellen.",
+      "conditions": "In begründeten Einzelfällen kann die Gemeinde eine Ausnahme bewilligen; sie kann mit Auflagen verbunden werden, etwa der Reinigung auf eigene Kosten. Wo die Gemeinde eigens Zonen dafür vorgesehen hat, gilt das Verbot nicht.",
+      "source": "Règlement de police communale, Art. 16",
+      "source_url": "https://saicourt.ch/reglement-de-police/",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "be-nuit-vehicule-ou-tente-verboten"
+    },
+    "707": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Ein Lager aufzuschlagen oder Wohnwagen abzustellen ist im gesamten Gemeindegebiet bewilligungspflichtig — vorübergehend wie dauerhaft.",
+      "conditions": "Die Bewilligung ist vorher bei der Gemeinde einzuholen. Der Artikel unterscheidet nicht zwischen öffentlichem und privatem Grund.",
+      "source": "Règlement de police, Article 29 Le campement ou l'installation de roulottes",
+      "source_url": "https://saules-be.ch/wp-content/uploads/2024/12/07.0003-Reglement-de-police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-campement-roulottes-autorisation-ganzes-gebiet"
+    },
     "726": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -555,6 +724,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-28",
       "_muster": "fr-camping-occasionnel-nur-mit-doppelter-zustimmung"
+    },
+    "732": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement, Art. 9",
+      "source_url": "https://www.bellmund.ch/de/verwaltung/dokumente/dokumente/Polizeireglement-POR.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "735": {
       "status": "forbidden",
@@ -582,6 +764,19 @@
       "last_verified": "2026-08-24",
       "_muster": "be-uebernachten-in-fahrzeugen-und-zelten-verboten"
     },
+    "746": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Gemeindepolizeireglement verabschiedet durch GR genehmigt GV vom 11.12.2013, Art. 10 ' Auf öffentlichem Grund ist",
+      "source_url": "https://www.safnern.ch/de/verwaltung/dokumente/dokumente/Gemeindepolizeireglement_verabschiedet_durch_GR_genehmigt_GV_vom_11.12.2013.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
     "749": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -593,6 +788,32 @@
       "source_url": "https://www.studen.ch/appl/download.php?objid=11279718&id=61743954&nr=1&filename=Ortspolizeireglement_2024.pdf&usid=7537&cmd=viewinline",
       "review_status": "quelle",
       "last_verified": "2026-08-28",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "750": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Gemeindepolizeireglement, Art. 9 ‘ Auf öffentlichem Grund ist",
+      "source_url": "https://www.sutz-lattrigen.ch/de/verwaltung/dokumente/dokumente/Gemeindepolizeireglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "768": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Verkehrspolizei, Art. 20 Camping",
+      "source_url": "https://www.spiez.ch/de/verwaltung/dienstleistungen/341_verkehrspolizei",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
     "855": {
@@ -607,6 +828,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-28",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
+    "923": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt, Wohnmobil und dergleichen ist auf öffentlichem Grund verboten. Auf Gesuch kann die Gemeinde Ausnahmen bewilligen.",
+      "conditions": "Für Zeltlager mit vorübergehender Belegung können eigene Plätze zugewiesen werden; dafür ist eine Bewilligung einzuholen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Ortspolizeireglement 01.10.2023, Art. 10 ? Auf öffentlichem Grund ist",
+      "source_url": "https://www.buchholterberg.ch/public/upload/assets/125/Ortspolizeireglement%2001.10.2023.pdf?fp=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-campieren-oeffentlich-verboten-ausnahmen"
     },
     "932": {
       "status": "forbidden",
@@ -633,6 +867,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
+    },
+    "2124": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Gemeindegrund sind Campieren und das Abstellen von Wohnwagen, Wohnmobilen oder ähnlichen Einrichtungen ohne Bewilligung verboten.",
+      "conditions": "Die Bewilligung erteilt der Gemeinderat. Für eine bewilligte Aufstellung wird eine Abgabe erhoben. Ergänzend gilt das kantonale Raumplanungs- und Baugesetz.",
+      "source": "Police, Art. 39",
+      "source_url": "https://www.broc.ch/sites/default/files/2026-08/Regl_Police2016_version%20AC_24.03.26_publi%20web.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-camper-ou-stationner-caravanes-sans-autorisation"
+    },
+    "2145": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Gemeindegrund sind Campieren und das Abstellen von Wohnwagen, Wohnmobilen oder ähnlichen Einrichtungen ohne Bewilligung verboten.",
+      "conditions": "Die Bewilligung erteilt der Gemeinderat. Für eine bewilligte Aufstellung wird eine Abgabe erhoben. Ergänzend gilt das kantonale Raumplanungs- und Baugesetz.",
+      "source": "Police (PDF, 3.3 Mo), Art.38 Tentes, caravanes et « mobil-homes »",
+      "source_url": "https://www.lepaquier.ch/Htdocs/Files/v/8322.pdf/2026-02-10-Reglement-communal-de-police.pdf?download=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-camper-ou-stationner-caravanes-sans-autorisation"
     },
     "2904": {
       "status": "forbidden",
@@ -686,6 +946,45 @@
       "last_verified": "2026-08-24",
       "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
     },
+    "3572": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Das Wohnen in Zelten, Campingwagen und dergleichen ist im ganzen Gemeindegebiet verboten.",
+      "conditions": "Verstösse können vor Ort mit einer Ordnungsbusse geahndet werden. Der Artikel nennt keine Ausnahme.",
+      "source": "Reglement für die Benützung der Gemeindestrassen und -wege, Art. 9 Campingverbot",
+      "source_url": "https://www.falera.net/wp-content/uploads/2021/04/Revision-Benuetzungsreglement-letzte-Version-formatiert.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-wohnen-in-zelten-ganzes-gemeindegebiet-verboten"
+    },
+    "3637": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen und Zelte ausserhalb bewilligter Campingplätze aufzustellen ist auf öffentlichem Gemeindegebiet bewilligungspflichtig.",
+      "conditions": "Die Bewilligung ist vorher einzuholen. Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Gesetz öffentliche Sicherheit und Ordnung, Art. 7 Das Aufstellen von Wohnwagen und Zelten",
+      "source_url": "https://cdn1.site-media.eu/images/document/19049388/GesetzoeffentlicheOrdnungundSicherheit-o3U07TfQn4uTNglXGGn0zw.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-aufstellen-ausserhalb-bewilligter-plaetze-bewilligungspflichtig"
+    },
+    "3638": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ist auf dem gesamten Gemeindegebiet untersagt — nicht nur auf öffentlichem Grund.",
+      "conditions": "Der Gemeindevorstand kann in begründeten Fällen Ausnahmen gestatten, etwa für organisierte Zeltlager an von ihm bestimmten Standorten.",
+      "source": "Polizeigesetz, Art. 13 Das Campieren jeder Art ist auf",
+      "source_url": "https://scharans.ch/wp-content/uploads/2020/02/Polizeigesetz.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-campieren-jeder-art-ganzes-gemeindegebiet-verboten"
+    },
     "3640": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -737,6 +1036,58 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "gr-campieren-oeffentlich-verboten-ausnahmen"
+    },
+    "3712": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren — das Aufstellen von Zelten, Wohnwagen und Wohnmobilen zur Übernachtung — ist nur an den von der Gemeinde bezeichneten Stellen erlaubt. Überall sonst ist es ohne Bewilligung des Gemeindevorstands untersagt.",
+      "conditions": "Der Gemeindevorstand kann im Einzelfall eine Bewilligung erteilen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeigsetz, Art. 20 Campieren",
+      "source_url": "https://zillis-reischen.ch/wp-content/uploads/2021/03/Polizeigsetz.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-campieren-nur-bezeichnete-stellen-sonst-bewilligung"
+    },
+    "3713": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, Wohnwagen und Wohnmobile zum Campieren ausserhalb behördlich bewilligter Camping- oder Stellplätze aufzustellen ist nicht gestattet.",
+      "conditions": "Je nach Reglement ist vereinzeltes, gelegentliches Campieren auf privatem Grund mit Einwilligung der Eigentümerschaft, Pächterin oder deren Vertretung möglich; für längere Aufenthalte kommt eine Bewilligung dazu. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeiverordnung, Art. 35 Campieren",
+      "source_url": "https://ferrera.ch/wp-content/uploads/2020/12/polizeiverordnung_ferrera.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-campieren-ausserhalb-bewilligter-plaetze-verboten"
+    },
+    "3715": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Wohnwagen sind nur auf den Plätzen gestattet, die der Gemeindevorstand dafür bezeichnet hat.",
+      "conditions": "Ausserhalb dieser Plätze ist beides untersagt. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Baugesetz Lohn, Art. 7 Das Campieren und das Aufstellen von",
+      "source_url": "https://mdschons.ch/wp-content/uploads/2023/07/Baugesetz_Lohn.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-nur-auf-bezeichneten-plaetzen-gestattet"
+    },
+    "3723": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren — das Aufstellen von Zelten, Wohnwagen und Wohnmobilen zur Übernachtung — ist nur an den von der Gemeinde bezeichneten Stellen erlaubt. Überall sonst ist es ohne Bewilligung des Gemeindevorstands untersagt.",
+      "conditions": "Der Gemeindevorstand kann im Einzelfall eine Bewilligung erteilen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Po­li­zei­ge­setz, Art. 23 Campieren",
+      "source_url": "https://rhaezuens.ch/data/upload/rhaezuens/Gesetze_Verordnungen/gesetzpolizei2019.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-campieren-nur-bezeichnete-stellen-sonst-bewilligung"
     },
     "3734": {
       "status": "tolerated",
@@ -816,6 +1167,19 @@
       "last_verified": "2026-08-24",
       "_muster": "gr-campieren-ausserhalb-gekennzeichneter-plaetze-untersagt"
     },
+    "3791": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt, Wohnmobil und dergleichen ist auf öffentlichem Grund verboten. Auf Gesuch kann die Gemeinde Ausnahmen bewilligen.",
+      "conditions": "Für Zeltlager mit vorübergehender Belegung können eigene Plätze zugewiesen werden; dafür ist eine Bewilligung einzuholen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizia, Art. 14 Auf öffentlichem Grund ist das Campieren",
+      "source_url": "https://www.zuoz.ch/servezzans/polizia",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-campieren-oeffentlich-verboten-ausnahmen"
+    },
     "3891": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -841,6 +1205,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "gr-campieren-nur-in-campingzone"
+    },
+    "3947": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in Zelt, Wohnwagen oder Wohnmobil ist auf öffentlichem Grund verboten. Ausgenommen sind die Stellen, die die Gemeinde eigens dafür bezeichnet hat.",
+      "conditions": "Der Gemeindevorstand kann Ausnahmen für befristetes Aufstellen und für organisierte Zeltlager an von ihm bestimmten Standorten bewilligen. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeigesetz, Art. 15 Campieren Auf öffentlichem Grund ist",
+      "source_url": "https://zizers.ch/wp-content/uploads/2026/07/Polizeigesetz-nach-Beschluss-14.06.2026.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "gr-campieren-oeffentlich-verboten-bezeichnete-stellen"
     },
     "3951": {
       "status": "forbidden",
@@ -946,6 +1323,32 @@
       "last_verified": "2026-08-28",
       "_muster": "ag-bussenkatalog-campieren-ohne-bewilligung"
     },
+    "4047": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren, Zelten und das Aufstellen von Wohnwagen ohne Bewilligung sind in dieser Gemeinde bussenbewehrt — es besteht also eine Bewilligungspflicht.",
+      "conditions": "Diese Einstufung stammt aus dem Bussenkatalog des Polizeireglements, nicht aus dem Sachartikel selbst. Wo die Grenze zwischen öffentlichem und privatem Grund verläuft und welche Ausnahmen gelten, ist damit nicht belegt — vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Polizeireglement ab 01.07.2025, Art. 90 Bst a) VZAE",
+      "source_url": "https://www.wuerenlingen.ch/fileadmin/user_upload/Polizeireglement__ab_01.07.2025.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "ag-bussenkatalog-campieren-ohne-bewilligung"
+    },
+    "4048": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Wohnwagen auf öffentlichem Grund sind nur mit Bewilligung gestattet. Die erteilt die Polizei im Einvernehmen mit dem Gemeinderat.",
+      "conditions": "Die Bewilligung ist vorher einzuholen. Zu privatem Grund und zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "polizeireglement, Art. 13",
+      "source_url": "https://www.wuerenlos.ch/fileadmin/00_website/Online-Schalter/Rechtserlasse/Einwohnergemeinde/polizeireglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ag-campieren-nur-mit-bewilligung-der-polizei"
+    },
     "5401": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -971,6 +1374,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-als-wohnung-verboten"
+    },
+    "5405": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement général de police, Article 82 Camping et caravaning",
+      "source_url": "https://www.gryon.ch/N1533/reglement-general-de-police.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5406": {
       "status": "forbidden",
@@ -1023,6 +1439,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-als-wohnung-verboten"
+    },
+    "5415": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Voir le document, Art. 81 Il est interdit de camper sur",
+      "source_url": "https://www.yvorne.ch/N1000/reglement-general-de-police.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5422": {
       "status": "unknown",
@@ -1102,6 +1531,32 @@
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
+    "5456": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement de police, Art. 24 ,- Il est interdit de camper",
+      "source_url": "https://www.cudrefin.ch/files/reglements/reglement_de_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5464": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung oder Ferienunterkunft zu nutzen ist verboten — je nach Fassung im ganzen Gemeindegebiet oder auf öffentlichem Grund.",
+      "conditions": "Der Artikel regelt ausdrücklich nur Fahrzeuge als Unterkunft. Zur Zeltfrage sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert.",
+      "source": "Règlement communal sur le plan général d'affectation et la police des…, Art. 42 Camping",
+      "source_url": "https://vully-les-lacs.ch/uploads/41e733f550f42e5a7dc71610f43dd7ab/documents/rgl_chabrey_plan-affectation_1584619235.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
+    },
     "5472": {
       "status": "unknown",
       "tent_allowed": "unknown",
@@ -1126,6 +1581,32 @@
       "source_url": "https://boussens.ch/wp-content/uploads/2020/11/Reglement-general-de-police-de-Boussens_valide-le-19-octobre-2020.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5474": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de Police, Art. 48 || est interdit de camper sur",
+      "source_url": "https://www.lachaux.ch/n848",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5479": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement général de police, Article 74 Camping et caravaning",
+      "source_url": "https://cuarnens.ch/wp-content/uploads/2025/06/REGL_general-de-police_vf2_signe.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5487": {
@@ -1153,6 +1634,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camper-ou-dormir-verboten-mit-bewilligung"
+    },
+    "5491": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police, Art. 48 Il est interdit de camper sur",
+      "source_url": "https://mont-la-ville.ch/wp-content/uploads/2016/05/Reglementdepolice.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5492": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der Plätze verboten, die die Gemeindebehörde ausdrücklich dafür bezeichnet hat. Das Reglement fasst den Begriff weit: es erfasst auch, was dem Campieren gleichkommt.",
+      "conditions": "Ein einzelnes Nachtbiwak wird nicht gesondert behandelt — der weite Wortlaut spricht dagegen, dass es ausgenommen ist. Zum offenen Feuer trifft der Artikel keine Aussage; dafür gelten die kantonalen und eidgenössischen Regeln.",
+      "source": "Règlement de police, Art. 24 Le camping et le caravaning sont",
+      "source_url": "https://www.montricher.ch/assets/idm_medias/d60e9a35f4e61fb21b68cbda7ff95610.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "5493": {
       "status": "forbidden",
@@ -1192,6 +1699,45 @@
       "review_status": "quelle",
       "last_verified": "2026-08-28",
       "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
+    },
+    "5498": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ausserhalb der Plätze verboten, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Für Privatgrund gelten je nach Reglement eigene Regeln, meist die Zustimmung der Eigentümerschaft und ab einigen Tagen eine Gemeindebewilligung. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police, Art. 27 I1 est interdit de camper sur",
+      "source_url": "https://www.lasarraz.ch/images/R%C3%A8glements_scann%C3%A9s/R%C3%A8glement_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-camper-domaine-public-hors-emplacements"
+    },
+    "5503": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement général de police, Article 78 Camping et caravaning",
+      "source_url": "https://www.vufflens-la-ville.ch/storage/app/media/uploaded-files/R%C3%A8glement_de_Police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5512": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police - 2023, Article 56 Camping et caravaning",
+      "source_url": "https://www.bercher-vd.ch/qsPortal/Home.asp?N=3619",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5514": {
       "status": "forbidden",
@@ -1271,6 +1817,19 @@
       "last_verified": "2026-08-24",
       "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
+    "5539": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Nouveau règlement de police 2025, Article 57 Camping et caravaning",
+      "source_url": "https://www.vuarrens.ch/download/35/reglements-communaux/7103/nouveau-reglement-de-police-2025.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-voie-publique-ocr-tolerant"
+    },
     "5540": {
       "status": "unknown",
       "tent_allowed": "unknown",
@@ -1310,6 +1869,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
+    "5555": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Règlement de police, Art. 46 La Municipalité fixe les emplacements de",
+      "source_url": "https://www.corcelles-concise.ch/images/PDF/Rglement-police.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
+    },
     "5583": {
       "status": "unknown",
       "tent_allowed": "unknown",
@@ -1348,6 +1920,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5609": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "source": "Règlement de police (642.71 ko), Art. 24 — L'entreposage des roulottes et autres",
+      "source_url": "https://www.rivaz.ch/files/1712317369-reglement-de-police-1986-4028.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
     },
     "5611": {
       "status": "forbidden",
@@ -1400,6 +1985,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "fr-camping-verboten-territoire-communal"
+    },
+    "5631": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Règlement de Police, Art. 46 La Municipalité fixe les emplacements de",
+      "source_url": "https://www.denens.ch/uploads/9c8db189b368559be2d6ffa4d4ee0005/documents/Reglement_de_police_1768473015.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
     "5633": {
       "status": "forbidden",
@@ -1466,6 +2064,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
+    "5640": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "source": "Règlement communal de Police, Art. 47 L’entreposage des roulottes, caravanes et autres",
+      "source_url": "https://www.lussy-sur-morges.ch/votre-commune/documents-a-telecharger/6-reglements-communaux",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
+    },
     "5645": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1518,6 +2129,19 @@
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
+    "5653": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement de police, Art. 46 Il est interdit de camper ou",
+      "source_url": "https://www.vufflens-le-chateau.ch/assets/idm_medias/af45d183d943777b7b29609512722c8c.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
     "5669": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -1543,6 +2167,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5673": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Voir le document, Art. 48 Il est interdit de camper sur",
+      "source_url": "https://www.hermenches.ch/N731/reglement-de-police.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5678": {
       "status": "forbidden",
@@ -1570,6 +2207,32 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
+    "5692": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement, Art. 48 Il est interdit de camper sur",
+      "source_url": "https://vucherens.ch/wp-content/uploads/2017/07/R_police_2011.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5701": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police, Art. 48 Il est interdit de camper sur",
+      "source_url": "http://www.arnex-sur-nyon.ch/assets/idm_medias/c380c044a5c5d3e9e73626897437140f.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
     "5703": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1582,6 +2245,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5710": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement communal de Police, Article 24 ll est interdit de camper ou",
+      "source_url": "https://coinsins.ch/uploads/e023022aa030c04032664cb218a71c9f/documents/Reglement_Police-2008_1568712778.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5711": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement communal de police, art 47",
+      "source_url": "https://www.commugny.ch/N5533/reglement-communal-de-police.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
     "5713": {
       "status": "unknown",
@@ -1596,6 +2285,45 @@
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-logements-mobiles-verboten"
     },
+    "5717": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police, art. 47",
+      "source_url": "https://www.founex.ch/n1081",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5718": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement de police de la commune de Genolier, Article 21 — Il est interdit de camper",
+      "source_url": "https://www.genolier.ch/n1546",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5720": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de Police, Art. 50 Il est interdit de camper sur",
+      "source_url": "https://www.givrins.ch/n1078",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
     "5721": {
       "status": "unknown",
       "tent_allowed": "unknown",
@@ -1609,6 +2337,19 @@
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
+    "5725": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "source": "Règlement intercommunal général de Police Nyon Région, Art. 35 L'entreposage de roulottes, de caravanes, de",
+      "source_url": "https://prangins.ch/uploads/pnr-regl-intercommunal-general-police-rigp-2018.12.14_version-indexee.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
+    },
     "5726": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1621,6 +2362,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-28",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5728": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ausserhalb der Plätze verboten, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Für Privatgrund gelten je nach Reglement eigene Regeln, meist die Zustimmung der Eigentümerschaft und ab einigen Tagen eine Gemeindebewilligung. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Voir le document, Art. 49 ll est interdit de camper sur",
+      "source_url": "https://www.signy.ch/N1621/reglement-de-police.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-camper-domaine-public-hors-emplacements"
+    },
+    "5742": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ausserhalb der Plätze verboten, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Für Privatgrund gelten je nach Reglement eigene Regeln, meist die Zustimmung der Eigentümerschaft und ab einigen Tagen eine Gemeindebewilligung. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police du 19 août 1998, Art. 21 Il est interdit de camper sur",
+      "source_url": "https://ru961ajxkj.preview.infomaniak.website/wp-content/uploads/Reglement-de-police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-camper-domaine-public-hors-emplacements"
     },
     "5744": {
       "status": "forbidden",
@@ -1674,6 +2441,97 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
+    "5758": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police, Art. 49 Il est interdit de camper sur",
+      "source_url": "https://www.lapraz.ch/wp-content/uploads/2022/08/20220822_192624.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5761": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police, Art. 50 — Il est interdit de camper",
+      "source_url": "http://www.romainmotier.ch/wp-content/uploads/2020/06/R%C3%A8glement-de-police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5762": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police (9.62 Mo), Art. 48 Il est interdit de camper sur",
+      "source_url": "https://www.sergey.ch/files/1699794554-re-glement-de-police-pour-la-commune-de-sergey-6320.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5765": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police, Art. 48 il est interdit de camper sur",
+      "source_url": "https://vaulion.ch/uploads/7ee511b3ac661fbb516c7ecdf8a6a7c1/documents/R%C3%A8glement%20de%20police_1597063544.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5790": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren auf öffentlichem Grund ist ohne Bewilligung der Gemeinde verboten. Eine Bewilligung ist möglich, muss aber vorher eingeholt werden.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren bis vier Tage ohne Gemeindebewilligung möglich; darüber hinaus braucht es eine. Das Abstellen von Wohnwagen auf öffentlichem Grund ist ohne Bewilligung untersagt. Für die Bewilligung kann eine Gebühr anfallen.",
+      "source": "Règlement de police, Art. 48 Il est interdit de camper sur",
+      "source_url": "https://maracon.ch/wp-content/uploads/bsk-pdf-manager/2026/03/Reglement-de-police1.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5803": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police - 08.04.2024, Article 58 Camping et caravaning",
+      "source_url": "https://communeapp.ch/assets/idm_medias/5a7384e82df1c5f0bd2dfff9b2235031.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5804": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement de police (887 Ko), Art. 22 Il est interdit de camper ou",
+      "source_url": "http://www.jorat-menthue.ch/admin/resources/rglement-de-police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
     "5812": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1687,6 +2545,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
+    "5816": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im ganzen Gemeindegebiet verboten — ausser auf dafür eingerichteten Campingplätzen.",
+      "conditions": "Der Artikel regelt ausdrücklich nur Fahrzeuge als Unterkunft. Zur Zeltfrage sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert.",
+      "source": "Règlement des constructions (RPGA), art. 67 L'utilisation de roulottes, caravanes et autres",
+      "source_url": "https://www.corcelles.ch/uploads/86c3dcf39984b4c1a32f516377adf3b0/documents/RPGA_1576505743.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-als-wohnung-verboten"
+    },
     "5821": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1698,6 +2569,19 @@
       "source_url": "https://www.missy.ch/uploads/228d200bb964a7ceda2966eec7d1fda4/documents/Reglement_general_de_police_2024_1750918592.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5827": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund und in dessen Umgebung ist Campieren verboten. Auf privatem Grund ist gelegentliches Campieren erlaubt, wenn die Eigentümerin, Mieterin oder Pächterin zustimmt.",
+      "conditions": "Ab vier Tagen Dauer braucht es zusätzlich eine Bewilligung der Gemeinde — sie kann verweigert werden, etwa wenn in der Nähe keine sanitären Anlagen vorhanden sind. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police, Article 63 Camping et caravaning",
+      "source_url": "https://www.trey.ch/reglements/police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
     "5842": {
@@ -1725,6 +2609,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5858": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren in jeder Form — Zelt, Wohnwagen, Wohnmobil oder anderes Fahrzeug als Unterkunft — ist auf öffentlichem und kommunalem Grund verboten. Die Gemeinde legt fest, wo campiert werden darf.",
+      "conditions": "Auf privatem Grund wird gelegentliches Campieren mit Zustimmung der Eigentümerin, Pächterin oder Mieterin geduldet; ab vier Tagen braucht es zusätzlich eine Gemeindebewilligung, die vorher schriftlich zu beantragen ist.",
+      "source": "Règlement de police, Art. 23 Le camping, l’entreposage des roulottes ou",
+      "source_url": "https://www.luins.ch/download/reglement-de-police/",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "fr-camping-toute-forme-domaine-public"
     },
     "5859": {
       "status": "forbidden",
@@ -1765,6 +2662,58 @@
       "last_verified": "2026-08-24",
       "_muster": "fr-camping-toute-forme-domaine-public"
     },
+    "5882": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "source": "Règlement de police, Article 34 L'entreposage de roulottes, caravanes, véhicules servant",
+      "source_url": "https://www.chardonne.ch/wp-content/uploads/2025/09/Reglement_general_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
+    },
+    "5884": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "source": "Règlement général de police intercommunal, Article 34 L'entreposage de roulottes, caravanes, véhicules servant",
+      "source_url": "https://corsier-sur-vevey.ch/wp-content/uploads/bsk-pdf-manager/2026/03/ASR-Reglement-de-police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
+    },
+    "5886": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "source": "Règlement général de police de l'Association de communes Sécurité Riviera du…, Article 34 L'entreposage de roulottes, caravanes, véhicules servant",
+      "source_url": "https://www.securite-riviera.ch/getmedia/2b12fd4b-a7a7-4118-8a7e-b0cc3a3c6b16/rgpi_10_04_25_ratifie.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
+    },
+    "5890": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere als Unterkunft dienende Fahrzeuge dürfen auf öffentlichem Grund nur mit Bewilligung abgestellt werden.",
+      "conditions": "Der Artikel regelt das Abstellen, nicht ausdrücklich das Übernachten, und sagt nichts zu Zelten. Die Grenze zwischen kurzem Parkieren und Abstellen legen die Verkehrs- und Parkierungsreglemente fest.",
+      "source": "Règlement général de police de l&#039;Association de communes Sécurité Riviera…, Article 34 L'entreposage de roulottes, caravanes, véhicules servant",
+      "source_url": "https://www.vevey.ch/sites/default/files/2022-05/R%C3%A9glement%20g%C3%A9n%C3%A9ral%20de%20police%20de%20l%27ACSR_0.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "nur-fahrzeuge-entreposage-domaine-public"
+    },
     "5891": {
       "status": "unknown",
       "tent_allowed": "unknown",
@@ -1790,6 +2739,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
+    },
+    "5908": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement de police, Art. 46 Il est interdit de camper ou",
+      "source_url": "https://www.chene-paquier.ch/fileadmin/user_upload/public/Officiel/Reglements/Reglement_police/Reglement_police_OK.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5909": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Règlement de police (13.10.2006), Art. 46 La Municipalité fixe les emplacements de",
+      "source_url": "https://cheseaux-noreaz.ch/fileadmin/user_upload/pdf/Reglement-de-police.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
     "5910": {
       "status": "forbidden",
@@ -1830,6 +2805,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
+    "5921": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement de police, Art. 44 Il est interdit de camper ou",
+      "source_url": "https://molondin.ch/fileadmin/user_upload/documents/reglements/molondin-reglement-police-2004.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
     "5923": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -1843,6 +2831,32 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-camper-ou-dormir-verboten-mit-bewilligung"
     },
+    "5924": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Règlement de police, Art. 46",
+      "source_url": "https://www.orges.ch/_files/ugd/b7d372_601bd754ff454cc9b6879a5c0097a290.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
+    },
+    "5926": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Version, Article 41 Camping",
+      "source_url": "https://pomy.ch/wp-content/uploads/2020/05/reglementdepolice.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
+    },
     "5929": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1855,6 +2869,71 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5931": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Règlement de police, Art. 48",
+      "source_url": "http://treycovagnes.ch/assets/idm_medias/c06efa07279aab3b91237c1ae5d78030.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
+    },
+    "5934": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "RÈGLEMENT DE POLICE 2004, Art. 45 La Municipalité fixe les emplacements de",
+      "source_url": "https://valeyres-sous-ursins.ch/wp-content/uploads/2023/07/13-Reglement-de-Police-2004.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
+    },
+    "5935": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde legt fest, wo campiert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze kann sie bewilligen — ohne Bewilligung ist also nicht damit zu rechnen, dass es zulässig ist.",
+      "conditions": "Der Artikel spricht kein ausdrückliches Verbot aus; dass ausserhalb der bezeichneten Plätze eine Bewilligung nötig ist, ergibt sich aus dem Zusammenhang. Vor Ort oder bei der Gemeinde nachfragen.",
+      "source": "Règlement de police, Art. 47 La Municipalite fixe les emplacements de",
+      "source_url": "http://www.villars-epeney.ch/doc/regl_police.pdf",
+      "review_status": "entwurf",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
+    },
+    "5937": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund sind Campieren und Schlafen grundsätzlich verboten. Die Gemeinde kann Plätze bezeichnen, an denen campiert werden darf. Der Artikel nennt das Schlafen ausdrücklich — ein Biwak ohne Zelt ist mitgemeint.",
+      "conditions": "Auf privatem Grund Dritter ist gelegentliches Campieren nur mit Einverständnis der Eigentümerin, Pächterin oder Mieterin zulässig; ab einer gewissen Dauer braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Règlement de police, Art. 23 Il est interdit de camper ou",
+      "source_url": "https://vugelleslamothe.ch/wp-content/uploads/2024/11/Reglement-DePolice_01.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "6007": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Ausserhalb dieser Zonen ist beides untersagt.",
+      "conditions": "Der Artikel betrifft öffentlichen Grund. Zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Polizeireglement 17.09.2014, Art. 19 Campieren",
+      "source_url": "https://www.naters.ch/wp-content/uploads/2025/07/polizeireglement-17.09.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-nur-bezeichnete-zonen"
     },
     "6023": {
       "status": "forbidden",
@@ -1881,6 +2960,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
+    "6057": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Ausserhalb dieser Zonen ist beides untersagt.",
+      "conditions": "Der Artikel betrifft öffentlichen Grund. Zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Polizeireglement, Art. 16 Campieren",
+      "source_url": "https://www.gemeinde-fiesch.ch/?action=get_file&id=90&resource_link_id=55a",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-nur-bezeichnete-zonen"
+    },
+    "6058": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Ausserhalb dieser Zonen ist beides untersagt.",
+      "conditions": "Der Artikel betrifft öffentlichen Grund. Zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Polizeireglement, Art. 18 Campieren",
+      "source_url": "https://www.fieschertal.ch/?action=get_file&id=56&resource_link_id=311",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-nur-bezeichnete-zonen"
     },
     "6077": {
       "status": "forbidden",
@@ -1921,6 +3026,19 @@
       "last_verified": "2026-08-24",
       "_muster": "fr-camping-caravaning-interdits-hors-emplacements"
     },
+    "6102": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und das Aufstellen von Zelten oder Wohnwagen auf öffentlichem Grund brauchen eine Bewilligung der Gemeinde. Ohne sie ist beides untersagt.",
+      "conditions": "Auf privatem Grund braucht es die ausdrückliche Zustimmung der Grundeigentümerschaft, je nach Reglement zusätzlich eine Gemeindebewilligung. Baupolizeiliche Vorschriften bleiben vorbehalten. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizei, Art. 23 Camping und Caravaning",
+      "source_url": "http://albinen.ch/wp-content/uploads/2018/09/Polizeireglement_homologiert_16_05_2018.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "zh-campieren-ohne-bewilligung-untersagt"
+    },
     "6134": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1932,6 +3050,19 @@
       "source_url": "https://iserables.ch/wp-content/uploads/2018/09/Id_271_R%C3%A8glement_police.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
+    "6135": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der Plätze verboten, die die Gemeindebehörde ausdrücklich dafür bezeichnet hat. Das Reglement fasst den Begriff weit: es erfasst auch, was dem Campieren gleichkommt.",
+      "conditions": "Ein einzelnes Nachtbiwak wird nicht gesondert behandelt — der weite Wortlaut spricht dagegen, dass es ausgenommen ist. Zum offenen Feuer trifft der Artikel keine Aussage; dafür gelten die kantonalen und eidgenössischen Regeln.",
+      "source": "Police municipale, Article 49 Camping et caravaning",
+      "source_url": "https://leytron.ch/index.php/services/communaux/police/police-municipale",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6136": {
@@ -1973,6 +3104,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
+    "6156": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der Plätze verboten, die die Gemeindebehörde ausdrücklich dafür bezeichnet hat. Das Reglement fasst den Begriff weit: es erfasst auch, was dem Campieren gleichkommt.",
+      "conditions": "Ein einzelnes Nachtbiwak wird nicht gesondert behandelt — der weite Wortlaut spricht dagegen, dass es ausgenommen ist. Zum offenen Feuer trifft der Artikel keine Aussage; dafür gelten die kantonalen und eidgenössischen Regeln.",
+      "source": "Police (PIDM), Art. 55 Camping, pique-nique et caravaning",
+      "source_url": "https://www.troistorrents.ch/commune/pidm-police-intercommunale-dents-midi-203.html",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
     "6157": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1986,6 +3130,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
+    "6191": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Ausserhalb dieser Zonen ist beides untersagt.",
+      "conditions": "Der Artikel betrifft öffentlichen Grund. Zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "POLIZEIREGLEMENT HOMOLOGIERT, Art. 17 Campieren",
+      "source_url": "https://www.ausserberg.ch/?action=get_file&id=128&resource_link_id=564",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "de-nur-bezeichnete-zonen"
+    },
     "6193": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1997,6 +3154,19 @@
       "source_url": "https://gemeinde.buerchen.ch/wp-content/uploads/2021/07/Polizeireglement.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "de-nur-bezeichnete-zonen"
+    },
+    "6203": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Ausserhalb dieser Zonen ist beides untersagt.",
+      "conditions": "Der Artikel betrifft öffentlichen Grund. Zu Privatgrund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Polizeireglement-2020, Art. 19 Das Campieren und Übernachten auf öffentlichem",
+      "source_url": "https://www.moerel-filet.ch/?action=get_file&id=37&resource_link_id=f3",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "de-nur-bezeichnete-zonen"
     },
     "6232": {
@@ -2012,6 +3182,19 @@
       "last_verified": "2026-08-24",
       "_muster": "ju-camping-sauvage-verboten"
     },
+    "6235": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der Plätze verboten, die die Gemeindebehörde ausdrücklich dafür bezeichnet hat. Das Reglement fasst den Begriff weit: es erfasst auch, was dem Campieren gleichkommt.",
+      "conditions": "Ein einzelnes Nachtbiwak wird nicht gesondert behandelt — der weite Wortlaut spricht dagegen, dass es ausgenommen ist. Zum offenen Feuer trifft der Artikel keine Aussage; dafür gelten die kantonalen und eidgenössischen Regeln.",
+      "source": "Règlement de police, Art. 55 Camping, pique-nique et caravaning",
+      "source_url": "https://chippis.ch/wp-content/uploads/2024/07/Reglement_de_police_de_la_commune_de_Chippis.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
     "6238": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -2025,6 +3208,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
+    "6239": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der Plätze verboten, die die Gemeindebehörde ausdrücklich dafür bezeichnet hat. Das Reglement fasst den Begriff weit: es erfasst auch, was dem Campieren gleichkommt.",
+      "conditions": "Ein einzelnes Nachtbiwak wird nicht gesondert behandelt — der weite Wortlaut spricht dagegen, dass es ausgenommen ist. Zum offenen Feuer trifft der Artikel keine Aussage; dafür gelten die kantonalen und eidgenössischen Regeln.",
+      "source": "Police, Art. 52 Camping, pique-nique et caravaning",
+      "source_url": "http://www.icogne.ch/fr/pratique/police/",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
     "6246": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -2036,6 +3232,19 @@
       "source_url": "http://stleonard.dunamibu.myhostpoint.ch/wp-content/uploads/2026/07/reglementcommunaux_police.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
+    "6248": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der Plätze verboten, die die Gemeindebehörde ausdrücklich dafür bezeichnet hat. Das Reglement fasst den Begriff weit: es erfasst auch, was dem Campieren gleichkommt.",
+      "conditions": "Ein einzelnes Nachtbiwak wird nicht gesondert behandelt — der weite Wortlaut spricht dagegen, dass es ausgenommen ist. Zum offenen Feuer trifft der Artikel keine Aussage; dafür gelten die kantonalen und eidgenössischen Regeln.",
+      "source": "Règlement communal de police 16.06.2020 Sécurité et police, Article 41 Camping",
+      "source_url": "https://www.sierre.ch/data/documents/officielle/publications/reglements/Reglement_communal_de_police_2007_avec_premiere_page_.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
     "6252": {
@@ -2103,6 +3312,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
+    "6287": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Freies Zelten, Campieren und Biwakieren sind untersagt. Erlaubt bleibt die Benutzung offizieller, zonenkonformer Campingplätze. Der Artikel nennt das Biwakieren ausdrücklich — ein einzelnes Nachtlager ohne Zelt ist mitgemeint.",
+      "conditions": "Gelegentliches, nicht kommerzielles Campieren auf privatem Boden ist zulässig, wenn die schriftliche Einwilligung der Grundeigentümerschaft vorliegt. Für Fahrzeuge gelten zusätzlich die Strassenverkehrsvorschriften des Bundes.",
+      "source": "| Size: 17.11.2025 Entwurf Polizeireglement, Art.15 Campieren",
+      "source_url": "https://www.randa.ch/wp-content/uploads/2025/11/Entwurf-Polizeireglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "vs-freies-campieren-untersagt"
+    },
     "6300": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -2114,6 +3336,58 @@
       "source_url": "https://gemeinde.zermatt.ch/pdf/reglement/Polizeireglement2022.pdf",
       "review_status": "quelle",
       "last_verified": "2026-08-23"
+    },
+    "6436": {
+      "status": "forbidden",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "In Wohnwagen, Wohnmobilen und anderen bewohnbaren Fahrzeugen zu übernachten ist auf Trottoirs und öffentlichen Wegen, auf Weiden, im Wald, an dessen Rand und entlang öffentlicher wie privater Waldwege verboten. Zulässig ist das Abstellen zum Übernachten nur an eigens dafür bezeichneten Orten.",
+      "conditions": "Der Artikel regelt ausdrücklich Fahrzeuge. Zur Zeltfrage trifft er keine Aussage.",
+      "source": "Règlement de police, Article 44 Véhicules habitables et habitations mobiles",
+      "source_url": "https://www.lelocle.ch/wp-content/uploads/2024/06/20240530_Reglement-de-police_VF.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ne-sejourner-vehicules-habitables-verboten"
+    },
+    "6511": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Zelte, bewohnbare Fahrzeuge und mobile Unterkünfte dürfen nur auf den dafür eingerichteten und vom Gemeinderat bewilligten Plätzen — also auf Campingplätzen — aufgestellt werden.",
+      "conditions": "Ausserhalb solcher Plätze ist das Aufstellen nicht zulässig. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Cliquer pour télécharger, Art. 42 habitation tempo",
+      "source_url": "https://www.lesverrieres.ch/files/Reglement_urbanisme.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ne-tentes-nur-auf-eingerichteten-plaetzen"
+    },
+    "6703": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de sécurité locale (PDF, 1.0 Mo), Art. 28 ' Le camping sauvage est interdit",
+      "source_url": "https://www.develier.ch/Htdocs/Files/v/6060.pdf/Reglement-de-securite-locale.pdf?download=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6708": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de sécurité locale (PDF, 1.7 Mo), Art. 28",
+      "source_url": "https://www.courrendlin.ch/Htdocs/Files/v/8586.pdf/Reglement-de-securite-locale.pdf?Download=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
     },
     "6712": {
       "status": "forbidden",
@@ -2127,6 +3401,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6719": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf allen Weiden des Gemeindegebiets ist Campieren grundsätzlich verboten — das Verbot richtet sich ausdrücklich an Personen, die nicht in der Gemeinde wohnen.",
+      "conditions": "Der Gemeinderat kann Auswärtigen auf Gesuch hin eine besondere Bewilligung erteilen.",
+      "source": "Règlement de Police locale (PDF, 4.9 Mo), Art. 39 a) Le camping est en principe",
+      "source_url": "https://www.pleigne.ch/Htdocs/Files/v/7199.pdf/Reglement-de-Police-locale.pdf?download=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-weiden-fuer-auswaertige-verboten"
     },
     "6721": {
       "status": "forbidden",
@@ -2152,6 +3439,123 @@
       "source_url": "https://www.val-terbi.ch/Htdocs/Files/v/10225.pdf/Reglement-de-Police-locale_version-internet_06.05.2024.pdf?download=1",
       "review_status": "quelle",
       "last_verified": "2026-08-24",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6743": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de sécurité locale, Art. 28 ‘ Le camping sauvage est interdit",
+      "source_url": "https://www.breuleux.ch/files/47/Reglements/R%C3%A8glement%20de%20s%C3%A9curit%C3%A9%20locale.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6751": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de police locale, Art. 27 ' Le camping sauvage est interdit",
+      "source_url": "https://www.montfaucon.ch/site/file/source/reglements/Police_locale.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6754": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de sécurité locale, Art. 28",
+      "source_url": "https://www.noirmont.ch/files/329/R%C3%A8glements/R%C3%A8glement%20de%20s%C3%A9curit%C3%A9%20locale_01.01.2025.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6757": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de police locale (2009), Article 32 Camping – Mesures restrictives",
+      "source_url": "https://www.saignelegier.ch/FileDownload/Download/24",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6783": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de sécurité locale, Art. 28 ' Le camping sauvage est interdit",
+      "source_url": "https://courchavon-mormont.ch/wp-content/uploads/2022/07/SCAN-22071111130.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6790": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de police locale de la commune mixte de Fontenais 2014, Art. 27 ' Le camping sauvage est interdit",
+      "source_url": "https://www.fontenais.ch/File/43/REGLEMENT%20POLICE.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6807": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "sécurité locale, Art. 28 ' Le camping sauvage est interdit",
+      "source_url": "http://www.basse-allaine.ch/images/pdf/Reglements/Reglement%20de%20securite%20locale.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6810": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de la police locale (PDF, 2.0 Mo), Article 28 Article 29",
+      "source_url": "https://www.labaroche.ch/Htdocs/Files/v/7856.pdf/Reglement-de-la-police-locale.pdf?download=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
+      "_muster": "ju-camping-sauvage-verboten"
+    },
+    "6812": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "conditional",
+      "summary": "Wildcampieren ist auf allen Weiden und übrigen öffentlichen Grundstücken der Gemeinde verboten. Der Gemeinderat kann im Einzelfall eine Sonderbewilligung erteilen.",
+      "conditions": "Feuer nur an Stellen ohne jede Gefahr; stehendes Holz zu schlagen oder aufgeschichtetes Holz zu verwenden ist untersagt. Der Platz ist im ursprünglichen Zustand zu hinterlassen, sämtlicher Abfall mitzunehmen. Für Zelte und Wohnmobile ausserhalb bezeichneter Campingplätze gilt zusätzlich das Baurecht.",
+      "source": "Règlement de sécurité locale (PDF, 1.7 Mo), Art. 28",
+      "source_url": "https://www.basse-vendline.ch/Htdocs/Files/v/5913.pdf/Reglement-de-securite-locale.pdf?download=1",
+      "review_status": "quelle",
+      "last_verified": "2026-08-29",
       "_muster": "ju-camping-sauvage-verboten"
     }
   }
