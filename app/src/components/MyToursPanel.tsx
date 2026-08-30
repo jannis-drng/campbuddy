@@ -315,6 +315,7 @@ export function MyToursPanel({
             setDetail(null)
             onLoadRoute(geometry, wegpunkte)
           }}
+          onLadenWechsel={onLadenWechsel}
           onBearbeiten={detail.eigen
             ? () => { setDetail(null); onBearbeiten(detail.tour as Tour) }
             : undefined}

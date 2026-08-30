@@ -100,6 +100,8 @@ interface Props {
   onClose: () => void
   /** Den Verlauf auf der Karte zeigen. */
   onAufKarte: (geometry: Position[], waypoints: Position[]) => void
+  /** Meldet, dass gerade der volle Verlauf geholt wird — siehe `components/Laden.tsx`. */
+  onLadenWechsel?: (laeuft: boolean) => void
   /** Verlauf und Nachtlager auf der Karte ändern — nur bei eigenen. */
   onBearbeiten?: () => void
   /** Eine fremde Tour als eigene übernehmen, mit den hier gesetzten Eckdaten. */
@@ -109,7 +111,7 @@ interface Props {
 }
 
 export function TourFenster({
-  tour, eigen, onClose, onAufKarte, onBearbeiten, onKopieren, onGeaendert,
+  tour, eigen, onClose, onAufKarte, onLadenWechsel, onBearbeiten, onKopieren, onGeaendert,
 }: Props) {
   const [angaben, setAngaben] = useState<Angaben>(() => angabenAus(tour))
   const [staende, setStaende] = useState<PackStaende>(
@@ -142,7 +144,16 @@ export function TourFenster({
     ist immer noch besser als ein Knopf, der nichts tut.
   */
   const aufKarte = async () => {
-    const verlauf = eigen ? await ladeEigenenVerlauf(tour.id) : await ladeVerlauf(tour.id)
+    // Melden, dass es losgeht: der Verlauf einer langen Tour ist mehrere
+    // hundert Kilobyte, und bis er da ist, sähe der Knopf sonst aus, als
+    // hätte er nichts getan. Die Anzeige dazu steht in `App.tsx`.
+    onLadenWechsel?.(true)
+    let verlauf
+    try {
+      verlauf = eigen ? await ladeEigenenVerlauf(tour.id) : await ladeVerlauf(tour.id)
+    } finally {
+      onLadenWechsel?.(false)
+    }
     onAufKarte(
       (verlauf.geometry?.coordinates as Position[] | undefined) ?? geometry,
       (verlauf.waypoints ?? []) as Position[],

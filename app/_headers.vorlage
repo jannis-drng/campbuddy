@@ -90,6 +90,17 @@
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# Die Suchliste der Gemeindeseite und ihr Skript tragen keinen Inhalts-Hash im
+# Namen — sie entstehen ausserhalb des Bündels (scripts/gemeindeseiten.mjs) und
+# heissen bei jedem Build gleich. Ohne diese Regel bekäme jemand nach einer
+# neuen Einstufung wochenlang die alte Namensliste ausgeliefert und fände eine
+# Gemeinde nicht, die längst eine Seite hat.
+/gemeinden-suche.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/gemeinden-suche.json
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Der Service Worker ebenso wenig — und aus demselben Grund, nur schärfer.
 # Er trägt die Liste der vorzuwärmenden Dateien und den Cache-Namen des
 # jeweiligen Builds. Eine gecachte alte Fassung hiesse: der Browser hält an

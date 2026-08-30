@@ -26,7 +26,7 @@
  *
  * Läuft nach dem Build (`postbuild`) und schreibt nach `dist/gemeinde/…`.
  */
-import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdirSync, readFileSync, statSync, writeFileSync, rmSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { kennung } from './lib/kennung.mjs'
 
@@ -165,6 +165,17 @@ nav.krumen{font-size:.8rem;color:#8A9A9F;margin-bottom:1.5rem}
 nav.krumen span[aria-hidden]{margin:0 .4rem}
 .nachbarn{font-size:.9rem;line-height:2}
 .offen{font-size:.85rem;line-height:1.9;color:#8A9A9F}
+.suche{margin:2rem 0 .5rem}
+.suche label{display:block;margin-bottom:.4rem}
+.suche input{width:100%;background:#131B1E;color:#E8EEF0;border:1px solid #1F2A2E;
+             border-radius:.625rem;padding:.7rem .9rem;font:inherit;font-size:1rem}
+.suche input:focus{outline:2px solid #1E7A9C;outline-offset:1px;border-color:#1E7A9C}
+.suche p{margin:.45rem 0 0}
+#suchergebnis:not(:empty){margin:1.25rem 0}
+#suchergebnis ul{list-style:none}
+#suchergebnis li{padding:.55rem 0;border-bottom:1px solid #1F2A2E;font-size:.95rem;
+                 display:flex;justify-content:space-between;gap:1rem;align-items:baseline}
+#suchergebnis .wo{color:#8A9A9F;font-size:.85rem;text-align:right}
 footer{border-top:1px solid #1F2A2E;margin-top:3rem;padding-top:1.25rem;font-size:.85rem;color:#8A9A9F}
 footer a{margin-right:1.25rem}
 `.trim()
@@ -637,12 +648,38 @@ function uebersichtsSeite() {
 
   <a class="knopf" href="${BASIS}#/karte">Auf der Karte ansehen</a>
 
+  <!--
+    Die Suche.
+
+    Sie findet alle 2119 Gemeinden, nicht nur die eingestuften — und das ist
+    der Punkt. Wer „Zermatt" eingibt und nichts findet, weiss nicht, ob er sich
+    vertippt hat oder ob dort noch nichts recherchiert ist. Die Suche sagt es
+    ihm. Ein Ergebnis ohne Seite ist eine Auskunft, kein Fehlschlag.
+
+    Das Skript liegt als eigene Datei, nicht inline: script-src 'self'
+    verbietet Inline-Skripte, und diese Regel wird fuer eine Suchfunktion
+    ganz sicher nicht aufgeweicht. Die Namensliste kommt als eigene Datei
+    nach — sie wiegt mehr als diese ganze Seite und wird nur gebraucht,
+    wenn jemand wirklich tippt.
+  -->
+  <form class="suche" onsubmit="return false">
+    <label for="suchfeld" class="leise">Gemeinde suchen</label>
+    <input id="suchfeld" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Name der Gemeinde …" aria-describedby="suchhinweis">
+    <p id="suchhinweis" class="leise">Alle ${gemeinden.length} Gemeinden, auch die noch
+    nicht nachgeschlagenen.</p>
+  </form>
+  <div id="suchergebnis" role="status" aria-live="polite"></div>
+
+  <div id="volleListe">
   ${kantone.map(([kantonName, liste]) => `
   <h2 id="${kennung(kantonName)}"><a href="${BASIS}kanton/${kennung(kantonName)}">${escape(kantonName)}</a> <span class="leise">· ${liste.length}</span></h2>
   ${liste.length > 0
     ? `<p class="nachbarn">${liste.map((n) => `<a href="${BASIS}${n.pfad}">${escape(n.name)}</a>`).join(' · ')}</p>`
     : `<p class="leise">Noch keine Gemeinde einzeln nachgeschlagen — was der Kanton selbst
        regelt, steht auf <a href="${BASIS}kanton/${kennung(kantonName)}">seiner Seite</a>.</p>`}`).join('')}
+
+  </div>
 
   <div class="kasten warnung">
     <strong>Orientierungshilfe, keine Rechtsgarantie.</strong> Beschilderung vor Ort und die
@@ -657,6 +694,7 @@ function uebersichtsSeite() {
   Einstufung: eigene Recherche, Quelle auf der jeweiligen Seite.</p>
 </footer>
 </div>
+<script src="${BASIS}gemeinden-suche.js" defer></script>
 ${BEACON}
 </body>
 </html>
@@ -664,6 +702,145 @@ ${BEACON}
 }
 
 writeFileSync(`${DIST}gemeinden.html`, uebersichtsSeite())
+
+/* ----------------------------------------------------------------- Suche */
+
+/*
+ * Die Namensliste für die Suche — alle Gemeinden, nicht nur die eingestuften.
+ *
+ * Kurze Schlüssel, weil die Datei 2119 Einträge trägt: `n` Name, `k` Kanton,
+ * `p` Pfad zur Seite (fehlt, wenn es noch keine gibt). Das ist keine
+ * Sparsamkeit um ihrer selbst willen — mit ausgeschriebenen Schlüsseln wäre
+ * sie rund ein Drittel grösser, und sie wird über eine Mobilverbindung geholt.
+ */
+writeFileSync(`${DIST}gemeinden-suche.json`, JSON.stringify(
+  gemeinden
+    .filter((g) => g.properties.name)
+    .map((g) => {
+      const eintrag = recht[String(g.properties.bfs)]
+      return {
+        n: g.properties.name,
+        k: KANTON[g.properties.kanton] ?? '',
+        ...(eintrag ? { p: `${BASIS}gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}` } : {}),
+      }
+    })
+    .sort((a, b) => a.n.localeCompare(b.n, 'de')),
+))
+
+/*
+ * Das Suchskript. Bewusst schlicht und ohne Abhängigkeiten:
+ *
+ *  - Es lädt die Namensliste erst beim ersten Tastendruck. Wer die Seite nur
+ *    liest, holt sie nie.
+ *  - Verglichen wird auf einer vereinfachten Fassung des Namens (klein, ohne
+ *    Umlaute und Akzente). „Zurich", „zuerich" und „Zürich" finden dasselbe,
+ *    und das ist keine Spielerei: auf einer Telefontastatur tippt kaum jemand
+ *    Akzente, und ein Viertel der Schweizer Gemeindenamen trägt welche.
+ *  - Höchstens 40 Treffer. Wer „a" tippt, will keine tausend Zeilen.
+ *  - Ohne Treffer sagt es das, statt eine leere Liste zu zeigen.
+ */
+writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
+  var feld = document.getElementById('suchfeld')
+  var raum = document.getElementById('suchergebnis')
+  var liste = document.getElementById('volleListe')
+  if (!feld || !raum) return
+
+  var daten = null
+  var laedt = false
+
+  /*
+    Zwei Schreibweisen, weil Menschen beide tippen.
+
+    Wer den Umlaut nicht auf der Tastatur hat, schreibt entweder 'zuerich' oder
+    'zurich' — und das sind zwei verschiedene Vereinfachungen desselben Namens.
+    Wird nur eine gebildet, findet die jeweils andere Eingabe nichts, und die
+    Suche wirkt kaputt, obwohl der Ort in der Liste steht. Also beide bilden
+    und beide vergleichen.
+  */
+  function ausgeschrieben(t) {
+    return t.toLowerCase()
+      .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  }
+
+  function entblaettert(t) {
+    return t.toLowerCase()
+      .replace(/ß/g, 'ss')
+      .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  }
+
+  function zeichne(begriff) {
+    if (!begriff) { raum.innerHTML = ''; if (liste) liste.hidden = false; return }
+    if (liste) liste.hidden = true
+    if (!daten) { raum.textContent = 'Einen Moment …'; return }
+
+    var a = ausgeschrieben(begriff)
+    var e = entblaettert(begriff)
+    var treffer = daten.filter(function (g) {
+      return g._a.indexOf(a) !== -1 || g._e.indexOf(e) !== -1
+    })
+    if (treffer.length === 0) {
+      raum.textContent = 'Keine Gemeinde dieses Namens. Vielleicht ein Ortsteil? '
+        + 'Auf der Karte findest du die zuständige Gemeinde über den Ort selbst.'
+      return
+    }
+
+    var ul = document.createElement('ul')
+    treffer.slice(0, 40).forEach(function (g) {
+      var li = document.createElement('li')
+      var links = document.createElement('span')
+      if (g.p) {
+        var a = document.createElement('a')
+        a.href = g.p
+        a.textContent = g.n
+        links.appendChild(a)
+      } else {
+        links.textContent = g.n
+      }
+      var rechts = document.createElement('span')
+      rechts.className = 'wo'
+      rechts.textContent = g.p ? g.k : (g.k ? g.k + ' · noch nicht nachgeschlagen' : 'noch nicht nachgeschlagen')
+      li.appendChild(links)
+      li.appendChild(rechts)
+      ul.appendChild(li)
+    })
+    raum.innerHTML = ''
+    if (treffer.length > 40) {
+      var mehr = document.createElement('p')
+      mehr.className = 'leise'
+      mehr.textContent = treffer.length + ' Treffer, die ersten 40 stehen hier.'
+      raum.appendChild(mehr)
+    }
+    raum.appendChild(ul)
+  }
+
+  function hole() {
+    if (daten || laedt) return Promise.resolve()
+    laedt = true
+    return fetch('${BASIS}gemeinden-suche.json')
+      .then(function (r) { return r.json() })
+      .then(function (j) {
+        daten = j.map(function (g) {
+          g._a = ausgeschrieben(g.n)
+          g._e = entblaettert(g.n)
+          return g
+        })
+      })
+      .catch(function () {
+        raum.textContent = 'Die Suche lässt sich gerade nicht laden. Die Liste darunter steht weiterhin.'
+        if (liste) liste.hidden = false
+      })
+      .then(function () { laedt = false })
+  }
+
+  feld.addEventListener('input', function () {
+    var begriff = feld.value.trim()
+    if (!begriff) { zeichne(''); return }
+    hole().then(function () { zeichne(feld.value.trim()) })
+  })
+})()
+`)
+
 
 /* ----------------------------------------------------------------- Sitemap */
 
@@ -703,5 +880,6 @@ console.log(
   `\n  \x1b[32m✓\x1b[0m ${adressen.length} Gemeindeseiten, ${kantonsAdressen.length} Kantonsseiten, `
   + `die Übersicht und die Sitemap geschrieben.\n`
   + `    \x1b[90m${uebersprungen} Gemeinden ohne Eintrag bekommen bewusst keine Seite.\x1b[0m\n`
-  + `    \x1b[90mrobots.txt verweist auf ${ORIGIN}${BASIS}sitemap.xml\x1b[0m\n`,
+  + `    \x1b[90mrobots.txt verweist auf ${ORIGIN}${BASIS}sitemap.xml\x1b[0m\n`
+  + `    \x1b[90mSuchliste: ${gemeinden.length} Namen, ${(statSync(`${DIST}gemeinden-suche.json`).size / 1024).toFixed(0)} KB\x1b[0m\n`,
 )

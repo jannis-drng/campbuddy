@@ -7,7 +7,7 @@
  */
 import { useEffect, useState } from 'react'
 import {
-  Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Landmark,
+  Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileText, FileWarning, Flame, Globe, Landmark,
   Lock, Mail, MapPin, Moon, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users,
   Footprints, Route as RouteIcon, Waves, X,
 } from 'lucide-react'
@@ -24,6 +24,7 @@ import { RoutenVorschau } from './RoutenVorschau'
 import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
 import { PermissionRow, ReviewBadge, STATUS_LABEL, StatusBadge } from './ui'
 import { biwakRegel } from '../data/legalData'
+import { kennung } from '../../scripts/lib/kennung.mjs'
 import { GearHint } from '../affiliate/GearHint'
 import { PunktFoto } from './PunktFoto'
 
@@ -336,6 +337,34 @@ function RegionBody({
                          transition-colors duration-[160ms] hover:text-gletscher-300"
             >
               {gemeindeRecht.source} <ExternalLink size={11} strokeWidth={2.5} aria-hidden />
+            </a>
+          )}
+
+          {/*
+            Der Weg zur eigenen Seite dieser Gemeinde.
+
+            Es gibt sie nur für eingestufte Gemeinden — deshalb steht der Link
+            in diesem Block und nicht im Zweig darunter, der die ungeprüften
+            behandelt. Wäre er dort auch, führte er ins Leere.
+
+            Er ist mehr als eine Bequemlichkeit: die Seite ist die Fassung zum
+            Teilen und zum Verlinken. Wer jemandem sagen will „schau, hier darf
+            man", kann keine Kartenposition schicken; eine Adresse mit dem
+            Gemeindenamen darin schon.
+          */}
+          {gemeinde.bfs != null && (
+            <a
+              href={`${import.meta.env.BASE_URL}gemeinde/${gemeinde.bfs}-${kennung(gemeinde.name)}`}
+              className="mt-3 flex items-center justify-between gap-2 rounded-mittel border
+                         border-kante bg-flaeche-1 px-3 py-2.5 text-klein text-ink-300
+                         transition-colors duration-[160ms] hover:border-gletscher-500/40
+                         hover:text-ink-50"
+            >
+              <span className="flex items-center gap-2">
+                <FileText size={14} strokeWidth={1.75} className="text-ink-500" aria-hidden />
+                Seite zu {gemeinde.name}
+              </span>
+              <ChevronRight size={14} strokeWidth={2} className="shrink-0 text-ink-500" aria-hidden />
             </a>
           )}
         </section>
