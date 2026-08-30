@@ -10,9 +10,13 @@
  * WebGL-Kontexte, und die meisten Browser geben nach etwa sechzehn keinen
  * mehr her. Ein <img>-Raster kostet nichts ausser den Kacheln selbst.
  *
- * Zur Kachellast — OpenTopoMap ist ein ehrenamtliches Projekt, und diese Datei
- * ist die Stelle, an der eine Übersichtsseite es am ehesten überfordert.
- * Vier Vorkehrungen dagegen:
+ * Zur Kachellast: Vorschaubilder kommen innerhalb des swisstopo-Gebiets von
+ * swisstopo — amtlich, von einem Bundes-CDN und halb so schwer. OpenTopoMap ist
+ * nur noch Ausweichquelle (siehe `vorschauKacheln`), denn es ist ein
+ * ehrenamtliches Projekt, und diese Datei ist die Stelle, an der eine
+ * Übersichtsseite es am ehesten überfordert hätte. Die vier Vorkehrungen
+ * dagegen bleiben trotzdem — sie sind auch gegenüber einem Bundes-CDN das
+ * anständige Verhalten:
  *   1. Die Kacheln werden auf etwa die doppelte Grösse gezogen. Das kostet
  *      Schärfe, die ein Vorschaubild nicht braucht, und viertelt die Zahl der
  *      Anfragen — vier statt sechzehn pro Karte.
@@ -26,13 +30,13 @@
  *      fünfzig Anfragen auf einmal hinaus, ein Teil davon wurde abgewiesen,
  *      und weil ein <img> von sich aus nicht nachfragt, blieben genau diese
  *      Stellen dauerhaft leer: die Karte kam nur halb an.
- * Wird die Nutzung gross, gehört hier ein eigener Kachelserver hin — nicht
+ * Wird die Nutzung sehr gross, gehört hier ein eigener Kachelserver hin — nicht
  * mehr Last auf fremde Infrastruktur. Derselbe Hinweis steht in `mapConfig.ts`.
  */
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { ausduennen, type Position } from '../data/geo'
 import { kachelBereit, ladeKachel } from '../map/kachelLader'
-import { VORSCHAU_HINWEIS, vorschauKacheln } from '../map/mapConfig'
+import { VORSCHAU_HINWEIS, VORSCHAU_MAX_ZOOM, vorschauKacheln } from '../map/mapConfig'
 
 /**
  * Angestrebte Kantenlänge einer Kachel im Koordinatensystem des Bildes
@@ -41,7 +45,8 @@ import { VORSCHAU_HINWEIS, vorschauKacheln } from '../map/mapConfig'
  */
 const KACHEL_ZIEL = 512
 const MIN_ZOOM = 6
-const MAX_ZOOM = 15
+/** Gedeckelt durch die Reichweite der Vorschauquelle, siehe `mapConfig.ts`. */
+const MAX_ZOOM = VORSCHAU_MAX_ZOOM
 
 /** Wie weit vor dem Sichtfenster eine Vorschau zu laden beginnt. */
 const VORLAUF_PX = 400

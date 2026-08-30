@@ -61,6 +61,7 @@ const BEACON = process.env.VITE_CF_BEACON_TOKEN?.trim()
 
 const gemeinden = JSON.parse(readFileSync(`${HIER}import/CH/gemeinden/CH.json`, 'utf8')).features
 const recht = JSON.parse(readFileSync(`${HIER}src/data/gemeinden.legal.json`, 'utf8')).gemeinden
+const kantonsrecht = JSON.parse(readFileSync(`${HIER}src/data/kantone.legal.json`, 'utf8')).kantone
 
 /** Kantonsnamen aus der TypeScript-Liste ziehen — sie ist die einzige Quelle. */
 const KANTON = Object.fromEntries(
@@ -171,6 +172,7 @@ p{margin:.6rem 0}
 nav.krumen{font-size:.8rem;color:#8A9A9F;margin-bottom:1.5rem}
 nav.krumen span[aria-hidden]{margin:0 .4rem}
 .nachbarn{font-size:.9rem;line-height:2}
+.offen{font-size:.85rem;line-height:1.9;color:#8A9A9F}
 footer{border-top:1px solid #1F2A2E;margin-top:3rem;padding-top:1.25rem;font-size:.85rem;color:#8A9A9F}
 footer a{margin-right:1.25rem}
 `.trim()
@@ -222,7 +224,7 @@ function seite(g, e, nachbarn = []) {
   </span>
   ${kantonName ? `<span aria-hidden>›</span>
   <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-    <a itemprop="item" href="${BASIS}gemeinden#${kennung(kantonName)}"><span itemprop="name">${escape(kantonName)}</span></a>
+    <a itemprop="item" href="${BASIS}kanton/${kennung(kantonName)}"><span itemprop="name">${escape(kantonName)}</span></a>
     <meta itemprop="position" content="2">
   </span>` : ''}
   <span aria-hidden>›</span>
@@ -288,7 +290,8 @@ function seite(g, e, nachbarn = []) {
   ${nachbarn.length > 0 ? `<h2>Weitere Gemeinden${kantonName ? ` im Kanton ${escape(kantonName)}` : ''}</h2>
   <p class="nachbarn">${nachbarn.map((n) =>
     `<a href="${BASIS}${n.pfad}">${escape(n.name)}</a>`).join(' · ')}</p>
-  <p class="leise"><a href="${BASIS}gemeinden">Alle eingestuften Gemeinden ansehen</a></p>` : ''}
+  <p class="leise"><a href="${BASIS}kanton/${kennung(kantonName)}">Was der Kanton ${escape(kantonName)} dazu sagt</a>
+  · <a href="${BASIS}gemeinden">Alle eingestuften Gemeinden</a></p>` : ''}
 
 <footer>
   <a href="${BASIS}">Startseite</a><a href="${BASIS}#/karte">Karte</a>
@@ -380,6 +383,195 @@ for (const { g, e: eintrag, kanton, pfad: eigenerPfad } of eingestuft) {
   adressen.push({ pfad: `${BASIS}${pfad}`, stand: eintrag.last_verified })
 }
 
+/* --------------------------------------------------------------- Kantone */
+
+/*
+ * Eine Seite je Kanton — die Ebene über der Gemeinde, und die mit den
+ * grösseren Suchvolumen.
+ *
+ * „Wildcampen Kanton Bern" wird ungleich häufiger gesucht als „Wildcampen
+ * Aarberg", und bis hierher gab es dafür keine Adresse. Möglich sind diese
+ * Seiten erst, seit alle 26 Kantone geprüft sind: vorher hätten sie
+ * zwanzigmal denselben Satz gesagt, dass nichts recherchiert ist.
+ *
+ * Ihre eigentliche Aussage ist überraschend und trägt eine Seite für sich:
+ * 25 von 26 Kantonen regeln das Übernachten im Freien gar nicht — zuständig
+ * ist die Gemeinde. Genau diese Auskunft sucht jemand, der wissen will, „was
+ * im Kanton X gilt", und genau sie bekommt er sonst nirgends belegt.
+ */
+function kantonsSeite(code, kantonName, liste, gesamtImKanton, offen) {
+  const e = kantonsrecht[code]
+  const pfad = `${BASIS}kanton/${kennung(kantonName)}`
+  const titel = `Wildcampen im Kanton ${kantonName} — was gilt?`
+  const beschr = e
+    ? `${e.summary.slice(0, 150).trim()}… ${liste.length} von ${gesamtImKanton} Gemeinden `
+      + 'im Kanton sind einzeln belegt.'
+    : `Übernachten in der Natur im Kanton ${kantonName}: ${liste.length} von ${gesamtImKanton} `
+      + 'Gemeinden mit belegter Rechtslage.'
+  const [statusText, statusFarbe] = e ? (STATUS_TEXT[e.status] ?? STATUS_TEXT.unknown) : STATUS_TEXT.unknown
+
+  return `<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0C1113">
+<title>${escape(titel)}</title>
+<meta name="description" content="${escape(beschr)}">
+<link rel="canonical" href="${ORIGIN}${pfad}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CampBuddy">
+<meta property="og:title" content="${escape(titel)}">
+<meta property="og:description" content="${escape(beschr)}">
+<meta property="og:url" content="${ORIGIN}${pfad}">
+<meta property="og:image" content="${ORIGIN}${BASIS}og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="${BASIS}icon.svg">
+<link rel="apple-touch-icon" href="${BASIS}apple-touch-icon.png">
+<style>${STIL}</style>
+</head>
+<body>
+<div class="huelle" itemscope itemtype="https://schema.org/Article">
+<header>
+  <a href="${BASIS}">CampBuddy</a>
+  <a href="${BASIS}#/karte" style="font-weight:400;font-size:.9rem;color:#7FB3C8">Karte öffnen</a>
+</header>
+
+<nav class="krumen" aria-label="Pfad" itemscope itemtype="https://schema.org/BreadcrumbList">
+  <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+    <a itemprop="item" href="${BASIS}gemeinden"><span itemprop="name">Gemeinden</span></a>
+    <meta itemprop="position" content="1">
+  </span>
+  <span aria-hidden>›</span>
+  <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+    <span itemprop="name">${escape(kantonName)}</span>
+    <meta itemprop="position" content="2">
+  </span>
+</nav>
+
+<main>
+  <h1 itemprop="headline">Übernachten in der Natur im Kanton ${escape(kantonName)}</h1>
+  <p class="ort">${liste.length} von ${gesamtImKanton} Gemeinden einzeln belegt</p>
+  <span class="marke" style="color:${statusFarbe};border-color:${statusFarbe}66">Kantonal: ${statusText}</span>
+
+  ${e ? `<table>
+    <caption class="leise" style="text-align:left;padding-bottom:.5rem">Was der Kanton selbst regelt</caption>
+    ${zeile('Zelt', e.tent_allowed)}
+    ${zeile('Biwak', e.bivouac_allowed)}
+    ${zeile('Auto / Camper', e.vehicle_allowed)}
+    ${zeile('Offenes Feuer', e.fire_allowed)}
+  </table>
+
+  <h2>Was das bedeutet</h2>
+  <p itemprop="description">${escape(e.summary)}</p>
+  ${e.conditions ? `<p>${escape(e.conditions)}</p>` : ''}
+
+  <div class="kasten">
+    <strong style="color:#E8EEF0">Quelle &amp; Stand</strong><br>
+    ${escape(e.source)}
+    ${e.source_url ? ` · <a href="${escape(e.source_url)}" rel="nofollow noopener" target="_blank">Originaldokument</a>` : ''}
+    <br>
+    <span class="leise">
+      ${PRUEFSTAND[e.review_status]}${e.last_verified
+        ? ` · zuletzt geprüft am <time itemprop="dateModified" datetime="${e.last_verified}">${e.last_verified}</time>`
+        : ''}
+    </span>
+  </div>` : ''}
+
+  <h2>Gemeinden mit eigener Auskunft</h2>
+  ${liste.length > 0 ? `<p class="leise">Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Für diese
+  ${liste.length} ist ihr Reglement nachgeschlagen:</p>
+  <p class="nachbarn">${liste.map((n) =>
+    `<a href="${BASIS}${n.pfad}">${escape(n.name)}</a>`).join(' · ')}</p>
+  <p class="leise">Für die übrigen ${gesamtImKanton - liste.length} Gemeinden des Kantons ist noch
+  nichts recherchiert. Die Karte lässt sie deshalb ungefüllt und nennt stattdessen den
+  Kontakt der Gemeinde — kein Eintrag heisst nie „erlaubt".</p>`
+  : `<p class="leise">Für die ${gesamtImKanton} Gemeinden dieses Kantons ist noch keine
+  einzelne Recherche eingetragen. Ausserhalb der Schutzgebiete entscheidet trotzdem die
+  Gemeinde — die Karte nennt dort ihren Kontakt, statt eine Farbe zu raten. Kein Eintrag
+  heisst nie „erlaubt".</p>`}
+
+  ${offen.length > 0 ? `<h2>Noch nicht nachgeschlagen</h2>
+  <p class="leise">Diese Gemeinden des Kantons haben noch keinen eigenen Eintrag. Sie stehen
+  hier trotzdem, weil die Antwort „für ${escape(kantonName)} ist nichts Kantonales geregelt,
+  und für deine Gemeinde ist noch nichts nachgeschlagen" eine Antwort ist — und weil auf der
+  Karte der Kontakt der jeweiligen Gemeinde hinterlegt ist.</p>
+  <p class="offen">${offen.map((n) => escape(n)).join(' · ')}</p>` : ''}
+
+  <a class="knopf" href="${BASIS}#/karte">Auf der Karte ansehen</a>
+
+  <div class="kasten warnung">
+    <strong>Orientierungshilfe, keine Rechtsgarantie.</strong> Beschilderung vor Ort und die
+    Auskunft der Gemeinde gehen dieser Seite vor.
+  </div>
+</main>
+
+<footer>
+  <a href="${BASIS}">Startseite</a><a href="${BASIS}#/karte">Karte</a>
+  <a href="${BASIS}gemeinden">Gemeinden</a>
+  <a href="${BASIS}#/impressum">Impressum</a><a href="${BASIS}#/datenschutz">Datenschutz</a>
+  <p style="margin-top:.75rem">Flächen © OpenStreetMap-Mitwirkende (ODbL). Rechtliche
+  Einstufung: eigene Recherche, Quelle oben genannt.</p>
+</footer>
+</div>
+${BEACON}
+</body>
+</html>
+`
+}
+
+/** Wie viele Gemeinden hat ein Kanton insgesamt — für die ehrliche Quote. */
+const GESAMT_JE_KANTON = new Map()
+for (const g of gemeinden) {
+  const k = g.properties.kanton
+  GESAMT_JE_KANTON.set(k, (GESAMT_JE_KANTON.get(k) ?? 0) + 1)
+}
+
+rmSync(`${DIST}kanton`, { recursive: true, force: true })
+mkdirSync(`${DIST}kanton`, { recursive: true })
+
+/*
+ * Alle 26 bekommen eine Seite, nicht nur die mit eingestufter Gemeinde.
+ *
+ * Die kantonale Auskunft steht für sich: „dieser Kanton regelt das Übernachten
+ * im Freien nicht, zuständig ist die Gemeinde" ist belegt, überraschend und
+ * genau das, was jemand sucht, der nach dem Kanton fragt. Sie hängt nicht
+ * daran, ob dort schon eine Gemeinde nachgeschlagen ist — sonst hätten
+ * ausgerechnet die unbearbeiteten Kantone keine Seite, obwohl die Frage dort
+ * am häufigsten offen ist.
+ */
+const kantonsAdressen = []
+for (const code of Object.keys(kantonsrecht)) {
+  const kantonName = KANTON[code]
+  if (!kantonName) continue
+  const liste = NACH_KANTON.get(code) ?? []
+  const datei = `kanton/${kennung(kantonName)}`
+  /*
+   * Die Namen der noch nicht nachgeschlagenen Gemeinden — als Text, nicht als Links.
+   *
+   * Das ist die Antwort auf die naheliegende Frage, warum nicht gleich jede der
+   * 2119 Gemeinden eine eigene Seite bekommt: 1819 Seiten, die sich nur im Namen
+   * unterscheiden und alle dasselbe sagen, sind für eine Suchmaschine
+   * massenhaft erzeugte dünne Inhalte — und das Urteil darüber trifft die ganze
+   * Domain, also auch die dreihundert guten Seiten. Hier stehen dieselben Namen
+   * im richtigen Zusammenhang, auf einer Seite, die etwas zu sagen hat.
+   *
+   * Wächst die Abdeckung, wandert ein Name von dieser Liste in die obere und
+   * bekommt seine eigene Seite. Ganz von selbst, beim nächsten Bauen.
+   */
+  const offen = gemeinden
+    .filter((g) => g.properties.kanton === code && !recht[String(g.properties.bfs)])
+    .map((g) => g.properties.name)
+    .sort((a, b) => a.localeCompare(b, 'de'))
+
+  writeFileSync(`${DIST}${datei}.html`,
+    kantonsSeite(code, kantonName, liste, GESAMT_JE_KANTON.get(code) ?? liste.length, offen))
+  kantonsAdressen.push({
+    pfad: `${BASIS}${datei}`,
+    stand: kantonsrecht[code]?.last_verified ?? null,
+  })
+}
+
 /* --------------------------------------------------------------- Übersicht */
 
 /*
@@ -394,8 +586,17 @@ for (const { g, e: eintrag, kanton, pfad: eigenerPfad } of eingestuft) {
  * nach Kanton geordnet, mit der Zahl daneben.
  */
 function uebersichtsSeite() {
-  const kantone = [...NACH_KANTON.entries()]
-    .map(([code, liste]) => [KANTON[code] ?? code ?? 'Ohne Kanton', liste])
+  /*
+   * Alle 26 Kantone, auch die ohne eingestufte Gemeinde.
+   *
+   * Sonst wären ausgerechnet die 14 Kantonsseiten verwaist, die es zu Kantonen
+   * ohne Gemeindearbeit gibt — dasselbe Loch, das diese Übersicht für die
+   * Gemeindeseiten gerade schliesst. Und die Liste ist so zugleich eine
+   * ehrliche Landkarte des Arbeitsstands.
+   */
+  const kantone = Object.keys(kantonsrecht)
+    .filter((code) => KANTON[code])
+    .map((code) => [KANTON[code], NACH_KANTON.get(code) ?? []])
     .sort((a, b) => a[0].localeCompare(b[0], 'de'))
 
   const titel = `Übernachten in der Natur — ${eingestuft.length} Schweizer Gemeinden mit belegter Rechtslage`
@@ -431,8 +632,8 @@ function uebersichtsSeite() {
 </header>
 
 <main>
-  <h1>Gemeinden mit belegter Rechtslage</h1>
-  <p class="ort">${eingestuft.length} von ${gemeinden.length} Schweizer Gemeinden · Stand ${heute}</p>
+  <h1>Gemeinden und Kantone mit belegter Rechtslage</h1>
+  <p class="ort">${eingestuft.length} von ${gemeinden.length} Gemeinden · alle 26 Kantone · Stand ${heute}</p>
 
   <p>Für diese Gemeinden ist im Wortlaut ihres Reglements nachgeschlagen, ob und unter
   welchen Bedingungen dort im Freien übernachtet werden darf — getrennt nach Zelt, Biwak,
@@ -445,9 +646,11 @@ function uebersichtsSeite() {
   <a class="knopf" href="${BASIS}#/karte">Auf der Karte ansehen</a>
 
   ${kantone.map(([kantonName, liste]) => `
-  <h2 id="${kennung(kantonName)}">${escape(kantonName)} <span class="leise">· ${liste.length}</span></h2>
-  <p class="nachbarn">${liste.map((n) =>
-    `<a href="${BASIS}${n.pfad}">${escape(n.name)}</a>`).join(' · ')}</p>`).join('')}
+  <h2 id="${kennung(kantonName)}"><a href="${BASIS}kanton/${kennung(kantonName)}">${escape(kantonName)}</a> <span class="leise">· ${liste.length}</span></h2>
+  ${liste.length > 0
+    ? `<p class="nachbarn">${liste.map((n) => `<a href="${BASIS}${n.pfad}">${escape(n.name)}</a>`).join(' · ')}</p>`
+    : `<p class="leise">Noch keine Gemeinde einzeln nachgeschlagen — was der Kanton selbst
+       regelt, steht auf <a href="${BASIS}kanton/${kennung(kantonName)}">seiner Seite</a>.</p>`}`).join('')}
 
   <div class="kasten warnung">
     <strong>Orientierungshilfe, keine Rechtsgarantie.</strong> Beschilderung vor Ort und die
@@ -475,6 +678,8 @@ writeFileSync(`${DIST}gemeinden.html`, uebersichtsSeite())
 const eintraege = [
   `  <url><loc>${ORIGIN}${BASIS}</loc><lastmod>${heute}</lastmod><priority>1.0</priority></url>`,
   `  <url><loc>${ORIGIN}${BASIS}gemeinden</loc><lastmod>${heute}</lastmod><priority>0.9</priority></url>`,
+  ...kantonsAdressen.map(({ pfad, stand }) =>
+    `  <url><loc>${ORIGIN}${pfad}</loc><lastmod>${stand ?? heute}</lastmod><priority>0.8</priority></url>`),
   ...adressen.map(({ pfad, stand }) =>
     `  <url><loc>${ORIGIN}${pfad}</loc><lastmod>${stand ?? heute}</lastmod><priority>0.7</priority></url>`),
 ]
@@ -503,7 +708,8 @@ Sitemap: ${ORIGIN}${BASIS}sitemap.xml
 `)
 
 console.log(
-  `\n  \x1b[32m✓\x1b[0m ${adressen.length} Gemeindeseiten, die Übersicht und die Sitemap geschrieben.\n`
+  `\n  \x1b[32m✓\x1b[0m ${adressen.length} Gemeindeseiten, ${kantonsAdressen.length} Kantonsseiten, `
+  + `die Übersicht und die Sitemap geschrieben.\n`
   + `    \x1b[90m${uebersprungen} Gemeinden ohne Eintrag bekommen bewusst keine Seite.\x1b[0m\n`
   + `    \x1b[90mrobots.txt verweist auf ${ORIGIN}${BASIS}sitemap.xml\x1b[0m\n`,
 )

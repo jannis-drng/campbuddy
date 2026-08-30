@@ -159,31 +159,88 @@ export const DEFAULT_BASEMAP: BasemapKey = 'standard'
 
 /* ------------------------------------------------- Kacheln der Vorschaubilder */
 
+/**
+ * Die Fläche, die swisstopo ausliefert — dieselbe wie bei der Landeskarte oben.
+ *
+ * Steht hier als eigene Konstante, weil sie zwei Dinge steuert: welche Kacheln
+ * die Karte anfragt, und aus welcher Quelle ein Vorschaubild gebaut wird.
+ */
+const SWISSTOPO_RAHMEN: [number, number, number, number] =
+  [5.140242, 45.398181, 11.47757, 48.230651]
+
+const SWISSTOPO_KACHEL =
+  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg'
+
+/** Umkehrung von `lonZuX`/`latZuY`: von der Kachelkoordinate zurück zum Ort. */
+function kachelMitte(z: number, x: number, y: number): [number, number] {
+  const n = 2 ** z
+  const lon = ((x + 0.5) / n) * 360 - 180
+  const r = Math.atan(Math.sinh(Math.PI * (1 - (2 * (y + 0.5)) / n)))
+  return [lon, (r * 180) / Math.PI]
+}
+
 const VORSCHAU_HOSTS = ['a', 'b', 'c']
 
 /**
- * Dieselbe Kachel über mehrere Hosts — in der Reihenfolge der Versuche.
+ * Woraus ein Vorschaubild gebaut wird — und warum nicht aus der Standardkarte.
  *
- * Die Vorschaubilder der Touren (`components/RoutenVorschau`) bauen ihre Karte
- * aus einzelnen Kacheln zusammen. Der erste Eintrag ist die reguläre Adresse:
- * er hängt an `x + y`, damit benachbarte Kacheln auf verschiedene Hosts fallen
- * und eine Vorschau nicht als Ganzes an einem einzigen hängt. Die weiteren
- * Einträge sind die zweite und dritte Chance derselben Kachel — beantwortet
- * ein Host gerade nicht, tut es vielleicht der nächste.
+ * Der naheliegende Wunsch ist, hier dieselbe Karte zu nehmen wie beim Antippen,
+ * also die Standardkarte. Das geht nicht: OpenFreeMap liefert **Vektorkacheln**,
+ * die erst ein Renderer zu einem Bild macht. Ein Vorschaubild ist aber ein
+ * schlichtes Raster aus `<img>` — genau deshalb kostet es keinen WebGL-Kontext
+ * und lassen sich zwölf davon auf eine Seite legen. Eine zweite Kartenmaschine
+ * je Vorschau wäre der Zustand, den diese Datei ausdrücklich vermeidet.
  *
- * Bewusst dieselbe Quelle wie die Karte „Outdoor": eine Vorschau soll aussehen
- * wie das, was man beim Antippen bekommt. Zur Last, die das erzeugt, steht
- * alles Weitere in `map/kachelLader.ts` und im Kopf der `RoutenVorschau`.
+ * Also die beste verfügbare *Raster*-Quelle, und das ist innerhalb ihres
+ * Gebiets swisstopo: amtlich, von einem Bundes-CDN, und bei gleichem Inhalt
+ * weniger als die Hälfte der Bytes von OpenTopoMap (gemessen bei Zoom 12:
+ * 142 statt 305 KB für sechs Kacheln).
+ *
+ * Der eigentliche Grund für den Wechsel steht aber im Kopf der
+ * `RoutenVorschau`: OpenTopoMap ist ein ehrenamtliches Projekt, und eine
+ * Übersichtsseite voller Vorschaubilder ist die Stelle, an der diese App es am
+ * ehesten überfordert. Auf dem Standardweg soll deshalb kein ehrenamtlicher
+ * Server mehr liegen. Er bleibt die Ausweichquelle für alles ausserhalb des
+ * swisstopo-Gebiets — das reicht von Lyon bis Salzburg, deckt den Alpenbogen
+ * also mit ab, und ausserhalb davon ist eine gelegentliche Tour verkraftbar.
+ *
+ * Der erste Eintrag ist die reguläre Adresse, die weiteren sind zweite und
+ * dritte Chance derselben Kachel — beantwortet ein Host gerade nicht, tut es
+ * vielleicht der nächste.
  */
 export function vorschauKacheln(z: number, x: number, y: number): string[] {
-  const start = (x + y) % VORSCHAU_HOSTS.length
-  return VORSCHAU_HOSTS.map(
-    (_, i) => `https://${VORSCHAU_HOSTS[(start + i) % VORSCHAU_HOSTS.length]}.tile.opentopomap.org/${z}/${x}/${y}.png`,
-  )
+  const [lon, lat] = kachelMitte(z, x, y)
+  const [west, sued, ost, nord] = SWISSTOPO_RAHMEN
+  const drin = lon >= west && lon <= ost && lat >= sued && lat <= nord
+
+  const opentopo = () => {
+    const start = (x + y) % VORSCHAU_HOSTS.length
+    return VORSCHAU_HOSTS.map(
+      (_, i) => `https://${VORSCHAU_HOSTS[(start + i) % VORSCHAU_HOSTS.length]}.tile.opentopomap.org/${z}/${x}/${y}.png`,
+    )
+  }
+
+  if (!drin) return opentopo()
+
+  // swisstopo zuerst, OpenTopoMap als Auffangnetz: fällt der Bundes-Dienst
+  // einmal aus, bleibt das Bild trotzdem vollständig.
+  return [
+    SWISSTOPO_KACHEL.replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y)),
+    ...opentopo().slice(0, 1),
+  ]
 }
 
+/**
+ * Bis wohin swisstopo Kacheln hat.
+ *
+ * Die Vorschau deckelt ihren Massstab ohnehin bei 15; die Landeskarte reicht
+ * bis 18. Der Wert steht hier, damit der Deckel nicht stillschweigend über die
+ * Quelle hinauswächst, wenn ihn jemand anhebt.
+ */
+export const VORSCHAU_MAX_ZOOM = 15
+
 /** Herkunftshinweis unter einem Vorschaubild — klein, aber vorhanden. */
-export const VORSCHAU_HINWEIS = '© OpenTopoMap, OSM'
+export const VORSCHAU_HINWEIS = '© swisstopo / OpenTopoMap, OSM'
 
 /** Welche Hintergrundkarten stehen in dieser Region zur Wahl? */
 export function basemapsFor(region: string): Basemap[] {
