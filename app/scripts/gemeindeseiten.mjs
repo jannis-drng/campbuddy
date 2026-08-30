@@ -44,6 +44,19 @@ const DIST = `${HIER}dist/`
 const ORIGIN = (process.env.VITE_ORIGIN ?? 'https://jannis-drng.github.io').replace(/\/+$/, '')
 const BASIS = process.env.VITE_BASE ?? '/campbuddy/'
 
+/*
+ * Dasselbe Beacon wie in index.html (siehe vite.config.ts).
+ *
+ * Ohne diese Zeile zählten ausgerechnet die Seiten nicht mit, für die es die
+ * ganze Vorrenderung gibt: wer über Google auf eine Gemeindeseite kommt und
+ * dort bleibt, wäre in der Statistik nie erschienen. Ohne Kennzeichen bleibt
+ * die Zeile leer.
+ */
+const BEACON = process.env.VITE_CF_BEACON_TOKEN?.trim()
+  ? `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"`
+    + ` data-cf-beacon='{"token": "${process.env.VITE_CF_BEACON_TOKEN.trim()}"}'></script>`
+  : ''
+
 /* ------------------------------------------------------------------ Daten */
 
 const gemeinden = JSON.parse(readFileSync(`${HIER}import/CH/gemeinden/CH.json`, 'utf8')).features
@@ -155,6 +168,9 @@ p{margin:.6rem 0}
        border-radius:.625rem;padding:.7rem 1.2rem;margin:1.5rem 0 .5rem}
 .knopf:hover{background:#2A8FB4;color:#fff}
 .warnung{border-color:rgba(199,154,60,.3);background:rgba(199,154,60,.07);color:#C79A3C}
+nav.krumen{font-size:.8rem;color:#8A9A9F;margin-bottom:1.5rem}
+nav.krumen span[aria-hidden]{margin:0 .4rem}
+.nachbarn{font-size:.9rem;line-height:2}
 footer{border-top:1px solid #1F2A2E;margin-top:3rem;padding-top:1.25rem;font-size:.85rem;color:#8A9A9F}
 footer a{margin-right:1.25rem}
 `.trim()
@@ -164,7 +180,7 @@ function zeile(bezeichnung, wert) {
   return `<tr><th>${bezeichnung}</th><td style="color:${farbe}">${text}</td></tr>`
 }
 
-function seite(g, e) {
+function seite(g, e, nachbarn = []) {
   const name = g.properties.name
   const kantonName = KANTON[g.properties.kanton] ?? null
   const [lng, lat] = mittelpunkt(g.geometry)
@@ -198,6 +214,23 @@ function seite(g, e) {
   <a href="${BASIS}">CampBuddy</a>
   <a href="${BASIS}#/karte" style="font-weight:400;font-size:.9rem;color:#7FB3C8">Karte öffnen</a>
 </header>
+
+<nav class="krumen" aria-label="Pfad" itemscope itemtype="https://schema.org/BreadcrumbList">
+  <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+    <a itemprop="item" href="${BASIS}gemeinden"><span itemprop="name">Gemeinden</span></a>
+    <meta itemprop="position" content="1">
+  </span>
+  ${kantonName ? `<span aria-hidden>›</span>
+  <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+    <a itemprop="item" href="${BASIS}gemeinden#${kennung(kantonName)}"><span itemprop="name">${escape(kantonName)}</span></a>
+    <meta itemprop="position" content="2">
+  </span>` : ''}
+  <span aria-hidden>›</span>
+  <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+    <span itemprop="name">${escape(name)}</span>
+    <meta itemprop="position" content="${kantonName ? 3 : 2}">
+  </span>
+</nav>
 
 <main>
   <h1 itemprop="headline">Übernachten in der Natur in <span itemprop="about">${escape(name)}</span></h1>
@@ -252,13 +285,20 @@ function seite(g, e) {
   </div>
 </main>
 
+  ${nachbarn.length > 0 ? `<h2>Weitere Gemeinden${kantonName ? ` im Kanton ${escape(kantonName)}` : ''}</h2>
+  <p class="nachbarn">${nachbarn.map((n) =>
+    `<a href="${BASIS}${n.pfad}">${escape(n.name)}</a>`).join(' · ')}</p>
+  <p class="leise"><a href="${BASIS}gemeinden">Alle eingestuften Gemeinden ansehen</a></p>` : ''}
+
 <footer>
   <a href="${BASIS}">Startseite</a><a href="${BASIS}#/karte">Karte</a>
+  <a href="${BASIS}gemeinden">Gemeinden</a>
   <a href="${BASIS}#/impressum">Impressum</a><a href="${BASIS}#/datenschutz">Datenschutz</a>
   <p style="margin-top:.75rem">Flächen © OpenStreetMap-Mitwirkende (ODbL). Rechtliche
   Einstufung: eigene Recherche, Quelle oben genannt.</p>
 </footer>
 </div>
+${BEACON}
 </body>
 </html>
 `
@@ -270,14 +310,58 @@ function seite(g, e) {
 // ihre Seite verlieren — sonst steht eine Auskunft im Netz, die es nicht mehr
 // gibt, und die Sitemap verweist ins Leere.
 rmSync(`${DIST}gemeinde`, { recursive: true, force: true })
+rmSync(`${DIST}gemeinden.html`, { force: true })
 
+const heute = new Date().toISOString().slice(0, 10)
 const adressen = []
 let uebersprungen = 0
 
-for (const g of gemeinden) {
-  const eintrag = recht[String(g.properties.bfs)]
-  if (!eintrag) { uebersprungen++; continue }
-  if (!g.geometry) { uebersprungen++; continue }
+/*
+ * Erst sammeln, dann schreiben.
+ *
+ * Jede Seite verlinkt die anderen eingestuften Gemeinden ihres Kantons, und die
+ * Übersicht verlinkt alle. Beides setzt voraus, dass die vollständige Liste
+ * schon steht, bevor die erste Datei geschrieben wird. Ohne diese Querverweise
+ * wären die dreihundert Seiten verwaist: sie stünden nur in der Sitemap, und
+ * eine Suchmaschine misst den Wert einer Seite auch daran, ob überhaupt jemand
+ * auf sie zeigt.
+ */
+const eingestuft = gemeinden
+  .filter((g) => {
+    const hat = Boolean(recht[String(g.properties.bfs)] && g.geometry)
+    if (!hat) uebersprungen++
+    return hat
+  })
+  .map((g) => ({
+    g,
+    e: recht[String(g.properties.bfs)],
+    name: g.properties.name,
+    kanton: g.properties.kanton,
+    pfad: `gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}`,
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name, 'de'))
+
+/** Kanton -> seine eingestuften Gemeinden, für Querverweise und Übersicht. */
+const NACH_KANTON = new Map()
+for (const eintrag of eingestuft) {
+  if (!NACH_KANTON.has(eintrag.kanton)) NACH_KANTON.set(eintrag.kanton, [])
+  NACH_KANTON.get(eintrag.kanton).push(eintrag)
+}
+
+for (const { g, e: eintrag, kanton, pfad: eigenerPfad } of eingestuft) {
+  /*
+   * Höchstens dreissig Nachbarn, und zwar die des eigenen Kantons.
+   *
+   * Nicht alle: eine Seite, die dreihundert andere verlinkt, verteilt ihr
+   * Gewicht auf dreihundert Ziele und liest sich für einen Menschen wie ein
+   * Telefonbuch. Der Kanton ist die richtige Nachbarschaft, weil er auch
+   * rechtlich eine ist — wer wissen will, was nebenan gilt, meint fast immer
+   * denselben Kanton.
+   */
+  const nachbarn = (NACH_KANTON.get(kanton) ?? [])
+    .filter((n) => n.pfad !== eigenerPfad)
+    .slice(0, 30)
+
 
   /*
    * Flach als `<nr>-<name>.html`, nicht als Verzeichnis mit `index.html`.
@@ -292,15 +376,105 @@ for (const g of gemeinden) {
    */
   const pfad = `gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}`
   mkdirSync(`${DIST}gemeinde`, { recursive: true })
-  writeFileSync(`${DIST}${pfad}.html`, seite(g, eintrag))
+  writeFileSync(`${DIST}${pfad}.html`, seite(g, eintrag, nachbarn))
   adressen.push({ pfad: `${BASIS}${pfad}`, stand: eintrag.last_verified })
 }
 
+/* --------------------------------------------------------------- Übersicht */
+
+/*
+ * Die Seite, ohne die die anderen dreihundert verwaist wären.
+ *
+ * Eine Sitemap sagt einer Suchmaschine, dass es eine Adresse *gibt*. Sie sagt
+ * nichts darüber, ob sie wichtig ist — das entscheidet sich daran, wer auf sie
+ * zeigt. Bis hierher zeigte niemand: die Gemeindeseiten hingen an keinem Link
+ * der Seite. Diese Übersicht hängt sie an die Startseite und aneinander.
+ *
+ * Sie ist zugleich das ehrlichste Bild des Projektstands: dreihundert von 2119,
+ * nach Kanton geordnet, mit der Zahl daneben.
+ */
+function uebersichtsSeite() {
+  const kantone = [...NACH_KANTON.entries()]
+    .map(([code, liste]) => [KANTON[code] ?? code ?? 'Ohne Kanton', liste])
+    .sort((a, b) => a[0].localeCompare(b[0], 'de'))
+
+  const titel = `Übernachten in der Natur — ${eingestuft.length} Schweizer Gemeinden mit belegter Rechtslage`
+  const beschr = `Für ${eingestuft.length} von ${gemeinden.length} Schweizer Gemeinden ist belegt, `
+    + 'ob Zelten, Biwakieren, Übernachten im Fahrzeug und offenes Feuer erlaubt sind — '
+    + 'mit Quelle und Prüfdatum.'
+
+  return `<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0C1113">
+<title>${escape(titel)}</title>
+<meta name="description" content="${escape(beschr)}">
+<link rel="canonical" href="${ORIGIN}${BASIS}gemeinden">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CampBuddy">
+<meta property="og:title" content="${escape(titel)}">
+<meta property="og:description" content="${escape(beschr)}">
+<meta property="og:url" content="${ORIGIN}${BASIS}gemeinden">
+<meta property="og:image" content="${ORIGIN}${BASIS}og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="${BASIS}icon.svg">
+<link rel="apple-touch-icon" href="${BASIS}apple-touch-icon.png">
+<style>${STIL}</style>
+</head>
+<body>
+<div class="huelle">
+<header>
+  <a href="${BASIS}">CampBuddy</a>
+  <a href="${BASIS}#/karte" style="font-weight:400;font-size:.9rem;color:#7FB3C8">Karte öffnen</a>
+</header>
+
+<main>
+  <h1>Gemeinden mit belegter Rechtslage</h1>
+  <p class="ort">${eingestuft.length} von ${gemeinden.length} Schweizer Gemeinden · Stand ${heute}</p>
+
+  <p>Für diese Gemeinden ist im Wortlaut ihres Reglements nachgeschlagen, ob und unter
+  welchen Bedingungen dort im Freien übernachtet werden darf — getrennt nach Zelt, Biwak,
+  Fahrzeug und offenem Feuer, jeweils mit Quelle und Prüfdatum.</p>
+
+  <p class="leise">Die übrigen Gemeinden fehlen hier nicht aus Versehen: für sie ist noch
+  nichts recherchiert, und die Karte sagt das dort auch offen, statt eine Farbe zu raten.
+  Kein Eintrag heisst nie „erlaubt".</p>
+
+  <a class="knopf" href="${BASIS}#/karte">Auf der Karte ansehen</a>
+
+  ${kantone.map(([kantonName, liste]) => `
+  <h2 id="${kennung(kantonName)}">${escape(kantonName)} <span class="leise">· ${liste.length}</span></h2>
+  <p class="nachbarn">${liste.map((n) =>
+    `<a href="${BASIS}${n.pfad}">${escape(n.name)}</a>`).join(' · ')}</p>`).join('')}
+
+  <div class="kasten warnung">
+    <strong>Orientierungshilfe, keine Rechtsgarantie.</strong> Beschilderung vor Ort und die
+    Auskunft der Gemeinde gehen dieser Seite vor.
+  </div>
+</main>
+
+<footer>
+  <a href="${BASIS}">Startseite</a><a href="${BASIS}#/karte">Karte</a>
+  <a href="${BASIS}#/impressum">Impressum</a><a href="${BASIS}#/datenschutz">Datenschutz</a>
+  <p style="margin-top:.75rem">Flächen © OpenStreetMap-Mitwirkende (ODbL). Rechtliche
+  Einstufung: eigene Recherche, Quelle auf der jeweiligen Seite.</p>
+</footer>
+</div>
+${BEACON}
+</body>
+</html>
+`
+}
+
+writeFileSync(`${DIST}gemeinden.html`, uebersichtsSeite())
+
 /* ----------------------------------------------------------------- Sitemap */
 
-const heute = new Date().toISOString().slice(0, 10)
 const eintraege = [
   `  <url><loc>${ORIGIN}${BASIS}</loc><lastmod>${heute}</lastmod><priority>1.0</priority></url>`,
+  `  <url><loc>${ORIGIN}${BASIS}gemeinden</loc><lastmod>${heute}</lastmod><priority>0.9</priority></url>`,
   ...adressen.map(({ pfad, stand }) =>
     `  <url><loc>${ORIGIN}${pfad}</loc><lastmod>${stand ?? heute}</lastmod><priority>0.7</priority></url>`),
 ]
@@ -329,7 +503,7 @@ Sitemap: ${ORIGIN}${BASIS}sitemap.xml
 `)
 
 console.log(
-  `\n  \x1b[32m✓\x1b[0m ${adressen.length} Gemeindeseiten und die Sitemap geschrieben.\n`
+  `\n  \x1b[32m✓\x1b[0m ${adressen.length} Gemeindeseiten, die Übersicht und die Sitemap geschrieben.\n`
   + `    \x1b[90m${uebersprungen} Gemeinden ohne Eintrag bekommen bewusst keine Seite.\x1b[0m\n`
   + `    \x1b[90mrobots.txt verweist auf ${ORIGIN}${BASIS}sitemap.xml\x1b[0m\n`,
 )

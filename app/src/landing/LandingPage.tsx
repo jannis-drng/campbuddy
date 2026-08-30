@@ -890,6 +890,13 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
             <li><a href="#funktionen" className="transition-colors duration-[160ms] hover:text-gletscher-300">Funktionen</a></li>
             <li><a href="#ablauf" className="transition-colors duration-[160ms] hover:text-gletscher-300">So funktioniert&rsquo;s</a></li>
             <li><a href="#grundlage" className="transition-colors duration-[160ms] hover:text-gletscher-300">Rechtslage</a></li>
+            {/*
+              Kein Rautenpfad, sondern eine echte Adresse: die Übersicht ist
+              eine vorgerenderte Seite ausserhalb der Anwendung. Sie ist der
+              einzige Link von hier auf die dreihundert Gemeindeseiten — ohne
+              ihn hingen die nur in der Sitemap.
+            */}
+            <li><a href={`${import.meta.env.BASE_URL}gemeinden`} className="transition-colors duration-[160ms] hover:text-gletscher-300">Gemeinden A–Z</a></li>
             <li><a href="#fragen" className="transition-colors duration-[160ms] hover:text-gletscher-300">Fragen</a></li>
           </ul>
         </nav>

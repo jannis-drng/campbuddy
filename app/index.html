@@ -48,6 +48,55 @@
   </head>
   <body>
     <div id="root"></div>
+    <!--
+      Was ohne JavaScript dasteht.
+
+      Die Startseite ist eine React-Anwendung: im ausgelieferten HTML steht
+      ausser den Kopfangaben kein einziger Satz. Suchmaschinen führen zwar
+      JavaScript aus, aber verzögert und nicht garantiert — und für alles
+      andere, was HTML liest (Vorschauen in Messengern, Leseansichten,
+      Textbrowser, ein Besucher mit blockiertem JavaScript), war die Seite
+      schlicht leer.
+
+      Diese paar Zeilen sind deshalb kein Notbehelf für Ausnahmefälle, sondern
+      der einzige Text, der ohne Zutun da ist. Sie sagen dasselbe wie die
+      Startseite in kurz und führen weiter — vor allem auf die Gemeindeübersicht,
+      die sonst nirgends im ausgelieferten HTML verlinkt ist.
+
+      Bewusst knapp und bewusst wahr: keine Schlagwortsammlung, sondern das,
+      was das Projekt tatsächlich beantwortet.
+    -->
+    <noscript>
+      <main>
+        <h1>CampBuddy — wo darf ich draussen übernachten?</h1>
+        <p>
+          Eine Karte der Rechtslage zum Übernachten in der Natur: für jede Fläche steht,
+          ob Zelten, Biwakieren, Übernachten im Fahrzeug und offenes Feuer erlaubt,
+          geduldet oder verboten sind — mit der Quelle und dem Datum der letzten Prüfung.
+          Ausserhalb der Schutzgebiete entscheidet in der Schweiz fast immer die Gemeinde,
+          deshalb ist die Karte gemeindegenau. Wo nichts recherchiert ist, sagt sie das
+          offen, statt eine Farbe zu raten.
+        </p>
+        <p>
+          Die Karte selbst braucht JavaScript. Die Auskunft zu den bereits belegten
+          Gemeinden steht auch ohne:
+        </p>
+        <ul>
+          <li><a href="%BASIS%gemeinden">Alle Gemeinden mit belegter Rechtslage</a></li>
+          <li><a href="%BASIS%#/impressum">Impressum</a></li>
+          <li><a href="%BASIS%#/datenschutz">Datenschutzerklärung</a></li>
+        </ul>
+        <p><small>Orientierungshilfe, keine Rechtsgarantie — prüfe die Lage vor Ort.</small></p>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
+    <!--
+      Reichweitenmessung. Wird beim Bauen aus VITE_CF_BEACON_TOKEN eingesetzt
+      und bleibt ohne Kennzeichen leer. Setzt kein Cookie und liest nichts aus
+      dem Browserspeicher; die Datenschutzerklärung beschreibt es unter
+      „Reichweitenmessung". In `_headers` sind static.cloudflareinsights.com
+      und cloudflareinsights.com bereits freigegeben.
+    -->
+    %BEACON%
   </body>
 </html>

@@ -42,6 +42,29 @@ const BAU = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14)
 const ORIGIN = (umgebung.VITE_ORIGIN ?? 'https://jannis-drng.github.io').replace(/\/+$/, '')
 
 /**
+ * Der Zähler von Cloudflare Web Analytics — als Schnipsel, nicht automatisch.
+ *
+ * Cloudflare kann das Beacon beim Ausliefern selbst in die Seite schreiben,
+ * aber nur bei Seiten, die durch den Proxy laufen. CampBuddy liegt hinter einem
+ * Worker mit statischen Dateien; dort geschieht das nicht, und genau deshalb
+ * hat die Messung monatelang nichts erhoben, obwohl sie im Dashboard
+ * eingeschaltet war. Der Schnipsel von Hand ist der Weg, der hier funktioniert.
+ *
+ * Das Kennzeichen steht im Dashboard unter Web Analytics und ist kein Geheimnis
+ * — es steht anschliessend im ausgelieferten HTML. Es kommt trotzdem aus der
+ * Umgebung und nicht aus dem Quelltext, weil Vorschau und Entwicklung sonst in
+ * dieselbe Statistik zählten wie die echte Seite.
+ *
+ * `type="module"` gehört dazu: es hält das Beacon von Browsern fern, die seine
+ * Syntax nicht verstehen. Ohne Kennzeichen bleibt die Zeile leer — die Seite
+ * lädt dann schlicht nichts nach.
+ */
+const BEACON = umgebung.VITE_CF_BEACON_TOKEN?.trim()
+  ? `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"`
+    + ` data-cf-beacon='{"token": "${umgebung.VITE_CF_BEACON_TOKEN.trim()}"}'></script>`
+  : ''
+
+/**
  * Die Herkunft des Supabase-Projekts für die CSP.
  *
  * Ohne konfigurierte Umgebung bliebe sonst ein Platzhalter in der Kopfzeile
@@ -100,6 +123,7 @@ function adressenEinsetzen(): Plugin {
       .replaceAll('%ORIGIN%', ORIGIN)
       .replaceAll('%SUPABASE%', supabaseHerkunft())
       .replaceAll('%BUILD%', BAU)
+      .replaceAll('%BEACON%', BEACON)
 
   return {
     name: 'campbuddy-adressen',
