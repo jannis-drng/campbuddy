@@ -279,9 +279,20 @@ for (const g of gemeinden) {
   if (!eintrag) { uebersprungen++; continue }
   if (!g.geometry) { uebersprungen++; continue }
 
+  /*
+   * Flach als `<nr>-<name>.html`, nicht als Verzeichnis mit `index.html`.
+   *
+   * Der Unterschied ist nicht kosmetisch. Cloudflare löst unter
+   * `auto-trailing-slash` beide Formen auf, aber in verschiedene Richtungen:
+   * bei einem Verzeichnis leitet `/gemeinde/x` mit 307 auf `/gemeinde/x/` um,
+   * bei einer flachen Datei antwortet `/gemeinde/x` direkt mit 200 und der
+   * Schrägstrich wird umgeleitet. Da die kanonische Adresse dieser Seiten
+   * keinen Schrägstrich trägt, hiesse die erste Variante: der Canonical zeigt
+   * auf eine Adresse, die weiterleitet. Genau das soll ein Canonical nicht.
+   */
   const pfad = `gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}`
-  mkdirSync(`${DIST}${pfad}`, { recursive: true })
-  writeFileSync(`${DIST}${pfad}/index.html`, seite(g, eintrag))
+  mkdirSync(`${DIST}gemeinde`, { recursive: true })
+  writeFileSync(`${DIST}${pfad}.html`, seite(g, eintrag))
   adressen.push({ pfad: `${BASIS}${pfad}`, stand: eintrag.last_verified })
 }
 

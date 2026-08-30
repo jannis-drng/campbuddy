@@ -120,8 +120,8 @@ createServer(async (anfrage, antwort) => {
     inhalt = await readFile(datei)
   } catch {
     /*
-     * Zweiter Versuch als Verzeichnis — genau das, was Cloudflare unter
-     * `html_handling: auto-trailing-slash` tut.
+     * Zweiter Versuch als `.html` beziehungsweise als Verzeichnis — genau
+     * das, was Cloudflare unter `html_handling: auto-trailing-slash` tut.
      *
      * Ohne diesen Schritt liefe die Vorschau an den vorgerenderten
      * Gemeindeseiten vorbei: sie liegen als `gemeinde/<nr>-<name>/index.html`,
@@ -129,9 +129,12 @@ createServer(async (anfrage, antwort) => {
      * 404 zu sehen, wo live eine Seite steht, macht die Vorschau in genau dem
      * Punkt unbrauchbar, für den es sie gibt.
      */
-    inhalt = await readFile(join(DIST, sicher, 'index.html'))
-      .then((b) => { datei = join(DIST, sicher, 'index.html'); return b })
-      .catch(() => null)
+    for (const versuch of [`${sicher}.html`, join(sicher, 'index.html')]) {
+      inhalt = await readFile(join(DIST, versuch))
+        .then((b) => { datei = join(DIST, versuch); return b })
+        .catch(() => null)
+      if (inhalt != null) break
+    }
   }
   if (inhalt == null) {
     datei = join(DIST, '404.html')
