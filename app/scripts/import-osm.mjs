@@ -981,7 +981,27 @@ async function importGemeinden() {
       id: bfs ? `bfs-${bfs}` : `osm-relation-${el.id}`,
       properties: {
         bfs: bfs ? Number(bfs) : null,
-        name: t['name:de'] ?? t.name ?? '(unbenannt)',
+        /*
+         * Der amtliche Name, nicht der eingedeutschte.
+         *
+         * Hier stand `name:de` zuerst, und das war falsch — mit Folgen weit
+         * über die Anzeige hinaus: die Gemeinde 6266 heisst amtlich *Sion*,
+         * nicht „Sitten", und 6621 heisst *Genève*, nicht „Genf". Über den
+         * Namen entstehen aber der Seitentitel, die Adresse der vorgerenderten
+         * Seite (`/gemeinde/6266-sion`) und der Treffer in der Suche. Wer in
+         * der Romandie nach seiner Gemeinde sucht, fand sie deshalb nicht —
+         * und das betrifft die Mehrheit der bisher eingestuften Gemeinden,
+         * weil allein 123 von 300 in der Waadt liegen.
+         *
+         * OSM führt in `name` den ortsüblichen amtlichen Namen; `name:de`
+         * bleibt als Notnagel für den seltenen Fall, dass `name` fehlt.
+         *
+         * Bewusst nur bei den Gemeinden geändert, nicht bei den Kantonen: die
+         * Oberfläche ist deutsch, und „Kanton Wallis" ist in einem deutschen
+         * Text richtig. Der Gemeindename dagegen ist ein Eigenname, unter dem
+         * gesucht und verlinkt wird.
+         */
+        name: t.name ?? t['name:de'] ?? '(unbenannt)',
         kanton: kanton.properties.code,
         // OSM zuerst — dort steht die Adresse, wenn jemand sie vor Ort gepflegt
         // hat; Wikidata füllt den grossen Rest auf.
@@ -1276,6 +1296,116 @@ async function importAlpen() {
   console.log(`   Umschliessend: ${bbox.join(', ')}`)
 }
 
+/* ---------------- Orte: Städte, Dörfer, Weiler ---------------- */
+
+/**
+ * Die Namen, unter denen Menschen tatsächlich suchen.
+ *
+ * Eine Gemeinde ist eine Verwaltungseinheit, kein Ort. Wer wissen will, ob er
+ * bei **Wengen** übernachten darf, sucht nicht nach *Lauterbrunnen* — und fand
+ * bis hierher nichts, obwohl die Antwort längst vorlag. Dasselbe gilt für
+ * Saas-Fee, Grindelwald-Ortsteile, jedes Bergdorf, das nach einer Fusion in
+ * einer grösseren Gemeinde aufgegangen ist. Genau das sind die Namen mit
+ * Suchvolumen.
+ *
+ * Was hier entsteht, ist deshalb kein neuer Datenbestand, sondern ein
+ * **Register**: Ortsname → zuständige Gemeinde. Es trägt keine eigene
+ * Rechtsaussage und darf auch nie eine bekommen — die Rechtslage hängt an der
+ * Gemeinde, und ein Ortsteil hat keine eigene. Er ist ein Weg dorthin.
+ *
+ * Zugeordnet wird über den Punkt in der Gemeindefläche. Das ist genau, solange
+ * die Gemeindegrenzen genau sind, und sie kommen aus derselben Quelle.
+ *
+ * `isolated_dwelling` und `farm` bleiben draussen: Einzelhöfe sind keine Orte,
+ * nach denen jemand sucht, und es sind Tausende.
+ */
+const ORT_ARTEN = ['city', 'town', 'village', 'hamlet', 'suburb', 'quarter']
+
+async function importOrte() {
+  const gemeindenPfad = resolve(AUSGABE, 'gemeinden', `${REGION}.json`)
+  if (!existsSync(gemeindenPfad)) {
+    console.log('Orte: erst `gemeinden` importieren — die Zuordnung braucht die Flächen.')
+    return
+  }
+  const gemeinden = JSON.parse(readFileSync(gemeindenPfad, 'utf8')).features
+
+  const q = `
+    [out:json][timeout:300];
+    ${GEBIET}
+    (
+      node["place"~"^(${ORT_ARTEN.join('|')})$"]["name"](area.a);
+    );
+    out tags center;`
+  const data = await overpass(q)
+
+  /*
+   * Ein grobes Gitter über die Gemeindeflächen, damit die Zuordnung nicht
+   * quadratisch wird.
+   *
+   * Fünftausend Orte gegen zweitausend Flächen zu prüfen sind zehn Millionen
+   * Punkt-in-Polygon-Tests — bei Flächen mit tausenden Stützpunkten dauert das
+   * Minuten. Über die umschliessenden Rechtecke vorzufiltern bringt es auf
+   * Sekunden, und am Ergebnis ändert es nichts: was ausserhalb des Rechtecks
+   * liegt, liegt sicher ausserhalb der Fläche.
+   */
+  const kaesten = gemeinden.map((g) => {
+    const ringe = g.geometry.type === 'Polygon' ? g.geometry.coordinates : g.geometry.coordinates.flat()
+    let west = Infinity, sued = Infinity, ost = -Infinity, nord = -Infinity
+    for (const ring of ringe) {
+      for (const [x, y] of ring) {
+        if (x < west) west = x
+        if (x > ost) ost = x
+        if (y < sued) sued = y
+        if (y > nord) nord = y
+      }
+    }
+    return { g, west, sued, ost, nord }
+  })
+
+  const orte = []
+  let ohneGemeinde = 0
+
+  for (const el of data.elements) {
+    const t = el.tags ?? {}
+    const lat = el.lat ?? el.center?.lat
+    const lon = el.lon ?? el.center?.lon
+    if (lat == null || lon == null || !t.name) continue
+
+    const treffer = kaesten.find((k) =>
+      lon >= k.west && lon <= k.ost && lat >= k.sued && lat <= k.nord
+      && punktInGeometrie([lon, lat], k.g.geometry))
+
+    if (!treffer) { ohneGemeinde++; continue }
+
+    // Ein Ort, der genauso heisst wie seine Gemeinde, ist kein zusätzlicher
+    // Name — er ist die Gemeinde. Ihn mitzuführen hiesse, jeden Treffer der
+    // Suche zu verdoppeln.
+    if (t.name === treffer.g.properties.name) continue
+
+    orte.push({
+      name: t.name,
+      art: t.place,
+      bfs: treffer.g.properties.bfs,
+      gemeinde: treffer.g.properties.name,
+      lat: round(lat),
+      lng: round(lon),
+      source_url: `https://www.openstreetmap.org/${el.type}/${el.id}`,
+    })
+  }
+
+  orte.sort((a, b) => a.name.localeCompare(b.name, 'de'))
+
+  const pfad = resolve(AUSGABE, 'orte', `${REGION}.json`)
+  mkdirSync(dirname(pfad), { recursive: true })
+  writeFileSync(pfad, JSON.stringify(orte) + '\n')
+
+  const jeArt = {}
+  for (const o of orte) jeArt[o.art] = (jeArt[o.art] ?? 0) + 1
+  console.log(`Orte: ${orte.length} -> ${pfad}`)
+  console.log(`   ${Object.entries(jeArt).map(([a, n]) => `${a}: ${n}`).join(' · ')}`)
+  console.log(`   ausserhalb jeder Gemeindefläche verworfen: ${ohneGemeinde}`)
+}
+
 /* ---------------- main ---------------- */
 
 const GRUPPEN = {
@@ -1285,6 +1415,7 @@ const GRUPPEN = {
   natur: importNature,
   kantone: importKantone,
   gemeinden: importGemeinden,
+  orte: importOrte,
   bafu: importBafu,
   kantonsrecht: importKantonsrecht,
   recht: importRecht,

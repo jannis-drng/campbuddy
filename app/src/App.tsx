@@ -49,7 +49,7 @@ import {
 import { BenutzernameDialog } from './components/BenutzernameDialog'
 import type { PackStaende } from './affiliate/packlist'
 import { ladeVerlauf, ORT_UMKREIS_M, type Ortsfilter } from './services/community'
-import { Bookmark, Compass, LogIn, Map, Route, UserRound } from 'lucide-react'
+import { Bookmark, Compass, List, LogIn, Map, Route, UserRound } from 'lucide-react'
 import { Auswahl, Button, Segmente } from './ui'
 
 /**
@@ -971,6 +971,32 @@ export default function App() {
         </nav>
 
         {/*
+          Der Weg zur Gemeindeliste — bewusst neben der Ansichtswahl und nicht
+          darin.
+
+          Die vier Segmente schalten die Ansicht um; dieser Link verlässt die
+          Anwendung und lädt eine vorgerenderte Seite. Ihn als fünftes Segment
+          einzureihen hiesse, zwei verschiedene Dinge gleich aussehen zu lassen:
+          drei Segmente kommen zurück, wenn man sie wieder antippt, dieses eine
+          nicht.
+
+          Er steht trotzdem hier oben, weil es einen zweiten Weg zur selben
+          Auskunft gibt: manche wissen den Namen ihrer Gemeinde und wollen ihn
+          eintippen, statt auf einer Karte danach zu suchen. Auf dem Telefon
+          liegt er unten in der Leiste, wo auch die Ansichten liegen.
+        */}
+        <a
+          href={`${import.meta.env.BASE_URL}gemeinden`}
+          title="Alle eingestuften Gemeinden als Liste, mit Suche"
+          className="hidden shrink-0 items-center gap-1.5 rounded-mittel px-2.5 py-1.5 text-klein
+                     text-ink-400 transition-colors duration-[160ms] hover:bg-flaeche-3
+                     hover:text-ink-100 sm:flex"
+        >
+          <List size={15} strokeWidth={1.75} aria-hidden />
+          Gemeinden
+        </a>
+
+        {/*
           Die Regionswahl erscheint erst, wenn es etwas zu wählen gibt. Bei
           einer einzigen Region war sie ein Aufklappmenü mit genau einem
           Eintrag — belegter Platz ohne Nutzen, und der Name der Region steht
@@ -1279,6 +1305,21 @@ export default function App() {
             </button>
           )
         })}
+
+        {/*
+          Dieselbe Überlegung wie oben in der Kopfzeile, nur enger: hier ist er
+          ein Link zwischen Knöpfen. Er trägt deshalb nie den aktiven Zustand —
+          man ist nie „auf" ihm, man geht darüber weg.
+        */}
+        <a
+          href={`${import.meta.env.BASE_URL}gemeinden`}
+          className="flex flex-1 flex-col items-center gap-1 py-2 text-mikro font-medium
+                     normal-case tracking-normal text-ink-400 transition-colors
+                     duration-[160ms] hover:text-ink-200"
+        >
+          <List size={19} strokeWidth={1.75} aria-hidden />
+          Gemeinden
+        </a>
       </nav>
 
       {/*

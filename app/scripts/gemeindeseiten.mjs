@@ -26,7 +26,7 @@
  *
  * Läuft nach dem Build (`postbuild`) und schreibt nach `dist/gemeinde/…`.
  */
-import { mkdirSync, readFileSync, statSync, writeFileSync, rmSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync, rmSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { kennung } from './lib/kennung.mjs'
 
@@ -64,6 +64,31 @@ const gemeinden = JSON.parse(readFileSync(`${HIER}import/CH/gemeinden/CH.json`, 
 const recht = JSON.parse(readFileSync(`${HIER}src/data/gemeinden.legal.json`, 'utf8')).gemeinden
 const kantonsrecht = JSON.parse(readFileSync(`${HIER}src/data/kantone.legal.json`, 'utf8')).kantone
 
+/*
+ * Die Ortsteile — das Register, das die Suche erst brauchbar macht.
+ *
+ * Eine Gemeinde ist eine Verwaltungseinheit, kein Ort: wer wissen will, ob er
+ * bei Wengen übernachten darf, sucht nicht nach Lauterbrunnen. Diese Liste
+ * verbindet beides.
+ *
+ * `hamlet` bleibt draussen, und zwar aus Rücksicht auf die Leitung: es sind
+ * 6820 Weiler mit oft drei Häusern, sie machen die Suchliste viermal so
+ * schwer und niemand sucht nach ihnen. Die vollständige Fassung liegt
+ * weiterhin in `import/CH/orte/CH.json`, falls sich das je ändert.
+ */
+const ORTE = existsSync(`${HIER}import/CH/orte/CH.json`)
+  ? JSON.parse(readFileSync(`${HIER}import/CH/orte/CH.json`, 'utf8'))
+    .filter((o) => o.art !== 'hamlet' && o.bfs != null)
+  : []
+
+/** BFS-Nummer → die Ortsteile dieser Gemeinde, alphabetisch. */
+const ORTE_JE_GEMEINDE = new Map()
+for (const o of ORTE) {
+  if (!ORTE_JE_GEMEINDE.has(o.bfs)) ORTE_JE_GEMEINDE.set(o.bfs, [])
+  ORTE_JE_GEMEINDE.get(o.bfs).push(o.name)
+}
+for (const liste of ORTE_JE_GEMEINDE.values()) liste.sort((a, b) => a.localeCompare(b, 'de'))
+
 /** Kantonsnamen aus der TypeScript-Liste ziehen — sie ist die einzige Quelle. */
 const KANTON = Object.fromEntries(
   [...readFileSync(`${HIER}src/data/kantoneNamen.ts`, 'utf8')
@@ -100,15 +125,17 @@ const PRUEFSTAND = {
  * für jede Gemeinde etwas anderes sagen, weil für jede Gemeinde etwas anderes
  * gilt. Wo nichts gilt, steht auch nichts.
  */
-function beschreibung(name, e) {
+function beschreibung(name, e, bfs) {
   const teile = [
     `Zelten ${REGEL_TEXT[e.tent_allowed][0]}`,
     `Biwakieren ${REGEL_TEXT[e.bivouac_allowed ?? 'unknown'][0]}`,
     `Übernachten im Fahrzeug ${REGEL_TEXT[e.vehicle_allowed][0]}`,
     `offenes Feuer ${REGEL_TEXT[e.fire_allowed][0]}`,
   ]
+  const orte = ORTE_JE_GEMEINDE.get(bfs) ?? []
+  const dazu = orte.length > 0 ? ` Gilt auch für ${orte.slice(0, 4).join(', ')}.` : ''
   return `Übernachten in der Natur in ${name}: ${teile.join(', ')}. `
-       + `Mit Quelle und Prüfdatum (${e.last_verified ?? 'ohne Datum'}).`
+       + `Mit Quelle und Prüfdatum (${e.last_verified ?? 'ohne Datum'}).${dazu}`
 }
 
 const escape = (s) => String(s)
@@ -187,6 +214,7 @@ function zeile(bezeichnung, wert) {
 
 function seite(g, e, nachbarn = []) {
   const name = g.properties.name
+  const ortsteile = ORTE_JE_GEMEINDE.get(g.properties.bfs) ?? []
   const kantonName = KANTON[g.properties.kanton] ?? null
   const [lng, lat] = mittelpunkt(g.geometry)
   const pfad = `${BASIS}gemeinde/${g.properties.bfs}-${kennung(name)}`
@@ -200,12 +228,12 @@ function seite(g, e, nachbarn = []) {
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0C1113">
 <title>${escape(titel)}</title>
-<meta name="description" content="${escape(beschreibung(name, e))}">
+<meta name="description" content="${escape(beschreibung(name, e, g.properties.bfs))}">
 <link rel="canonical" href="${ORIGIN}${pfad}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="CampBuddy">
 <meta property="og:title" content="${escape(titel)}">
-<meta property="og:description" content="${escape(beschreibung(name, e))}">
+<meta property="og:description" content="${escape(beschreibung(name, e, g.properties.bfs))}">
 <meta property="og:url" content="${ORIGIN}${pfad}">
 <meta property="og:image" content="${ORIGIN}${BASIS}og.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -289,6 +317,11 @@ function seite(g, e, nachbarn = []) {
     Beschilderung vor Ort und die Auskunft der Gemeinde gehen dieser Seite vor.
   </div>
 </main>
+
+  ${ortsteile.length > 0 ? `<h2>Orte in dieser Gemeinde</h2>
+  <p class="leise">Für alle diese Orte gilt, was oben steht — die Rechtslage hängt an der
+  Gemeinde, nicht am Ortsteil. Sie stehen hier, weil man nach ihnen sucht:</p>
+  <p class="offen">${ortsteile.map((n) => escape(n)).join(' · ')}</p>` : ''}
 
   ${nachbarn.length > 0 ? `<h2>Weitere Gemeinden${kantonName ? ` im Kanton ${escape(kantonName)}` : ''}</h2>
   <p class="nachbarn">${nachbarn.map((n) =>
@@ -666,8 +699,9 @@ function uebersichtsSeite() {
     <label for="suchfeld" class="leise">Gemeinde suchen</label>
     <input id="suchfeld" type="search" autocomplete="off" spellcheck="false"
            placeholder="Name der Gemeinde …" aria-describedby="suchhinweis">
-    <p id="suchhinweis" class="leise">Alle ${gemeinden.length} Gemeinden, auch die noch
-    nicht nachgeschlagenen.</p>
+    <p id="suchhinweis" class="leise">Alle ${gemeinden.length} Gemeinden und
+    ${ORTE.length} Orte — auch die noch nicht nachgeschlagenen. Ein Ortsteil führt zur
+    Seite seiner Gemeinde: dort wird über das Übernachten entschieden.</p>
   </form>
   <div id="suchergebnis" role="status" aria-live="polite"></div>
 
@@ -713,18 +747,46 @@ writeFileSync(`${DIST}gemeinden.html`, uebersichtsSeite())
  * Sparsamkeit um ihrer selbst willen — mit ausgeschriebenen Schlüsseln wäre
  * sie rund ein Drittel grösser, und sie wird über eine Mobilverbindung geholt.
  */
+const suchEintraege = gemeinden
+  .filter((g) => g.properties.name)
+  .map((g) => {
+    const eintrag = recht[String(g.properties.bfs)]
+    return {
+      n: g.properties.name,
+      k: KANTON[g.properties.kanton] ?? '',
+      ...(eintrag ? { p: `${BASIS}gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}` } : {}),
+    }
+  })
+
+/*
+ * Ortsteile kommen mit in die Suche — mit `g` als Verweis auf ihre Gemeinde.
+ *
+ * Das ist der eigentliche Gewinn des Ortsregisters: „Wengen" führt zur Seite
+ * von Lauterbrunnen, und die Zeile sagt dazu, warum. Ohne diesen Hinweis
+ * stünde da ein fremder Gemeindename ohne Erklärung.
+ *
+ * Der Ort erbt den Pfad seiner Gemeinde, wenn es dort eine Seite gibt. Eine
+ * eigene bekommt er nicht: die Rechtslage hängt an der Gemeinde, und eine
+ * zweite Seite mit demselben Inhalt unter anderem Namen wäre genau die
+ * doppelte Massenware, die diese Seiten sonst meiden.
+ */
+const gemeindePfade = new Map(
+  gemeinden.filter((g) => recht[String(g.properties.bfs)])
+    .map((g) => [g.properties.bfs, `${BASIS}gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}`]),
+)
+const gemeindeKanton = new Map(gemeinden.map((g) => [g.properties.bfs, KANTON[g.properties.kanton] ?? '']))
+
+for (const o of ORTE) {
+  suchEintraege.push({
+    n: o.name,
+    k: gemeindeKanton.get(o.bfs) ?? '',
+    g: o.gemeinde,
+    ...(gemeindePfade.has(o.bfs) ? { p: gemeindePfade.get(o.bfs) } : {}),
+  })
+}
+
 writeFileSync(`${DIST}gemeinden-suche.json`, JSON.stringify(
-  gemeinden
-    .filter((g) => g.properties.name)
-    .map((g) => {
-      const eintrag = recht[String(g.properties.bfs)]
-      return {
-        n: g.properties.name,
-        k: KANTON[g.properties.kanton] ?? '',
-        ...(eintrag ? { p: `${BASIS}gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}` } : {}),
-      }
-    })
-    .sort((a, b) => a.n.localeCompare(b.n, 'de')),
+  suchEintraege.sort((a, b) => a.n.localeCompare(b.n, 'de')),
 ))
 
 /*
@@ -776,9 +838,35 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
 
     var a = ausgeschrieben(begriff)
     var e = entblaettert(begriff)
-    var treffer = daten.filter(function (g) {
-      return g._a.indexOf(a) !== -1 || g._e.indexOf(e) !== -1
-    })
+
+    /*
+      Rangfolge, sonst steht das Falsche oben.
+
+      Reines Enthalten reicht nicht: 'sion' kommt in 'La Conversion' und
+      'Mission' vor, und alphabetisch sortiert standen die vor Sion selbst.
+      Wer einen Ortsnamen eintippt, meint fast immer genau diesen Ort.
+
+      0 = genau dieser Name, 1 = beginnt damit, 2 = enthält es irgendwo.
+      Innerhalb desselben Rangs zählt die Länge: der kürzere Name enthält den
+      Suchbegriff zu einem grösseren Teil und ist damit näher dran. Und eine
+      Gemeinde schlägt einen gleichrangigen Ortsteil, weil die Rechtslage an
+      ihr hängt.
+    */
+    function rang(g) {
+      if (g._a === a || g._e === e) return 0
+      if (g._a.indexOf(a) === 0 || g._e.indexOf(e) === 0) return 1
+      return 2
+    }
+    var treffer = daten
+      .filter(function (g) { return g._a.indexOf(a) !== -1 || g._e.indexOf(e) !== -1 })
+      .map(function (g) { return { g: g, r: rang(g) } })
+      .sort(function (x, y) {
+        if (x.r !== y.r) return x.r - y.r
+        if (x.g.n.length !== y.g.n.length) return x.g.n.length - y.g.n.length
+        if (Boolean(x.g.g) !== Boolean(y.g.g)) return x.g.g ? 1 : -1
+        return x.g.n.localeCompare(y.g.n, 'de')
+      })
+      .map(function (t) { return t.g })
     if (treffer.length === 0) {
       raum.textContent = 'Keine Gemeinde dieses Namens. Vielleicht ein Ortsteil? '
         + 'Auf der Karte findest du die zuständige Gemeinde über den Ort selbst.'
@@ -799,7 +887,10 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
       }
       var rechts = document.createElement('span')
       rechts.className = 'wo'
-      rechts.textContent = g.p ? g.k : (g.k ? g.k + ' · noch nicht nachgeschlagen' : 'noch nicht nachgeschlagen')
+      var wo = g.g ? 'Ortsteil von ' + g.g : g.k
+      if (g.g && g.k) wo += ' · ' + g.k
+      if (!g.p) wo += ' · noch nicht nachgeschlagen'
+      rechts.textContent = wo
       li.appendChild(links)
       li.appendChild(rechts)
       ul.appendChild(li)
@@ -881,5 +972,6 @@ console.log(
   + `die Übersicht und die Sitemap geschrieben.\n`
   + `    \x1b[90m${uebersprungen} Gemeinden ohne Eintrag bekommen bewusst keine Seite.\x1b[0m\n`
   + `    \x1b[90mrobots.txt verweist auf ${ORIGIN}${BASIS}sitemap.xml\x1b[0m\n`
-  + `    \x1b[90mSuchliste: ${gemeinden.length} Namen, ${(statSync(`${DIST}gemeinden-suche.json`).size / 1024).toFixed(0)} KB\x1b[0m\n`,
+  + `    \x1b[90mSuchliste: ${gemeinden.length} Gemeinden + ${ORTE.length} Orte, `
+  + `${(statSync(`${DIST}gemeinden-suche.json`).size / 1024).toFixed(0)} KB\x1b[0m\n`,
 )
