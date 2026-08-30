@@ -14,6 +14,7 @@
  */
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { LandingPage } from './landing/LandingPage'
+import { Rechtsseiten, type Rechtsseite } from './rechtliches/Rechtsseiten'
 import { kenntStartseite, startseiteGesehen } from './services/besuch'
 import { isSupabaseConfigured } from './services/supabase'
 import { useSession } from './services/account'
@@ -31,7 +32,19 @@ const App = lazy(() => import('./App'))
 /** Ruhige Fläche statt Ladebalken — die Karte ist in der Regel sofort da. */
 const Ladeflaeche = <div className="h-dvh bg-flaeche-1" />
 
-type Ziel = 'start' | 'app'
+type Ziel = 'start' | 'app' | Rechtsseite
+
+/**
+ * Impressum und Datenschutz sind eigene Ziele, nicht Teil der App.
+ *
+ * Sie müssen von überall in zwei Schritten erreichbar sein und ohne die Karte
+ * laden — ein Pflichttext, der erst nach MapLibre erscheint, ist im Zweifel
+ * keiner. Deshalb hängen sie hier an der Weiche und nicht in `App.tsx`.
+ */
+const RECHTSSEITEN: Record<string, Rechtsseite> = {
+  '#/impressum': 'impressum',
+  '#/datenschutz': 'datenschutz',
+}
 
 /** Ein Anmelde-/Bestätigungslink kommt als `#access_token=…`, `#error=…`, `#type=…` zurück. */
 function istAuthRueckkehr(): boolean {
@@ -42,6 +55,8 @@ function istAuthRueckkehr(): boolean {
 }
 
 function zielAusAdresse(): Ziel | null {
+  const recht = RECHTSSEITEN[window.location.hash]
+  if (recht) return recht
   if (window.location.hash === '#/start') return 'start'
   if (istAuthRueckkehr()) return 'app'
   if (window.location.hash.startsWith('#/')) return 'app'
@@ -76,6 +91,9 @@ export default function Root() {
     window.scrollTo({ top: 0, behavior: 'auto' })
   }
 
+  if (erzwungen === 'impressum' || erzwungen === 'datenschutz') {
+    return <Rechtsseiten seite={erzwungen} onZurueck={inDieApp} />
+  }
   if (erzwungen === 'start') return <LandingPage onStart={inDieApp} />
   if (erzwungen === 'app' || kennt) return <Suspense fallback={Ladeflaeche}><App /></Suspense>
 

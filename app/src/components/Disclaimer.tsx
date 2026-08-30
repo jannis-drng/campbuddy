@@ -101,6 +101,20 @@ export function Haftungshinweis({ className = '' }: { className?: string }) {
               Fläche zeigt offen an, wie gut sie belegt ist. Beschilderung vor Ort und Auskünfte
               von Gemeinde oder Wildhut gehen dieser Karte immer vor.
             </p>
+            {/*
+              Die Pflichttexte hängen hier, weil das der einzige Ort ist, der
+              auf der Kartenansicht immer sichtbar ist — die Karte selbst hat
+              keine Fusszeile, und eine eigene Zeile dafür wäre dieselbe
+              verlorene Kartenhöhe, die dieser Hinweis gerade eingespart hat.
+            */}
+            <p className="flex gap-4 border-t border-kante pt-2 text-mikro normal-case tracking-normal">
+              <a href="#/impressum" className="text-ink-400 transition-colors duration-[160ms] hover:text-gletscher-300">
+                Impressum
+              </a>
+              <a href="#/datenschutz" className="text-ink-400 transition-colors duration-[160ms] hover:text-gletscher-300">
+                Datenschutz
+              </a>
+            </p>
           </div>
         </div>
       )}

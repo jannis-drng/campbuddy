@@ -17,12 +17,13 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import {
   ArrowRight, Ban, CloudSun, Compass, Flame, Landmark, Map, MapPinned,
-  Menu, MountainSnow, Route, ScrollText, ShieldCheck, Tent, TriangleAlert, Truck, X,
+  Menu, Moon, MountainSnow, Route, ScrollText, ShieldCheck, Tent, TriangleAlert, Truck, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { DEFAULT_REGION, REGIONS } from '../data/regions'
 import { Badge, Button, Card, IconButton } from '../ui'
 import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
+import { biwakRegel } from '../data/legalData'
 import { Einblenden } from './Einblenden'
 import { KartenSchema } from './Grafiken'
 import { Marke } from '../components/Marke'
@@ -461,7 +462,8 @@ function Infokarte() {
         <StatusBadge status={beispielZone.status} />
       </div>
       <div className="mt-3">
-        <PermissionRow label="Zelt / Biwak" value={beispielZone.tent_allowed} icon={Tent} />
+        <PermissionRow label="Zelt" value={beispielZone.tent_allowed} icon={Tent} />
+        <PermissionRow label="Biwak" value={biwakRegel(beispielZone)} icon={Moon} />
         <PermissionRow label="Fahrzeug" value={beispielZone.vehicle_allowed} icon={Truck} />
         <PermissionRow label="Feuer" value={beispielZone.fire_allowed} icon={Flame} />
       </div>
@@ -905,7 +907,11 @@ function Fusszeile({ onStart }: { onStart: () => void }) {
 
         <div>
           <h2 className="text-mikro font-medium uppercase text-ink-500">Rechtliches</h2>
-          <p className="mt-3 text-klein leading-relaxed text-ink-400">
+          <ul className="mt-3 space-y-2 text-klein text-ink-400">
+            <li><a href="#/impressum" className="transition-colors duration-[160ms] hover:text-gletscher-300">Impressum</a></li>
+            <li><a href="#/datenschutz" className="transition-colors duration-[160ms] hover:text-gletscher-300">Datenschutzerklärung</a></li>
+          </ul>
+          <p className="mt-4 text-klein leading-relaxed text-ink-400">
             CampBuddy stellt Rechtsinformationen dar und ersetzt keine Rechtsberatung. Einstufungen
             können sich durch Verordnungen, saisonale Verbote und Gemeindebeschlüsse jederzeit ändern.
           </p>

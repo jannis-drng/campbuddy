@@ -11,7 +11,7 @@ import type { Position } from './geo'
 
 export type LegalStatus = 'allowed' | 'forbidden' | 'tolerated' | 'unknown'
 
-/** Für Zelt / Fahrzeug / Feuer: erlaubt, verboten oder an Bedingungen geknüpft. */
+/** Für Zelt / Biwak / Fahrzeug / Feuer: erlaubt, verboten oder an Bedingungen geknüpft. */
 export type Permission = 'yes' | 'no' | 'conditional' | 'unknown'
 
 /**
@@ -28,6 +28,23 @@ export interface Zone {
   name: string
   status: LegalStatus
   tent_allowed: Permission
+  /**
+   * Biwakieren — bewusst getrennt vom Zelt.
+   *
+   * Der wichtigste Unterschied im schweizerischen Recht und lange die grösste
+   * Unehrlichkeit dieser Karte: sie zeigte eine Zeile „Zelt / Biwak" und
+   * behauptete damit, die Zeltregel gelte fürs Biwak mit. Das stimmt gerade
+   * dort nicht, wo es zählt — oberhalb der Waldgrenze ist das Biwakieren
+   * vielerorts geduldet, während das Aufstellen eines Zelts untersagt bleibt.
+   * Reglemente sprechen von „Campieren" und „Zelten", das blosse Übernachten
+   * im Schlafsack fassen sie oft gar nicht.
+   *
+   * Fehlt das Feld, gilt `unknown` — und das ist der Normalfall, nicht die
+   * Ausnahme: die meisten Reglemente sagen zum Biwak schlicht nichts. Genau
+   * das darf die Karte dann auch sagen. Ein fehlendes Feld auf den Zeltwert
+   * zurückfallen zu lassen wäre die alte Unehrlichkeit mit mehr Schritten.
+   */
+  bivouac_allowed?: Permission
   vehicle_allowed: Permission
   fire_allowed: Permission
   /** Freitext-Bedingungen, z.B. "nur oberhalb der Waldgrenze, eine Nacht". */
@@ -154,6 +171,8 @@ export interface Kanton {
 export interface KantonRecht {
   status: LegalStatus
   tent_allowed: Permission
+  /** Biwakieren, getrennt vom Zelt — siehe `Zone.bivouac_allowed`. */
+  bivouac_allowed?: Permission
   vehicle_allowed: Permission
   fire_allowed: Permission
   /** Was gilt, in zwei bis vier Sätzen. */
@@ -204,6 +223,8 @@ export interface Gemeinde {
 export interface GemeindeRecht {
   status: LegalStatus
   tent_allowed: Permission
+  /** Biwakieren, getrennt vom Zelt — siehe `Zone.bivouac_allowed`. */
+  bivouac_allowed?: Permission
   vehicle_allowed: Permission
   fire_allowed: Permission
   /** Was gilt, in zwei bis vier Sätzen. */
@@ -244,7 +265,7 @@ export interface Region {
  * Wofür die Karte gerade eingefärbt wird.
  * 'all' zeigt die Gesamteinstufung der Zone, sonst die Regel für genau diese Aktivität.
  */
-export type ActivityMode = 'all' | 'tent' | 'vehicle' | 'fire'
+export type ActivityMode = 'all' | 'tent' | 'bivouac' | 'vehicle' | 'fire'
 
 /** Filterzustand der Kartenansicht. */
 export interface MapFilters {

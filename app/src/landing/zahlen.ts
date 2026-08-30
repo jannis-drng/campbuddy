@@ -85,6 +85,7 @@ export const punkteJeArt = (typ: string) => JE_ART[typ] ?? 0
 interface Eintrag {
   status: LegalStatus
   tent_allowed: Permission
+  bivouac_allowed?: Permission
   vehicle_allowed: Permission
   fire_allowed: Permission
   conditions: string | null

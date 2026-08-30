@@ -107,9 +107,26 @@ const PERMISSION_TO_STATUS: Record<Permission, LegalStatus> = {
 
 const ACTIVITY_FIELD = {
   tent: 'tent_allowed',
+  bivouac: 'bivouac_allowed',
   vehicle: 'vehicle_allowed',
   fire: 'fire_allowed',
 } as const
+
+/**
+ * Die Biwakregel einer Einstufung — oder `unknown`, wenn keine da ist.
+ *
+ * Das Feld ist optional, und das bleibt es: die meisten Reglemente sagen zum
+ * Biwakieren nichts, und dann ist „ungeklärt" die einzige wahre Antwort. Was
+ * hier ausdrücklich *nicht* passiert, ist ein Rückfall auf `tent_allowed` —
+ * genau diese stillschweigende Gleichsetzung war der Fehler, den die Trennung
+ * behebt. Steht sie einmal irgendwo als Abkürzung drin, ist die Trennung
+ * wieder wertlos.
+ */
+export function biwakRegel(
+  recht: { bivouac_allowed?: Permission },
+): Permission {
+  return recht.bivouac_allowed ?? 'unknown'
+}
 
 /**
  * Welche Einstufung soll für die gewählte Aktivität angezeigt werden?
@@ -121,7 +138,7 @@ const ACTIVITY_FIELD = {
  */
 export function effectiveStatus(zone: Zone, activity: ActivityMode): LegalStatus {
   if (activity === 'all') return zone.status
-  return PERMISSION_TO_STATUS[zone[ACTIVITY_FIELD[activity]]]
+  return PERMISSION_TO_STATUS[zone[ACTIVITY_FIELD[activity]] ?? 'unknown']
 }
 
 export function filterPoints(points: Point[], f: MapFilters): Point[] {

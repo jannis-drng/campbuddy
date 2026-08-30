@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react'
 import {
   Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileWarning, Flame, Globe, Landmark,
-  Lock, Mail, MapPin, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users,
+  Lock, Mail, MapPin, Moon, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users,
   Footprints, Route as RouteIcon, Waves, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -23,6 +23,7 @@ import { formatKm, hatWeg, seitdem } from './TourKarte'
 import { RoutenVorschau } from './RoutenVorschau'
 import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
 import { PermissionRow, ReviewBadge, STATUS_LABEL, StatusBadge } from './ui'
+import { biwakRegel } from '../data/legalData'
 import { GearHint } from '../affiliate/GearHint'
 import { PunktFoto } from './PunktFoto'
 
@@ -254,6 +255,20 @@ export function InfoPanel({
  * Tippen auf eine Stelle *ohne* eingezeichnete Zone — also genau dann, wenn
  * der allgemeine Rahmen die einzige Auskunft ist, die es gibt.
  */
+/**
+ * Regelt dieser Kanton überhaupt etwas?
+ *
+ * 25 der 26 Kantone kennen keine allgemeine Bestimmung zum Übernachten im
+ * Freien — das ist ein recherchierter Befund und keine Lücke. Er verdient
+ * einen Satz, aber keine Tabelle aus vier Mal „ungeklärt".
+ */
+function kantonRegeltNichts(recht: KantonRecht) {
+  return recht.status === 'unknown'
+    && recht.tent_allowed === 'unknown'
+    && recht.vehicle_allowed === 'unknown'
+    && recht.fire_allowed === 'unknown'
+}
+
 function RegionBody({
   region, stats, datenFehler, kanton, recht, grundlagen, gemeinde, gemeindeRecht,
 }: {
@@ -303,7 +318,8 @@ function RegionBody({
       {gemeinde && gemeindeRecht && (
         <section>
           <Label className="mb-1">Was in {gemeinde.name} gilt</Label>
-          <PermissionRow label="Zelt / Biwak" value={gemeindeRecht.tent_allowed} icon={Tent} />
+          <PermissionRow label="Zelt" value={gemeindeRecht.tent_allowed} icon={Tent} />
+          <PermissionRow label="Biwak" value={biwakRegel(gemeindeRecht)} icon={Moon} />
           <PermissionRow label="Auto / Camper" value={gemeindeRecht.vehicle_allowed} icon={Truck} />
           <PermissionRow label="Offenes Feuer" value={gemeindeRecht.fire_allowed} icon={Flame} />
           <p className="mt-2.5 text-klein leading-relaxed text-ink-300">{gemeindeRecht.summary}</p>
@@ -384,10 +400,24 @@ function RegionBody({
 
       {kanton && recht && (
         <section>
-          <Label className="mb-1">Was in {kanton.name} gilt</Label>
-          <PermissionRow label="Zelt / Biwak" value={recht.tent_allowed} icon={Tent} />
-          <PermissionRow label="Auto / Camper" value={recht.vehicle_allowed} icon={Truck} />
-          <PermissionRow label="Offenes Feuer" value={recht.fire_allowed} icon={Flame} />
+          <Label className="mb-1">
+            {kantonRegeltNichts(recht) ? `Der Kanton ${kanton.name}` : `Was in ${kanton.name} gilt`}
+          </Label>
+          {/*
+            Ein Kanton ohne eigene Regelung ist der Normalfall — 25 von 26. Vier
+            Zeilen „ungeklärt" untereinander sind dann kein Befund, sondern Lärm:
+            sie sehen aus wie eine Auskunft, die keine ist. In diesem Fall zählt
+            nur der Satz, dass der Kanton nichts regelt und die Gemeinde
+            entscheidet.
+          */}
+          {!kantonRegeltNichts(recht) && (
+            <>
+              <PermissionRow label="Zelt" value={recht.tent_allowed} icon={Tent} />
+              <PermissionRow label="Biwak" value={biwakRegel(recht)} icon={Moon} />
+              <PermissionRow label="Auto / Camper" value={recht.vehicle_allowed} icon={Truck} />
+              <PermissionRow label="Offenes Feuer" value={recht.fire_allowed} icon={Flame} />
+            </>
+          )}
           <p className="mt-2.5 text-klein leading-relaxed text-ink-300">{recht.summary}</p>
           {recht.conditions && (
             <p className="mt-1.5 text-klein leading-relaxed text-ink-400">{recht.conditions}</p>
@@ -511,7 +541,8 @@ function ZoneBody({ zone, onOpenPlanner }: { zone: Zone; onOpenPlanner: () => vo
 
       <section>
         <Label className="mb-1">Was gilt hier</Label>
-        <PermissionRow label="Zelt / Biwak" value={zone.tent_allowed} icon={Tent} />
+        <PermissionRow label="Zelt" value={zone.tent_allowed} icon={Tent} />
+        <PermissionRow label="Biwak" value={biwakRegel(zone)} icon={Moon} />
         <PermissionRow label="Auto / Camper" value={zone.vehicle_allowed} icon={Truck} />
         <PermissionRow label="Offenes Feuer" value={zone.fire_allowed} icon={Flame} />
       </section>

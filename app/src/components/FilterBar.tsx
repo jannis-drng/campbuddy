@@ -20,7 +20,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
-  Check, ChevronDown, Droplet, Eye, Flame, Home, Mountain, Palette, Shapes, Star, Tent, Truck, X,
+  Check, ChevronDown, Droplet, Eye, Flame, Home, Moon, Mountain, Palette, Shapes, Star, Tent, Truck, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ActivityMode, MapFilters } from '../data/types'
@@ -36,6 +36,7 @@ interface Props {
 const AKTIVITAETEN: { wert: ActivityMode; label: string; icon?: LucideIcon; titel?: string }[] = [
   { wert: 'all', label: 'Gesamt', titel: 'Gesamteinstufung der Zone' },
   { wert: 'tent', label: 'Zelt', icon: Tent, titel: 'Nur die Regel fürs Zelt' },
+  { wert: 'bivouac', label: 'Biwak', icon: Moon, titel: 'Nur die Regel fürs Biwakieren — ohne Zelt, im Schlafsack' },
   { wert: 'vehicle', label: 'Fahrzeug', icon: Truck, titel: 'Nur die Regel fürs Fahrzeug' },
   { wert: 'fire', label: 'Feuer', icon: Flame, titel: 'Nur die Regel fürs Feuer' },
 ]

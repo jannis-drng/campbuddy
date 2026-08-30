@@ -23,6 +23,7 @@ Gemeinde hat, steht in `gemeinden/CH.json` unter `properties.bfs`.
 "6002": {
   "status": "forbidden",
   "tent_allowed": "no",
+  "bivouac_allowed": "unknown",
   "vehicle_allowed": "no",
   "fire_allowed": "conditional",
   "summary": "Zwei bis vier Sätze: was hier gilt, in ganzen Sätzen.",
@@ -37,7 +38,7 @@ Gemeinde hat, steht in `gemeinden/CH.json` unter `properties.bfs`.
 | Feld | Werte |
 |---|---|
 | `status` | `allowed` · `tolerated` · `forbidden` |
-| `tent_allowed`, `vehicle_allowed`, `fire_allowed` | `yes` · `no` · `conditional` · `unknown` |
+| `tent_allowed`, `bivouac_allowed`, `vehicle_allowed`, `fire_allowed` | `yes` · `no` · `conditional` · `unknown` |
 | `review_status` | `entwurf` · `quelle` · `vor-ort` |
 
 `review_status` steuert das Kartenbild direkt:
@@ -49,6 +50,19 @@ Gemeinde hat, steht in `gemeinden/CH.json` unter `properties.bfs`.
 
 Kein Eintrag heisst „noch nicht recherchiert" und wird neutral eingefärbt. Das
 ist ein gültiger, ehrlicher Zustand — und deutlich besser als eine geratene Farbe.
+
+## Zelt und Biwak sind zwei Fragen
+
+`bivouac_allowed` ist optional, und ein fehlendes Feld heisst `unknown`. Das ist
+der Normalfall: die meisten Reglemente regeln „Campieren", „Zelten" oder
+„Wohnwagen" und sagen zum blossen Übernachten im Schlafsack nichts.
+
+**Setze das Feld nur, wenn das Reglement das Biwakieren wirklich anspricht.** Es
+vom Zeltwert abzuleiten ist ausdrücklich falsch — genau dort liegt der
+praktische Unterschied, wegen dem die Trennung existiert: oberhalb der
+Waldgrenze wird das Biwak vielerorts geduldet, wo das Zelt untersagt bleibt. Wer
+das Zeltverbot aufs Biwak überträgt, erfindet ein Verbot; wer die Zelterlaubnis
+überträgt, erfindet eine Erlaubnis. Beides ist schlimmer als „ungeklärt".
 
 ## Die Regeln der Pflege
 
@@ -143,3 +157,36 @@ Fundstellen mit `gelesen: "ocr"` stammen aus eingescannten Reglementen. Die
 Zeichenerkennung verliest sich: `Wohnwagen` wird zu `Woh~wagen`, `vom` zu
 `vorn`, `Il est` zu `tl est`. Muster, die solche Texte treffen sollen, meiden
 die betroffenen Wörter und stützen sich auf unverstümmelte Nachbarschaft.
+
+## Die Kantonsebene — und warum sie fast leer bleibt
+
+Alle 26 Kantone sind in `kantone.legal.json` eingetragen, aber nur **Obwalden**
+trägt eine eigene Regelung. Das ist kein Rechercheversäumnis, sondern der
+Befund.
+
+Geprüft wurde über die Volltextsuche von [lexfind.ch](https://www.lexfind.ch),
+die das Recht aller Kantone zusammenführt, mit den Begriffen `campieren`,
+`kampieren`, `biwakieren`, `camping sauvage` und `bivouaquer`:
+
+| Begriff | Treffer im gesamten Kantonsrecht |
+|---|---|
+| campieren | 1 — Obwalden, Gesetz über das Campieren |
+| kampieren | 1 — Obwalden, zugehörige Verordnung |
+| biwakieren | 6 — alle in Jagd-, Wildtierschutz- und Nationalparkrecht |
+| camping sauvage | 19 — alle in Jagd- und Wildschutzverordnungen |
+
+**Wo die Begriffe im Kantonsrecht vorkommen, geht es um Schutzgebiete, Wild und
+Jagd — nie um eine allgemeine Erlaubnis oder ein allgemeines Verbot.** Das
+Bündner Recht etwa kennt einen Artikel «Campieren und Biwakieren» (RJV
+Art. 17), der aber ausdrücklich nur «für die Ausübung der Jagd» gilt und
+Wandernde nicht betrifft.
+
+Ein Kantonseintrag mit `status: "unknown"` heisst deshalb **nicht** „noch nicht
+recherchiert", sondern: *gesucht, nichts gefunden — es entscheidet die
+Gemeinde.* Fehlt ein Kanton ganz, wurde er nicht geprüft. Die Oberfläche
+unterscheidet beides und zeigt bei einem solchen Kanton keine Tabelle aus vier
+Mal „ungeklärt", sondern nur den Satz, der zählt.
+
+**Die Suche ist wiederholbar:** lexfind.ch ist eine JavaScript-Anwendung ohne
+Schnittstelle; die Suche muss im Browser bedient werden. Wer sie erneuert,
+hält Datum und Trefferzahlen hier fest.
