@@ -119,6 +119,21 @@ createServer(async (anfrage, antwort) => {
   try {
     inhalt = await readFile(datei)
   } catch {
+    /*
+     * Zweiter Versuch als Verzeichnis — genau das, was Cloudflare unter
+     * `html_handling: auto-trailing-slash` tut.
+     *
+     * Ohne diesen Schritt liefe die Vorschau an den vorgerenderten
+     * Gemeindeseiten vorbei: sie liegen als `gemeinde/<nr>-<name>/index.html`,
+     * und ihre kanonische Adresse trägt keinen Schrägstrich am Ende. Hier eine
+     * 404 zu sehen, wo live eine Seite steht, macht die Vorschau in genau dem
+     * Punkt unbrauchbar, für den es sie gibt.
+     */
+    inhalt = await readFile(join(DIST, sicher, 'index.html'))
+      .then((b) => { datei = join(DIST, sicher, 'index.html'); return b })
+      .catch(() => null)
+  }
+  if (inhalt == null) {
     datei = join(DIST, '404.html')
     inhalt = await readFile(datei).catch(() => Buffer.from('Nicht gefunden'))
     antwort.statusCode = 404

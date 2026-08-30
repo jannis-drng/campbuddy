@@ -78,6 +78,25 @@ type View = 'karte' | 'community' | 'touren' | 'konto'
 
 const mehrereRegionen = Object.keys(REGIONS).length > 1
 
+/**
+ * Der verlinkte Ort aus der Adresse: `#/karte/ort/<breite>,<laenge>`.
+ *
+ * Streng geprüft, weil die Zahlen aus einer Adresszeile kommen: nur zwei
+ * Dezimalzahlen, nur innerhalb gültiger Erdkoordinaten. Alles andere wird
+ * still verworfen und die Karte startet wie immer — eine kaputte Adresse
+ * soll die Anwendung nicht aufhalten.
+ */
+function ortAusAdresse(): Position | null {
+  const treffer = /^#\/karte\/ort\/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/.exec(window.location.hash)
+  if (!treffer) return null
+  const breite = Number(treffer[1])
+  const laenge = Number(treffer[2])
+  if (!Number.isFinite(breite) || !Number.isFinite(laenge)) return null
+  if (Math.abs(breite) > 90 || Math.abs(laenge) > 180) return null
+  return [laenge, breite]
+}
+
+
 export default function App() {
   const [view, setView] = useState<View>('karte')
   const { session, ready } = useSession()
@@ -533,6 +552,66 @@ export default function App() {
    * Der Zähler unterscheidet zwei Klicks auf dieselbe Tour voneinander.
    */
   const [kameraZiel, setKameraZiel] = useState<{ geometry: Position[]; zaehler: number } | null>(null)
+
+  /**
+   * Ein von aussen verlinkter Ort — `#/karte/ort/46.2276,7.3589`.
+   *
+   * So kommen die vorgerenderten Gemeindeseiten (`scripts/gemeindeseiten.mjs`)
+   * an die Karte: sie sind statische Dateien ohne Anwendung, und ihr Knopf
+   * „Auf der Karte ansehen" wäre ohne das hier eine Landung irgendwo im
+   * Wallis. Eine Suchmaschine schickt jemanden auf die Seite einer bestimmten
+   * Gemeinde; die Karte muss dann dieselbe Gemeinde zeigen.
+   *
+   * Die Auflösung geschieht in zwei Schritten, und das ist keine Umständlich-
+   * keit, sondern die Folge des Kachelladens: `gemeindeAn` kann erst
+   * antworten, wenn die genauen Flächen für diesen Ausschnitt da sind. Also
+   * erst die Kamera hinschicken, und die Auskunft aufschlagen, sobald die
+   * Kacheln nachgekommen sind.
+   */
+  const [verlinkterOrt, setVerlinkterOrt] = useState<Position | null>(ortAusAdresse)
+
+  useEffect(() => {
+    if (!verlinkterOrt) return
+    /*
+     * Ein Fenster um den Punkt, kein Punkt.
+     *
+     * Die Kamera rechnet ihren Anflug aus einem umschliessenden Rechteck. Bei
+     * einem einzelnen Punkt ist das Rechteck flächenlos, und die Rechnung
+     * liefert keine endliche Zoomstufe — die Karte bleibt dann wortlos stehen,
+     * wo sie war. Zwei gegenüberliegende Ecken in rund zwei Kilometern Abstand
+     * ergeben einen gültigen Rahmen und landen auf Gemeindegrösse.
+     */
+    const [lng, lat] = verlinkterOrt
+    const d = 0.02
+    setKameraZiel((z) => ({
+      geometry: [[lng - d, lat - d], [lng + d, lat + d]],
+      zaehler: (z?.zaehler ?? 0) + 1,
+    }))
+    // Die Adresse wieder aufräumen: sonst springt ein Neuladen nach dem
+    // Weiterscrollen zurück an den verlinkten Ort, und die Zurück-Taste
+    // führte in eine Schleife.
+    history.replaceState(null, '', `${location.pathname}${location.search}#/karte`)
+  }, [verlinkterOrt])
+
+  useEffect(() => {
+    if (!verlinkterOrt) return
+    const gemeinde = gemeindeAn(verlinkterOrt)
+    // Noch keine Fläche unter dem Punkt: die Kacheln sind unterwegs, der
+    // nächste Stand löst es aus. Aufgegeben wird nicht — bleibt es leer,
+    // bleibt eben die Karte stehen, wo sie hingeflogen ist.
+    if (!gemeinde) return
+    const kanton = kantonAn(verlinkterOrt)
+    setSelection({
+      kind: 'region', region, stats, datenFehler,
+      kanton,
+      kantonRecht: kantonRecht(kanton),
+      kantonGrundlagen: kantonGrundlagen(kanton),
+      gemeinde,
+      gemeindeRecht: gemeindeRecht(gemeinde),
+    })
+    setVerlinkterOrt(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gemeindenDetailStand, verlinkterOrt])
 
   /**
    * Von der Karte in die Community mitgenommener Ort.

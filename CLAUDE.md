@@ -57,7 +57,7 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   klarer Fehler statt einer stillen Lücke. `profiles` ist spaltenweise vergeben: geschrieben
   wird nur `anzeigename`, damit niemand sein eigenes Abo einschaltet.
 - **`npm run pruefen --prefix app` beweist die Sicherheitsannahmen von aussen**
-  (`scripts/backend-pruefen.mjs`, 26 Prüfungen mit dem öffentlichen Schlüssel: Kartendaten
+  (`scripts/backend-pruefen.mjs`, 27 Prüfungen mit dem öffentlichen Schlüssel: Kartendaten
   zu, Views ohne `user_id`, kein Schreiben ohne Konto, Trigger nicht als RPC aufrufbar).
   Pflichtschritt, bevor eine Änderung an Regeln, Rechten oder Views live geht — dieselbe
   Rolle wie `vorschau-kopfzeilen.mjs` vor einer CSP-Änderung.
@@ -75,6 +75,12 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   landesweiter Rahmen. Ausserhalb der Schutzgebiete entscheidet in der Schweiz fast immer
   die **Gemeinde**; eine bloss kantonale Auskunft ist dort im Zweifel falsch. Wie ein Eintrag
   aussieht und welche Belege er braucht: `app/src/data/gemeinden.README.md`.
+- **Zelt und Biwak sind zwei Fragen, nicht eine.** `bivouac_allowed` steht getrennt von
+  `tent_allowed` und ist optional — fehlt es, gilt `unknown`, und das ist der Normalfall:
+  die meisten Reglemente regeln „Campieren" und „Zelten" und sagen zum Übernachten im
+  Schlafsack nichts. **Nie vom Zeltwert ableiten** (`biwakRegel` in `legalData.ts` tut das
+  ausdrücklich nicht): oberhalb der Waldgrenze wird biwakiert, wo das Zelt verboten bleibt.
+  Wer überträgt, erfindet ein Verbot oder eine Erlaubnis.
 - **Kein Eintrag ≠ keine Regel.** Ungeprüfte Gemeinden bleiben auf der Karte ungefüllt und
   nennen stattdessen den Kontakt der Gemeinde. Schraffiert = eingestuft, aber nicht mit einem
   amtlichen Dokument belegt (`review_status: 'entwurf'`).
@@ -86,6 +92,21 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   geprüfte Musterformulierungen (`gemeinden.muster.json`) auf die passenden Gemeinden auf.
   **Nicht Gemeinden einzeln einstufen, sondern Formulierungen** — viele Gemeinden nutzen
   wortgleiche Musterreglemente. Quelle ist immer das Reglement der jeweiligen Gemeinde.
+- **Suchmaschinen sehen nur eine Seite, wenn man nichts tut.** Die App routet über
+  Rautenpfade (`#/karte`); alles dahinter ist für Google keine eigene Adresse.
+  `scripts/gemeindeseiten.mjs` (läuft im `postbuild`) schreibt deshalb je **eingestufter**
+  Gemeinde eine fertige HTML-Seite nach `dist/gemeinde/<bfs>-<name>/`, dazu `sitemap.xml`
+  und `robots.txt`. Gemeinden ohne Eintrag bekommen bewusst **keine** Seite — zweitausend
+  Seiten „keine Angabe" wären dünne Massenware. Die Seiten tragen kein JavaScript
+  (`script-src 'self'` verbietet es) und zeichnen deshalb mit Microdata aus, nicht mit
+  JSON-LD. Ihr Knopf führt über `#/karte/ort/<breite>,<länge>` in die Karte; diesen
+  Tiefenlink liest `ortAusAdresse` in `App.tsx`.
+- **Impressum und Datenschutz** liegen unter `#/impressum` und `#/datenschutz`
+  (`src/rechtliches/`). Die Betreiberangaben stehen an genau einer Stelle
+  (`betreiber.ts`) und werden **nie erfunden**: fehlt etwas, benennt die Seite die Lücke,
+  und `npm run pflichtangaben` (im `postbuild`) erinnert daran. Wer einen Dienst ergänzt,
+  ergänzt ihn in der CSP *und* in der Aufzählung der Datenschutzerklärung — die Liste dort
+  ist als vollständig ausgewiesen.
 - `npm run deploy --prefix app` — baut und veröffentlicht auf GitHub Pages.
 - `npm run icons --prefix app` — App-Icon und Favicons aus der Bildmarke erzeugen.
   Die Marke liegt zweimal: als Komponente in `app/src/components/Marke.tsx` (Oberfläche)

@@ -66,7 +66,7 @@ async function hole(pfad, init = {}) {
 /* ---------------------------------------------------------------------------
    1. Die Kartendaten dürfen nicht über die API zu haben sein (Migration 0023)
 --------------------------------------------------------------------------- */
-for (const tabelle of ['zones', 'points', 'gemeinden', 'nature', 'peaks', 'gear_items', 'gesperrte_namen', 'trips']) {
+for (const tabelle of ['zones', 'points', 'gemeinden', 'nature', 'peaks', 'gear_items', 'gesperrte_namen']) {
   pruefe(`${tabelle} ist ohne Konto nicht lesbar`, async () => {
     const { status, koerper } = await hole(`${tabelle}?select=*&limit=1`)
     if (status === 200) throw new Error(`liefert Daten (${JSON.stringify(koerper).slice(0, 80)})`)
@@ -121,6 +121,35 @@ pruefe('profiles ist ohne Konto nicht lesbar', async () => {
   const { status, koerper } = await hole('profiles?select=id&limit=1')
   if (status === 200 && Array.isArray(koerper) && koerper.length > 0) {
     throw new Error('Profile sind ohne Konto lesbar')
+  }
+})
+
+/* ---------------------------------------------------------------------------
+   3b. Was entfernt wurde, muss auch weg sein (Migration 0026)
+---------------------------------------------------------------------------- */
+// `trips` hatte vier RLS-Regeln und seit 0025 keine Rechte mehr — eine Tabelle,
+// die niemand erreichen konnte und die niemand meinte. Ihre Aufgabe trägt
+// `routes`. Diese Prüfung unterscheidet „ist weg" von „ist nur verschlossen",
+// weil genau das der Unterschied zwischen aufgeräumt und vergessen ist.
+pruefe('trips gibt es nicht mehr', async () => {
+  const { status, koerper } = await hole('trips?select=id&limit=1')
+  if (status === 200) throw new Error('liefert Daten')
+  if (koerper?.code === '42501') {
+    throw new Error('Tabelle steht noch — Migration 0026 ausführen')
+  }
+  if (status !== 404) throw new Error(`unerwartete Antwort ${status} ${koerper?.code ?? ''}`)
+})
+
+// `name_pruefen` sagt, ob ein Anzeigename frei ist. Angemeldet ist das eine
+// Ausfüllhilfe; ohne Konto wäre es ein Verzeichnisdienst über die Namen aller
+// Nutzer. Beide Aufrufstellen im Frontend haben eine Sitzung.
+pruefe('name_pruefen braucht ein Konto', async () => {
+  const { status } = await hole('rpc/name_pruefen', {
+    method: 'POST',
+    body: JSON.stringify({ kandidat: 'pruefstand' }),
+  })
+  if (status >= 200 && status < 300) {
+    throw new Error('liess sich ohne Konto aufrufen — Migration 0026 ausführen')
   }
 })
 

@@ -14,7 +14,7 @@
  */
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { LandingPage } from './landing/LandingPage'
-import { Rechtsseiten, type Rechtsseite } from './rechtliches/Rechtsseiten'
+import type { Rechtsseite } from './rechtliches/Rechtsseiten'
 import { kenntStartseite, startseiteGesehen } from './services/besuch'
 import { isSupabaseConfigured } from './services/supabase'
 import { useSession } from './services/account'
@@ -28,6 +28,17 @@ import { useSession } from './services/account'
  * dann ein Wimpernschlag, weil er über dieselbe warme Verbindung läuft.
  */
 const App = lazy(() => import('./App'))
+
+/**
+ * Impressum und Datenschutz werden ebenfalls nachgeladen.
+ *
+ * Sie sind reiner Text und werden selten geöffnet — fest eingebunden kosteten
+ * sie zehn Kilobyte im Startbündel, also bei jedem ersten Besuch, für eine
+ * Seite, die die wenigsten aufschlagen. Nachgeladen kostet ihr Aufruf einen
+ * Wimpernschlag, und das Startbündel bleibt, was es war.
+ */
+const Rechtsseiten = lazy(() =>
+  import('./rechtliches/Rechtsseiten').then((m) => ({ default: m.Rechtsseiten })))
 
 /** Ruhige Fläche statt Ladebalken — die Karte ist in der Regel sofort da. */
 const Ladeflaeche = <div className="h-dvh bg-flaeche-1" />
@@ -92,7 +103,11 @@ export default function Root() {
   }
 
   if (erzwungen === 'impressum' || erzwungen === 'datenschutz') {
-    return <Rechtsseiten seite={erzwungen} onZurueck={inDieApp} />
+    return (
+      <Suspense fallback={Ladeflaeche}>
+        <Rechtsseiten seite={erzwungen} onZurueck={inDieApp} />
+      </Suspense>
+    )
   }
   if (erzwungen === 'start') return <LandingPage onStart={inDieApp} />
   if (erzwungen === 'app' || kennt) return <Suspense fallback={Ladeflaeche}><App /></Suspense>

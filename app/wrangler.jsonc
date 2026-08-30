@@ -18,6 +18,13 @@
     // Relativ zu dieser Datei: app/dist — das Ergebnis von `npm run build`.
     "directory": "./dist",
 
+    // Vorgerenderte Gemeindeseiten liegen als `gemeinde/<nr>-<name>/index.html`,
+    // ihre kanonische Adresse trägt aber keinen Schrägstrich am Ende. Diese
+    // Einstellung ist der Cloudflare-Standard — sie steht hier trotzdem
+    // ausdrücklich, weil ohne sie sämtliche Gemeindeseiten ins Leere liefen und
+    // man den Grund im Standardverhalten suchen müsste statt in dieser Datei.
+    "html_handling": "auto-trailing-slash",
+
     // Unbekannte Adressen bekommen unsere eigene 404-Seite, nicht die
     // Startseite. Die Alternative "single-page-application" würde für jeden
     // Pfad `index.html` ausliefern — und damit genau die Auskunft

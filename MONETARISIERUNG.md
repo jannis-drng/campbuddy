@@ -1,6 +1,6 @@
 # Monetarisierung — Fahrplan
 
-*Stand: 26.08.2026. Ergänzt Abschnitt 5 der [Spezifikation](Freistehen_Spezifikation.md),
+*Stand: 30.08.2026. Ergänzt Abschnitt 5 der [Spezifikation](Freistehen_Spezifikation.md),
 die dort skizzierte Reihenfolge wird hier korrigiert.*
 
 ---
@@ -27,16 +27,17 @@ verzögert oder an ein Konto bindet, fällt durch — unabhängig davon, wie gut
 
 ## Ausgangslage
 
-| | Stand 26.08.2026 |
+| | Stand 30.08.2026 |
 |---|---|
-| Eingestufte Gemeinden | **131 von 2119** (6,2 %) — 128 mit Quelle belegt, 3 Entwurf |
-| Musterformulierungen | 36 |
+| Eingestufte Gemeinden | **300 von 2119** (14,2 %) — 284 mit Quelle belegt, 16 Entwurf |
+| Musterformulierungen | 67 |
 | Gebaute Funktionen | Karte, Filter, Routen, Etappen, Höhenprofil, Packliste, GPX, Wetter, Konten, Touren, Community-Meldungen, eigene Punkte, Service Worker |
+| Eingestufte Kantone | alle 26 geprüft |
 | Fixkosten | praktisch null (Free-Tiers, Open Data, statische Kartendaten) |
 | Nutzerzahl | — *(erst messen, siehe Kennzahlen unten)* |
 
 **Der entscheidende Wert:** Die App kann funktional mehr, als die Datenlage trägt. Der Engpass
-ist nicht Code, sondern Abdeckung. Solange die Karte für 94 % der Schweiz „keine Angabe,
+ist nicht Code, sondern Abdeckung. Solange die Karte für 86 % der Schweiz „keine Angabe,
 frag die Gemeinde" sagt, ist jede Bezahlschranke ein Versprechen auf Kredit.
 
 ---
@@ -44,8 +45,8 @@ frag die Gemeinde" sagt, ist jede Bezahlschranke ein Versprechen auf Kredit.
 ## Warum kein Abo — die vier Gründe
 
 **1. Es verkauft ein Versprechen, das die Daten noch nicht halten.**
-Wer zahlt, erwartet Vollständigkeit und Aktualität. Bei 6 % Abdeckung zahlt jemand dafür,
-dass die Karte ihn an die Gemeinde verweist. Die erste Erstattungsanfrage kommt in Woche zwei.
+Wer zahlt, erwartet Vollständigkeit und Aktualität. Bei 14 % Abdeckung zahlt jemand dafür,
+dass die Karte ihn in den meisten Fällen an die Gemeinde verweist. Die erste Erstattungsanfrage kommt in Woche zwei.
 
 **2. Bezahlung hebt die Haftungserwartung.**
 Der Disclaimer trägt bei einem frei zugänglichen Orientierungsangebot weiter als bei einem
@@ -76,16 +77,23 @@ ist das Marketing. Wer sie nicht frei teilen kann, ist ein verlorener Multiplika
   bei echter Gegenleistungsfreiheit ohne Umsatzsteuer). Ein Platz, unaufdringlich, kein Banner,
   kein Interstitial.
 - Affiliate-Struktur bleibt wie sie ist (`app/src/affiliate/`), weiterhin ohne echte Links.
-- **Besucherzählung aufsetzen**, datensparsam und ohne Cookie (z. B. selbst gehostetes Plausible
-  oder die Cloudflare-Statistik). Ohne Zahlen ist jede folgende Stufe geraten.
+- **Besucherzählung aufsetzen**, datensparsam und ohne Cookie. Entschieden: Cloudflare Web
+  Analytics — kein Cookie, kein fremdes Konto, und die Content-Security-Policy lässt sein
+  Beacon bereits zu. **Einzuschalten im Cloudflare-Dashboard** (Web Analytics für
+  camping-map.com); die Datenschutzerklärung beschreibt es bereits. Ohne Zahlen ist jede
+  folgende Stufe geraten.
+- **Impressum und Datenschutzerklärung stehen** (`#/impressum`, `#/datenschutz`). Sie wurden
+  mit dem Unterstützer-Link fällig, nicht erst mit dem ersten Verkauf. Die Betreiberangaben
+  sind in `app/src/rechtliches/betreiber.ts` einzutragen — bis dahin benennen die Seiten die
+  Lücke offen, und `npm run build` erinnert daran.
 
 **Erwarteter Ertrag:** 0–20 €/Monat. Das ist Kaffeegeld und soll es sein.
 
 **Wohin die Energie stattdessen geht:** Gemeindeabdeckung. Über `gemeinden.muster.json`
 skaliert die Einstufung nach Formulierung, nicht nach Gemeinde — das ist der einzige Weg,
-von 6 % auf eine Zahl zu kommen, die ein Produkt trägt.
+von 14 % auf eine Zahl zu kommen, die ein Produkt trägt.
 
-> **20 % der Schweiz sauber belegt ist mehr wert als jedes Bezahlmodell auf 6 %.**
+> **20 % der Schweiz sauber belegt ist mehr wert als jedes Bezahlmodell auf 14 %.**
 
 ---
 
@@ -155,8 +163,8 @@ Regionen der Legalitätsebene.
 **Erwarteter Ertrag bei 300 wiederkehrenden Nutzern und 3 % Umwandlung:** ~9 Käufe,
 ~135 € — einmalig, nicht monatlich. Erst ab dem Zehnfachen an Nutzern wird das relevant.
 
-**Was gleichzeitig fällig wird:** Impressum, Datenschutzerklärung, AGB, Widerrufsbelehrung
-mit Verzichtserklärung, Umsatzsteuerfrage klären (Kleinunternehmerregelung, OSS bei
+**Was gleichzeitig fällig wird:** AGB, Widerrufsbelehrung mit Verzichtserklärung
+(Impressum und Datenschutzerklärung stehen seit Stufe 0), Umsatzsteuerfrage klären (Kleinunternehmerregelung, OSS bei
 EU-Verbrauchern), Gewerbeanmeldung prüfen. Vor dieser Stufe einmal fachlich beraten lassen —
 diese Liste ist eine Merkhilfe, keine Rechtsauskunft.
 
