@@ -30,6 +30,14 @@ import { ladeVerlauf } from '../services/community'
 interface Props {
   session: Session | null
   onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
+  /**
+   * Meldet, dass gerade ein Tourverlauf geholt wird.
+   *
+   * Die Anzeige dazu steht in `App.tsx`, nicht hier: der Vorgang endet auf der
+   * Karte, und ein Hinweis in diesem Panel verschwände mitten im Warten mit dem
+   * Panel selbst.
+   */
+  onLadenWechsel?: (laeuft: boolean) => void
   onAnmelden: () => void
   /** Führt zur Karte, wo Touren entstehen. */
   onZurKarte: () => void
@@ -46,7 +54,7 @@ interface Props {
 type Stapel = 'eigene' | 'gemerkt'
 
 export function MyToursPanel({
-  session, onLoadRoute, onAnmelden, onZurKarte, onBearbeiten,
+  session, onLoadRoute, onLadenWechsel, onAnmelden, onZurKarte, onBearbeiten,
 }: Props) {
   const [stapel, setStapel] = useState<Stapel>('eigene')
   const [eigene, setEigene] = useState<Tour[]>([])
@@ -97,9 +105,15 @@ export function MyToursPanel({
     View — `user_id` steht nur an den eigenen, das unterscheidet beide sicher.
   */
   const aufKarte = async (t: Tour | PublicTour) => {
-    const verlauf = 'user_id' in t
-      ? await ladeEigenenVerlauf(t.id)
-      : await ladeVerlauf(t.id)
+    onLadenWechsel?.(true)
+    let verlauf
+    try {
+      verlauf = 'user_id' in t
+        ? await ladeEigenenVerlauf(t.id)
+        : await ladeVerlauf(t.id)
+    } finally {
+      onLadenWechsel?.(false)
+    }
     onLoadRoute(
       ((verlauf.geometry ?? t.vorschau)?.coordinates ?? []) as Position[],
       (verlauf.waypoints ?? []) as Position[],

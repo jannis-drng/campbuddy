@@ -10,6 +10,7 @@ import type {
 } from './data/types'
 import { MapView } from './map/MapView'
 import { Haftungshinweis } from './components/Disclaimer'
+import { Ladehinweis, Ladeschleier } from './components/Laden'
 import { FilterBar } from './components/FilterBar'
 import { InfoPanel, type Selection } from './components/InfoPanel'
 import { MyToursPanel } from './components/MyToursPanel'
@@ -568,6 +569,31 @@ export default function App() {
    * erst die Kamera hinschicken, und die Auskunft aufschlagen, sobald die
    * Kacheln nachgekommen sind.
    */
+  /**
+   * Läuft gerade ein Tourabruf?
+   *
+   * Sitzt hier und nicht in den einzelnen Panels, weil der Vorgang die Ansicht
+   * wechselt: er beginnt in der Liste und endet auf der Karte. Eine Anzeige,
+   * die im Panel steht, verschwindet mitten im Warten mit dem Panel.
+   */
+  const [tourLaedt, setTourLaedt] = useState(false)
+
+  /**
+   * Einen Tourabruf mit Anzeige umschliessen.
+   *
+   * `finally`, damit ein Fehler die Anzeige nicht stehen lässt — ein Schleier,
+   * der nicht mehr weggeht, ist schlimmer als gar keiner: er sperrt die
+   * Bedienung, und man kommt nur noch mit Neuladen heraus.
+   */
+  const beimLaden = async <T,>(vorgang: () => Promise<T>): Promise<T> => {
+    setTourLaedt(true)
+    try {
+      return await vorgang()
+    } finally {
+      setTourLaedt(false)
+    }
+  }
+
   const [verlinkterOrt, setVerlinkterOrt] = useState<Position | null>(ortAusAdresse)
 
   useEffect(() => {
@@ -656,7 +682,7 @@ export default function App() {
    * sonst eine Route, die schon beim Öffnen ihre Kehren verloren hat.
    */
   const tourBearbeiten = async (tour: Tour) => {
-    const verlauf = await ladeEigenenVerlauf(tour.id)
+    const verlauf = await beimLaden(() => ladeEigenenVerlauf(tour.id))
     routeLaden(
       (verlauf.geometry?.coordinates ?? []) as Position[],
       (verlauf.waypoints ?? []) as Position[],
@@ -896,8 +922,22 @@ export default function App() {
         Hinweistext ab — er brach als „…keine Rechtsg…" um.
       */}
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-kante bg-flaeche-2 px-3 sm:gap-4 sm:px-4">
-        {/* Wortmarke: das Zelt als Form, nicht als Emoji. */}
-        <a href="./" className="flex min-w-0 items-center gap-2.5" aria-label="CampBuddy, Startseite">
+        {/*
+          Wortmarke: das Zelt als Form, nicht als Emoji — und zugleich der Weg
+          zurück zur Startseite.
+
+          Sie zeigte vorher auf `./`, was die Anwendung neu lud und, weil der
+          Besuchsmerker gesetzt ist, wieder auf der Karte landete: ein Klick,
+          der sichtbar nichts tat ausser zu warten. `#/start` erzwingt die
+          Startseite ohne Neuladen (siehe `Root.tsx`) — dort steht, was das
+          Projekt ist, wie weit es ist und wo die Gemeindeliste liegt.
+        */}
+        <a
+          href="#/start"
+          title="Zur Startseite"
+          className="flex min-w-0 items-center gap-2.5"
+          aria-label="CampBuddy, zur Startseite"
+        >
           <Marke className="h-7 w-7 shrink-0" />
           <span className="hidden text-ueberschrift font-semibold tracking-tight text-ink-50 sm:block">
             CampBuddy
@@ -986,6 +1026,12 @@ export default function App() {
                       ${selection ? 'karte-panel-rechts' : ''}
                       ${routeOpen && (drawing || markieren) ? 'karte-leiste-unten' : ''}`}
         >
+          {/*
+            Schwebt über der Karte, blockiert nichts: wer einen weiteren Stopp
+            setzen will, während noch gerechnet wird, soll das können.
+          */}
+          {routingBusy && <Ladehinweis text="Weg wird berechnet …" />}
+
           <MapView
             region={region}
             zones={allZones}
@@ -1133,7 +1179,7 @@ export default function App() {
               setSelection(null)
               // Erst hier den echten Weg holen — die Liste im Infofenster
               // trägt nur die Vorschau.
-              void ladeVerlauf(tour.id).then((verlauf) => routeLaden(
+              void beimLaden(() => ladeVerlauf(tour.id)).then((verlauf) => routeLaden(
                 ((verlauf.geometry ?? tour.vorschau)?.coordinates ?? []) as Position[],
                 (verlauf.waypoints ?? []) as Position[],
               ))
@@ -1173,6 +1219,7 @@ export default function App() {
           <MyToursPanel
             session={session}
             onLoadRoute={routeLaden}
+            onLadenWechsel={setTourLaedt}
             onAnmelden={() => setView('konto')}
             onZurKarte={() => setView('karte')}
             onBearbeiten={tourBearbeiten}
@@ -1185,6 +1232,7 @@ export default function App() {
           <CommunityPanel
             session={session}
             onLoadRoute={routeLaden}
+            onLadenWechsel={setTourLaedt}
             ort={ortsfilter}
             onOrtLoesen={() => setOrtsfilter(null)}
           />
@@ -1291,6 +1339,12 @@ export default function App() {
             }
           : undefined}
       />
+
+      {/*
+        Ganz aussen und ohne Bedingung an die Ansicht: der Vorgang beginnt in
+        einer Liste und endet auf der Karte, der Schleier muss beide überdauern.
+      */}
+      {tourLaedt && <Ladeschleier text="Tour wird geladen …" />}
     </div>
   )
 }

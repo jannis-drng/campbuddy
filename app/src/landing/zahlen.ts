@@ -17,6 +17,7 @@
  */
 import type { LegalStatus, Permission, ReviewStatus } from '../data/types'
 import bestandRoh from '../data/bestand.json'
+import abdeckungRoh from '../data/snapshot/abdeckung.CH.json'
 import beispielRoh from '../data/snapshot/beispiel.CH.json'
 
 interface Bestand {
@@ -64,11 +65,47 @@ export const zonenUngeklaert = bestand.zonen_ungeklaert
  * belegte Einstufung tragen. Solange das eine Handvoll ist, soll genau das
  * dastehen.
  */
-export const gemeindenGesamt = bestand.gemeinden
-export const gemeindenEingestuft = bestand.gemeinden_eingestuft
+/*
+ * Diese fünf kommen aus dem Snapshot, nicht aus `bestand.json`.
+ *
+ * `bestand.json` entsteht beim OSM-Import und beschreibt, was importiert wurde.
+ * Wie weit die Rechtspflege ist, hat damit nichts zu tun — und genau daran hing
+ * die Startseite tagelang bei 120 eingestuften Gemeinden fest, während es
+ * längst 300 waren. Die Zahl wird jetzt bei jedem Bauen aus
+ * `gemeinden.legal.json` gezählt (siehe `scripts/snapshot-daten.mjs`).
+ */
+interface Abdeckung {
+  stand: string
+  gemeinden: number
+  eingestuft: number
+  belegt: number
+  vor_ort: number
+  je_kanton: Record<string, { gesamt: number; eingestuft: number; kennung: string }>
+}
+
+const abdeckung = abdeckungRoh as Abdeckung
+
+export const gemeindenGesamt = abdeckung.gemeinden
+export const gemeindenEingestuft = abdeckung.eingestuft
 /** Mit einem benannten amtlichen Dokument belegt. Die einzige Zahl, die trägt. */
-export const gemeindenBelegt = bestand.gemeinden_belegt
-export const gemeindenVorOrt = bestand.gemeinden_vor_ort
+export const gemeindenBelegt = abdeckung.belegt
+export const gemeindenVorOrt = abdeckung.vor_ort
+/** Wann zuletzt gezählt wurde — das Datum des letzten Baus. */
+export const abdeckungStand = abdeckung.stand
+
+/**
+ * Die Abdeckung je Kanton, absteigend nach Zahl der eingestuften Gemeinden.
+ *
+ * Trägt den Abschnitt, über den die Startseite in die Gemeindeliste führt.
+ * Kantone ohne einen einzigen Eintrag stehen bewusst mit dabei: die Liste ist
+ * auch ein ehrliches Bild davon, wo noch nichts ist.
+ */
+export const abdeckungJeKanton: {
+  code: string; gesamt: number; eingestuft: number; kennung: string
+}[] =
+  Object.entries(abdeckung.je_kanton)
+    .map(([code, w]) => ({ code, ...w }))
+    .sort((a, b) => b.eingestuft - a.eingestuft || a.code.localeCompare(b.code))
 
 export const punkteGesamt = bestand.punkte
 export const gipfelGesamt = bestand.gipfel

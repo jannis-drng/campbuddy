@@ -30,6 +30,7 @@
  * in .gitignore, damit niemand sie von Hand pflegt.
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, readdirSync, statSync } from 'node:fs'
+import { kennung } from './lib/kennung.mjs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
@@ -438,6 +439,64 @@ const gesamtGz = geschrieben.reduce((s, g) => s + g.gz, 0)
 const gz = (praefix) => einzeln.find((g) => g.name.startsWith(praefix)).gz
 const sofort = gz('zonen') + gz('punkte') + gz('gemeinden.uebersicht') + gz('kantone') + gz('gipfel.hoch')
 
+/* --------------------------------------------------------------- Abdeckung */
+
+/**
+ * Wie weit die Rechtspflege gediehen ist — beim Bauen gezählt, nicht beim Import.
+ *
+ * Dieselben Zahlen standen bisher in `bestand.json`, und die entsteht nur, wenn
+ * jemand den OSM-Import laufen lässt. Genau daran zeigte die Startseite über
+ * Tage 120 eingestufte Gemeinden, während es längst 300 waren: die Zahl hing an
+ * einem Schritt, der mit der Rechtspflege überhaupt nichts zu tun hat.
+ *
+ * Was sich aus `gemeinden.legal.json` ableiten lässt, wird deshalb hier gezählt
+ * — bei jedem `dev` und jedem `build`. Ein Eintrag mehr in der Rechtsdatei, und
+ * die Startseite sagt es beim nächsten Start.
+ *
+ * Die Aufschlüsselung nach Kanton kommt dazu, weil die Startseite die
+ * Gemeindeliste erschliesst und dafür wissen muss, wo etwas zu holen ist. Sie
+ * kostet rund 700 Bytes und liegt im Snapshot, nicht im Git.
+ */
+/**
+ * Kantonscode -> Name, aus derselben Liste, die auch die Oberflaeche benutzt.
+ *
+ * Aus der TypeScript-Datei gelesen statt zweitgeschrieben: eine zweite Liste
+ * mit 26 Namen ist eine zweite Liste, die veralten kann.
+ */
+const KANTON_NAMEN = Object.fromEntries(
+  [...readFileSync(resolve(DATEN, 'kantoneNamen.ts'), 'utf8')
+    .matchAll(/\['(CH-[A-Z]{2})', '([^']+)'\]/g)].map((m) => [m[1], m[2]]),
+)
+
+function abdeckung() {
+  const legal = JSON.parse(readFileSync(resolve(DATEN, 'gemeinden.legal.json'), 'utf8')).gemeinden
+  const flaechen = lies(resolve(IMPORT, 'gemeinden', `${REGION}.json`)).features
+
+  const eintraege = Object.values(legal)
+  const jeKanton = {}
+  for (const f of flaechen) {
+    const k = f.properties.kanton
+    if (!k) continue
+    jeKanton[k] ??= { gesamt: 0, eingestuft: 0, kennung: kennung(KANTON_NAMEN[k] ?? k) }
+    jeKanton[k].gesamt++
+    if (legal[String(f.properties.bfs)]) jeKanton[k].eingestuft++
+  }
+
+  const inhalt = {
+    region: REGION,
+    stand: new Date().toISOString().slice(0, 10),
+    gemeinden: flaechen.length,
+    eingestuft: eintraege.length,
+    belegt: eintraege.filter((e) => e.review_status === 'quelle').length,
+    vor_ort: eintraege.filter((e) => e.review_status === 'vor-ort').length,
+    je_kanton: jeKanton,
+  }
+  schreibe(`abdeckung.${REGION}.json`, inhalt)
+  return inhalt
+}
+
+const abdeckungsStand = abdeckung()
+
 console.log(`
   Sofort beim Öffnen der Karte
     Zonen        ${String(anzahlZonen).padStart(5)}  →  ${gz('zonen')} KB gz
@@ -452,7 +511,10 @@ console.log(`
     Gipfel  ${String(gipfel.objekte).padStart(5)}       ${gipfel.kacheln} Kacheln, Ø ${gipfel.mittel} KB gz, grösste ${gipfel.groesste} KB
     Natur   ${String(natur.objekte).padStart(5)}       ${natur.kacheln} Kacheln, Ø ${natur.mittel} KB gz, grösste ${natur.groesste} KB
 
-  ${geschrieben.length} Dateien, ${gesamtGz} KB gz insgesamt — der Vorrat, nicht die Last.`)
+  ${geschrieben.length} Dateien, ${gesamtGz} KB gz insgesamt — der Vorrat, nicht die Last.
+
+  Rechtspflege
+    Gemeinden eingestuft  ${String(abdeckungsStand.eingestuft).padStart(5)} von ${abdeckungsStand.gemeinden}, davon ${abdeckungsStand.belegt} mit Quelle belegt`)
 
 // Ein leerer Snapshot fällt sonst erst im Browser auf, als leere Karte.
 const leer = [anzahlZonen, anzahlPunkte, gemeinden.flaechen, anzahlKantone].some((n) => n === 0)

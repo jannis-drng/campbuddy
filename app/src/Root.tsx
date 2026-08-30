@@ -66,11 +66,29 @@ function istAuthRueckkehr(): boolean {
 }
 
 function zielAusAdresse(): Ziel | null {
-  const recht = RECHTSSEITEN[window.location.hash]
+  const hash = window.location.hash
+  const recht = RECHTSSEITEN[hash]
   if (recht) return recht
-  if (window.location.hash === '#/start') return 'start'
+  if (hash === '#/start') return 'start'
   if (istAuthRueckkehr()) return 'app'
-  if (window.location.hash.startsWith('#/')) return 'app'
+  if (hash.startsWith('#/')) return 'app'
+
+  /*
+   * Ein Sprungziel wie `#funktionen` gehört zur Startseite — und zwar so
+   * eindeutig, dass es hier als Ziel gilt.
+   *
+   * Ohne diese Zeile war jeder Ankerlink der Startseite für wiederkehrende
+   * Besucher kaputt, und zwar auf eine Art, die beim Entwickeln nie auffällt:
+   * Der Klick ändert den Hash, das löst hier neu aus, es kam `null` heraus —
+   * und weil `null` heisst „entscheide nach Cookie", und der Cookie bei jedem
+   * zweiten Besuch gesetzt ist, sprang die Seite mitten im Lesen in die Karte.
+   * Beim ersten Besuch (kein Cookie) blieb sie stehen, deshalb sah es lokal
+   * immer richtig aus.
+   *
+   * Nebenbei wird damit auch `example.com/#funktionen` von aussen zu einem
+   * gültigen Link auf die Startseite, statt je nach Cookie zu würfeln.
+   */
+  if (hash.length > 1) return 'start'
   return null
 }
 

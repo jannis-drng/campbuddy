@@ -24,12 +24,14 @@ import { DEFAULT_REGION, REGIONS } from '../data/regions'
 import { Badge, Button, Card, IconButton } from '../ui'
 import { PermissionRow, ReviewBadge, StatusBadge } from '../components/ui'
 import { biwakRegel } from '../data/legalData'
+import { KANTON_NAMEN } from '../data/kantoneNamen'
 import { Einblenden } from './Einblenden'
 import { KartenSchema } from './Grafiken'
 import { Marke } from '../components/Marke'
 import { UnterstuetzenBand } from '../components/Unterstuetzen'
 import {
-  beispielZone, gemeindenGesamt, gipfelGesamt, punkteGesamt, punkteJeArt, zonenGesamt,
+  abdeckungJeKanton, beispielZone, gemeindenBelegt, gemeindenEingestuft, gemeindenGesamt,
+  gipfelGesamt, punkteGesamt, punkteJeArt, zonenGesamt,
 } from './zahlen'
 
 import heroBild from '../assets/landing/hero-biwak.webp'
@@ -123,6 +125,7 @@ export function LandingPage({ onStart }: { onStart: () => void }) {
         <Ablauf />
         <Anwendungsfaelle />
         <Grundlage />
+        <Abdeckung />
         <Fragen />
         <Schluss onStart={onStart} />
       </main>
@@ -139,6 +142,7 @@ const ABSCHNITTE: [string, string][] = [
   ['funktionen', 'Funktionen'],
   ['ablauf', 'So funktioniert’s'],
   ['grundlage', 'Rechtslage'],
+  ['abdeckung', 'Gemeinden'],
   ['fragen', 'Fragen'],
 ]
 
@@ -774,6 +778,91 @@ function Grundlage() {
           </Card>
         </Einblenden>
       </div>
+    </section>
+  )
+}
+
+/* --------------------------------------------------------------- Abdeckung */
+
+/**
+ * Der Weg von der Startseite in die Gemeindeliste — und der ehrliche Stand.
+ *
+ * Zwei Dinge auf einmal, und beide fehlten. Erstens war die Startseite ein
+ * Prospekt: sie erklärte, warum es die Karte gibt, und hörte dann auf. Die
+ * dreihundert belegten Gemeinden, die eigentliche Arbeit des Projekts, kamen
+ * darin nicht vor. Zweitens waren die vorgerenderten Seiten von hier aus nur
+ * über eine Zeile in der Fusszeile erreichbar.
+ *
+ * Der Abschnitt zeigt deshalb, wo etwas zu holen ist — nach Kanton, mit der
+ * Zahl daneben. Dass die meisten Kantone dabei niedrig oder bei null stehen,
+ * ist kein Makel, den man verstecken müsste: es ist dieselbe Auskunft, die
+ * jede ungefüllte Fläche auf der Karte gibt.
+ *
+ * Die Links führen aus der Anwendung heraus auf statische Seiten. Das ist
+ * Absicht — sie sind für Suchmaschinen und zum Teilen gebaut und brauchen
+ * kein JavaScript.
+ */
+/** Code -> Name, einmal aufgeschlagen statt bei jedem Eintrag gesucht. */
+const KANTON_NAME: Record<string, string> = Object.fromEntries(KANTON_NAMEN)
+
+function Abdeckung() {
+  const basis = import.meta.env.BASE_URL
+  const mitEintrag = abdeckungJeKanton.filter((k) => k.eingestuft > 0)
+  const anteil = Math.round((gemeindenEingestuft / gemeindenGesamt) * 100)
+
+  return (
+    <section id="abdeckung" className={`${BREITE} py-20 sm:py-24`}>
+      <Einblenden als="div" className="max-w-2xl">
+        <Kapitel>Der Stand</Kapitel>
+        <Sektionstitel>
+          {zahl(gemeindenEingestuft)} Gemeinden sind nachgeschlagen
+        </Sektionstitel>
+        <p className="mt-5 text-fliess leading-relaxed text-ink-300">
+          Für diese Gemeinden ist im Wortlaut ihres Reglements geprüft, ob und unter welchen
+          Bedingungen dort im Freien übernachtet werden darf - {zahl(gemeindenBelegt)} davon
+          mit einem amtlichen Dokument belegt. Das sind {anteil} % der Schweiz; an den
+          übrigen wird gearbeitet, und bis dahin sagt die Karte dort offen, dass nichts
+          bekannt ist.
+        </p>
+      </Einblenden>
+
+      <Einblenden als="div" verzoegerung={80} className="mt-10">
+        <ul className="flex flex-wrap gap-2">
+          {mitEintrag.map((k) => (
+            <li key={k.code}>
+              <a
+                href={`${basis}kanton/${k.kennung}`}
+                className="flex items-baseline gap-2 rounded-mittel border border-kante bg-flaeche-2
+                           px-3.5 py-2 text-klein text-ink-300 transition-colors duration-[160ms]
+                           hover:border-gletscher-500/40 hover:text-ink-50"
+              >
+                {KANTON_NAME[k.code] ?? k.code}
+                <span className="text-mikro tracking-normal text-ink-500">
+                  {k.eingestuft}/{k.gesamt}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 text-klein leading-relaxed text-ink-500">
+          Die übrigen {26 - mitEintrag.length} Kantone haben noch keine einzeln
+          nachgeschlagene Gemeinde. Was dort kantonal gilt, ist trotzdem geprüft - und die
+          Antwort ist bemerkenswert: ausser Obwalden regelt kein Kanton das Übernachten im
+          Freien selbst.
+        </p>
+      </Einblenden>
+
+      <Einblenden als="div" verzoegerung={140} className="mt-8 flex flex-wrap gap-3">
+        <a
+          href={`${basis}gemeinden`}
+          className="inline-flex items-center gap-2 rounded-mittel bg-gletscher-500 px-5 py-3
+                     text-fliess font-semibold text-ink-950 transition-colors duration-[160ms]
+                     hover:bg-gletscher-400"
+        >
+          Alle Gemeinden und Kantone ansehen
+          <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
+        </a>
+      </Einblenden>
     </section>
   )
 }

@@ -28,6 +28,7 @@
  */
 import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { kennung } from './lib/kennung.mjs'
 
 const HIER = fileURLToPath(new URL('../', import.meta.url))
 const DIST = `${HIER}dist/`
@@ -108,15 +109,6 @@ function beschreibung(name, e) {
   ]
   return `Übernachten in der Natur in ${name}: ${teile.join(', ')}. `
        + `Mit Quelle und Prüfdatum (${e.last_verified ?? 'ohne Datum'}).`
-}
-
-/** Adresstauglicher Name: „Val-de-Travers" → „val-de-travers". */
-function kennung(name) {
-  return name.toLowerCase()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
 }
 
 const escape = (s) => String(s)

@@ -41,6 +41,14 @@ interface Props {
   session: Session | null
   onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
   /**
+   * Meldet, dass gerade ein Tourverlauf geholt wird.
+   *
+   * Die Anzeige dazu steht in `App.tsx`, nicht hier: der Vorgang endet auf der
+   * Karte, und ein Hinweis in diesem Panel verschwände mitten im Warten mit dem
+   * Panel selbst.
+   */
+  onLadenWechsel?: (laeuft: boolean) => void
+  /**
    * Ein von der Karte mitgebrachter Ort — gesetzt, wenn jemand auf ein Symbol
    * getippt und „Alle Touren hier" gewählt hat.
    */
@@ -48,7 +56,7 @@ interface Props {
   onOrtLoesen?: () => void
 }
 
-export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props) {
+export function CommunityPanel({ session, onLoadRoute, onLadenWechsel, ort, onOrtLoesen }: Props) {
   const [filter, setFilter] = useState<CommunityFilter>(STANDARD_FILTER)
   const [sucheRoh, setSucheRoh] = useState('')
   const [touren, setTouren] = useState<PublicTour[]>([])
@@ -174,7 +182,13 @@ export function CommunityPanel({ session, onLoadRoute, ort, onOrtLoesen }: Props
   */
   const aufKarte = async (tour: PublicTour) => {
     setOffen(null)
-    const verlauf = await ladeVerlauf(tour.id)
+    onLadenWechsel?.(true)
+    let verlauf
+    try {
+      verlauf = await ladeVerlauf(tour.id)
+    } finally {
+      onLadenWechsel?.(false)
+    }
     onLoadRoute(
       ((verlauf.geometry ?? tour.vorschau)?.coordinates ?? []) as Position[],
       (verlauf.waypoints ?? []) as Position[],
