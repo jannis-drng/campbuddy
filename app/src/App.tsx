@@ -36,7 +36,7 @@ import { ZeichenLeiste } from './components/ZeichenLeiste'
 import { Marke } from './components/Marke'
 import { UnterstuetzenKnopf } from './components/Unterstuetzen'
 import { DEFAULT_BASEMAP, ZOOM_AB, type BasemapKey } from './map/mapConfig'
-import { isSupabaseConfigured, type Tour } from './services/supabase'
+import { isSupabaseConfigured, type PublicTour, type Tour } from './services/supabase'
 import { serviceWorkerVorwaermen } from './services/sw'
 import {
   entwurfAbholen, entwurfSichern, entwurfVerwerfen, entwurfWartet, type Tourentwurf,
@@ -570,9 +570,13 @@ export default function App() {
    * Kacheln nachgekommen sind.
    */
   /**
-   * Läuft gerade ein Tourabruf?
+   * Läuft gerade ein Tourabruf, auf den gewartet werden *muss*?
    *
-   * Sitzt hier und nicht in den einzelnen Panels, weil der Vorgang die Ansicht
+   * Das ist nur noch einer: das Öffnen zum Bearbeiten. Beim blossen Ansehen
+   * liegt die Vorschau sofort auf der Karte und der volle Weg kommt nach
+   * (`tourAufKarte`) — dort wäre ein Schleier eine Sperre ohne Not.
+   *
+   * Er sitzt hier und nicht in den Panels, weil der Vorgang die Ansicht
    * wechselt: er beginnt in der Liste und endet auf der Karte. Eine Anzeige,
    * die im Panel steht, verschwindet mitten im Warten mit dem Panel.
    */
@@ -654,7 +658,16 @@ export default function App() {
     setView('community')
   }
 
-  const routeLaden = (
+  /**
+   * Welche Tour-Anforderung gerade gilt.
+   *
+   * Steht vor den beiden Ladefunktionen, weil beide ihn brauchen: `routeLaden`
+   * zählt hoch, `tourAufKarte` merkt sich den Stand und verwirft eine Antwort,
+   * die inzwischen überholt ist.
+   */
+  const ladeZaehler = useRef(0)
+
+  const routeSetzen = (
     geometry: Position[],
     wps: Position[],
     /** Gehört der Verlauf einer eigenen Tour, die jetzt geändert werden soll? */
@@ -675,11 +688,113 @@ export default function App() {
   }
 
   /**
+   * Wie `routeSetzen`, aber es überholt einen noch offenen Nachschub.
+   *
+   * Der Unterschied ist der Zähler, und er ist der Grund für die Trennung:
+   * `tourAufKarte` setzt die Vorschau selbst und vergibt danach *eine*
+   * Marke. Ginge das über diese Fassung, zählte der Zähler zweimal hoch —
+   * einmal beim Setzen, einmal beim Vergeben — und die eigene Antwort käme
+   * als überholt zurück. Genau das ist beim Bauen passiert, und es fiel nur
+   * auf, weil der Hinweis bei fehlgeschlagenem Nachladen ausblieb.
+   */
+  const routeLaden = (
+    geometry: Position[],
+    wps: Position[],
+    bearbeiten?: { id: string; name: string },
+  ) => {
+    ladeZaehler.current++
+    routeSetzen(geometry, wps, bearbeiten)
+  }
+
+  /**
+   * Eine Tour auf die Karte holen — erst grob, dann genau.
+   *
+   * Der Weg dorthin war bisher: Knopf drücken, warten, Tour erscheint. Bei der
+   * längsten gespeicherten Tour sind das 20 191 Punkte und rund 115 KB gepackt
+   * — auf einer Mobilverbindung mehrere Sekunden, in denen ausser einem
+   * Schleier nichts geschah.
+   *
+   * Dabei liegt die Antwort schon da: die Liste, aus der man klickt, trägt zu
+   * jeder Tour die `vorschau` — denselben Weg, auf 120 Punkte ausgedünnt, seit
+   * Migration 0024. Sie ist im Speicher, kostet keine Anfrage und sieht auf
+   * Übersichtszoom aus wie das Original. Also wird sie sofort gezeichnet, die
+   * Karte fliegt hin, und der volle Verlauf ersetzt sie, sobald er da ist.
+   *
+   * Der Zähler schützt vor dem Fall, dass jemand in der Wartezeit weiterklickt:
+   * trifft eine Antwort ein, die zu einer inzwischen überholten Anforderung
+   * gehört, wird sie verworfen. Ohne ihn läge nach zwei schnellen Klicks die
+   * erste Tour über der zweiten.
+   */
+  const [verlaufLaedt, setVerlaufLaedt] = useState(false)
+
+  const tourAufKarte = (tour: Tour | PublicTour, eigen: boolean) => {
+    const grob = ((tour.vorschau ?? tour.geometry)?.coordinates ?? []) as Position[]
+    const marke = ++ladeZaehler.current
+    routeSetzen(grob, [])
+
+    setVerlaufLaedt(true)
+    void (eigen ? ladeEigenenVerlauf(tour.id) : ladeVerlauf(tour.id))
+      .then((verlauf) => {
+        if (marke !== ladeZaehler.current) return
+        const voll = (verlauf.geometry?.coordinates ?? []) as Position[]
+        if (voll.length > grob.length) {
+          setGpxTrack(voll)
+          setWaypoints(((verlauf.waypoints ?? []) as Position[]).map((position) => ({ position })))
+          return
+        }
+        /*
+         * Nichts zurückbekommen — Tour zurückgezogen, Netz weg, Sitzung
+         * abgelaufen. Die Vorschau bleibt stehen, denn ein grober Weg ist
+         * besser als ein leerer Bildschirm. Aber er wird auch benannt.
+         *
+         * Vorher geschah genau das still (`verlaufLaden` schluckt den Fehler
+         * und gibt einen leeren Verlauf zurück), und man sah es nur daran,
+         * dass die Länge nicht stimmte: die ausgedünnte Vorschau schneidet
+         * Kehren ab und ist rund acht Prozent kürzer als der echte Weg. Eine
+         * falsche Zahl ohne Hinweis ist in dieser App das Schlimmste von
+         * beidem.
+         *
+         * Nur bei *leerem* Ergebnis, nicht bei gleich langem: eine kurze Tour
+         * mit sieben Punkten ist als Vorschau so lang wie im Original, und
+         * dort wäre der Hinweis schlicht falsch.
+         */
+        if (voll.length === 0) {
+          setRouteError(
+            'Der vollständige Verlauf liess sich nicht laden. Angezeigt ist die '
+            + 'vereinfachte Vorschau — Länge und Auswertung sind dadurch ungenau.',
+          )
+        }
+      })
+      /*
+       * Auch der abgewiesene Fall gehört hierher.
+       *
+       * `verlaufLaden` fängt Supabase-Fehler ab und gibt einen leeren Verlauf
+       * zurück — aber eben nicht jeden: bricht die Verbindung an der falschen
+       * Stelle, kommt die Zusage abgewiesen zurück statt leer. Ohne diesen
+       * Zweig fiele der Hinweis genau dann aus, wenn er am nötigsten wäre,
+       * und beim Prüfen sah es aus, als griffe er gar nicht.
+       */
+      .catch(() => {
+        if (marke !== ladeZaehler.current) return
+        setRouteError(
+          'Der vollständige Verlauf liess sich nicht laden. Angezeigt ist die '
+          + 'vereinfachte Vorschau — Länge und Auswertung sind dadurch ungenau.',
+        )
+      })
+      .finally(() => { if (marke === ladeZaehler.current) setVerlaufLaedt(false) })
+  }
+
+  /**
    * Eine eigene Tour zum Ändern auf die Karte holen.
    *
    * Der Verlauf wird nachgeladen: die Tourenliste kennt seit Migration 0024
    * nur die ausgedünnte Vorschau, und wer eine Tour *bearbeitet*, bekäme
    * sonst eine Route, die schon beim Öffnen ihre Kehren verloren hat.
+   *
+   * Hier wird deshalb bewusst gewartet, anders als beim blossen Ansehen
+   * (`tourAufKarte`): eine Vorschau als Arbeitsgrundlage anzubieten hiesse,
+   * dass ein Speichern die ausgedünnte Fassung zur echten macht. Der Verlust
+   * wäre still und endgültig.
    */
   const tourBearbeiten = async (tour: Tour) => {
     const verlauf = await beimLaden(() => ladeEigenenVerlauf(tour.id))
@@ -1057,6 +1172,12 @@ export default function App() {
             setzen will, während noch gerechnet wird, soll das können.
           */}
           {routingBusy && <Ladehinweis text="Weg wird berechnet …" />}
+          {/*
+            Der volle Verlauf ist noch unterwegs; die Vorschau liegt bereits
+            auf der Karte. Deshalb eine Marke und kein Schleier — es gibt
+            nichts zu blockieren, man sieht die Tour ja schon.
+          */}
+          {verlaufLaedt && <Ladehinweis text="Voller Verlauf wird geladen …" />}
 
           <MapView
             region={region}
@@ -1203,12 +1324,7 @@ export default function App() {
             onPunktLoeschen={(punkt) => void punktEntfernen(punkt)}
             onTourOeffnen={(tour) => {
               setSelection(null)
-              // Erst hier den echten Weg holen — die Liste im Infofenster
-              // trägt nur die Vorschau.
-              void beimLaden(() => ladeVerlauf(tour.id)).then((verlauf) => routeLaden(
-                ((verlauf.geometry ?? tour.vorschau)?.coordinates ?? []) as Position[],
-                (verlauf.waypoints ?? []) as Position[],
-              ))
+              tourAufKarte(tour, false)
             }}
             onAlleTouren={tourenBeiOrt}
             onAlsWegpunkt={(position, ort) => {
@@ -1244,8 +1360,7 @@ export default function App() {
         <main className="flex-1 overflow-y-auto">
           <MyToursPanel
             session={session}
-            onLoadRoute={routeLaden}
-            onLadenWechsel={setTourLaedt}
+            onTourAufKarte={tourAufKarte}
             onAnmelden={() => setView('konto')}
             onZurKarte={() => setView('karte')}
             onBearbeiten={tourBearbeiten}
@@ -1257,8 +1372,7 @@ export default function App() {
         <main className="flex-1 overflow-y-auto">
           <CommunityPanel
             session={session}
-            onLoadRoute={routeLaden}
-            onLadenWechsel={setTourLaedt}
+            onTourAufKarte={(tour) => tourAufKarte(tour, false)}
             ort={ortsfilter}
             onOrtLoesen={() => setOrtsfilter(null)}
           />
@@ -1384,8 +1498,9 @@ export default function App() {
       {/*
         Ganz aussen und ohne Bedingung an die Ansicht: der Vorgang beginnt in
         einer Liste und endet auf der Karte, der Schleier muss beide überdauern.
+        Er erscheint nur beim Öffnen zum Bearbeiten — siehe `tourLaedt`.
       */}
-      {tourLaedt && <Ladeschleier text="Tour wird geladen …" />}
+      {tourLaedt && <Ladeschleier text="Tour wird zum Bearbeiten geladen …" />}
     </div>
   )
 }

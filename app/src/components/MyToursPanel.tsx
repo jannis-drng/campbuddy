@@ -16,28 +16,26 @@ import {
   Bookmark, Globe, Heart, Lock, Map as MapIcon, MessageCircle, Share2,
   Trash2, TriangleAlert, X,
 } from 'lucide-react'
-import type { Position } from '../data/geo'
 import { isSupabaseConfigured, type PublicTour, type Tour } from '../services/supabase'
 import {
-  deleteTour, ladeEigenenVerlauf, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
+  deleteTour, ladeProfil, listFavoriteTouren, listTouren, removeFavorite,
   setTourPublic, tourKopieren,
 } from '../services/account'
 import { Badge, Button, Hinweis, IconButton, Leer, Segmente, Seite } from '../ui'
 import { AufKarteKnopf, hatWeg, TourKarte, ZaehlerKnopf } from './TourKarte'
 import { TourFenster } from './TourFenster'
-import { ladeVerlauf } from '../services/community'
 
 interface Props {
   session: Session | null
-  onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
   /**
-   * Meldet, dass gerade ein Tourverlauf geholt wird.
+   * Eine Tour auf die Karte holen — erst die Vorschau, dann der volle Weg.
    *
-   * Die Anzeige dazu steht in `App.tsx`, nicht hier: der Vorgang endet auf der
-   * Karte, und ein Hinweis in diesem Panel verschwände mitten im Warten mit dem
-   * Panel selbst.
+   * Das Panel holt den Verlauf nicht mehr selbst; `App.tourAufKarte` macht das
+   * zweistufig, damit der Klick auch bei einer langen Tour sofort etwas zeigt.
+   * `eigen` entscheidet die Quelle: die Basistabelle für eigene Touren, die
+   * öffentliche View für gemerkte fremde.
    */
-  onLadenWechsel?: (laeuft: boolean) => void
+  onTourAufKarte: (tour: Tour | PublicTour, eigen: boolean) => void
   onAnmelden: () => void
   /** Führt zur Karte, wo Touren entstehen. */
   onZurKarte: () => void
@@ -54,7 +52,7 @@ interface Props {
 type Stapel = 'eigene' | 'gemerkt'
 
 export function MyToursPanel({
-  session, onLoadRoute, onLadenWechsel, onAnmelden, onZurKarte, onBearbeiten,
+  session, onTourAufKarte, onAnmelden, onZurKarte, onBearbeiten,
 }: Props) {
   const [stapel, setStapel] = useState<Stapel>('eigene')
   const [eigene, setEigene] = useState<Tour[]>([])
@@ -104,20 +102,8 @@ export function MyToursPanel({
     Eigene Touren gehen über die Basistabelle, gemerkte über die öffentliche
     View — `user_id` steht nur an den eigenen, das unterscheidet beide sicher.
   */
-  const aufKarte = async (t: Tour | PublicTour) => {
-    onLadenWechsel?.(true)
-    let verlauf
-    try {
-      verlauf = 'user_id' in t
-        ? await ladeEigenenVerlauf(t.id)
-        : await ladeVerlauf(t.id)
-    } finally {
-      onLadenWechsel?.(false)
-    }
-    onLoadRoute(
-      ((verlauf.geometry ?? t.vorschau)?.coordinates ?? []) as Position[],
-      (verlauf.waypoints ?? []) as Position[],
-    )
+  const aufKarte = (t: Tour | PublicTour) => {
+    onTourAufKarte(t, 'user_id' in t)
   }
 
   const zuruecknehmen = async (t: Tour) => {
@@ -311,11 +297,10 @@ export function MyToursPanel({
           tour={detail.tour}
           eigen={detail.eigen}
           onClose={() => setDetail(null)}
-          onAufKarte={(geometry, wegpunkte) => {
+          onAufKarte={() => {
             setDetail(null)
-            onLoadRoute(geometry, wegpunkte)
+            onTourAufKarte(detail.tour, detail.eigen)
           }}
-          onLadenWechsel={onLadenWechsel}
           onBearbeiten={detail.eigen
             ? () => { setDetail(null); onBearbeiten(detail.tour as Tour) }
             : undefined}

@@ -24,12 +24,10 @@ import type { Session } from '@supabase/supabase-js'
 import {
   Bookmark, Compass, Heart, MapPin, MessageCircle, Search, SlidersHorizontal, TriangleAlert, X,
 } from 'lucide-react'
-import type { Position } from '../data/geo'
 import { KANTON_NAMEN } from '../data/kantoneNamen'
 import { isSupabaseConfigured, type PublicTour } from '../services/supabase'
 import { addFavorite, ladeProfil, listFavoriteIds, removeFavorite } from '../services/account'
-import {
-  ladeVerlauf, listCommunityTouren, listLikeIds, setLike,
+import { listCommunityTouren, listLikeIds, setLike,
   LAENGENKLASSEN, NACHTLAGER, SORTIERUNGEN, STANDARD_FILTER,
   type CommunityFilter, type Laengenklasse, type Nachtlager, type Ortsfilter, type Sortierung,
 } from '../services/community'
@@ -39,15 +37,15 @@ import { TourModal } from './TourModal'
 
 interface Props {
   session: Session | null
-  onLoadRoute: (geometry: Position[], waypoints: Position[]) => void
   /**
-   * Meldet, dass gerade ein Tourverlauf geholt wird.
+   * Eine Tour auf die Karte holen.
    *
-   * Die Anzeige dazu steht in `App.tsx`, nicht hier: der Vorgang endet auf der
-   * Karte, und ein Hinweis in diesem Panel verschwände mitten im Warten mit dem
-   * Panel selbst.
+   * Das Panel holt den Verlauf nicht mehr selbst: `App.tourAufKarte` zeichnet
+   * zuerst die Vorschau, die hier ohnehin schon im Speicher liegt, und reicht
+   * den vollen Weg nach, sobald er da ist. Der Klick fühlt sich dadurch
+   * augenblicklich an, auch bei einer Tour mit zwanzigtausend Punkten.
    */
-  onLadenWechsel?: (laeuft: boolean) => void
+  onTourAufKarte: (tour: PublicTour) => void
   /**
    * Ein von der Karte mitgebrachter Ort — gesetzt, wenn jemand auf ein Symbol
    * getippt und „Alle Touren hier" gewählt hat.
@@ -56,7 +54,7 @@ interface Props {
   onOrtLoesen?: () => void
 }
 
-export function CommunityPanel({ session, onLoadRoute, onLadenWechsel, ort, onOrtLoesen }: Props) {
+export function CommunityPanel({ session, onTourAufKarte, ort, onOrtLoesen }: Props) {
   const [filter, setFilter] = useState<CommunityFilter>(STANDARD_FILTER)
   const [sucheRoh, setSucheRoh] = useState('')
   const [touren, setTouren] = useState<PublicTour[]>([])
@@ -180,19 +178,9 @@ export function CommunityPanel({ session, onLoadRoute, onLadenWechsel, ort, onOr
     Kommt nichts zurück (Tour inzwischen zurückgezogen), bleibt die Vorschau
     als Notnagel: lieber ein grober Weg auf der Karte als gar keiner.
   */
-  const aufKarte = async (tour: PublicTour) => {
+  const aufKarte = (tour: PublicTour) => {
     setOffen(null)
-    onLadenWechsel?.(true)
-    let verlauf
-    try {
-      verlauf = await ladeVerlauf(tour.id)
-    } finally {
-      onLadenWechsel?.(false)
-    }
-    onLoadRoute(
-      ((verlauf.geometry ?? tour.vorschau)?.coordinates ?? []) as Position[],
-      (verlauf.waypoints ?? []) as Position[],
-    )
+    onTourAufKarte(tour)
   }
 
   const filterAktiv =

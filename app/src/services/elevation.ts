@@ -34,10 +34,22 @@ export async function loadElevationProfile(
   if (route.length < 2) return []
 
   const stuetzpunkte = resampleByCount(route, PROFIL_PUNKTE)
-  const hoehen: number[] = []
 
+  /*
+   * Die Teilanfragen laufen nebeneinander, nicht nacheinander.
+   *
+   * 120 Stützpunkte bei 100 pro Anfrage sind zwei Abrufe. Hintereinander
+   * gestellt warten sie zweimal auf dieselbe Leitung — und das Höhenprofil ist
+   * das Letzte, was nach dem Öffnen einer Tour erscheint. Es sind wenige
+   * Anfragen an einen freien Dienst; sie parallel zu stellen ist kein
+   * Ansturm, sondern spart schlicht eine Umlaufzeit.
+   */
+  const bloecke: typeof stuetzpunkte[] = []
   for (let i = 0; i < stuetzpunkte.length; i += MAX_PRO_ANFRAGE) {
-    const teil = stuetzpunkte.slice(i, i + MAX_PRO_ANFRAGE)
+    bloecke.push(stuetzpunkte.slice(i, i + MAX_PRO_ANFRAGE))
+  }
+
+  const teilhoehen = await Promise.all(bloecke.map(async (teil) => {
     const params = new URLSearchParams({
       latitude: teil.map((p) => p.position[1].toFixed(5)).join(','),
       longitude: teil.map((p) => p.position[0].toFixed(5)).join(','),
@@ -46,8 +58,9 @@ export async function loadElevationProfile(
     if (!res.ok) throw new Error(`Höhendienst antwortete mit ${res.status}`)
     const json = await res.json()
     if (!Array.isArray(json.elevation)) throw new Error('Höhendienst lieferte keine Daten')
-    hoehen.push(...json.elevation)
-  }
+    return json.elevation as number[]
+  }))
+  const hoehen = teilhoehen.flat()
 
   return stuetzpunkte.map((p, i) => ({
     position: p.position,

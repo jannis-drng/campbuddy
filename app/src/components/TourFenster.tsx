@@ -39,8 +39,7 @@ import {
 import {
   coldestNight, daysFromToday, loadForecast, MAX_FORECAST_DAYS, sliceToTrip, type Forecast,
 } from '../services/weather'
-import { aktualisiereTour, etappenLesen, ladeEigenenVerlauf } from '../services/account'
-import { ladeVerlauf } from '../services/community'
+import { aktualisiereTour, etappenLesen } from '../services/account'
 import type { PublicTour, Tour } from '../services/supabase'
 import { Button, Eingabe, Feld, Hinweis, IconButton, Label, Segmente } from '../ui'
 import { Packliste } from './Packliste'
@@ -99,9 +98,14 @@ interface Props {
   eigen: boolean
   onClose: () => void
   /** Den Verlauf auf der Karte zeigen. */
-  onAufKarte: (geometry: Position[], waypoints: Position[]) => void
-  /** Meldet, dass gerade der volle Verlauf geholt wird — siehe `components/Laden.tsx`. */
-  onLadenWechsel?: (laeuft: boolean) => void
+  /**
+   * Die Tour auf die Karte legen.
+   *
+   * Ohne Argumente: den Verlauf holt der Aufrufer, und zwar zweistufig — erst
+   * die Vorschau, die ohnehin vorliegt, dann der volle Weg. Diese Datei hat
+   * ihn vorher selbst geholt und dabei gewartet, bis alles da war.
+   */
+  onAufKarte: () => void
   /** Verlauf und Nachtlager auf der Karte ändern — nur bei eigenen. */
   onBearbeiten?: () => void
   /** Eine fremde Tour als eigene übernehmen, mit den hier gesetzten Eckdaten. */
@@ -111,7 +115,7 @@ interface Props {
 }
 
 export function TourFenster({
-  tour, eigen, onClose, onAufKarte, onLadenWechsel, onBearbeiten, onKopieren, onGeaendert,
+  tour, eigen, onClose, onAufKarte, onBearbeiten, onKopieren, onGeaendert,
 }: Props) {
   const [angaben, setAngaben] = useState<Angaben>(() => angabenAus(tour))
   const [staende, setStaende] = useState<PackStaende>(
@@ -143,21 +147,8 @@ export function TourFenster({
     Tour. Geht das schief, wandert die Vorschau auf die Karte: ein grober Weg
     ist immer noch besser als ein Knopf, der nichts tut.
   */
-  const aufKarte = async () => {
-    // Melden, dass es losgeht: der Verlauf einer langen Tour ist mehrere
-    // hundert Kilobyte, und bis er da ist, sähe der Knopf sonst aus, als
-    // hätte er nichts getan. Die Anzeige dazu steht in `App.tsx`.
-    onLadenWechsel?.(true)
-    let verlauf
-    try {
-      verlauf = eigen ? await ladeEigenenVerlauf(tour.id) : await ladeVerlauf(tour.id)
-    } finally {
-      onLadenWechsel?.(false)
-    }
-    onAufKarte(
-      (verlauf.geometry?.coordinates as Position[] | undefined) ?? geometry,
-      (verlauf.waypoints ?? []) as Position[],
-    )
+  const aufKarte = () => {
+    onAufKarte()
   }
 
   /*
