@@ -1020,6 +1020,20 @@ async function importGemeinden() {
          * gesucht und verlinkt wird.
          */
         name: t.name ?? t['name:de'] ?? '(unbenannt)',
+        /*
+         * Der deutsche Name daneben, wenn er abweicht — nur zum Suchen.
+         *
+         * Die Umstellung auf den amtlichen Namen war richtig, hatte aber eine
+         * Kehrseite: wer „Sitten" oder „Genf" eintippt, fand die Gemeinde
+         * danach nicht mehr. Beide Schreibweisen sind gebräuchlich, und welche
+         * jemand kennt, hängt daran, wo er aufgewachsen ist. Angezeigt und
+         * verlinkt wird weiter der amtliche Name; gesucht wird auf beiden.
+         *
+         * Dieselbe Bauart wie `name_lokal` bei den Kantonen, nur andersherum.
+         */
+        ...(t['name:de'] && t['name:de'] !== (t.name ?? t['name:de'])
+          ? { name_de: t['name:de'] }
+          : {}),
         kanton: kanton.properties.code,
         // OSM zuerst — dort steht die Adresse, wenn jemand sie vor Ort gepflegt
         // hat; Wikidata füllt den grossen Rest auf.

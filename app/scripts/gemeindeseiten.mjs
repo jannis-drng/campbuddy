@@ -216,6 +216,7 @@ nav.krumen span[aria-hidden]{margin:0 .4rem}
 #suchergebnis li{padding:.55rem 0;border-bottom:1px solid #1F2A2E;font-size:.95rem;
                  display:flex;justify-content:space-between;gap:1rem;align-items:baseline}
 #suchergebnis .wo{color:#8A9A9F;font-size:.85rem;text-align:right}
+#suchergebnis .auch{color:#8A9A9F}
 footer{border-top:1px solid #1F2A2E;margin-top:3rem;padding-top:1.25rem;font-size:.85rem;color:#8A9A9F}
 footer a{margin-right:1.25rem}
 `.trim()
@@ -767,6 +768,9 @@ const suchEintraege = gemeinden
     return {
       n: g.properties.name,
       k: KANTON[g.properties.kanton] ?? '',
+      // Der deutsche Zweitname, wo er abweicht — „Sitten" findet Sion,
+      // „Genf" findet Genève. Siehe `name_de` im Import.
+      ...(g.properties.name_de ? { a: g.properties.name_de } : {}),
       ...(eintrag ? { p: `${BASIS}gemeinde/${g.properties.bfs}-${kennung(g.properties.name)}` } : {}),
     }
   })
@@ -888,6 +892,10 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
       Gemeinde schlägt einen gleichrangigen Ortsteil, weil die Rechtslage an
       ihr hängt.
     */
+    function passtAufNamen(g, a2, e2) {
+      return g._na.indexOf(a2) !== -1 || g._ne.indexOf(e2) !== -1
+    }
+
     function rang(g) {
       // Gegen die einzelnen Namen geprüft, nicht gegen die zusammengesetzte
       // Zeile: sonst wäre kein Name mehr ein genauer Treffer, sobald ein
@@ -933,12 +941,36 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
       var li = document.createElement('li')
       var links = document.createElement('span')
       if (g.p) {
-        var a = document.createElement('a')
-        a.href = g.p
-        a.textContent = g.n
-        links.appendChild(a)
+        var ziel = document.createElement('a')
+        ziel.href = g.p
+        ziel.textContent = g.n
+        links.appendChild(ziel)
       } else {
         links.textContent = g.n
+      }
+
+      /*
+        Kam der Treffer ueber den Zweitnamen, steht er in Klammern dahinter.
+
+        Wer 'Sitten' eintippt und 'Sion' zurueckbekommt, saehe sonst einen
+        fremden Namen und wuesste nicht, ob das seine Gemeinde ist. Er steht
+        am Namen und nicht in der Spalte rechts, weil er zum Namen gehoert —
+        rechts stuende bei Genève sonst 'auch Genf · Genf'.
+
+        Nur die Teile, die nicht ohnehin dastehen: OSM schreibt
+        'Valais/Wallis', und '(Valais/Wallis)' hinter 'Wallis' waere zur
+        Haelfte Wiederholung.
+      */
+      if (g.a && !passtAufNamen(g, a, e)) {
+        var andere = g.a.split('/')
+          .map(function (t) { return t.trim() })
+          .filter(function (t) { return t && t !== g.n })
+        if (andere.length > 0) {
+          var zusatz = document.createElement('span')
+          zusatz.className = 'auch'
+          zusatz.textContent = ' (' + andere.join(', ') + ')'
+          links.appendChild(zusatz)
+        }
       }
       var rechts = document.createElement('span')
       rechts.className = 'wo'
@@ -992,6 +1024,8 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
           g._teile = (g.a ? g.n + '/' + g.a : g.n).split('/').map(function (t) {
             return { a: ausgeschrieben(t.trim()), e: entblaettert(t.trim()) }
           })
+          g._na = ausgeschrieben(g.n)
+          g._ne = entblaettert(g.n)
           return g
         })
       })
