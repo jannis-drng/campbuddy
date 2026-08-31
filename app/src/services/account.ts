@@ -542,6 +542,23 @@ function uebersetzeSpeicherfehler(meldung: string): string {
   if (/column .* does not exist|schema cache/i.test(meldung)) {
     return 'Die Tour lässt sich gerade nicht speichern. Versuch es später noch einmal.'
   }
+  /*
+   * „permission denied for function/table …" ist ein Einrichtungszustand, kein
+   * Fehler des Nutzers — irgendwo fehlt ein `grant`.
+   *
+   * Der Fall ist nicht theoretisch: von Migration 0024 bis 0027 scheiterte
+   * jedes Speichern an `permission denied for function vorschau_aus_geometrie`,
+   * und dieser Satz stand wörtlich in der Oberfläche. Wer ihn liest, sucht den
+   * Fehler bei sich und versucht es zehnmal — dabei hätte kein Versuch je
+   * gelingen können.
+   *
+   * Der Text nennt deshalb beides: dass es nicht an der Tour liegt, und dass
+   * die Tour bis dahin nicht verloren ist.
+   */
+  if (/permission denied for (function|table|relation)/i.test(meldung)) {
+    return 'Speichern ist gerade nicht möglich - dem Dienst fehlt eine Berechtigung. '
+      + 'Das liegt nicht an deiner Tour; sie bleibt auf der Karte, bis du die Seite schliesst.'
+  }
   return meldung
 }
 

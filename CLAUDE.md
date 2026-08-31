@@ -56,6 +56,15 @@ Feature- oder Datenmodell-Entscheidungen dort nachsehen; Abweichungen nur nach R
   Abfrage auf eine neue Tabelle ergänzt, ergänzt dort auch den `grant`, sonst kommt ein
   klarer Fehler statt einer stillen Lücke. `profiles` ist spaltenweise vergeben: geschrieben
   wird nur `anzeigename`, damit niemand sein eigenes Abo einschaltet.
+- **Eine Triggerfunktion, die eine gesperrte Hilfsfunktion ruft, braucht
+  `security definer`.** PostgreSQL prüft `execute` auf die *Triggerfunktion* nur
+  beim Anlegen des Triggers — auf alles, was sie von innen ruft, dagegen bei
+  jedem Auslösen und mit den Rechten dessen, der gerade schreibt. Migration 0024
+  entzog `vorschau_aus_geometrie` die Rechte und liess `routes_rahmen_setzen`
+  ohne `security definer`: **drei Tage lang konnte niemand eine Tour speichern**,
+  und der Prüfstand konnte es nicht sehen (er arbeitet ohne Konto, und RLS
+  greift vor dem Trigger). Behoben in 0027. Wer eine Hilfsfunktion sperrt, macht
+  ihren Aufrufer zum Definer — oder testet das Speichern von Hand.
 - **`npm run pruefen --prefix app` beweist die Sicherheitsannahmen von aussen**
   (`scripts/backend-pruefen.mjs`, 27 Prüfungen mit dem öffentlichen Schlüssel: Kartendaten
   zu, Views ohne `user_id`, kein Schreiben ohne Konto, Trigger nicht als RPC aufrufbar).
