@@ -1067,52 +1067,45 @@ export default function App() {
         */}
         <Haftungshinweis className="min-w-0 shrink" />
 
-        {/* Ab Tablet in der Kopfzeile; auf dem Telefon liegt die Navigation
-            unten in Daumenreichweite (siehe Tableiste am Seitenende). */}
-        <nav className={`hidden sm:block ${mehrereRegionen ? 'mx-auto' : 'ml-auto'}`} aria-label="Ansicht">
-          <Segmente
-            ariaLabel="Ansicht wählen"
-            wert={view}
-            onWaehlen={setView}
-            optionen={[
-              { wert: 'karte' as View, label: 'Karte', icon: Map },
-              { wert: 'community' as View, label: 'Community', icon: Compass },
-              { wert: 'touren' as View, label: 'Deine Touren', icon: Bookmark },
-              ...(isSupabaseConfigured
-                ? [{ wert: 'konto' as View, label: session ? 'Konto' : 'Anmelden', icon: session ? UserRound : LogIn }]
-                : []),
-            ]}
-          />
-        </nav>
-
         {/*
-          Der Weg zur Gemeindeliste — bewusst neben der Ansichtswahl und nicht
-          darin.
+          Ab Tablet in der Kopfzeile; auf dem Telefon liegt die Navigation
+          unten in Daumenreichweite (siehe Tableiste am Seitenende).
 
-          Die vier Segmente schalten die Ansicht um; dieser Link verlässt die
-          Anwendung und lädt eine vorgerenderte Seite. Ihn als fünftes Segment
-          einzureihen hiesse, zwei verschiedene Dinge gleich aussehen zu lassen:
-          drei Segmente kommen zurück, wenn man sie wieder antippt, dieses eine
-          nicht.
-
-          Er steht trotzdem hier oben, weil es einen zweiten Weg zur selben
-          Auskunft gibt: manche wissen den Namen ihrer Gemeinde und wollen ihn
-          eintippen, statt auf einer Karte danach zu suchen. Genau das sagt die
-          Lupe — und sie sagt es ohne ein Wort, das neben vier gleich langen
-          Ansichtsnamen wie ein fünfter aussähe. Auf dem Telefon liegt er unten
-          in der Leiste, wo auch die Ansichten liegen; dort ist Platz für die
-          Beschriftung, und ohne sie wäre eine einzelne Lupe zwischen vier
-          beschrifteten Knöpfen ein Rätsel.
+          Die Lupe und die Ansichtswahl sitzen in einer gemeinsamen Hülle, weil
+          sie zusammen ausgerichtet werden müssen: die Hülle trägt das
+          `ml-auto` beziehungsweise `mx-auto`, das die Gruppe nach rechts
+          schiebt oder mittet. Läge die Ausrichtung wie vorher auf der
+          Navigation selbst, sässe die Lupe nicht neben ihr, sondern am anderen
+          Ende der Zeile — der freie Platz liegt ja dazwischen.
         */}
-        <a
-          href={`${import.meta.env.BASE_URL}gemeinden`}
-          title="Gemeinde suchen"
-          aria-label="Gemeinde suchen"
-          className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-mittel text-ink-400
-                     transition-colors duration-[160ms] hover:bg-flaeche-3 hover:text-ink-100 sm:flex"
-        >
-          <Search size={17} strokeWidth={2} aria-hidden />
-        </a>
+        <div className={`hidden shrink-0 items-center gap-1.5 sm:flex
+                         ${mehrereRegionen ? 'mx-auto' : 'ml-auto'}`}>
+          <a
+            href={`${import.meta.env.BASE_URL}gemeinden`}
+            title="Gemeinde suchen"
+            aria-label="Gemeinde suchen"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-mittel text-ink-400
+                       transition-colors duration-[160ms] hover:bg-flaeche-3 hover:text-ink-100"
+          >
+            <Search size={17} strokeWidth={2} aria-hidden />
+          </a>
+
+          <nav aria-label="Ansicht">
+            <Segmente
+              ariaLabel="Ansicht wählen"
+              wert={view}
+              onWaehlen={setView}
+              optionen={[
+                { wert: 'karte' as View, label: 'Karte', icon: Map },
+                { wert: 'community' as View, label: 'Community', icon: Compass },
+                { wert: 'touren' as View, label: 'Deine Touren', icon: Bookmark },
+                ...(isSupabaseConfigured
+                  ? [{ wert: 'konto' as View, label: session ? 'Konto' : 'Anmelden', icon: session ? UserRound : LogIn }]
+                  : []),
+              ]}
+            />
+          </nav>
+        </div>
 
         {/*
           Die Regionswahl erscheint erst, wenn es etwas zu wählen gibt. Bei
@@ -1423,20 +1416,6 @@ export default function App() {
           )
         })}
 
-        {/*
-          Dieselbe Überlegung wie oben in der Kopfzeile, nur enger: hier ist er
-          ein Link zwischen Knöpfen. Er trägt deshalb nie den aktiven Zustand —
-          man ist nie „auf" ihm, man geht darüber weg.
-        */}
-        <a
-          href={`${import.meta.env.BASE_URL}gemeinden`}
-          className="flex flex-1 flex-col items-center gap-1 py-2 text-mikro font-medium
-                     normal-case tracking-normal text-ink-400 transition-colors
-                     duration-[160ms] hover:text-ink-200"
-        >
-          <Search size={19} strokeWidth={1.75} aria-hidden />
-          Gemeinden
-        </a>
       </nav>
 
       {/*

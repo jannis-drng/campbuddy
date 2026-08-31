@@ -20,7 +20,8 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
-  Check, ChevronDown, Droplet, Eye, Flame, Home, Moon, Mountain, Palette, Shapes, Star, Tent, Truck, X,
+  Check, ChevronDown, Droplet, Eye, Flame, Home, Moon, Mountain, Palette, Search, Shapes, Star,
+  Tent, Truck, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ActivityMode, MapFilters } from '../data/types'
@@ -158,6 +159,27 @@ export function FilterBar({ filters, onChange, counts }: Props) {
             </div>
           )}
         </Menue>
+
+        {/*
+          Der Weg zur Gemeindesuche — auf dem Telefon hier und nicht unten in
+          der Ansichtsleiste.
+
+          Unten stehen vier Ansichten, die sich umschalten und zurückkommen;
+          dieser Link verlässt die Anwendung. Hier oben steht er dagegen neben
+          den beiden anderen Werkzeugen, die dasselbe tun wie er: die Karte
+          befragen. Rechts am Rand, weil die beiden Menüs links beginnen und
+          ihre Blasen sonst darunterliegen.
+        */}
+        <a
+          href={`${import.meta.env.BASE_URL}gemeinden`}
+          title="Gemeinde suchen"
+          aria-label="Gemeinde suchen"
+          className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-mittel
+                     border border-kante bg-flaeche-1 text-ink-400 transition-colors
+                     duration-[160ms] hover:text-ink-100"
+        >
+          <Search size={15} strokeWidth={2} aria-hidden />
+        </a>
       </div>
 
       {/* ----------------------------------------------------------- Zeiger */}
