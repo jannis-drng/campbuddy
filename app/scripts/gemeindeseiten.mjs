@@ -89,6 +89,19 @@ for (const o of ORTE) {
 }
 for (const liste of ORTE_JE_GEMEINDE.values()) liste.sort((a, b) => a.localeCompare(b, 'de'))
 
+/*
+ * Der ortsübliche Kantonsname als Suchalias — „Valais", „Ticino", „Vaud".
+ *
+ * Er steht seit dem Kantonsimport in der Flächendatei und wird ausschliesslich
+ * zum Suchen benutzt. Angezeigt wird weiterhin der deutsche Name; zwei Namen
+ * für dieselbe Sache nebeneinander wären in der Oberfläche nur verwirrend.
+ */
+const KANTON_LOKAL = Object.fromEntries(
+  JSON.parse(readFileSync(`${HIER}src/data/kantone/CH.json`, 'utf8')).features
+    .filter((f) => f.properties.name_lokal)
+    .map((f) => [f.properties.code, f.properties.name_lokal]),
+)
+
 /** Kantonsnamen aus der TypeScript-Liste ziehen — sie ist die einzige Quelle. */
 const KANTON = Object.fromEntries(
   [...readFileSync(`${HIER}src/data/kantoneNamen.ts`, 'utf8')
@@ -699,7 +712,7 @@ function uebersichtsSeite() {
     <label for="suchfeld" class="leise">Gemeinde suchen</label>
     <input id="suchfeld" type="search" autocomplete="off" spellcheck="false"
            placeholder="Name der Gemeinde …" aria-describedby="suchhinweis">
-    <p id="suchhinweis" class="leise">Alle ${gemeinden.length} Gemeinden und
+    <p id="suchhinweis" class="leise">Alle 26 Kantone, ${gemeinden.length} Gemeinden und
     ${ORTE.length} Orte — auch die noch nicht nachgeschlagenen. Ein Ortsteil führt zur
     Seite seiner Gemeinde: dort wird über das Übernachten entschieden.</p>
   </form>
@@ -785,6 +798,29 @@ for (const o of ORTE) {
   })
 }
 
+/*
+ * Und die 26 Kantone.
+ *
+ * Sie gehören in dieselbe Suche, weil dort dieselbe Frage gestellt wird — nur
+ * eine Ebene höher. Wer „Wallis" tippt, will nicht durch 122 Walliser
+ * Gemeinden scrollen, sondern wissen, was der Kanton regelt. Jeder hat eine
+ * Seite, also trägt jeder Eintrag einen Pfad; ein Kanton ohne Auskunft gibt es
+ * nicht mehr, seit alle 26 geprüft sind.
+ *
+ * `a` ist der ortsübliche Zweitname, den die Suche mitdurchsucht, ohne ihn
+ * anzuzeigen.
+ */
+for (const code of Object.keys(kantonsrecht)) {
+  const name = KANTON[code]
+  if (!name) continue
+  suchEintraege.push({
+    n: name,
+    t: 'kanton',
+    p: `${BASIS}kanton/${kennung(name)}`,
+    ...(KANTON_LOKAL[code] && KANTON_LOKAL[code] !== name ? { a: KANTON_LOKAL[code] } : {}),
+  })
+}
+
 writeFileSync(`${DIST}gemeinden-suche.json`, JSON.stringify(
   suchEintraege.sort((a, b) => a.n.localeCompare(b.n, 'de')),
 ))
@@ -853,17 +889,36 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
       ihr hängt.
     */
     function rang(g) {
-      if (g._a === a || g._e === e) return 0
-      if (g._a.indexOf(a) === 0 || g._e.indexOf(e) === 0) return 1
+      // Gegen die einzelnen Namen geprüft, nicht gegen die zusammengesetzte
+      // Zeile: sonst wäre kein Name mehr ein genauer Treffer, sobald ein
+      // zweiter danebensteht.
+      var genau = false
+      var anfang = false
+      for (var i = 0; i < g._teile.length; i++) {
+        var t = g._teile[i]
+        if (t.a === a || t.e === e) genau = true
+        if (t.a.indexOf(a) === 0 || t.e.indexOf(e) === 0) anfang = true
+      }
+      if (genau) return 0
+      if (anfang) return 1
       return 2
     }
+
+    /*
+      Bei gleichem Rang: Gemeinde, dann Kanton, dann Ortsteil.
+
+      'Bern' ist beides — Gemeinde und Kanton. Wer den Namen allein eintippt,
+      meint meist die Stadt; der Kanton steht direkt darunter. Ein Ortsteil
+      kommt zuletzt, weil er keine eigene Rechtslage hat.
+    */
+    function art(g) { return g.g ? 2 : (g.t === 'kanton' ? 1 : 0) }
     var treffer = daten
       .filter(function (g) { return g._a.indexOf(a) !== -1 || g._e.indexOf(e) !== -1 })
       .map(function (g) { return { g: g, r: rang(g) } })
       .sort(function (x, y) {
         if (x.r !== y.r) return x.r - y.r
+        if (art(x.g) !== art(y.g)) return art(x.g) - art(y.g)
         if (x.g.n.length !== y.g.n.length) return x.g.n.length - y.g.n.length
-        if (Boolean(x.g.g) !== Boolean(y.g.g)) return x.g.g ? 1 : -1
         return x.g.n.localeCompare(y.g.n, 'de')
       })
       .map(function (t) { return t.g })
@@ -887,9 +942,14 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
       }
       var rechts = document.createElement('span')
       rechts.className = 'wo'
-      var wo = g.g ? 'Ortsteil von ' + g.g : g.k
-      if (g.g && g.k) wo += ' · ' + g.k
-      if (!g.p) wo += ' · noch nicht nachgeschlagen'
+      var wo
+      if (g.t === 'kanton') {
+        wo = 'Kanton'
+      } else {
+        wo = g.g ? 'Ortsteil von ' + g.g : g.k
+        if (g.g && g.k) wo += ' · ' + g.k
+        if (!g.p) wo += ' · noch nicht nachgeschlagen'
+      }
       rechts.textContent = wo
       li.appendChild(links)
       li.appendChild(rechts)
@@ -912,8 +972,26 @@ writeFileSync(`${DIST}gemeinden-suche.js`, `(function () {
       .then(function (r) { return r.json() })
       .then(function (j) {
         daten = j.map(function (g) {
-          g._a = ausgeschrieben(g.n)
-          g._e = entblaettert(g.n)
+          /*
+            Der Zweitname wird an den Suchtext angehängt, nicht getrennt
+            geführt: gesucht wird auf einer Zeichenkette, und 'Wallis Valais'
+            enthält beides. Angezeigt wird weiterhin nur g.n.
+          */
+          var voll = g.a ? g.n + ' ' + g.a.replace(/\\//g, ' ') : g.n
+          g._a = ausgeschrieben(voll)
+          g._e = entblaettert(voll)
+          /*
+            Jeder Name einzeln, zusaetzlich zur gemeinsamen Zeile.
+
+            OSM schreibt mehrsprachige Namen als Liste mit Schraegstrich:
+            'Valais/Wallis', 'Graubuenden/Grischun/Grigioni'. Als ein Stueck
+            verglichen ist 'valais' darin nur enthalten, nicht gleich — und
+            landete damit hinter 'Port-Valais'. Aufgeteilt ist es ein genauer
+            Treffer, und der Kanton steht oben.
+          */
+          g._teile = (g.a ? g.n + '/' + g.a : g.n).split('/').map(function (t) {
+            return { a: ausgeschrieben(t.trim()), e: entblaettert(t.trim()) }
+          })
           return g
         })
       })
@@ -972,6 +1050,6 @@ console.log(
   + `die Übersicht und die Sitemap geschrieben.\n`
   + `    \x1b[90m${uebersprungen} Gemeinden ohne Eintrag bekommen bewusst keine Seite.\x1b[0m\n`
   + `    \x1b[90mrobots.txt verweist auf ${ORIGIN}${BASIS}sitemap.xml\x1b[0m\n`
-  + `    \x1b[90mSuchliste: ${gemeinden.length} Gemeinden + ${ORTE.length} Orte, `
+  + `    \x1b[90mSuchliste: 26 Kantone + ${gemeinden.length} Gemeinden + ${ORTE.length} Orte, `
   + `${(statSync(`${DIST}gemeinden-suche.json`).size / 1024).toFixed(0)} KB\x1b[0m\n`,
 )

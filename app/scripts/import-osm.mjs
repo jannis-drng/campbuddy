@@ -879,7 +879,25 @@ async function importKantone() {
       properties: {
         // ISO-Code wie 'CH-BE' — der Schlüssel, unter dem die Rechtspflege liegt.
         code,
+        /*
+         * Der Anzeigename bleibt deutsch — anders als bei den Gemeinden.
+         *
+         * Die Oberfläche ist deutsch, und „Kanton Wallis" ist in einem
+         * deutschen Text richtig. Ein Gemeindename ist ein Eigenname, unter dem
+         * gesucht und verlinkt wird; ein Kantonsname ist in erster Linie eine
+         * Bezeichnung im laufenden Text.
+         */
         name: t['name:de'] ?? t.name ?? '(unbenannt)',
+        /*
+         * Der ortsübliche Name daneben, wenn er abweicht — nur zum Suchen.
+         *
+         * „Valais", „Ticino", „Graubünden/Grigioni": wer so tippt, meint
+         * denselben Kanton, und ihn dann nichts finden zu lassen wäre eine
+         * Schikane gegenüber genau den Leuten, deren Gemeinden schon am
+         * besten erfasst sind. Angezeigt wird er nicht — sonst stünden zwei
+         * Namen für dieselbe Sache in der Oberfläche.
+         */
+        ...(t.name && t.name !== (t['name:de'] ?? t.name) ? { name_lokal: t.name } : {}),
         source_url: `https://www.openstreetmap.org/relation/${el.id}`,
       },
       geometry: ringe.length === 1
