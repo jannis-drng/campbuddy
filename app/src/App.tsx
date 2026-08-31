@@ -49,7 +49,7 @@ import {
 import { BenutzernameDialog } from './components/BenutzernameDialog'
 import type { PackStaende } from './affiliate/packlist'
 import { ladeVerlauf, ORT_UMKREIS_M, type Ortsfilter } from './services/community'
-import { Bookmark, Compass, List, LogIn, Map, Route, UserRound } from 'lucide-react'
+import { Bookmark, Compass, LogIn, Map, Route, Search, UserRound } from 'lucide-react'
 import { Auswahl, Button, Segmente } from './ui'
 
 /**
@@ -1097,18 +1097,21 @@ export default function App() {
 
           Er steht trotzdem hier oben, weil es einen zweiten Weg zur selben
           Auskunft gibt: manche wissen den Namen ihrer Gemeinde und wollen ihn
-          eintippen, statt auf einer Karte danach zu suchen. Auf dem Telefon
-          liegt er unten in der Leiste, wo auch die Ansichten liegen.
+          eintippen, statt auf einer Karte danach zu suchen. Genau das sagt die
+          Lupe — und sie sagt es ohne ein Wort, das neben vier gleich langen
+          Ansichtsnamen wie ein fünfter aussähe. Auf dem Telefon liegt er unten
+          in der Leiste, wo auch die Ansichten liegen; dort ist Platz für die
+          Beschriftung, und ohne sie wäre eine einzelne Lupe zwischen vier
+          beschrifteten Knöpfen ein Rätsel.
         */}
         <a
           href={`${import.meta.env.BASE_URL}gemeinden`}
-          title="Alle eingestuften Gemeinden als Liste, mit Suche"
-          className="hidden shrink-0 items-center gap-1.5 rounded-mittel px-2.5 py-1.5 text-klein
-                     text-ink-400 transition-colors duration-[160ms] hover:bg-flaeche-3
-                     hover:text-ink-100 sm:flex"
+          title="Gemeinde suchen"
+          aria-label="Gemeinde suchen"
+          className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-mittel text-ink-400
+                     transition-colors duration-[160ms] hover:bg-flaeche-3 hover:text-ink-100 sm:flex"
         >
-          <List size={15} strokeWidth={1.75} aria-hidden />
-          Gemeinden
+          <Search size={17} strokeWidth={2} aria-hidden />
         </a>
 
         {/*
@@ -1431,7 +1434,7 @@ export default function App() {
                      normal-case tracking-normal text-ink-400 transition-colors
                      duration-[160ms] hover:text-ink-200"
         >
-          <List size={19} strokeWidth={1.75} aria-hidden />
+          <Search size={19} strokeWidth={1.75} aria-hidden />
           Gemeinden
         </a>
       </nav>
