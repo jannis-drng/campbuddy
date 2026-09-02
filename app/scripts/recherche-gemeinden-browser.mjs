@@ -156,6 +156,81 @@ async function aufNetzWarten() {
   return false
 }
 
+/** Wonach auf der Gemeindeseite gesucht wird — je Sprachraum. */
+const SUCHWORTE = ['Polizeireglement', 'règlement de police', 'regolamento di polizia']
+
+/**
+ * Woran ein Polizeireglement zu erkennen ist — streng, nicht wohlwollend.
+ *
+ * Diese Prüfung entscheidet nicht, was geöffnet wird, sondern was am Ende als
+ * „geprüft" gilt. Sie muss deshalb eng sein: eine Gemeinde fälschlich für
+ * erledigt zu halten ist teurer, als sie ein zweites Mal anzusehen.
+ */
+const REGLEMENT_TITEL = /polizei|police|polizia|campier|camping|gemeindeordnung|ordnung|reglement|règlement|regolamento/i
+
+/**
+ * Die Suchfunktion der Gemeindeseite bedienen.
+ *
+ * Fast jede Gemeindeseite hat eine Suche, und sie kennt den eigenen Bestand
+ * besser als jede geratene Adresse. Zwei Eigenheiten machen sie widerspenstig:
+ * das Feld ist meist hinter einer Lupe versteckt, und ein blosses Enter laedt
+ * die Ergebnisseite ohne den Begriff. Deshalb wird die Ergebnisseite zuerst
+ * leer angesteuert und der Begriff dann an ihre Adresse gehaengt — das
+ * Verfahren, das die verbreiteten Gemeinde-CMS verstehen.
+ *
+ * Der Ertrag ist begrenzt und das ist ein Befund, kein Mangel: Aadorfs Suche
+ * findet zu „Reglement" 23 Dokumente und zu „Polizeireglement" keines. Wo
+ * kein Polizeireglement veroeffentlicht ist, findet es auch die beste Suche
+ * nicht.
+ */
+async function ueberSuchfeld(seite, basis, wort) {
+  await oeffne(seite, basis)
+
+  // Erst die Lupe, dann das Feld.
+  const schalter = await seite.$('[aria-label*="uche" i], [aria-label*="earch" i], '
+    + '[title*="uche" i], button.search, .search-toggle, [class*="search-open"]')
+  if (schalter) { await schalter.click().catch(() => {}); await seite.waitForTimeout(900) }
+
+  const felder = await seite.$$('input[type="search"], input[name*="query" i], '
+    + 'input[name*="search" i], input[name*="such" i], input[placeholder*="such" i]')
+  let feld = null
+  for (const k of felder) if (await k.isVisible().catch(() => false)) { feld = k; break }
+  if (!feld) return []
+
+  await feld.fill(wort).catch(() => {})
+  await feld.press('Enter').catch(() => {})
+  await seite.waitForTimeout(2500)
+
+  // Die Ergebnisseite steht jetzt — meist ohne den Begriff. Also anhaengen.
+  const ergebnisseite = seite.url()
+  if (!/such|search|resultat|recherche/i.test(ergebnisseite)) return []
+  const mitBegriff = `${ergebnisseite.replace(/\/$/, '')}/searchParams.query/${encodeURIComponent(wort)}`
+  try {
+    await oeffne(seite, mitBegriff)
+  } catch {
+    return await seitenLinks(seite)
+  }
+
+  // Die Trefferliste verlinkt meist Seiten, nicht Dateien; die PDF liegt eine
+  // Ebene tiefer. Den aussichtsreichsten Treffern also noch folgen.
+  const treffer = await seitenLinks(seite)
+  const direkt = treffer.filter(([u, t]) => /\.pdf($|\?)/i.test(u) && DOKUMENT.test(`${u} ${t}`))
+  if (direkt.length > 0) return direkt
+
+  const weiter = treffer
+    .filter(([u, t]) => DOKUMENT.test(t) && !/print|share|facebook|twitter/i.test(u))
+    .slice(0, 3)
+  const gefunden = []
+  for (const [u] of weiter) {
+    try {
+      const l = await oeffne(seite, u)
+      gefunden.push(...l.filter(([lu, lt]) => /\.pdf($|\?)/i.test(lu) && DOKUMENT.test(`${lu} ${lt}`)))
+    } catch { /* ein Treffer weniger */ }
+    if (gefunden.length > 0) break
+  }
+  return gefunden
+}
+
 /* ------------------------------------------------------- Eine Gemeinde */
 
 async function eineGemeinde(browser, g) {
@@ -238,6 +313,23 @@ async function eineGemeinde(browser, g) {
       }
     }
 
+    // Zuletzt die Suchfunktion der Gemeindeseite bedienen.
+    //
+    // Das ist der Weg, der bei der Rechtssammlung des Bundes auf Anhieb
+    // funktioniert hat, und er ist dem Raten haushoch überlegen: die Seite
+    // weiss selbst, wo ihr Polizeireglement liegt. Wir müssen nur fragen,
+    // statt ihre Navigation abzulaufen und am Ende die Legislaturziele zu
+    // lesen, weil sonst nichts zu finden war.
+    if (kandidaten.length === 0) {
+      for (const wort of SUCHWORTE) {
+        if (kandidaten.length > 0) break
+        try {
+          const gefunden = await ueberSuchfeld(seite, g.website, wort)
+          kandidaten.push(...gefunden.filter(([u, t]) => DOKUMENT.test(`${u} ${t}`)))
+        } catch { /* keine brauchbare Suche auf dieser Seite */ }
+      }
+    }
+
     if (kandidaten.length === 0) {
       ergebnis.fehler = 'kein passendes Reglement gefunden'
       return ergebnis
@@ -307,9 +399,20 @@ async function eineGemeinde(browser, g) {
       // wurde ein Reglement wirklich gelesen und enthält nichts zum
       // Übernachten — oder es liess sich gar nicht erst öffnen. Wer das nicht
       // trennt, sucht die Ursache an der falschen Stelle.
-      ergebnis.fehler = ergebnis.dokument
+      // Und ein dritter Ausgang, der vorher als zweiter durchging: gelesen
+      // wurde etwas, aber kein Reglement. Von hundert Gemeinden meldeten
+      // zweiundvierzig „Reglement gelesen" — und nur sechs davon hatten
+      // tatsächlich ein Polizeireglement vor sich. Die übrigen hatten
+      // Legislaturziele, eine Anzeige über Belagsarbeiten oder die
+      // Gemeindeordnung geöffnet. Das als geprüft zu verbuchen hiesse, die
+      // Gemeinde für erledigt zu halten, ohne je in ihr Recht gesehen zu haben.
+      const echtesReglement = ergebnis.dokument
+        && REGLEMENT_TITEL.test(`${ergebnis.dokument} ${ergebnis.dokument_titel ?? ''}`)
+      ergebnis.fehler = echtesReglement
         ? 'Reglement gelesen, keine Stelle zum Übernachten'
-        : `Kandidaten gefunden (${geordnet.length}), keiner lesbar`
+        : ergebnis.dokument
+          ? 'nur Fremddokument gelesen, Reglement nicht gefunden'
+          : `Kandidaten gefunden (${geordnet.length}), keiner lesbar`
       // Die Adressen der unlesbaren Dateien mitschreiben. Ohne sie liess sich
       // später nicht einmal nachsehen, woran es lag — man musste die ganze
       // Suche wiederholen, um an ein einziges PDF zu kommen.

@@ -6,10 +6,8 @@
    "name": "Affoltern am Albis",
    "kanton": "CH-ZH",
    "website": "https://www.stadtaffoltern.ch/",
-   "dokument": "https://www.stadtaffoltern.ch/_rte/information/1358012",
-   "dokument_titel": "Gemeindeordnung (GO)",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -28,10 +26,8 @@
    "name": "Hausen am Albis",
    "kanton": "CH-ZH",
    "website": "http://www.hausen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "PDF: fetch failed",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -39,10 +35,8 @@
    "name": "Hedingen",
    "kanton": "CH-ZH",
    "website": "http://www.hedingen.ch",
-   "dokument": "https://www.hedingen.ch/public/upload/assets/186638/2026.06.11%20Gemeindeversammlung%20-%20Publikation%20II%20Beschluss.pdf?fp=1",
-   "dokument_titel": "Publikation Beschlüsse",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -50,8 +44,10 @@
    "name": "Kappel am Albis",
    "kanton": "CH-ZH",
    "website": "https://www.kappel-am-albis.ch",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "unerwartet: Gesamtfrist überschritten",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -59,10 +55,8 @@
    "name": "Knonau",
    "kanton": "CH-ZH",
    "website": "http://www.knonau.ch",
-   "dokument": "https://api.amtliche-nachrichten.ch/pub/v1/publication/1b69ccc5-bb4b-4d4d-869a-5c49a9a631ad/23152d84ff0fff801db5bd7b0f7c3f3b66791798.pdf",
-   "dokument_titel": "PDF herunterladen",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -70,24 +64,17 @@
    "name": "Mettmenstetten",
    "kanton": "CH-ZH",
    "website": "http://www.mettmenstetten.ch",
-   "dokument": "https://imageproxy.amtliche-nachrichten.ch/?url=%2Fc5277f6b4b154ced81f11c2d1b93fa7e&filename=Benutzungsreglement+Sportinstallation.pdf&op=noop&sig=497b3605b90d3af8ab7f483210905e73eadc7626",
-   "dokument_titel": "Herunterladen",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
-   "weg": "browser",
-   "unlesbar": [
-    "https://imageproxy.amtliche-nachrichten.ch/?url=%2Fc5277f6b4b154ced81f11c2d1b93fa7e&filename=Benutzungsreglement+Sportinstallation.pdf&op=noop&sig=497b3605b90d3af8ab7f483210905e73eadc7626"
-   ]
+   "fehler": "unerwartet: Gesamtfrist überschritten",
+   "weg": "browser"
   },
   {
    "bfs": 10,
    "name": "Obfelden",
    "kanton": "CH-ZH",
    "website": "https://www.obfelden.ch",
-   "dokument": "https://www.obfelden.ch/public/upload/assets/4890/Gesch%C3%A4ftsfelder%20und%20Aufgaben%C3%BCbersicht%202026-2030%20%28002%29.pdf?fp=1",
-   "dokument_titel": "Geschäftsfelder- und Aufgabenübersicht [pdf, 312 KB]",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -128,10 +115,8 @@
    "name": "Stallikon",
    "kanton": "CH-ZH",
    "website": "https://www.stallikon.ch",
-   "dokument": "https://www.stallikon.ch/public/upload/assets/1584/Polizeistunde.pdf?fp=1666944909852",
-   "dokument_titel": "Polizeistunde.pdf",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -139,15 +124,9 @@
    "name": "Wettswil am Albis",
    "kanton": "CH-ZH",
    "website": "http://www.wettswil.ch",
-   "dokument": "https://www.wettswil.ch/public/upload/assets/6849/100.1%20Gemeindeordnung.pdf?fp=1",
-   "dokument_titel": "Gemeindeordnung [pdf, 619 KB]",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
-   "weg": "browser",
-   "unlesbar": [
-    "https://www.wettswil.ch/public/upload/assets/6849/100.1%20Gemeindeordnung.pdf?fp=1",
-    "https://www.wettswil.ch/public/upload/assets/6732/Ordnungsbussenverordnung%20inkl.%20Bussenliste.pdf?fp=1"
-   ]
+   "fehler": "unerwartet: Gesamtfrist überschritten",
+   "weg": "browser"
   },
   {
    "bfs": 24,
@@ -165,8 +144,10 @@
    "name": "Dachsen",
    "kanton": "CH-ZH",
    "website": "http://www.dachsen.ch",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "unerwartet: Gesamtfrist überschritten",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -197,10 +178,8 @@
    "name": "Feuerthalen",
    "kanton": "CH-ZH",
    "website": "https://www.feuerthalen.ch",
-   "dokument": "https://www.feuerthaleranzeiger.ch/Feuerthaler_Anzeiger_09_2026.pdf",
-   "dokument_titel": "FA Nr. 9 vom 30. April 2026",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -228,10 +207,8 @@
    "name": "Henggart",
    "kanton": "CH-ZH",
    "website": "http://www.henggart.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -239,10 +216,8 @@
    "name": "Kleinandelfingen",
    "kanton": "CH-ZH",
    "website": "http://www.kleinandelfingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "kein passendes Reglement gefunden",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -250,10 +225,8 @@
    "name": "Laufen-Uhwiesen",
    "kanton": "CH-ZH",
    "website": "https://www.uhwiesen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_NAME_NOT_RESOLVED at https://w | Chrome htt",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -272,10 +245,8 @@
    "name": "Ossingen",
    "kanton": "CH-ZH",
    "website": "https://www.ossingen.ch",
-   "dokument": "https://www.ossingen.ch/fileadmin/Team/Merkblatt_amtliche_Pilzkontrolle_2025.pdf",
-   "dokument_titel": "Merkblatt",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -292,10 +263,8 @@
    "name": "Thalheim an der Thur",
    "kanton": "CH-ZH",
    "website": "http://www.thalheim.ch",
-   "dokument": "https://www.thalheim.ch/images/Rechtssammlung/1_Gemeinde_Behoerden_Verwaltung_Bevoelkerung/GO_Thalheim_2021.pdf",
-   "dokument_titel": "Gemeindeordnung 2021",
    "stellen": [],
-   "fehler": "PDF: The operation was aborted due to timeout",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -385,10 +354,8 @@
    "name": "Dietlikon",
    "kanton": "CH-ZH",
    "website": "https://www.dietlikon.ch",
-   "dokument": "https://www.dietlikon.ch/public/upload/assets/2121/743.10%3B%20Verordnung%20%C3%BCber%20die%20Elektrizit%C3%A4tsversorgung%20vom%2015.09.2016.pdf?fp=2",
-   "dokument_titel": "743.10; Verordnung über die Elektrizitätsversorgung vom 15.09.2016",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -396,10 +363,8 @@
    "name": "Eglisau",
    "kanton": "CH-ZH",
    "website": "https://www.eglisau.ch",
-   "dokument": "https://www.eglisau.ch/fileadmin/user_upload/0110.0101_Gemeindeordnung_Einheitsgemeinde_20200209.pdf",
-   "dokument_titel": "0110.0101 Gemeindeordnung Einheitsgemeinde vom 9. Februar 2022 (gültig ab 1. Juli 2022)",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -507,10 +472,8 @@
    "name": "Lufingen",
    "kanton": "CH-ZH",
    "website": "https://www.lufingen.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -518,10 +481,8 @@
    "name": "Nürensdorf",
    "kanton": "CH-ZH",
    "website": "http://www.nuerensdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Kandidaten gefunden (2), keiner lesbar",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -540,10 +501,8 @@
    "name": "Rafz",
    "kanton": "CH-ZH",
    "website": "https://www.rafz.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -551,10 +510,8 @@
    "name": "Wallisellen",
    "kanton": "CH-ZH",
    "website": "https://www.wallisellen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -562,10 +519,8 @@
    "name": "Wasterkingen",
    "kanton": "CH-ZH",
    "website": "https://www.wasterkingen.ch",
-   "dokument": "https://www.wasterkingen.ch/verwaltung/systematische-rechtssammlung/5-oeffentliche-ordnung-sicherheit-polizei-zivilschutz-feuerwehr-feuerpolizei-tierschutz.html/197",
-   "dokument_titel": "5 Öffentliche Ordnung & Sicherheit: Polizei - Zivilschutz, Feuerwehr & Feuerpolizei - Tierschutz",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -573,10 +528,8 @@
    "name": "Wil (ZH)",
    "kanton": "CH-ZH",
    "website": "http://www.wil-zh.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -584,10 +537,8 @@
    "name": "Winkel",
    "kanton": "CH-ZH",
    "website": "http://www.winkel.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -595,10 +546,8 @@
    "name": "Bachs",
    "kanton": "CH-ZH",
    "website": "https://www.bachs.ch",
-   "dokument": "https://www.bachs.ch/wp-content/uploads/2026/08/Veranstaltungskalender-2026.09.pdf",
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -606,10 +555,8 @@
    "name": "Boppelsen",
    "kanton": "CH-ZH",
    "website": "http://www.boppelsen.ch",
-   "dokument": "https://www.boppelsen.ch/wp-content/uploads/2026/04/Inhaltsverzeichnis-Rechtssammlung-der-politischen-Gemeinde-Boppelsen-2026.pdf",
-   "dokument_titel": "Inhaltsverzeichnis der Rechtssammlung der politischen Gemeinde Boppelsen&nbsp;",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -617,10 +564,8 @@
    "name": "Buchs (ZH)",
    "kanton": "CH-ZH",
    "website": "http://www.buchs-zh.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -628,10 +573,8 @@
    "name": "Dällikon",
    "kanton": "CH-ZH",
    "website": "https://www.daellikon.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -639,10 +582,8 @@
    "name": "Dänikon",
    "kanton": "CH-ZH",
    "website": "http://www.daenikon.ch",
-   "dokument": "https://www.daenikon.ch/public/upload/assets/13906/2026%20-%203.%20Quartal%20D%C3%A4niNews.pdf?fp=1782191747616",
-   "dokument_titel": "«DäniNews»",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -661,10 +602,8 @@
    "name": "Hüttikon",
    "kanton": "CH-ZH",
    "website": "http://www.huettikon.ch",
-   "dokument": "https://www.huettikon.ch/public/upload/assets/93/Gemeindeordnung_2021.pdf?fp=1",
-   "dokument_titel": "Gemeindeordnung_2021 [PDF, 1.00 MB]",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -704,10 +643,8 @@
    "name": "Niederglatt",
    "kanton": "CH-ZH",
    "website": "http://www.niederglatt.zh.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -715,10 +652,8 @@
    "name": "Niederhasli",
    "kanton": "CH-ZH",
    "website": "https://www.niederhasli.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -726,10 +661,8 @@
    "name": "Niederweningen",
    "kanton": "CH-ZH",
    "website": "http://www.niederweningen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "kein passendes Reglement gefunden",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -737,10 +670,8 @@
    "name": "Oberglatt",
    "kanton": "CH-ZH",
    "website": "https://www.oberglatt.ch/",
-   "dokument": "https://www.oberglatt.ch/politik-verwaltung/verwaltung/dienstleistungen.html/43/service/380",
-   "dokument_titel": "Feuerpolizei",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -748,10 +679,8 @@
    "name": "Oberweningen",
    "kanton": "CH-ZH",
    "website": "http://www.oberweningen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -759,10 +688,8 @@
    "name": "Otelfingen",
    "kanton": "CH-ZH",
    "website": "https://www.otelfingen.ch",
-   "dokument": "https://www.otelfingen.ch/public/upload/assets/9634/ISOS_5612_Otelfingen.pdf?fp=1",
-   "dokument_titel": "Bundesinventar der schützenswerten Ortsbilder der Schweiz von nationaler Bedeutung (ISOS) [pdf, 1.2 MB]",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -770,10 +697,8 @@
    "name": "Regensdorf",
    "kanton": "CH-ZH",
    "website": "http://www.regensdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -781,10 +706,8 @@
    "name": "Rümlang",
    "kanton": "CH-ZH",
    "website": "http://www.ruemlang.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -792,10 +715,8 @@
    "name": "Schleinikon",
    "kanton": "CH-ZH",
    "website": "http://www.schleinikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -803,10 +724,8 @@
    "name": "Schöfflisdorf",
    "kanton": "CH-ZH",
    "website": "http://www.schoefflisdorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -814,10 +733,8 @@
    "name": "Stadel",
    "kanton": "CH-ZH",
    "website": "https://www.stadel.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -825,10 +742,8 @@
    "name": "Steinmaur",
    "kanton": "CH-ZH",
    "website": "http://www.steinmaur.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -836,10 +751,8 @@
    "name": "Weiach",
    "kanton": "CH-ZH",
    "website": "https://www.weiach.ch",
-   "dokument": "https://www.weiach.ch/public/upload/assets/1717/Notfalltreffpunkt_Flyer_Weiach.pdf?fp=1731949704032",
-   "dokument_titel": "Notfalltreffpunkt",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -847,10 +760,8 @@
    "name": "Bäretswil",
    "kanton": "CH-ZH",
    "website": "https://www.baeretswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -858,10 +769,8 @@
    "name": "Bubikon",
    "kanton": "CH-ZH",
    "website": "http://www.bubikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -869,10 +778,8 @@
    "name": "Dürnten",
    "kanton": "CH-ZH",
    "website": "http://www.duernten.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -880,10 +787,8 @@
    "name": "Fischenthal",
    "kanton": "CH-ZH",
    "website": "https://www.fischenthal.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "kein passendes Reglement gefunden",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -891,10 +796,8 @@
    "name": "Gossau (ZH)",
    "kanton": "CH-ZH",
    "website": "http://www.gossau-zh.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Kandidaten gefunden (1), keiner lesbar",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -920,10 +823,8 @@
    "name": "Hinwil",
    "kanton": "CH-ZH",
    "website": "http://www.hinwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -942,10 +843,8 @@
    "name": "Seegräben",
    "kanton": "CH-ZH",
    "website": "https://www.seegraeben.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -953,10 +852,8 @@
    "name": "Wald (ZH)",
    "kanton": "CH-ZH",
    "website": "https://www.wald.zh.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -964,10 +861,8 @@
    "name": "Wetzikon (ZH)",
    "kanton": "CH-ZH",
    "website": "https://www.wetzikon.ch",
-   "dokument": "https://www.wetzikon.ch/wAssets/docs/Rechtssammlung/5/502.1-Polizeiverordnung-vom-09-03-2026.pdf",
-   "dokument_titel": "502.1 Polizeiverordnung455,92 KB Polizeiverordnung der Stadt Wetzikon vom 9. März 2026",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -975,10 +870,8 @@
    "name": "Adliswil",
    "kanton": "CH-ZH",
    "website": "https://www.adliswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -986,10 +879,8 @@
    "name": "Langnau am Albis",
    "kanton": "CH-ZH",
    "website": "https://www.langnauamalbis.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -997,10 +888,8 @@
    "name": "Richterswil",
    "kanton": "CH-ZH",
    "website": "https://www.richterswil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1008,10 +897,8 @@
    "name": "Rüschlikon",
    "kanton": "CH-ZH",
    "website": "http://www.rueschlikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1019,10 +906,8 @@
    "name": "Thalwil",
    "kanton": "CH-ZH",
    "website": "http://www.thalwil.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1030,10 +915,8 @@
    "name": "Herrliberg",
    "kanton": "CH-ZH",
    "website": "https://www.herrliberg.ch",
-   "dokument": "https://www.herrliberg.ch/public/upload/assets/1131/Legislaturziele%202022-2026.pdf?fp=1675171100984",
-   "dokument_titel": "Legislaturziele",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1041,10 +924,8 @@
    "name": "Hombrechtikon",
    "kanton": "CH-ZH",
    "website": "http://www.hombrechtikon.ch",
-   "dokument": "https://www.hombrechtikon.ch/public/upload/assets/1226/220101_Gemeindeordnung.pdf?fp=1",
-   "dokument_titel": "100.1 Gemeindeordnung",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1052,10 +933,8 @@
    "name": "Küsnacht (ZH)",
    "kanton": "CH-ZH",
    "website": "https://www.kuesnacht.ch/",
-   "dokument": "https://www.kuesnacht.ch/public/upload/assets/18242/11-2023_neuzuz%C3%BCgerbrosch%C3%BCre_deutsch.pdf?fp=1",
-   "dokument_titel": "«Willkommen – Ein Portrait von Küsnacht» [pdf, 10.3 MB]",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1063,10 +942,8 @@
    "name": "Männedorf",
    "kanton": "CH-ZH",
    "website": "https://www.maennedorf.ch/",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1074,10 +951,8 @@
    "name": "Meilen",
    "kanton": "CH-ZH",
    "website": "https://www.meilen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1112,10 +987,8 @@
    "name": "Uetikon am See",
    "kanton": "CH-ZH",
    "website": "http://www.uetikon.org",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1123,10 +996,8 @@
    "name": "Zumikon",
    "kanton": "CH-ZH",
    "website": "http://www.zumikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1134,10 +1005,8 @@
    "name": "Zollikon",
    "kanton": "CH-ZH",
    "website": "http://www.zollikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1145,10 +1014,8 @@
    "name": "Fehraltorf",
    "kanton": "CH-ZH",
    "website": "http://www.fehraltorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1156,10 +1023,8 @@
    "name": "Hittnau",
    "kanton": "CH-ZH",
    "website": "https://www.hittnau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1167,10 +1032,8 @@
    "name": "Lindau",
    "kanton": "CH-ZH",
    "website": "https://www.lindau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1178,10 +1041,8 @@
    "name": "Pfäffikon",
    "kanton": "CH-ZH",
    "website": "https://www.pfaeffikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "PDF: fetch failed",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1189,10 +1050,8 @@
    "name": "Russikon",
    "kanton": "CH-ZH",
    "website": "http://www.russikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1200,10 +1059,8 @@
    "name": "Weisslingen",
    "kanton": "CH-ZH",
    "website": "http://www.weisslingen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1211,10 +1068,8 @@
    "name": "Wila",
    "kanton": "CH-ZH",
    "website": "http://www.wila.ch",
-   "dokument": "https://www.wila.ch/public/upload/assets/1854/100.1%20Gemeindeordnung.pdf?fp=3",
-   "dokument_titel": "100.1 Gemeindeordnung",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1222,10 +1077,8 @@
    "name": "Wildberg",
    "kanton": "CH-ZH",
    "website": "http://www.wildberg.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1233,10 +1086,8 @@
    "name": "Dübendorf",
    "kanton": "CH-ZH",
    "website": "http://www.duebendorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1244,10 +1095,8 @@
    "name": "Egg",
    "kanton": "CH-ZH",
    "website": "http://www.egg.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1255,10 +1104,8 @@
    "name": "Fällanden",
    "kanton": "CH-ZH",
    "website": "http://www.faellanden.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1266,10 +1113,8 @@
    "name": "Greifensee",
    "kanton": "CH-ZH",
    "website": "https://www.greifensee.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1294,10 +1139,8 @@
    "name": "Mönchaltorf",
    "kanton": "CH-ZH",
    "website": "http://www.moenchaltorf.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1322,10 +1165,8 @@
    "name": "Uster",
    "kanton": "CH-ZH",
    "website": "https://www.uster.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1344,10 +1185,8 @@
    "name": "Wangen-Brüttisellen",
    "kanton": "CH-ZH",
    "website": "http://www.wangen-bruettisellen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1369,10 +1208,8 @@
    "name": "Brütten",
    "kanton": "CH-ZH",
    "website": "http://www.bruetten.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1380,10 +1217,8 @@
    "name": "Dägerlen",
    "kanton": "CH-ZH",
    "website": "https://www.daegerlen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1391,10 +1226,8 @@
    "name": "Dättlikon",
    "kanton": "CH-ZH",
    "website": "http://www.daettlikon.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1413,10 +1246,8 @@
    "name": "Ellikon an der Thur",
    "kanton": "CH-ZH",
    "website": "http://www.ellikonanderthur.ch",
-   "dokument": "https://www.ellikonanderthur.ch/public/upload/assets/3143/20240416_Ellikon_NP_Teilrevision_MAG_Fondsreglement.pdf?fp=1",
-   "dokument_titel": "Reglement zum kommunalen Mehrwertausgleichsfonds 16.04.2024 [pdf, 121 KB]",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1424,10 +1255,8 @@
    "name": "Elsau",
    "kanton": "CH-ZH",
    "website": "http://www.elsau.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -1435,10 +1264,8 @@
    "name": "Hagenbuch",
    "kanton": "CH-ZH",
    "website": "http://www.hagenbuch.zh.ch",
-   "dokument": "https://www.hagenbuch-zh.ch/public/upload/assets/819/Offenlegung%20der%20Interessenbindungen%20Gemeinderat.pdf?fp=1",
-   "dokument_titel": "Offenlegung der Interessenbindungen Gemeinderat",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -3165,7 +2992,7 @@
    "dokument": "https://www.frutigen.ch/de/aktuelles/meldungen/Dokumente/Stellenausschreibungen/Inserat-Lehrstelle-Betriebsunterhalt-EFZ-2027-20.pdf",
    "dokument_titel": "Lehrstelle Fachmann / Fachfrau Betriebsunterhalt",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "nur Fremddokument gelesen, Reglement nicht gefunden",
    "weg": "browser"
   },
   {
@@ -6287,10 +6114,10 @@
    "name": "Sursee",
    "kanton": "CH-LU",
    "website": "http://www.sursee.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.sursee.ch/_rte/publikation/358939",
+   "dokument_titel": "Gemeindeordnung Download",
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -10945,7 +10772,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "Kandidaten gefunden (2), keiner lesbar",
    "weg": "browser"
   },
   {
@@ -12131,7 +11958,7 @@
    "dokument": "https://buchs-sg.ch/wp-content/uploads/2025/11/2025-11-14-Bedienungsanleitung-Stadt-Buchs-App.pdf",
    "dokument_titel": "Bedienungsanleitung",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "nur Fremddokument gelesen, Reglement nicht gefunden",
    "weg": "browser"
   },
   {
@@ -13963,7 +13790,7 @@
    "dokument": "https://www.baden.ch/public/upload/assets/260587/20251014_Nutzungsbestimmungen_SBB_Tageskarte_Gemeinde_FINAL-Rechtsdienst.pdf?fp=1",
    "dokument_titel": "Nutzungbestimmungen der Stadt Baden",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "nur Fremddokument gelesen, Reglement nicht gefunden",
    "weg": "browser"
   },
   {
@@ -16283,7 +16110,7 @@
    "dokument": "https://www.aadorf.ch/public/upload/assets/6433/Legislaturziele_2023-2027.pdf?fp=2",
    "dokument_titel": "Legislaturziele 2023 – 2027",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "nur Fremddokument gelesen, Reglement nicht gefunden",
    "weg": "browser"
   },
   {
@@ -16415,6 +16242,17 @@
    "dokument_titel": null,
    "stellen": [],
    "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "weg": "browser"
+  },
+  {
+   "bfs": 4646,
+   "name": "Ermatingen",
+   "kanton": "CH-TG",
+   "website": "https://www.ermatingen.ch",
+   "dokument": "https://www.ermatingen.ch/files/teaser/desktop/Gemeindeordnung_1733143969.pdf",
+   "dokument_titel": "Gemeindeordnung",
+   "stellen": [],
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
