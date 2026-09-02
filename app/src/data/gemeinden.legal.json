@@ -1,6 +1,6 @@
 {
   "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
-  "_stand": "2026-08-29",
+  "_stand": "2026-09-02",
   "gemeinden": {
     "1": {
       "status": "forbidden",
@@ -1141,6 +1141,19 @@
       "last_verified": "2026-08-24",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
+    "2962": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnmobile, Wohnwagen und Zelte auf öffentlichem Grund ausserhalb der dafür bezeichneten Plätze aufzustellen ist verboten.",
+      "conditions": "Der Artikel betrifft öffentlichen Grund. Zu privatem Grund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Polizeiverordnung (PvO) Hemishofen, Art. 21 Das Aufstellen von Wohnmobilen, Wohnwagen und",
+      "source_url": "https://www.hemishofen.ch/wp-content/uploads/2022/11/190101-Polizeiverordnung-der-Gemeinde-Hemishofen-PvO.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "de-aufstellen-oeffentlich-ausserhalb-bezeichneter-plaetze-verboten"
+    },
     "2971": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -1439,6 +1452,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "gr-campieren-nur-in-campingzone"
+    },
+    "3945": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ist auf dem gesamten Gemeindegebiet untersagt — nicht nur auf öffentlichem Grund.",
+      "conditions": "Der Gemeindevorstand kann in begründeten Fällen Ausnahmen gestatten, etwa für organisierte Zeltlager an von ihm bestimmten Standorten.",
+      "source": "Baugesetz, Art. 60 Das ständige Stationieren bewohnter Wohnwagen und",
+      "source_url": "https://www.trimmis.ch/sites/default/files/2023-06/Trimmis_Gesetz_Bau_7.100.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "gr-campieren-jeder-art-ganzes-gemeindegebiet-verboten"
     },
     "3947": {
       "status": "forbidden",
@@ -1765,6 +1791,32 @@
       "last_verified": "2026-08-24",
       "_muster": "nur-fahrzeuge-als-wohnung-verboten"
     },
+    "5431": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde bestimmt, wo campiert und caravaniert werden darf. Gelegentliches Campieren ausserhalb dieser Plätze bedarf ihrer Bewilligung.",
+      "conditions": "Ohne Bewilligung ist gelegentliches Campieren nicht gedeckt. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Règlement de police approuvé par le Conseil d'Etat le 20 août 2001, Art. 50 La Municipalité fixe les emplacements de",
+      "source_url": "https://www.mollensvd.ch/n642",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "fr-municipalite-fixe-emplacements-camping-occasionnel"
+    },
+    "5436": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "Règlement communal sur le plan d'Affectation et de la Police des Constructions…, Art.35 CONSTRUCTIONS PROHIBEES \\",
+      "source_url": "https://www.saint-oyens.ch/files/1766858659-reglementpolicedesconstructions-893.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
+    },
     "5456": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -1868,6 +1920,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camper-ou-dormir-verboten-mit-bewilligung"
+    },
+    "5489": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "RPGAC règlement communal de la police des constructions, Art. 30 Bâtiments existants",
+      "source_url": "https://www.mex.ch/images/Reglements/2000_RPGA_communal.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
     },
     "5491": {
       "status": "forbidden",
@@ -2129,6 +2194,19 @@
       "last_verified": "2026-08-29",
       "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
+    "5562": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "règlement communal sur la police des constructions, Art. 59 Art. 60",
+      "source_url": "https://ca44c631-b885-4659-afed-82fec8fc7492.filesusr.com/ugd/a7f17d_bd6d67da860849179b72fb8728837bb9.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
+    },
     "5583": {
       "status": "unknown",
       "tent_allowed": "unknown",
@@ -2167,6 +2245,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
+    },
+    "5601": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "Règlement_communal_de_la_police_des_constructions, Art. 55 Camping. Interdiction des logements mobiles",
+      "source_url": "https://chexbres.ch/images/Bibliotheque%20documents/R%C3%A8glements/R%C3%A8glement_communal_de_la_police_des_constructions.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
     },
     "5606": {
       "status": "forbidden",
@@ -2467,6 +2558,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vd-camping-voie-publique-privat-mit-zustimmung"
     },
+    "5684": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "PACOM_Règlement_Plan d affectation communal de Rossenges 2025, ART. 36",
+      "source_url": "https://rossenges.ch/wp-content/uploads/2026/02/Rossenges-PA_Plan-affectation-communal_192623_Reglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
+    },
     "5692": {
       "status": "forbidden",
       "tent_allowed": "conditional",
@@ -2493,6 +2597,19 @@
       "last_verified": "2026-08-29",
       "_muster": "vd-camping-domaine-public-nur-mit-bewilligung"
     },
+    "5702": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind auf dem gesamten Gemeindegebiet verboten — ausserhalb der Orte, die die Gemeinde ausdrücklich dafür bewilligt hat.",
+      "conditions": "Die Gemeindebehörde kann im Einzelfall eine ausdrückliche Bewilligung erteilen. Das Verbot ist nicht auf öffentlichen Grund beschränkt.",
+      "source": "Règlement communal de police, Art. 21 Le camping et le caravaning sont",
+      "source_url": "https://arzier.ch/uploads/a611b4c17142c1653d26cc21dd28a47d/documents/reglement_police_1601561234.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "fr-camping-caravaning-territoire-hors-endroits-autorises"
+    },
     "5703": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -2505,6 +2622,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5705": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "Règlement de police des constructions, Art. 53 a) Constructions prohibées",
+      "source_url": "http://www.bogis-bossey.ch/assets/idm_medias/4ff48dec037ffaaa6b8ecbad15335f34.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
     },
     "5710": {
       "status": "forbidden",
@@ -2791,6 +2921,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-29",
       "_muster": "vd-camper-ou-dormir-generell-verboten"
+    },
+    "5806": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "Télécharger (940.32 ko), Art. 43 roulottes et",
+      "source_url": "https://www.jorat-mezieres.ch/files/1716964275-ferlens_reglement_police-des-constructions-17202.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
     },
     "5812": {
       "status": "forbidden",
@@ -3117,6 +3260,19 @@
       "last_verified": "2026-08-29",
       "_muster": "vd-gemeinde-bezeichnet-plaetze-gelegentlich-mit-bewilligung"
     },
+    "5928": {
+      "status": "unknown",
+      "tent_allowed": "unknown",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wohnwagen, Wohnmobile und andere mobile Unterkünfte als Wohnung zu nutzen ist im Gemeindegebiet verboten — je nach Fassung mit Ausnahme eingerichteter Campingplätze.",
+      "conditions": "Der Artikel regelt Fahrzeuge als Unterkunft. Zum Zelten sagt er nichts; dazu ist für diese Gemeinde nichts recherchiert. Manche Fassungen lassen kurze Besuche von wenigen Tagen zu.",
+      "source": "Règlement de l'aménagement du territoire et de la police des constructions, ART. 38",
+      "source_url": "http://www.rovray.ch/data/files/rovray_pa_planaffectationcommunal_179360_rglement.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "nur-fahrzeuge-habitation-territoire-communal"
+    },
     "5929": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3182,6 +3338,19 @@
       "last_verified": "2026-08-29",
       "_muster": "vd-camper-ou-dormir-generell-verboten"
     },
+    "5939": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Auf öffentlichem Grund ist es verboten, zu campieren oder zu schlafen. Wo campiert werden darf, legt die Gemeinde fest.",
+      "conditions": "Auf privatem Grund ist gelegentliches Campieren mit Zustimmung der Eigentümerin, Pächterin oder Mieterin zulässig; ab vier Tagen braucht es zusätzlich eine Gemeindebewilligung.",
+      "source": "Kommunales Reglement, Art. 25 II est interdit de camper ou",
+      "source_url": "https://yvonand.ch/reglements-et-tarifs/police/",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "fr-camper-ou-dormir-terrain-public"
+    },
     "6007": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3220,6 +3389,32 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
+    "6033": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind auf dem gesamten Gemeindegebiet verboten — ausserhalb der Orte, die die Gemeinde ausdrücklich dafür bewilligt hat.",
+      "conditions": "Die Gemeindebehörde kann im Einzelfall eine ausdrückliche Bewilligung erteilen. Das Verbot ist nicht auf öffentlichen Grund beschränkt.",
+      "source": "Police, Art. 58 Camping, caravaning",
+      "source_url": "https://www.liddes.ch/police.html",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "fr-camping-caravaning-territoire-hors-endroits-autorises"
+    },
+    "6054": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren, Biwakieren und Übernachten auf öffentlichem Grund sind ausschliesslich in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat.",
+      "conditions": "Der Artikel nennt das Biwakieren ausdrücklich — ein Nachtlager ohne Zelt ist also mitgemeint und nicht ausgenommen. Zu privatem Grund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Polizeireglement 2024, Art. 23 Campieren",
+      "source_url": "https://www.binn.ch/gemeinde?action=get_file&id=26&resource_link_id=e8f",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "de-campieren-biwakieren-nur-bezeichnete-zonen"
     },
     "6057": {
       "status": "forbidden",
@@ -3623,6 +3818,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-29",
       "_muster": "vs-freies-campieren-untersagt"
+    },
+    "6299": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Auf Gemeindegebiet zu campieren ist bewilligungspflichtig. Wer es ohne Bewilligung tut, wird gebüsst.",
+      "conditions": "Die Bewilligung ist vorher bei der Gemeinde einzuholen. Der Artikel steht im Strafteil des Reglements; die Regel selbst ergibt sich daraus im Umkehrschluss.",
+      "source": "Polizei-Reglement (pdf), Art.14 Camping",
+      "source_url": "https://www.zeneggen.ch/fileadmin/user_upload/docs_gemeinde/reglemente-tarife/reglement_polizei.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-02",
+      "_muster": "de-campieren-gemeindegebiet-bewilligungspflichtig-strafe"
     },
     "6300": {
       "status": "forbidden",
