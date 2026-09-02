@@ -165,10 +165,8 @@
    "name": "Dachsen",
    "kanton": "CH-ZH",
    "website": "http://www.dachsen.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {

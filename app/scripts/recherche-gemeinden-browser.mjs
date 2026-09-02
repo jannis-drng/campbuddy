@@ -25,8 +25,8 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
 import {
-  SPERRE, anbieterVon, anbieterZaehler, anstehen, dokumentKandidaten, fundstellen, holeDokument, holeGedrosselt,
-  links, ocrText, ocrVerfuegbar, pdfText, sammlungsRang, sperrWaechter,
+  SPERRE, anbieterVon, anbieterZaehler, anstehen, dokumentKandidaten, fundstellen, hole, holeDokument,
+  holeGedrosselt, links, ocrText, ocrVerfuegbar, pdfText, sammlungsRang, sperrWaechter,
 } from './lib/reglemente.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -42,13 +42,6 @@ const ALLE = process.argv.includes('--alle')
 const NUR = arg('nur')
 const GLEICHZEITIG = 3
 
-/**
- * Pfade, die viele Gemeinde-CMS gleich benennen.
- *
- * Ein Versuch kostet einen Seitenaufruf und erspart im Erfolgsfall das ganze
- * Durchsuchen der Navigation. Geraten wird dabei nichts: entweder die Seite
- * existiert und verlinkt Reglemente, oder sie tut es nicht.
- */
 /**
  * Nur die drei Pfade, die tatsächlich vorkommen — je Sprachraum einer.
  *
@@ -85,6 +78,9 @@ const andereSchreibweise = (url) => (url.startsWith('https://')
  * Reihenfolge: Browser mit der hinterlegten Adresse, Browser mit der anderen
  * Schreibweise, zuletzt der schlichte Abruf. Erst wenn alle drei scheitern,
  * ist die Seite wirklich nicht zu haben.
+ *
+ * Das Anstehen beim Anbieter sitzt aussen herum — die drei Versuche gelten
+ * derselben Gemeinde und sollen sich nicht gegenseitig ausbremsen.
  */
 /**
  * Eine Seite im Browser öffnen — ebenfalls im Anstehen.
