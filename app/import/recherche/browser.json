@@ -1,15 +1,15 @@
 {
- "stand": "2026-08-29",
+ "stand": "2026-09-02",
  "ergebnisse": [
   {
    "bfs": 2,
    "name": "Affoltern am Albis",
    "kanton": "CH-ZH",
    "website": "https://www.stadtaffoltern.ch/",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://www.stadtaffoltern.ch/_rte/information/1358012",
+   "dokument_titel": "Gemeindeordnung (GO)",
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -31,7 +31,7 @@
    "dokument": null,
    "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
+   "fehler": "PDF: fetch failed",
    "weg": "browser"
   },
   {
@@ -42,7 +42,7 @@
    "dokument": "https://www.hedingen.ch/public/upload/assets/186638/2026.06.11%20Gemeindeversammlung%20-%20Publikation%20II%20Beschluss.pdf?fp=1",
    "dokument_titel": "Publikation Beschlüsse",
    "stellen": [],
-   "fehler": "PDF: The operation was aborted due to timeout",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -50,10 +50,8 @@
    "name": "Kappel am Albis",
    "kanton": "CH-ZH",
    "website": "https://www.kappel-am-albis.ch",
-   "dokument": null,
-   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
+   "fehler": "unerwartet: Gesamtfrist überschritten",
    "weg": "browser"
   },
   {
@@ -61,10 +59,10 @@
    "name": "Knonau",
    "kanton": "CH-ZH",
    "website": "http://www.knonau.ch",
-   "dokument": null,
-   "dokument_titel": null,
+   "dokument": "https://api.amtliche-nachrichten.ch/pub/v1/publication/1b69ccc5-bb4b-4d4d-869a-5c49a9a631ad/23152d84ff0fff801db5bd7b0f7c3f3b66791798.pdf",
+   "dokument_titel": "PDF herunterladen",
    "stellen": [],
-   "fehler": "Kandidaten gefunden (4), keiner lesbar",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -133,7 +131,7 @@
    "dokument": "https://www.stallikon.ch/public/upload/assets/1584/Polizeistunde.pdf?fp=1666944909852",
    "dokument_titel": "Polizeistunde.pdf",
    "stellen": [],
-   "fehler": "PDF: The operation was aborted due to timeout",
+   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
    "weg": "browser"
   },
   {
@@ -212,8 +210,10 @@
    "name": "Flaach",
    "kanton": "CH-ZH",
    "website": "https://www.flaach.ch",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "unerwartet: Gesamtfrist überschritten",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -230,10 +230,10 @@
    "name": "Henggart",
    "kanton": "CH-ZH",
    "website": "http://www.henggart.ch",
-   "dokument": "https://www.henggart.ch/_rte/information/1448692",
-   "dokument_titel": "Gemeindeordnung",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
+   "fehler": "Startseite: Chrome http://w: page.goto: Timeout 30000ms exceeded. | Chrome https://: page.go",
    "weg": "browser"
   },
   {
@@ -252,8 +252,10 @@
    "name": "Laufen-Uhwiesen",
    "kanton": "CH-ZH",
    "website": "https://www.uhwiesen.ch",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "unerwartet: Gesamtfrist überschritten",
+   "fehler": "Startseite: Chrome https://: page.goto: net::ERR_NAME_NOT_RESOLVED at https://w | Chrome htt",
    "weg": "browser"
   },
   {
@@ -261,8 +263,10 @@
    "name": "Marthalen",
    "kanton": "CH-ZH",
    "website": "https://www.marthalen.ch",
+   "dokument": null,
+   "dokument_titel": null,
    "stellen": [],
-   "fehler": "unerwartet: Gesamtfrist überschritten",
+   "fehler": "Startseite: Chrome https://: page.goto: Timeout 30000ms exceeded. | Chrome http://w: page.go",
    "weg": "browser"
   },
   {
@@ -293,11 +297,8 @@
    "dokument": "https://www.thalheim.ch/images/Rechtssammlung/1_Gemeinde_Behoerden_Verwaltung_Bevoelkerung/GO_Thalheim_2021.pdf",
    "dokument_titel": "Gemeindeordnung 2021",
    "stellen": [],
-   "fehler": "Reglement gelesen, keine Stelle zum Übernachten",
-   "weg": "browser",
-   "unlesbar": [
-    "https://www.thalheim.ch/images/Rechtssammlung/1_Gemeinde_Behoerden_Verwaltung_Bevoelkerung/Organisationsreglement_2022.pdf"
-   ]
+   "fehler": "PDF: The operation was aborted due to timeout",
+   "weg": "browser"
   },
   {
    "bfs": 40,

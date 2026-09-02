@@ -19,7 +19,7 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
-  DOKUMENT, HÖFLICH, fundstellen, hole, links, pdfText, sammlungsRang, schlafe,
+  DOKUMENT, HÖFLICH, fundstellen, holeGedrosselt, links, pdfText, sammlungsRang, schlafe,
 } from './lib/reglemente.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -46,7 +46,7 @@ async function eineGemeinde(g) {
 
   let start
   try {
-    start = await hole(g.website)
+    start = await holeGedrosselt(g.website)
   } catch (e) {
     ergebnis.fehler = `Startseite: ${e.message}`
     return ergebnis
@@ -76,7 +76,7 @@ async function eineGemeinde(g) {
     for (const [seite] of sammlungen) {
       try {
         await schlafe(HÖFLICH)
-        const html = await hole(seite)
+        const html = await holeGedrosselt(seite)
         for (const [u, t] of links(html, seite)) {
           if (/\.pdf($|\?)/i.test(u)) {
             if (DOKUMENT.test(`${u} ${t}`)) kandidaten.push([u, t])
@@ -92,7 +92,7 @@ async function eineGemeinde(g) {
       if (kandidaten.length >= 4) break
       try {
         await schlafe(HÖFLICH)
-        const html = await hole(seite)
+        const html = await holeGedrosselt(seite)
         for (const [u, t] of links(html, seite)) {
           if (/\.pdf($|\?)/i.test(u)) kandidaten.push([u, t || titel])
         }
@@ -114,7 +114,7 @@ async function eineGemeinde(g) {
   for (const [url, titel] of kandidaten.slice(0, 4)) {
     try {
       await schlafe(HÖFLICH)
-      const daten = await hole(url, true)
+      const daten = await holeGedrosselt(url, true)
       if (daten.length > 12 * 1024 * 1024) continue
       const text = await pdfText(daten)
       if (!text || text.length < 400) continue

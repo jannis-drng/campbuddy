@@ -25,8 +25,8 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
 import {
-  SPERRE, anbieterVon, anstehen, dokumentKandidaten, fundstellen, hole, holeDokument, links,
-  ocrText, ocrVerfuegbar, pdfText, sammlungsRang, sperrWaechter,
+  SPERRE, anbieterVon, anbieterZaehler, anstehen, dokumentKandidaten, fundstellen, holeDokument, holeGedrosselt,
+  links, ocrText, ocrVerfuegbar, pdfText, sammlungsRang, sperrWaechter,
 } from './lib/reglemente.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -49,11 +49,16 @@ const GLEICHZEITIG = 3
  * Durchsuchen der Navigation. Geraten wird dabei nichts: entweder die Seite
  * existiert und verlinkt Reglemente, oder sie tut es nicht.
  */
-const PFADE = [
-  '/reglemente', '/reglemente-und-gesetze', '/rechtssammlung', '/erlasse',
-  '/gesetze-und-reglemente', '/reglements', '/reglements-communaux',
-  '/legislation', '/regolamenti',
-]
+/**
+ * Nur die drei Pfade, die tatsächlich vorkommen — je Sprachraum einer.
+ *
+ * Vorher waren es neun. Solange die Abrufe ungedrosselt hintereinander
+ * liefen, kosteten die sechs zusätzlichen nichts als Zeit. Seit jeder Abruf
+ * sich beim Anbieter anstellt, kostet jeder geratene Pfad zwölf Sekunden —
+ * und geraten wird hier fast immer daneben. Was die Navigation ohnehin
+ * findet, muss man nicht zusätzlich raten.
+ */
+const PFADE = ['/reglemente', '/reglements', '/regolamenti']
 
 /** Alle gerenderten Links einer Seite — nach dem JavaScript, nicht davor. */
 async function seitenLinks(seite) {
@@ -81,7 +86,23 @@ const andereSchreibweise = (url) => (url.startsWith('https://')
  * Schreibweise, zuletzt der schlichte Abruf. Erst wenn alle drei scheitern,
  * ist die Seite wirklich nicht zu haben.
  */
+/**
+ * Eine Seite im Browser öffnen — ebenfalls im Anstehen.
+ *
+ * Für den Anbieter ist ein Seitenaufruf aus Chrome dasselbe wie ein Abruf per
+ * fetch, nur teurer: er zieht Stilvorlagen und Skripte nach. Ihn von der
+ * Drossel auszunehmen hiesse, sie fast wirkungslos zu machen.
+ */
 async function oeffne(seite, url) {
+  const freigeben = await anstehen(await anbieterVon(url))
+  try {
+    return await oeffneRoh(seite, url)
+  } finally {
+    freigeben()
+  }
+}
+
+async function oeffneRoh(seite, url) {
   const versuche = [url, andereSchreibweise(url)].filter(Boolean)
   // Alle Fehlschläge sammeln, nicht nur den letzten: sonst steht am Ende
   // „fetch failed" da, und man sucht die Ursache beim falschen Schritt.
@@ -185,7 +206,7 @@ async function eineGemeinde(browser, g) {
     const basis = new URL(g.website).origin
     for (const pfad of PFADE) {
       try {
-        const html = await hole(basis + pfad)
+        const html = await holeGedrosselt(basis + pfad)
         kandidaten.push(...dokumentKandidaten(links(html, basis + pfad)))
       } catch { /* Pfad gibt es hier nicht — der Normalfall */ }
     }
@@ -234,7 +255,7 @@ async function eineGemeinde(browser, g) {
     for (const [url, titel] of geordnet.slice(0, 6)) {
       try {
         // Das Dokument selbst holt `fetch` — dafür braucht es keinen Browser.
-        const dok = await holeDokument(url)
+        const dok = await holeDokument(url, { gedrosselt: true })
         // Eine Zwischenseite statt des Dokuments: viele CMS führen pro Erlass
         // eine Detailseite, an der die Datei erst hängt. Einmal weiterspringen.
         if (dok.typ === 'html') {
@@ -364,6 +385,7 @@ const AUSGABE = resolve(ZIEL, `browser${KANTON ? `-${KANTON}` : ''}.json`)
 console.log(`Browser-Recherche für ${offen.length} Gemeinden, ${GLEICHZEITIG} gleichzeitig …`)
 
 let browser = await chromium.launch({ channel: 'chrome', headless: true })
+const beginn = Date.now()
 const ergebnisse = []
 let fertig = 0
 const warteschlange = [...offen]
@@ -428,7 +450,6 @@ async function arbeiter() {
       browser = await chromium.launch({ channel: 'chrome', headless: true })
     }
 
-    const freigeben = await anstehen(anbieter)
     let r
     let nochmal = false
     try {
@@ -442,7 +463,6 @@ async function arbeiter() {
       // Immer freigeben. Vorher lag die Freigabe hinter einem `continue` im
       // Netzwarte-Zweig — wurde er genommen, hing die Kette dieses Anbieters
       // für immer, und mit ihr fast der ganze Lauf.
-      freigeben()
     }
 
     // Ein Verbindungsfehler ist kein Befund über die Gemeinde. Warten und
@@ -497,6 +517,13 @@ writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0,
 console.log('')
 console.log(`In diesem Lauf: ${ergebnisse.filter((r) => r.stellen.length > 0).length} Fundstellen `
   + `aus ${ergebnisse.length} Gemeinden, Reglement gefunden bei ${ergebnisse.filter((r) => r.dokument).length}.`)
+// Wie viele Abrufe tatsächlich bei den grossen Anbietern gelandet sind.
+// Diese Zahl, nicht die Zahl der Gemeinden, entscheidet über eine Sperre.
+const dauer = (Date.now() - beginn) / 60000
+const oben = [...anbieterZaehler.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3)
+for (const [k, n] of oben) {
+  console.log(`  Anbieter ${k}: ${n} Abrufe in ${dauer.toFixed(0)} min = ${(n / Math.max(dauer, 1)).toFixed(1)}/min`)
+}
 console.log(`Insgesamt in der Datei: ${zusammen.filter((r) => r.stellen.length > 0).length} Fundstellen `
   + `aus ${zusammen.length} Gemeinden.`)
 const gesperrt = zusammen.filter((r) => r.fehler === ANBIETERSPERRE).length

@@ -166,6 +166,27 @@ export const schlafe = (ms) => new Promise((r) => setTimeout(r, ms))
  * Server, die nie antworten, Weiterleitungen im Kreis. Jeder Fehler wird
  * festgehalten statt verschluckt — am Ende soll ablesbar sein, woran es lag.
  */
+/**
+ * Ein Abruf, der sich beim Anbieter anstellt.
+ *
+ * Die Drossel sass vorher um die ganze Gemeinde herum — sie sperrte also
+ * einmal pro Gemeinde und liess danach zehn bis fünfzehn Abrufe hintereinander
+ * auf denselben Server los: Startseite, neun geratene Pfade, zwei Ebenen
+ * Navigation. Aus zwölf Sekunden Abstand wurden so in Wahrheit rund achtzehn
+ * Anfragen pro Minute, und der Anbieter sperrte uns zum dritten Mal.
+ *
+ * Jetzt stellt sich jeder einzelne Abruf an. Das ist die Zahl, die der
+ * Gegenseite tatsächlich begegnet, und nur sie zählt.
+ */
+export async function holeGedrosselt(url, alsBinär = false) {
+  const freigeben = await anstehen(await anbieterVon(url))
+  try {
+    return await hole(url, alsBinär)
+  } finally {
+    freigeben()
+  }
+}
+
 export async function hole(url, alsBinär = false) {
   const abbruch = AbortSignal.timeout(20000)
   const antwort = await fetch(url, {
@@ -220,8 +241,8 @@ export async function pdfText(daten) {
  * Das ist billiger und ehrlicher als dem Content-Type zu glauben, den manche
  * Server falsch setzen.
  */
-export async function holeDokument(url) {
-  const daten = await hole(url, true)
+export async function holeDokument(url, { gedrosselt = false } = {}) {
+  const daten = gedrosselt ? await holeGedrosselt(url, true) : await hole(url, true)
   const kopf = daten.subarray(0, 5).toString('latin1')
   if (kopf.startsWith('%PDF')) return { typ: 'pdf', daten }
   return { typ: 'html', html: daten.toString('utf8'), url }
@@ -452,7 +473,11 @@ export async function anbieterVon(url) {
  */
 const HOECHSTE_HALTEDAUER = 180000
 
+/** Wie viele Abrufe je Anbieter geflossen sind — für die ehrliche Nachschau. */
+export const anbieterZaehler = new Map()
+
 export async function anstehen(schluessel) {
+  anbieterZaehler.set(schluessel, (anbieterZaehler.get(schluessel) ?? 0) + 1)
   const vorherige = wartend.get(schluessel) ?? Promise.resolve()
   let freigeben
   const meine = new Promise((r) => { freigeben = r })
