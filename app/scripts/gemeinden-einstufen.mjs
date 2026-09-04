@@ -24,6 +24,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { bundleNachziehen } from './lib/bundle.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
@@ -267,36 +268,6 @@ for (const [id, n] of Object.entries(zaehler).sort((a, b) => b[1] - a[1])) {
   console.log(`  ${String(n).padStart(4)}×  ${id}  (${m.status}, ${m.review_status})`)
 }
 
-/**
- * Das Bundle so nachziehen, dass jede eingestufte Gemeinde auch sichtbar ist.
- *
- * Gebündelt war bisher allein die Fokusregion. Das reichte, solange die
- * Rechtspflege dort stattfand — jetzt liegen die Einstufungen über acht Kantone
- * verstreut, und zwei Drittel davon wären ohne Datenbankverbindung unsichtbar.
- * Eine recherchierte Gemeinde, die auf der Karte nicht erscheint, ist verlorene
- * Arbeit.
- *
- * Die Regel lautet deshalb: Fokusregion **plus** alles, was eingestuft ist. Das
- * wächst mit der Recherche und bleibt dabei klein, weil es genau die Flächen
- * sind, die etwas zu sagen haben.
- */
-function bundleNachziehen(rechtGemeinden) {
-  const voll = resolve(ROOT, 'import/CH/gemeinden/CH.json')
-  const ziel = resolve(ROOT, 'src/data/gemeinden/CH-VS.json')
-  if (!existsSync(voll)) {
-    console.log('\nimport/CH/gemeinden/CH.json fehlt — Bundle unverändert.')
-    return
-  }
-  const alle = JSON.parse(readFileSync(voll, 'utf8')).features
-  const teil = alle.filter((f) => (
-    f.properties.kanton === 'CH-VS' || rechtGemeinden[String(f.properties.bfs)]
-  ))
-  const fc = { type: 'FeatureCollection', features: teil }
-  writeFileSync(ziel, JSON.stringify(fc) + '\n')
-  const kb = Math.round(JSON.stringify(fc).length / 1024)
-  const auswaerts = teil.filter((f) => f.properties.kanton !== 'CH-VS').length
-  console.log(`Bundle: ${teil.length} Flächen (${auswaerts} ausserhalb des Wallis), ${kb} KB`)
-}
 
 const vonHand = Object.values(recht.gemeinden).filter((e) => !e._muster).length
 if (vonHand > 0) console.log(`\nVon Hand gepflegt und unangetastet: ${vonHand}`)

@@ -21,6 +21,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createInterface } from 'node:readline/promises'
+import { bundleNachziehen } from './lib/bundle.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
@@ -146,6 +147,10 @@ if (eingestuft > 0) {
   writeFileSync(RECHT, JSON.stringify(recht, null, 2) + '\n')
   writeFileSync(resolve(MAIL, 'antworten.json'), JSON.stringify(antworten, null, 1) + '\n')
   console.log(`${eingestuft} eingestuft — jetzt ${Object.keys(recht.gemeinden).length} Gemeinden.`)
+  // Ohne diesen Schritt stünde die Gemeinde in der Rechtsdatei, ihre Fläche
+  // aber nicht im Bundle — eingestuft und trotzdem unsichtbar.
+  bundleNachziehen(recht.gemeinden)
+  console.log('Sichtbar auf der Karte nach dem nächsten Bauen.')
 } else {
   console.log('Nichts eingestuft.')
 }
