@@ -60,7 +60,34 @@ function bewerte(adresse, host) {
   return punkte
 }
 
+/**
+ * Verschleierte Adressen lesbar machen.
+ *
+ * Viele Gemeinden schreiben ihre Adresse als HTML-Entitäten in die Seite —
+ * `&#105;nfo&#64;…` statt `info@…` —, um Adress-Sammler abzuwehren. Für einen
+ * Browser ist das unsichtbar, für uns war es bisher eine unbrauchbare
+ * Zeichenkette, die im Versand als Empfänger gelandet wäre.
+ *
+ * Dass die Gemeinde sich damit gegen automatisches Absammeln wehrt, ist kein
+ * Widerspruch dazu, sie anzuschreiben: die Adresse steht öffentlich auf ihrer
+ * Kontaktseite, und was wir schicken ist eine einzelne, an sie gerichtete
+ * Frage — kein Rundschreiben.
+ */
+function entschluesseln(text) {
+  return text
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&(amp|quot|apos|lt|gt|nbsp);/g, (_, n) => (
+      { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>', nbsp: ' ' }[n]
+    ))
+    // Die zweite verbreitete Schreibweise: "info (at) gemeinde punkt ch".
+    .replace(/\s*\(\s*at\s*\)\s*/gi, '@')
+    .replace(/\s*\[\s*at\s*\]\s*/gi, '@')
+    .replace(/\s*\(\s*punkt\s*\)\s*/gi, '.')
+}
+
 function adressenAus(html, host) {
+  html = entschluesseln(html)
   const roh = new Set()
   for (const m of html.matchAll(MAILTO)) roh.add(decodeURIComponent(m[1]).trim())
   // Manche Seiten schreiben die Adresse nur als Text. Nur dann heranziehen,

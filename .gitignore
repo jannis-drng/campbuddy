@@ -6,3 +6,8 @@ dist/
 
 # Datensicherungen aus scripts/sichern.mjs — enthalten Nutzerdaten
 sicherung/
+
+# Mailweg: Versandprotokoll und Abmeldungen enthalten Kontaktdaten
+app/import/mail/versandt.json
+app/import/mail/keine-anfragen.json
+app/import/mail/sprachen.json

@@ -2040,7 +2040,7 @@
    "name": "Villeret",
    "kanton": "CH-BE",
    "website": "https://www.villeret.ch",
-   "email": "&#97;&#100;&#109;&#105;&#110;&#64;&#118;&#105;&#108;&#108;&#101;&#114;&#101;&#116;&#46;&#99;&#104;",
+   "email": "admin@villeret.ch",
    "quelle": "https://www.villeret.ch/fr/Administration.html",
    "fehler": null
   },
@@ -2985,7 +2985,7 @@
    "name": "Petit-Val",
    "kanton": "CH-BE",
    "website": "https://www.petit-val.ch/",
-   "email": "&#x61;&#x64;&#x6d;&#x69;&#x6e;&#x40;&#x70;&#x65;&#x74;&#x69;&#x74;&#x2d;&#x76;&#x61;&#x6c;&#x2e;&#x63;&#x68;",
+   "email": "admin@petit-val.ch",
    "quelle": "https://www.petit-val.ch/",
    "fehler": null
   },
@@ -2994,7 +2994,7 @@
    "name": "Valbirse",
    "kanton": "CH-BE",
    "website": "https://www.valbirse.ch/",
-   "email": "&#x69;&#x6e;&#x66;&#x6f;&#x40;&#x76;&#x61;&#x6c;&#x62;&#x69;&#x72;&#x73;&#x65;&#x2e;&#x63;&#x68;",
+   "email": "info@valbirse.ch",
    "quelle": "https://www.valbirse.ch/",
    "fehler": null
   },
@@ -3291,7 +3291,7 @@
    "name": "Stocken-Höfen",
    "kanton": "CH-BE",
    "website": "https://www.stocken-hoefen.ch/l1/",
-   "email": "&#103;&#101;&#109;&#101;&#105;&#110;&#100;&#101;&#64;&#115;&#116;&#111;&#99;&#107;&#101;&#110;&#45;&#104;&#111;&#101;&#102;&#101;&#110;&#46;&#99;&#104;",
+   "email": "gemeinde@stocken-hoefen.ch",
    "quelle": "https://www.stocken-hoefen.ch/l1/",
    "fehler": null
   },
@@ -5154,7 +5154,7 @@
    "name": "Illgau",
    "kanton": "CH-SZ",
    "website": "https://www.illgau.ch",
-   "email": "&#103;em&#101;&#105;&#110;de&#64;&#105;&#108;lg&#97;u.ch",
+   "email": "gemeinde@illgau.ch",
    "quelle": "https://www.illgau.ch",
    "fehler": null
   },
@@ -5973,7 +5973,7 @@
    "name": "Le Pâquier (FR)",
    "kanton": "CH-FR",
    "website": "http://www.lepaquier.ch",
-   "email": "&#99;&#111;&#109;&#109;&#117;&#110;&#101;&#64;&#108;&#101;&#112;&#97;&#113;&#117;&#105;&#101;&#114;&#46;&#99;&#104;",
+   "email": "commune@lepaquier.ch",
    "quelle": "http://www.lepaquier.ch",
    "fehler": null
   },
@@ -6108,7 +6108,7 @@
    "name": "Cottens (FR)",
    "kanton": "CH-FR",
    "website": "https://www.cottens-fr.ch",
-   "email": "&#97;&#100;&#x6d;i&#110;&#x40;&#x63;o&#116;&#x74;&#x65;n&#115;&#x2d;f&#114;&#x2e;&#x63;h",
+   "email": "admin@cottens-fr.ch",
    "quelle": "https://www.cottens-fr.ch",
    "fehler": null
   },
@@ -6234,7 +6234,7 @@
    "name": "La Brillaz",
    "kanton": "CH-FR",
    "website": "https://labrillaz.ch",
-   "email": "&#x63;&#x6f;&#109;&#109;un&#x65;&#x40;&#x6c;&#97;br&#x69;&#x6c;&#x6c;&#97;&#122;&#46;&#x63;&#x68;",
+   "email": "commune@labrillaz.ch",
    "quelle": "https://labrillaz.ch",
    "fehler": null
   },
@@ -7557,7 +7557,7 @@
    "name": "Nunningen",
    "kanton": "CH-SO",
    "website": "http://www.nunningen.ch",
-   "email": "gemeinde@nunningen.swiss&nbsp;",
+   "email": "gemeinde@nunningen.swiss",
    "quelle": "http://www.nunningen.ch",
    "fehler": null
   },
@@ -8583,7 +8583,7 @@
    "name": "Trasadingen",
    "kanton": "CH-SH",
    "website": "https://www.trasadingen.ch",
-   "email": "/&#47;&#116;&#114;&#97;&#115;&#97;&#100;&#105;&#110;&#103;&#x65;&#x6e;&#x40;&#x6b;&#x74;&#x73;&#x68;&#x2e;&#x63;&#x68;",
+   "email": "//trasadingen@ktsh.ch",
    "quelle": "https://trasadingen.ch/verwaltung-2/",
    "fehler": null
   },
@@ -8844,7 +8844,7 @@
    "name": "St. Gallen",
    "kanton": "CH-SG",
    "website": "https://www.stadt.sg.ch",
-   "email": "&#105;&#110;&#102;&#111;&#064;&#115;&#116;&#097;&#100;&#116;&#046;&#115;&#103;&#046;&#099;&#104;",
+   "email": "info@stadt.sg.ch",
    "quelle": "https://www.stadt.sg.ch",
    "fehler": null
   },
@@ -9914,7 +9914,7 @@
    "name": "Sils im Engadin",
    "kanton": "CH-GR",
    "website": "http://www.sils-segl.ch",
-   "email": "&#115;&#x69;&#108;&#x73;&#64;&#115;&#105;&#x6c;&#x73;&#x2e;&#99;&#104;",
+   "email": "sils@sils.ch",
    "quelle": "http://www.sils-segl.ch/contact-rm.html",
    "fehler": null
   },
@@ -10058,7 +10058,7 @@
    "name": "Davos",
    "kanton": "CH-GR",
    "website": "https://www.gemeindedavos.ch/",
-   "email": "kanzlei@gemeindedavos.ch\\&quot;&gt;kanzlei@gemeindedavos.ch&lt;\\/a&gt;&quot;,&quot;email-sort&quot;:&quot;#3e2a445c40323a0a92363242323a443032302a54464e082e38011c011c&quot;},{&quot;name&quot;:&quot;&lt;a",
+   "email": "kanzlei@gemeindedavos.ch\\\">kanzlei@gemeindedavos.ch<\\/a>\",\"email-sort\":\"#3e2a445c40323a0a92363242323a443032302a54464e082e38011c011c\"},{\"name\":\"<a",
    "quelle": "https://www.gemeindedavos.ch/",
    "fehler": null
   },
@@ -13694,7 +13694,7 @@
    "name": "Bex",
    "kanton": "CH-VD",
    "website": "https://www.bex.ch",
-   "email": "&#97;&#x6e;n&#105;e&#x64;&#117;f&#x6f;&#x75;&#x72;&#64;&#x62;lue&#119;&#x69;n&#x2e;c&#x68;",
+   "email": "anniedufour@bluewin.ch",
    "quelle": "https://www.bex.ch/adresses",
    "fehler": null
   },
@@ -13802,7 +13802,7 @@
    "name": "Mollens (VD)",
    "kanton": "CH-VD",
    "website": "https://www.mollensvd.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;mol&#108;&#x65;ns&#x76;d.&#99;h",
+   "email": "greffe@mollensvd.ch",
    "quelle": "https://www.mollensvd.ch",
    "fehler": null
   },
@@ -13892,7 +13892,7 @@
    "name": "La Chaux (Cossonay)",
    "kanton": "CH-VD",
    "website": "https://www.lachaux.ch",
-   "email": "&#x67;&#114;ef&#x66;&#101;&#64;&#108;&#x61;&#x63;&#x68;a&#117;&#x78;&#46;&#99;&#x68;",
+   "email": "greffe@lachaux.ch",
    "quelle": "https://www.lachaux.ch",
    "fehler": null
   },
@@ -14054,7 +14054,7 @@
    "name": "Pompaples",
    "kanton": "CH-VD",
    "website": "http://www.pompaples.ch",
-   "email": "g&#x72;&#x65;&#102;fe&#x40;&#112;o&#x6d;&#x70;&#x61;&#112;&#108;&#101;&#x73;&#46;c&#104;",
+   "email": "greffe@pompaples.ch",
    "quelle": "http://www.pompaples.ch",
    "fehler": null
   },
@@ -14108,7 +14108,7 @@
    "name": "Bercher",
    "kanton": "CH-VD",
    "website": "https://www.bercher-vd.ch/",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;ber&#99;&#x68;er&#x2d;vd&#46;c&#x68;",
+   "email": "greffe@bercher-vd.ch",
    "quelle": "https://www.bercher-vd.ch/",
    "fehler": null
   },
@@ -14135,7 +14135,7 @@
    "name": "Etagnières",
    "kanton": "CH-VD",
    "website": "https://etagnieres.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;eta&#103;&#x6e;ie&#x72;es&#46;c&#x68;",
+   "email": "greffe@etagnieres.ch",
    "quelle": "https://etagnieres.ch",
    "fehler": null
   },
@@ -14162,7 +14162,7 @@
    "name": "Penthéréaz",
    "kanton": "CH-VD",
    "website": "http://www.penthereaz.ch",
-   "email": "a&#x64;&#x6d;&#105;&#110;i&#115;tra&#116;&#x69;on&#x40;pe&#110;t&#x68;&#x65;r&#101;&#x61;&#x7a;&#46;&#x63;&#x68;",
+   "email": "administration@penthereaz.ch",
    "quelle": "http://www.penthereaz.ch",
    "fehler": null
   },
@@ -14567,7 +14567,7 @@
    "name": "Lully (VD)",
    "kanton": "CH-VD",
    "website": "http://www.lully.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;lul&#108;&#x79;.c&#x68;",
+   "email": "greffe@lully.ch",
    "quelle": "http://www.lully.ch",
    "fehler": null
   },
@@ -14873,7 +14873,7 @@
    "name": "Crassier",
    "kanton": "CH-VD",
    "website": "http://www.crassier.ch",
-   "email": "cdh&#x40;c&#114;&#x61;&#x73;s&#105;&#x65;&#x72;&#46;&#99;&#104;",
+   "email": "cdh@crassier.ch",
    "quelle": "http://www.crassier.ch",
    "fehler": null
   },
@@ -14900,7 +14900,7 @@
    "name": "Founex",
    "kanton": "CH-VD",
    "website": "https://www.founex.ch/",
-   "email": "a&#x64;&#x6d;&#105;&#110;i&#115;tra&#116;&#x69;on&#x40;fo&#117;n&#x65;&#x78;.&#99;&#x68;",
+   "email": "administration@founex.ch",
    "quelle": "https://www.founex.ch/",
    "fehler": null
   },
@@ -14909,7 +14909,7 @@
    "name": "Genolier",
    "kanton": "CH-VD",
    "website": "http://www.genolier.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;gen&#111;&#x6c;ie&#x72;.c&#104;",
+   "email": "greffe@genolier.ch",
    "quelle": "http://www.genolier.ch",
    "fehler": null
   },
@@ -14918,7 +14918,7 @@
    "name": "Gingins",
    "kanton": "CH-VD",
    "website": "https://www.gingins.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;gin&#103;&#x69;ns&#x2e;ch",
+   "email": "greffe@gingins.ch",
    "quelle": "https://www.gingins.ch",
    "fehler": null
   },
@@ -14927,7 +14927,7 @@
    "name": "Givrins",
    "kanton": "CH-VD",
    "website": "https://www.givrins.ch",
-   "email": "&#103;r&#x65;&#x66;f&#101;&#x40;&#x67;&#105;&#x76;&#x72;&#105;&#110;s.&#x63;h",
+   "email": "greffe@givrins.ch",
    "quelle": "https://www.givrins.ch",
    "fehler": null
   },
@@ -14990,7 +14990,7 @@
    "name": "Signy-Avenex",
    "kanton": "CH-VD",
    "website": "http://www.signy-avenex.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;sig&#110;&#x79;-a&#x76;en&#101;x&#x2e;&#x63;h",
+   "email": "greffe@signy-avenex.ch",
    "quelle": "http://www.signy-avenex.ch",
    "fehler": null
   },
@@ -15008,7 +15008,7 @@
    "name": "Trélex",
    "kanton": "CH-VD",
    "website": "https://www.trelex.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;tre&#108;&#x65;x.&#x63;h",
+   "email": "greffe@trelex.ch",
    "quelle": "https://www.trelex.ch",
    "fehler": null
   },
@@ -15242,7 +15242,7 @@
    "name": "Ropraz",
    "kanton": "CH-VD",
    "website": "http://www.ropraz.ch",
-   "email": "g&#x72;&#x65;&#x66;&#x66;&#x65;&#64;&#114;&#111;p&#114;&#x61;&#x7a;&#x2e;&#99;&#x68;",
+   "email": "greffe@ropraz.ch",
    "quelle": "http://www.ropraz.ch",
    "fehler": null
   },
@@ -15296,7 +15296,7 @@
    "name": "Chevroux",
    "kanton": "CH-VD",
    "website": "http://www.chevroux.ch",
-   "email": "&#97;&#x64;&#109;&#x69;&#x6e;&#64;c&#x68;&#x65;&#x76;&#114;o&#x75;x&#x2e;c&#104;",
+   "email": "admin@chevroux.ch",
    "quelle": "http://www.chevroux.ch",
    "fehler": null
   },
@@ -15422,7 +15422,7 @@
    "name": "Burtigny",
    "kanton": "CH-VD",
    "website": "https://www.burtigny.ch",
-   "email": "&#97;&#100;&#109;&#105;&#110;&#105;&#115;&#x74;&#x72;&#x61;t&#105;&#111;n&#x40;&#x62;&#117;rt&#x69;&#103;n&#x79;&#x2e;&#x63;&#104;&#32;",
+   "email": "administration@burtigny.ch",
    "quelle": "https://www.burtigny.ch",
    "fehler": null
   },
@@ -15467,7 +15467,7 @@
    "name": "Rolle",
    "kanton": "CH-VD",
    "website": "https://www.rolle.ch",
-   "email": "g&#x72;&#x65;&#102;&#102;e&#64;rol&#108;&#x65;.c&#x68;",
+   "email": "greffe@rolle.ch",
    "quelle": "https://www.rolle.ch",
    "fehler": null
   },
@@ -15638,7 +15638,7 @@
    "name": "Ependes (VD)",
    "kanton": "CH-VD",
    "website": "https://www.ependesvd.ch",
-   "email": "&#103;r&#101;f&#102;&#101;&#64;e&#112;&#101;nd&#101;&#115;vd.&#99;h",
+   "email": "greffe@ependesvd.ch",
    "quelle": "https://www.ependesvd.ch",
    "fehler": null
   },
@@ -15827,7 +15827,7 @@
    "name": "Simplon",
    "kanton": "CH-VS",
    "website": "https://gemeinde-simplon.ch",
-   "email": "sebastian&#46;arnold&#64;&#103;&#101;&#109;&#101;&#105;&#110;&#100;&#101;&#45;&#115;&#105;&#109;&#112;&#108;&#111;&#110;&#46;&#99;&#104;",
+   "email": "sebastian.arnold@gemeinde-simplon.ch",
    "quelle": "https://gemeinde-simplon.ch/bauverwaltung/",
    "fehler": null
   },
@@ -15854,7 +15854,7 @@
    "name": "Ardon",
    "kanton": "CH-VS",
    "website": "https://www.ardon.ch",
-   "email": "&#105;n&#102;&#111;&#64;&#97;&#114;do&#110;&#46;&#99;&#104;",
+   "email": "info@ardon.ch",
    "quelle": "https://www.ardon.ch",
    "fehler": null
   },
@@ -15872,7 +15872,7 @@
    "name": "Neind",
    "kanton": "CH-VS",
    "website": "http://www.nendaz.org",
-   "email": "&#99;o&#109;m&#117;&#110;&#101;&#64;ne&#110;&#100;&#97;&#122;&#46;&#111;rg",
+   "email": "commune@nendaz.org",
    "quelle": "http://www.nendaz.org",
    "fehler": null
   },
@@ -15953,7 +15953,7 @@
    "name": "Fiesch",
    "kanton": "CH-VS",
    "website": "https://www.gemeinde-fiesch.ch/",
-   "email": "&#105;&#x6e;&#x66;&#x6f;&#64;&#103;&#101;&#x6d;&#101;&#x69;&#110;&#100;&#x65;&#x2d;&#102;&#105;&#x65;&#115;&#x63;&#x68;&#x2e;&#99;&#104;",
+   "email": "info@gemeinde-fiesch.ch",
    "quelle": "https://www.gemeinde-fiesch.ch/",
    "fehler": null
   },
@@ -16133,7 +16133,7 @@
    "name": "Bovernier",
    "kanton": "CH-VS",
    "website": "https://www.bovernier.ch",
-   "email": "i&#110;&#102;&#111;&#64;&#98;&#111;&#118;er&#110;&#105;&#101;r&#46;&#99;&#104;",
+   "email": "info@bovernier.ch",
    "quelle": "https://www.bovernier.ch",
    "fehler": null
   },
@@ -16367,7 +16367,7 @@
    "name": "Wiler (Lötschen)",
    "kanton": "CH-VS",
    "website": "https://www.wilervs.ch",
-   "email": "&#x77;&#105;&#108;&#101;&#114;&#x40;&#108;&#x6f;&#101;&#116;&#x73;&#x63;&#104;&#101;&#x6e;&#x2e;&#x63;&#104;",
+   "email": "wiler@loetschen.ch",
    "quelle": "https://www.wilervs.ch",
    "fehler": null
   },
@@ -17321,7 +17321,7 @@
    "name": "Boécourt",
    "kanton": "CH-JU",
    "website": "https://www.boecourt.ch/",
-   "email": "&#97;&#100;&#109;&#105;&#110;&#105;&#115;&#116;&#114;&#97;&#116;&#105;&#111;&#110;&#64;&#98;&#111;&#101;&#99;&#111;&#117;&#114;&#116;&#46;&#99;&#104;",
+   "email": "administration@boecourt.ch",
    "quelle": "https://www.boecourt.ch/",
    "fehler": null
   },
@@ -17330,7 +17330,7 @@
    "name": "Bourrignon",
    "kanton": "CH-JU",
    "website": "http://www.bourrignon.ch",
-   "email": "&#98;&#111;&#117;&#114;&#114;&#105;&#103;&#110;&#111;&#110;&#64;&#100;&#101;&#118;&#101;&#108;&#105;&#101;&#114;&#46;&#99;&#104;",
+   "email": "bourrignon@develier.ch",
    "quelle": "http://www.bourrignon.ch",
    "fehler": null
   },
@@ -17357,7 +17357,7 @@
    "name": "Courrendlin",
    "kanton": "CH-JU",
    "website": "https://www.courrendlin.ch",
-   "email": "&#99;&#111;&#109;&#109;&#117;&#110;&#101;&#64;&#99;&#111;&#117;&#114;&#114;&#101;&#110;&#100;&#108;&#105;&#110;&#46;&#99;&#104;",
+   "email": "commune@courrendlin.ch",
    "quelle": "https://www.courrendlin.ch",
    "fehler": null
   },
@@ -17366,7 +17366,7 @@
    "name": "Courroux",
    "kanton": "CH-JU",
    "website": "https://www.courroux.ch",
-   "email": "&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#114;&#111;&#117;&#120;&#46;&#99;&#104;",
+   "email": "info@courroux.ch",
    "quelle": "https://www.courroux.ch",
    "fehler": null
   },
@@ -17375,7 +17375,7 @@
    "name": "Courtételle",
    "kanton": "CH-JU",
    "website": "https://www.courtetelle.ch",
-   "email": "&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#116;&#101;&#116;&#101;&#108;&#108;&#101;&#46;&#99;&#104;",
+   "email": "info@courtetelle.ch",
    "quelle": "https://www.courtetelle.ch",
    "fehler": null
   },
@@ -17384,7 +17384,7 @@
    "name": "Delémont",
    "kanton": "CH-JU",
    "website": "https://www.delemont.ch",
-   "email": "&#99;&#104;&#97;&#110;&#99;&#101;&#108;&#108;&#101;&#114;&#105;&#101;&#64;&#100;&#101;&#108;&#101;&#109;&#111;&#110;&#116;&#46;&#99;&#104;",
+   "email": "chancellerie@delemont.ch",
    "quelle": "https://www.delemont.ch/fr/Votre-commune/Horaires-des-guichets-et-contacts/Horaires-des-guichets-et-contacts.html",
    "fehler": null
   },
@@ -17429,7 +17429,7 @@
    "name": "Pleigne",
    "kanton": "CH-JU",
    "website": "https://www.pleigne.ch",
-   "email": "&#97;&#100;&#109;&#105;&#110;&#105;&#115;&#116;&#114;&#97;&#116;&#105;&#111;&#110;&#64;&#112;&#108;&#101;&#105;&#103;&#110;&#101;&#46;&#99;&#104;",
+   "email": "administration@pleigne.ch",
    "quelle": "https://www.pleigne.ch/fr/Contacts.html",
    "fehler": null
   },
@@ -17447,7 +17447,7 @@
    "name": "Soyhières",
    "kanton": "CH-JU",
    "website": "https://www.soyhieres.ch",
-   "email": "&#97;&#100;&#109;&#105;&#110;&#105;&#115;&#116;&#114;&#97;&#116;&#105;&#111;&#110;&#64;&#115;&#111;&#121;&#104;&#105;&#101;&#114;&#101;&#115;&#46;&#99;&#104;",
+   "email": "administration@soyhieres.ch",
    "quelle": "https://www.soyhieres.ch",
    "fehler": null
   },
@@ -17456,7 +17456,7 @@
    "name": "Haute-Sorne",
    "kanton": "CH-JU",
    "website": "https://www.haute-sorne.ch/",
-   "email": "&#105;&#110;&#102;&#111;&#64;&#108;&#97;&#109;&#98;&#101;&#108;&#101;&#116;&#45;&#99;&#111;&#109;&#112;&#116;&#97;&#46;&#99;&#104;",
+   "email": "info@lambelet-compta.ch",
    "quelle": "https://www.haute-sorne.ch/fr/Vivre/Adresses-utiles.html",
    "fehler": null
   },
@@ -17474,7 +17474,7 @@
    "name": "Les Bois",
    "kanton": "CH-JU",
    "website": "https://www.lesbois.ch",
-   "email": "&#105;&#110;&#102;&#111;&#64;&#108;&#101;&#115;&#98;&#111;&#105;&#115;&#46;&#99;&#104;",
+   "email": "info@lesbois.ch",
    "quelle": "https://www.lesbois.ch",
    "fehler": null
   },
@@ -17717,7 +17717,7 @@
    "name": "La Baroche",
    "kanton": "CH-JU",
    "website": "https://baroche.ch",
-   "email": "&#115;&#101;&#99;&#114;&#101;&#116;&#97;&#114;&#105;&#97;&#116;&#64;&#108;&#97;&#98;&#97;&#114;&#111;&#99;&#104;&#101;&#46;&#99;&#104;",
+   "email": "secretariat@labaroche.ch",
    "quelle": "https://baroche.ch",
    "fehler": null
   },
@@ -17735,7 +17735,7 @@
    "name": "Basse-Vendline",
    "kanton": "CH-JU",
    "website": "https://www.basse-vendline.ch/",
-   "email": "&#105;&#110;&#102;&#111;&#64;&#98;&#97;&#115;&#115;&#101;&#45;&#118;&#101;&#110;&#100;&#108;&#105;&#110;&#101;&#46;&#99;&#104;",
+   "email": "info@basse-vendline.ch",
    "quelle": "https://www.basse-vendline.ch/",
    "fehler": null
   },
