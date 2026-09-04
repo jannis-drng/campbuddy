@@ -37,7 +37,9 @@ function sagen(buchse, zeile, erwartet) {
   })
 }
 
-const { IMAP_HOST, IMAP_PORT, SMTP_HOST, SMTP_PORT, MAIL_USER, MAIL_PASSWORT } = process.env
+const {
+  IMAP_HOST, IMAP_PORT, SMTP_HOST, SMTP_PORT, MAIL_USER, MAIL_PASSWORT, MAIL_ABSENDERADRESSE,
+} = process.env
 const fehlend = Object.entries({ IMAP_HOST, SMTP_HOST, MAIL_USER, MAIL_PASSWORT })
   .filter(([, v]) => !v).map(([k]) => k)
 if (fehlend.length) {
@@ -60,7 +62,14 @@ try {
     console.log(gruen('✓ IMAP'), `— angemeldet, Posteingang mit ${anzahl ?? '?'} Nachrichten`)
   } else {
     console.log(rot('✗ IMAP'), '— Anmeldung abgewiesen:', antwort.trim().split('\n').pop())
-    console.log('   Prüfe: IMAP in Zoho eingeschaltet? App-Passwort statt Kontopasswort?')
+    // Die häufigste Ursache zuerst, und sie ist unauffällig: Zoho antwortet
+    // auf die Anmeldung an einem Alias oder einer Gruppe mit demselben
+    // "Invalid credentials" wie auf ein falsches Passwort. Wer das nicht
+    // weiss, sucht stundenlang am richtigen Passwort.
+    console.log(`   ${MAIL_USER} — ist das ein echtes Benutzerkonto?`)
+    console.log('   Ein Alias oder eine Zoho-Gruppe hat kein eigenes Passwort.')
+    console.log('   Dann MAIL_USER auf das Konto setzen, unter dem das Postfach liegt (meist admin@).')
+    console.log('   Sonst prüfen: IMAP in Zoho eingeschaltet? App-Passwort statt Kontopasswort?')
     fehler++
   }
   b.write('a3 LOGOUT\r\n'); b.end()
@@ -87,6 +96,15 @@ try {
 } catch (e) {
   console.log(rot('✗ SMTP'), '—', e.message, `(${SMTP_HOST}:${SMTP_PORT ?? 465})`)
   fehler++
+}
+
+// Die Absenderadresse darf vom Anmeldekonto abweichen — dann muss sie in Zoho
+// aber als Absenderadresse bestätigt sein. Das lässt sich hier nicht prüfen,
+// nur benennen: SMTP weist sie erst beim Versand zurück.
+if (fehler === 0 && MAIL_ABSENDERADRESSE && MAIL_ABSENDERADRESSE !== MAIL_USER) {
+  console.log('')
+  console.log(`  Hinweis: gesendet wird als ${MAIL_ABSENDERADRESSE}, angemeldet als ${MAIL_USER}.`)
+  console.log('  Diese Absenderadresse muss in Zoho unter «Absenderadressen» bestätigt sein.')
 }
 
 console.log('')

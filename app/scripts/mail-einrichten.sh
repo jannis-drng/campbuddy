@@ -24,9 +24,16 @@ printf 'Rechenzentrum — meldest du dich auf zoho.eu oder zoho.com an? [eu/com]
 read -r region
 region="${region:-eu}"
 
-printf 'E-Mail-Adresse (contact@camping-map.com): '
+echo
+echo "Anmeldung erfolgt am echten Benutzerkonto — meist admin@, nicht contact@."
+echo "Ein Alias oder eine Gruppe hat kein eigenes Passwort."
+printf 'Anmeldekonto (admin@camping-map.com): '
 read -r benutzer
-benutzer="${benutzer:-contact@camping-map.com}"
+benutzer="${benutzer:-admin@camping-map.com}"
+
+printf 'Absenderadresse für die Anfragen (contact@camping-map.com): '
+read -r absenderadresse
+absenderadresse="${absenderadresse:-contact@camping-map.com}"
 
 printf 'Dein Name für die Unterschrift (Jannis Döring): '
 read -r absender
@@ -45,6 +52,7 @@ sed \
   -e "s|^IMAP_HOST=.*|IMAP_HOST=imap.zoho.${region}|" \
   -e "s|^SMTP_HOST=.*|SMTP_HOST=smtp.zoho.${region}|" \
   -e "s|^MAIL_USER=.*|MAIL_USER=${benutzer}|" \
+  -e "s|^MAIL_ABSENDERADRESSE=.*|MAIL_ABSENDERADRESSE=${absenderadresse}|" \
   -e "s|^MAIL_ABSENDER=.*|MAIL_ABSENDER=${absender}|" \
   "$VORLAGE" > "$ZIEL"
 printf '%s\n' "MAIL_PASSWORT=${passwort}" >> "$ZIEL"
