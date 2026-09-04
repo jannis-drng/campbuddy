@@ -1,0 +1,34 @@
+# Lettre aux communes — projet, non envoyé
+
+**Objet :** Nuitée en plein air — question sur la réglementation à {{gemeinde}}
+
+Madame, Monsieur,
+
+J'exploite une carte en ligne gratuite consacrée aux nuitées en pleine nature.
+Elle indique pour chaque commune ce qui s'applique, avec la source et la date
+de la dernière vérification.
+
+Pour {{gemeinde}}, je n'ai trouvé aucune disposition en ligne. Je m'adresse
+donc directement à vous :
+
+**Existe-t-il à {{gemeinde}} une réglementation concernant le camping ou le
+fait de passer la nuit en plein air en dehors des places autorisées ?**
+
+Une référence à l'article du règlement de police ou un lien suffit. S'il
+n'existe aucune réglementation communale, cette réponse nous est tout aussi
+utile — la carte l'indiquera ainsi.
+
+Votre réponse figurera sur la carte avec la commune comme source et la date.
+Si vous ne le souhaitez pas, un bref message suffit ; la zone restera alors
+sans indication.
+
+**Transparence :** cette demande a été rédigée et envoyée de manière
+automatisée, avec le concours d'un système d'IA. Si elle devait être erronée
+ou inappropriée, je vous prie de m'en excuser. **Chaque réponse est lue par une
+personne**, et chaque indication est vérifiée manuellement avant publication.
+Si vous ne souhaitez plus recevoir de messages, répondez « pas de demandes » —
+nous vous retirerons définitivement de la liste.
+
+Avec mes salutations les meilleures
+{{absender}}
+{{projekt_url}}

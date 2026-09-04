@@ -1,0 +1,37 @@
+# Anschreiben an die Gemeinden — Entwurf zur Freigabe
+
+Noch **nicht versendet**. Platzhalter in `{{…}}` werden je Gemeinde eingesetzt.
+
+---
+
+**Betreff:** Übernachten im Freien — Anfrage zur Regelung in {{gemeinde}}
+
+Sehr geehrte Damen und Herren
+
+Ich betreibe eine kostenlose Online-Karte zum Übernachten in der Natur. Sie
+weist für jede Gemeinde aus, was gilt, und nennt dazu die Quelle und das Datum
+der letzten Prüfung.
+
+Für {{gemeinde}} habe ich online keine Bestimmung gefunden. Deshalb wende ich
+mich direkt an Sie:
+
+**Gibt es in {{gemeinde}} eine Regelung zum Campieren, Zelten oder Übernachten
+im Freien ausserhalb bewilligter Campingplätze?**
+
+Ein Verweis auf den Artikel im Polizeireglement oder ein Link genügt. Gibt es
+keine kommunale Regelung, ist auch das eine brauchbare Antwort — die Karte
+weist es dann so aus.
+
+Ihre Auskunft erscheint mit der Gemeinde als Quelle und dem Datum. Ist Ihnen
+das nicht recht, genügt ein kurzer Hinweis; dann bleibt die Fläche unmarkiert.
+
+**Transparenzhinweis:** Diese Anfrage wurde automatisiert erstellt und
+versendet, unter Mitwirkung eines KI-Systems. Sollte sie fehlerhaft oder
+unpassend sein, bitte ich um Entschuldigung. **Jede Antwort wird von einem
+Menschen gelesen**, und jede Angabe wird von Hand geprüft, bevor sie auf der
+Karte erscheint. Möchten Sie keine weiteren Nachrichten, genügt die Antwort
+«keine Anfragen» — dann tragen wir Sie dauerhaft aus.
+
+Freundliche Grüsse
+{{absender}}
+{{projekt_url}}
