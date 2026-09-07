@@ -1,6 +1,6 @@
 {
   "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
-  "_stand": "2026-09-02",
+  "_stand": "2026-09-08",
   "gemeinden": {
     "1": {
       "status": "forbidden",
@@ -3364,6 +3364,20 @@
       "last_verified": "2026-08-29",
       "_muster": "de-nur-bezeichnete-zonen"
     },
+    "6022": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "bivouac_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ist in Chamoson in jeder Form verboten — die Gemeindepolizei nennt Wohnmobile, Zelte, das Biwak und das Übernachten im Freien ausdrücklich und einzeln. Das Verbot gilt für das gesamte Gemeindegebiet. Ausgewiesene Plätze für Wohnmobile gibt es keine.",
+      "conditions": "Der Artikel nennt das Biwakieren und das blosse Übernachten im Freien eigens — hier ist also auch das Nachtlager ohne Zelt erfasst, anders als in vielen Reglementen, die dazu schweigen. Zum offenen Feuer trifft die Auskunft keine Aussage.",
+      "source": "Schriftliche Auskunft der Gemeindepolizei Chamoson, 07.09.2026",
+      "source_url": "https://www.chamoson.net",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "antwort-chamoson-2026-09-07"
+    },
     "6023": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3663,6 +3677,19 @@
       "last_verified": "2026-08-29",
       "_muster": "de-nur-bezeichnete-zonen"
     },
+    "6215": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Die Gemeinde weist auf Art. 58 ihres Polizeireglements hin und hält fest, dass es in Massongex keinen für das Campieren bezeichneten Platz gibt. Da das Reglement das Campieren ausserhalb solcher Plätze verbietet und keiner besteht, gilt das Verbot für das ganze Gemeindegebiet.",
+      "conditions": "Diese Einstufung stützt sich auf eine kurze schriftliche Auskunft, die auf Art. 58 verweist, ohne ihn zu zitieren. Der Wortlaut des Artikels wurde nicht eingesehen — wer sich darauf verlässt, frage im Zweifel nochmals bei der Gemeinde nach.",
+      "source": "Schriftliche Auskunft der Gemeindeverwaltung Massongex, 07.09.2026 (verweist auf Art. 58 des Polizeireglements)",
+      "source_url": "http://www.massongex.ch",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "antwort-massongex-2026-09-07"
+    },
     "6232": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3753,6 +3780,20 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-oeffentlich-und-privat"
+    },
+    "6253": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der ausdrücklich dafür bezeichneten Plätze verboten. Das Reglement fasst den Begriff weit: es erfasst auch, was dem Campieren gleichkommt.",
+      "conditions": "Vorbehalten bleiben die Vorschriften des Strassenverkehrsrechts. Für den offiziellen Platz für Fahrende kann die Behörde die Zahl aufeinanderfolgender Standtage beschränken. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Polizeireglement Crans-Montana (2013), Art. 52 — auf schriftliche Auskunft der Gemeinde, 07.09.2026",
+      "source_url": "https://www.commune-cransmontana.ch/media/document/0/police-reglement-homologue-2013.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze",
+      "_aus_mail": "antwort-crans-montana-2026-09-07"
     },
     "6254": {
       "status": "forbidden",
