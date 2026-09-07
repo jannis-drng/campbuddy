@@ -189,6 +189,18 @@ const ADRESSE_GUELTIG = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i
 
 const adressen = new Map(kontakte.filter((k) => k.email).map((k) => [k.bfs, k.email]))
 
+/**
+ * Von Hand nachgetragene Adressen — sie gehen vor.
+ *
+ * Rund jede fünfte Gemeinde veröffentlicht keine Adresse mehr, sondern nur
+ * noch ein Kontaktformular. Automatisch ist da nichts zu holen; wer die
+ * Adresse von Hand heraussucht, soll sie an einer Stelle eintragen können und
+ * nicht in der gesammelten Datei, die beim nächsten Lauf überschrieben wird.
+ */
+for (const e of lade(resolve(MAIL, 'adressen-manuell.json'), { gemeinden: [] }).gemeinden) {
+  if (e.email?.trim()) adressen.set(e.bfs, e.email.trim())
+}
+
 const gemeinden = JSON.parse(readFileSync(resolve(ROOT, 'import/CH/gemeinden/CH.json'), 'utf8')).features
   .map((f) => f.properties)
 
