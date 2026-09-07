@@ -81,6 +81,34 @@ function istAntwort(mail, bfs, vermutet) {
   return unsereNachrichten.size > 0 && [...unsereNachrichten].some((id) => bezug.includes(id))
 }
 
+/**
+ * Eine Eingangsbestätigung ist keine Antwort.
+ *
+ * Viele Verwaltungen schicken zuerst eine automatische Empfangsbestätigung
+ * ("Ihre Anfrage wird an die zuständige Stelle weitergeleitet") und Tage
+ * später die eigentliche Auskunft. Beide sehen im Postfach gleich aus. Wer
+ * die erste als Antwort verbucht, hält die Gemeinde für erledigt und wartet
+ * nie auf die zweite.
+ */
+const EINGANGSBESTAETIGUNG = new RegExp([
+  'automatische antwort', 'automatic reply', 'réponse automatique', 'risposta automatica',
+  "c'est une information automatique", 'dies ist eine automatische',
+  'sera traitée dans les meilleurs délais', 'sera dirigée au service',
+  'wird an die zuständige stelle', 'accusons? (bonne )?réception',
+  'wir haben ihre (anfrage|nachricht) erhalten', 'abwesenheitsnotiz', 'out of office',
+  'bin ich abwesend', 'je suis absent',
+].join('|'), 'i')
+
+/**
+ * Woran man erkennt, dass die Mail doch etwas sagt.
+ *
+ * Die Länge taugt nicht als Unterscheidung: Sembrancher schreibt "Nous
+ * accusons bonne réception" — und liefert im nächsten Satz die Auskunft samt
+ * Artikelnummer. Eine Signatur macht umgekehrt jede Bestätigung lang.
+ * Entscheidend ist, ob überhaupt etwas Regelndes darinsteht.
+ */
+const INHALT = /interdit|interdic|verboten|untersagt|nicht (erlaubt|gestattet)|autoris|gestattet|erlaubt|art(ikel)?\.?\s*\d+|règlement|reglement|regolamento|campingplatz|camping/i
+
 /** Die BFS-Nummer aus den Empfängerfeldern — der Anker, den wir selbst gesetzt haben. */
 function bfsAus(kopf) {
   const felder = [kopf.to?.text, kopf.cc?.text, kopf.headers?.get('delivered-to'), kopf.headers?.get('x-original-to')]
@@ -159,6 +187,9 @@ try {
       betreff: mail.subject ?? null,
       am: (mail.date ?? new Date()).toISOString(),
       abmeldung: ABMELDUNG.test(ohneZitat) || ABMELDUNG.test(mail.subject ?? ''),
+      // Nur eine Empfangsbestätigung: festhalten, aber nicht als Auskunft
+      // zählen — die eigentliche Antwort kommt oft Tage später.
+      nur_bestaetigung: EINGANGSBESTAETIGUNG.test(ohneZitat) && !INHALT.test(ohneZitat),
       text: ohneZitat.slice(0, 6000),
       // Dieselbe Artikel-Extraktion wie bei den Reglementen: nennt die Antwort
       // einen Artikel im Wortlaut, wird er hier sichtbar.
@@ -175,7 +206,9 @@ try {
     }
 
     const wer = bfs ? `bfs ${bfs}` : vermutet ? `vermutlich bfs ${vermutet}` : 'nicht zuzuordnen'
-    const marke = eintrag.abmeldung ? 'ABMELDUNG' : eintrag.stellen.length ? `${eintrag.stellen.length} Fundstelle(n)` : '—'
+    const marke = eintrag.abmeldung ? 'ABMELDUNG'
+      : eintrag.nur_bestaetigung ? 'nur Eingangsbestätigung'
+        : eintrag.stellen.length ? `${eintrag.stellen.length} Fundstelle(n)` : 'Auskunft'
     console.log(`  ${wer.padEnd(24)} ${marke.padEnd(16)} ${(mail.subject ?? '').slice(0, 44)}`)
   }
 } finally {
