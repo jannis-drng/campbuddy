@@ -74,6 +74,43 @@ const SPRACHCACHE = resolve(MAIL, 'sprachen.json')
  * Beinbruch, aber es ist die Art Nachlässigkeit, die eine automatische
  * Anfrage von einer ernstgemeinten unterscheidet.
  */
+/** Die Seite holen — mit der zweiten Schreibweise als Rückfall. */
+async function seiteHolen(url) {
+  const versuche = [url, url.replace('://www.', '://'), url.replace('://', '://www.')]
+  for (const v of [...new Set(versuche)]) {
+    try {
+      const antwort = await fetch(v, {
+        signal: AbortSignal.timeout(12000),
+        headers: { 'User-Agent': 'CampBuddy-Recherche/1.0 (+https://github.com/jannis-drng/campbuddy)' },
+      })
+      if (antwort.ok) return (await antwort.text()).slice(0, 60000)
+    } catch { /* nächste Schreibweise */ }
+  }
+  return null
+}
+
+/**
+ * Die Sprache am Wortschatz erkennen.
+ *
+ * Ein grober, aber für diesen Zweck sicherer Zähler: die häufigsten Funktions-
+ * und Verwaltungswörter der drei Sprachen. Sie kommen auf jeder Gemeindeseite
+ * dutzendfach vor, und ihre Verteilung ist eindeutig.
+ */
+function ausWortschatz(html) {
+  const text = html.replace(/<[^>]*>/g, ' ').toLowerCase()
+  const zaehle = (woerter) => woerter.reduce(
+    (n, w) => n + (text.match(new RegExp(`\\b${w}\\b`, 'g'))?.length ?? 0), 0,
+  )
+  const punkte = {
+    de: zaehle(['und', 'der', 'die', 'gemeinde', 'für', 'über', 'aktuelles', 'verwaltung']),
+    fr: zaehle(['et', 'les', 'des', 'commune', 'pour', 'actualités', 'administration', 'nous']),
+    it: zaehle(['e', 'gli', 'del', 'comune', 'per', 'attualità', 'amministrazione', 'noi']),
+  }
+  const [beste, zweite] = Object.entries(punkte).sort((a, b) => b[1] - a[1])
+  // Nur bei deutlichem Abstand entscheiden — sonst lieber nichts behaupten.
+  return beste[1] >= 8 && beste[1] > zweite[1] * 1.5 ? beste[0] : null
+}
+
 async function spracheVon(g) {
   if (SPRACHE[g.kanton]) return SPRACHE[g.kanton]
   if (!GEMISCHT.has(g.kanton) || !g.website) return 'de'
@@ -81,16 +118,20 @@ async function spracheVon(g) {
   const cache = lade(SPRACHCACHE, {})
   if (cache[g.bfs]) return cache[g.bfs]
 
-  let sprache = 'de'
-  try {
-    const antwort = await fetch(g.website, {
-      signal: AbortSignal.timeout(12000),
-      headers: { 'User-Agent': 'CampBuddy-Recherche/1.0 (+https://github.com/jannis-drng/campbuddy)' },
-    })
-    const html = (await antwort.text()).slice(0, 4000)
+  let sprache = null
+  const html = await seiteHolen(g.website)
+  if (html) {
     const m = html.match(/<html[^>]*\blang=["']?([a-z]{2})/i)
     if (m && ['de', 'fr', 'it'].includes(m[1].toLowerCase())) sprache = m[1].toLowerCase()
-  } catch { /* nicht erreichbar — dann die Kantonsmehrheit */ }
+    // Zweites Standbein: viele Gemeindeseiten setzen gar kein lang-Attribut.
+    // Hérémence im Val d'Hérens etwa — französischsprachig, und die Anfrage
+    // wäre still auf Deutsch hinausgegangen. Dann entscheiden die Wörter.
+    if (!sprache) sprache = ausWortschatz(html)
+  }
+  if (!sprache) {
+    console.log(`    (Sprache für ${g.name} nicht bestimmbar — Anfrage zurückgestellt)`)
+    return null
+  }
 
   cache[g.bfs] = sprache
   writeFileSync(SPRACHCACHE, JSON.stringify(cache, null, 1) + '\n')
@@ -168,6 +209,7 @@ const post = SENDEN ? nodemailer.createTransport({
 const neu = []
 for (const g of dran) {
   const sprache = await spracheVon(g)
+  if (!sprache) continue
   const { betreff, text } = vorlage(sprache)
   const werte = { gemeinde: g.name, absender: MAIL_ABSENDER, projekt_url: MAIL_PROJEKT_URL }
   const empfaenger = PROBE_AN ?? adressen.get(g.bfs)

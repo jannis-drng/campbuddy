@@ -125,7 +125,15 @@ const schloss = await post.getMailboxLock('INBOX')
 let gesehen = 0
 let neu = 0
 try {
-  const suche = ALLE ? { all: true } : { seen: false }
+  // Nicht nach dem Gelesen-Merkmal suchen, sondern nach dem Zeitraum.
+  //
+  // Der Abruf selbst markiert Nachrichten als gelesen — der Läufer hat sich
+  // damit seine eigene Warteschlange weggeräumt: die Antwort aus
+  // Crans-Montana lag im Postfach und wurde nicht mehr gefunden, weil ein
+  // früherer Lauf sie angefasst hatte. Was schon verarbeitet ist, steht
+  // ohnehin an seiner Nachrichtenkennung; das ist der verlässlichere Haken.
+  const seit = new Date(Date.now() - 60 * 24 * 3600 * 1000)
+  const suche = ALLE ? { all: true } : { since: seit }
   for await (const nachricht of post.fetch(suche, { source: true, envelope: true })) {
     gesehen++
     const mail = await simpleParser(nachricht.source)
