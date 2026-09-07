@@ -1,6 +1,6 @@
 {
   "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
-  "_stand": "2026-09-08",
+  "_stand": "2026-09-07",
   "gemeinden": {
     "1": {
       "status": "forbidden",
@@ -3351,6 +3351,19 @@
       "last_verified": "2026-09-02",
       "_muster": "fr-camper-ou-dormir-terrain-public"
     },
+    "6002": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Wildes Campieren ist auf dem Gemeindegebiet nicht erlaubt. Die Stadtpolizei verweist auf die beiden Campingplätze Geschina und Brigerbad.",
+      "conditions": "Die Auskunft nennt keine Ausnahme für das Biwak. Zum offenen Feuer trifft sie keine Aussage.",
+      "source": "Schriftliche Auskunft der Stadtpolizei Brig-Glis, 07.09.2026",
+      "source_url": "http://www.brig-glis.ch",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "entscheidung-2026-09-07"
+    },
     "6007": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3417,6 +3430,34 @@
       "last_verified": "2026-09-02",
       "_muster": "fr-camping-caravaning-territoire-hors-endroits-autorises"
     },
+    "6034": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "bivouac_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Übernachten im Freien ausserhalb der offiziellen Campingplätze ist auf dem Gemeindegebiet nicht gestattet.",
+      "conditions": "Die Auskunft spricht vom Übernachten im Freien, nicht vom Campieren — damit ist auch das Biwak ohne Zelt erfasst. Zum offenen Feuer trifft sie keine Aussage.",
+      "source": "Schriftliche Auskunft der Gemeindeverwaltung Orsières, 07.09.2026",
+      "source_url": "https://www.orsieres.ch",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "entscheidung-2026-09-07"
+    },
+    "6035": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "bivouac_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Übernachten ausserhalb der dafür bewilligten und eingerichteten Plätze ist verboten. Die Gemeinde verweist auf Art. 58 ihres Bau- und Zonenreglements (RCCZ) und spricht ausdrücklich vom Übernachten, nicht bloss vom Aufstellen eines Zeltes.",
+      "conditions": "Weil der Artikel das Übernachten selbst nennt, ist auch das Nachtlager ohne Zelt erfasst. Zum offenen Feuer trifft die Auskunft keine Aussage.",
+      "source": "Schriftliche Auskunft der Gemeindeverwaltung Sembrancher, 07.09.2026 (Art. 58 RCCZ)",
+      "source_url": "https://www.sembrancher.ch",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "entscheidung-2026-09-07"
+    },
     "6054": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3455,6 +3496,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-29",
       "_muster": "de-nur-bezeichnete-zonen"
+    },
+    "6076": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren ausserhalb der Campingplätze ist verboten.",
+      "conditions": "Die Auskunft ist knapp und nennt keine Ausnahme. Zum Biwakieren ohne Zelt und zum offenen Feuer sagt sie nichts.",
+      "source": "Schriftliche Auskunft der Gemeinde Obergoms, 07.09.2026",
+      "source_url": "https://gemeinde.obergoms.ch/",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "entscheidung-2026-09-07"
     },
     "6077": {
       "status": "forbidden",
@@ -3508,6 +3562,19 @@
       "last_verified": "2026-08-29",
       "_muster": "zh-campieren-ohne-bewilligung-untersagt"
     },
+    "6113": {
+      "status": "forbidden",
+      "tent_allowed": "conditional",
+      "vehicle_allowed": "conditional",
+      "fire_allowed": "unknown",
+      "summary": "Wildes Campieren ist bewilligungspflichtig: Art. 27 des Polizeireglements stellt unter Strafe, wer ohne Bewilligung und ausserhalb der offiziellen Campingplätze campiert.",
+      "conditions": "Die Gemeinde hat auf ihre Reglementsammlung verwiesen; der Artikel stammt aus dem dort veröffentlichten Polizeireglement und steht im Strafteil — die Regel ergibt sich daraus im Umkehrschluss. Eine Bewilligung ist vorher einzuholen.",
+      "source": "Polizeireglement Salgesch, Art. 27 Wildes Campieren — auf Verweis der Gemeinde, 07.09.2026",
+      "source_url": "https://www.salgesch-gemeinde.ch/_doc/1524788",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "entscheidung-2026-09-07"
+    },
     "6134": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3559,6 +3626,19 @@
       "review_status": "quelle",
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
+    },
+    "6153": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der von der Behörde ausdrücklich bezeichneten Plätze verboten — das umfasst nach der Auskunft der Stadt namentlich das Aufstellen eines Zeltes oder Wohnwagens.",
+      "conditions": "Die Stadt zitiert Art. 40 ihres Polizeireglements im Wortlaut. Zum offenen Feuer trifft der Artikel keine Aussage; im Wallis gilt zeitweise ein kantonales Feuerverbot.",
+      "source": "Schriftliche Auskunft der Stadt Monthey, 07.09.2026 (Art. 40 Polizeireglement)",
+      "source_url": "https://www.monthey.ch/",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "entscheidung-2026-09-07"
     },
     "6155": {
       "status": "forbidden",
@@ -3834,6 +3914,19 @@
       "last_verified": "2026-08-24",
       "_muster": "vs-camping-caravaning-ausserhalb-bezeichneter-plaetze"
     },
+    "6266": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Caravaning sind ausserhalb der von der Gemeindebehörde bewilligten Plätze verboten. Die Stadt zitiert Art. 38 ihres Polizeireglements und nennt die Fundstelle.",
+      "conditions": "Das Reglement fasst den Begriff weit und erfasst auch, was dem Campieren gleichkommt. Zum offenen Feuer trifft der Artikel keine Aussage.",
+      "source": "Schriftliche Auskunft der Stadt Sion, 07.09.2026 (Art. 38 Polizeireglement)",
+      "source_url": "https://www.sion.ch/_docn/1347597/reglement_5_SECURITE_PUBLIQUE_5_1_Reglement_communal_de_police.pdf",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_aus_mail": "entscheidung-2026-09-07"
+    },
     "6267": {
       "status": "forbidden",
       "tent_allowed": "no",
@@ -3859,6 +3952,21 @@
       "review_status": "quelle",
       "last_verified": "2026-08-29",
       "_muster": "vs-freies-campieren-untersagt"
+    },
+    "6297": {
+      "status": "forbidden",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "bivouac_allowed": "no",
+      "fire_allowed": "unknown",
+      "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Das ist in Visp allein der Camping Mühleye — die Regionalpolizei nennt ihn als einzigen erlaubten Ort.",
+      "conditions": "Der Artikel nennt das Übernachten neben dem Campieren, damit ist auch das Nachtlager ohne Zelt auf öffentlichem Grund erfasst. Zu privatem Grund und zum offenen Feuer trifft er keine Aussage.",
+      "source": "Schriftliche Auskunft der Regionalpolizei Visp, 07.09.2026 (Art. 15 Polizeireglement vom 31.03.2009)",
+      "source_url": "http://www.visp.ch",
+      "review_status": "quelle",
+      "last_verified": "2026-09-08",
+      "_muster": "de-nur-bezeichnete-zonen",
+      "_aus_mail": "entscheidung-2026-09-07"
     },
     "6299": {
       "status": "forbidden",
