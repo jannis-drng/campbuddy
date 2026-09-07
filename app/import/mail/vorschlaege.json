@@ -121,6 +121,25 @@
     "review_status": "quelle",
     "last_verified": "2026-09-08"
    }
+  },
+  {
+   "bfs": 6297,
+   "name": "Visp",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Das ist in Visp allein der Camping Mühleye — die Regionalpolizei nennt ihn als einzigen erlaubten Ort.",
+    "conditions": "Der Artikel nennt das Übernachten neben dem Campieren, damit ist auch das Nachtlager ohne Zelt auf öffentlichem Grund erfasst. Zu privatem Grund und zum offenen Feuer trifft er keine Aussage.",
+    "source": "Schriftliche Auskunft der Regionalpolizei Visp, 07.09.2026 (Art. 15 Polizeireglement vom 31.03.2009)",
+    "source_url": "http://www.visp.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08",
+    "_muster": "de-nur-bezeichnete-zonen"
+   }
   }
  ]
 }

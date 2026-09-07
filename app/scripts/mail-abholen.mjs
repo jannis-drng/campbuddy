@@ -197,6 +197,17 @@ try {
       anhaenge: (mail.attachments ?? []).map((a) => ({ name: a.filename, typ: a.contentType, groesse: a.size })),
       geprueft: false,
     }
+
+    // Ein Weiterverweis ist keine Auskunft, aber auch kein Schweigen: die
+    // Gemeinde nennt die zuständige Stelle. Ohne diesen Vermerk sieht die
+    // Antwort später aus wie eine, die nichts hergab.
+    const andereAdressen = [...ohneZitat.matchAll(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi)]
+      .map((m) => m[0].toLowerCase())
+      .filter((m) => !(mail.from?.text ?? '').toLowerCase().includes(m) && !m.includes('camping-map'))
+    if (eintrag.stellen.length === 0 && !eintrag.abmeldung && andereAdressen.length > 0
+        && /contacter|wenden Sie sich|zuständig ist|responsable|weitergeleitet|s'adresser/i.test(ohneZitat)) {
+      eintrag.verweis_an = andereAdressen[0]
+    }
     antworten.eintraege.push(eintrag)
     neu++
 
