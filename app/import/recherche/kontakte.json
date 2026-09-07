@@ -1,5 +1,5 @@
 {
- "stand": "2026-08-28",
+ "stand": "2026-09-07",
  "ergebnisse": [
   {
    "bfs": null,
@@ -15791,9 +15791,9 @@
    "name": "Brig-Glis",
    "kanton": "CH-VS",
    "website": "http://www.brig-glis.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "info@brig-glis.ch",
+   "quelle": "http://www.brig-glis.ch",
+   "fehler": null
   },
   {
    "bfs": 6004,
@@ -15827,8 +15827,8 @@
    "name": "Simplon",
    "kanton": "CH-VS",
    "website": "https://gemeinde-simplon.ch",
-   "email": "sebastian.arnold@gemeinde-simplon.ch",
-   "quelle": "https://gemeinde-simplon.ch/bauverwaltung/",
+   "email": "info@gemeinde-simplon.ch",
+   "quelle": "https://gemeinde-simplon.ch",
    "fehler": null
   },
   {
@@ -15836,18 +15836,18 @@
    "name": "Termen",
    "kanton": "CH-VS",
    "website": "https://www.termen.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "gemeinde@termen.ch",
+   "quelle": "https://www.termen.ch",
+   "fehler": null
   },
   {
    "bfs": 6011,
    "name": "Zwischbergen",
    "kanton": "CH-VS",
    "website": "http://www.gondo.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "gemeinde@gondo.ch",
+   "quelle": "http://www.gondo.ch",
+   "fehler": null
   },
   {
    "bfs": 6021,
@@ -15869,7 +15869,7 @@
   },
   {
    "bfs": 6024,
-   "name": "Neind",
+   "name": "Nendaz",
    "kanton": "CH-VS",
    "website": "http://www.nendaz.org",
    "email": "commune@nendaz.org",
@@ -15899,13 +15899,13 @@
    "name": "Orsières",
    "kanton": "CH-VS",
    "website": "https://www.orsieres.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "administration@orsieres.ch",
+   "quelle": "https://www.orsieres.ch",
+   "fehler": null
   },
   {
    "bfs": 6035,
-   "name": "Sankt Branschier",
+   "name": "Sembrancher",
    "kanton": "CH-VS",
    "website": "https://www.sembrancher.ch",
    "email": "secretariat@sembrancher.ch",
@@ -15917,9 +15917,9 @@
    "name": "Val de Bagnes",
    "kanton": "CH-VS",
    "website": "https://www.valdebagnes.ch/",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685271",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "commune@valdebagnes.ch",
+   "quelle": "https://www.valdebagnes.ch/",
+   "fehler": null
   },
   {
    "bfs": 6052,
@@ -15971,9 +15971,9 @@
    "name": "Lax",
    "kanton": "CH-VS",
    "website": "http://www.lax.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "gemeinde@lax.ch",
+   "quelle": "http://www.lax.ch",
+   "fehler": null
   },
   {
    "bfs": 6076,
@@ -16016,9 +16016,9 @@
    "name": "Mont-Noble",
    "kanton": "CH-VS",
    "website": "https://www.mont-noble.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 406"
+   "email": "commune@mont-noble.ch",
+   "quelle": "https://www.mont-noble.ch",
+   "fehler": null
   },
   {
    "bfs": 6101,
@@ -16043,18 +16043,18 @@
    "name": "Ergisch",
    "kanton": "CH-VS",
    "website": "https://www.ergisch.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "mail@ergisch.ch",
+   "quelle": "https://www.ergisch.ch/kontakt/",
+   "fehler": null
   },
   {
    "bfs": 6109,
    "name": "Inden",
    "kanton": "CH-VS",
    "website": "https://www.inden.ch",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685318",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "gemeinde@inden.ch",
+   "quelle": "https://www.inden.ch",
+   "fehler": null
   },
   {
    "bfs": 6110,
@@ -16070,9 +16070,9 @@
    "name": "Leukerbad",
    "kanton": "CH-VS",
    "website": "https://www.leukerbad.org",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685329",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "admin@leukerbad.org",
+   "quelle": "https://www.leukerbad.org",
+   "fehler": null
   },
   {
    "bfs": 6112,
@@ -16081,7 +16081,7 @@
    "website": "http://www.oberems.ch/gemeinde/index.htm",
    "email": null,
    "quelle": null,
-   "fehler": "Startseite: HTTP 404"
+   "fehler": "Startseite nicht erreichbar"
   },
   {
    "bfs": 6113,
@@ -16097,18 +16097,18 @@
    "name": "Varen",
    "kanton": "CH-VS",
    "website": "http://www.varen.ch",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685391",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "info@varen.ch",
+   "quelle": "http://www.varen.ch",
+   "fehler": null
   },
   {
    "bfs": 6117,
    "name": "Guttet-Feschel",
    "kanton": "CH-VS",
    "website": "https://www.guttet-feschel.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: UND_ERR_CONNECT_TIMEOUT"
+   "email": "gemeinde@guttet-feschel.ch",
+   "quelle": "https://www.guttet-feschel.ch",
+   "fehler": null
   },
   {
    "bfs": 6118,
@@ -16124,9 +16124,9 @@
    "name": "Turtmann-Unterems",
    "kanton": "CH-VS",
    "website": "https://www.turtmann-unterems.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: The operation was aborted due to timeout"
+   "email": "gemeinde@turtmann-unterems.ch",
+   "quelle": "https://www.turtmann-unterems.ch",
+   "fehler": null
   },
   {
    "bfs": 6131,
@@ -16178,9 +16178,9 @@
    "name": "Saillon",
    "kanton": "CH-VS",
    "website": "https://www.saillon.ch",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685364",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "info@commune-saillon.ch",
+   "quelle": "https://www.saillon.ch",
+   "fehler": null
   },
   {
    "bfs": 6142,
@@ -16196,9 +16196,9 @@
    "name": "Champéry",
    "kanton": "CH-VS",
    "website": "https://www.admin-champery.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: UNABLE_TO_GET_ISSUER_CERT_LOCALLY"
+   "email": "<br",
+   "quelle": "https://www.admin-champery.ch",
+   "fehler": null
   },
   {
    "bfs": 6152,
@@ -16358,9 +16358,9 @@
    "name": "Unterbäch",
    "kanton": "CH-VS",
    "website": "https://www.unterbaech.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "info@unterbaech.ch",
+   "quelle": "https://www.unterbaech.ch",
+   "fehler": null
   },
   {
    "bfs": 6202,
@@ -16385,9 +16385,9 @@
    "name": "Steg-Hohtenn",
    "kanton": "CH-VS",
    "website": "https://www.steg-hohtenn.ch",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685381",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "gemeinde@steg-hohtenn.ch",
+   "quelle": "https://www.steg-hohtenn.ch",
+   "fehler": null
   },
   {
    "bfs": 6205,
@@ -16403,9 +16403,9 @@
    "name": "Collonges",
    "kanton": "CH-VS",
    "website": "https://www.collonges.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 406"
+   "email": "commune@collonges.ch",
+   "quelle": "https://www.collonges.ch/index.php/contact",
+   "fehler": null
   },
   {
    "bfs": 6212,
@@ -16430,9 +16430,9 @@
    "name": "Finhaut",
    "kanton": "CH-VS",
    "website": "https://www.finhaut.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: UNABLE_TO_GET_ISSUER_CERT_LOCALLY"
+   "email": "commune@finhaut.ch",
+   "quelle": "https://www.finhaut.ch",
+   "fehler": null
   },
   {
    "bfs": 6215,
@@ -16457,18 +16457,18 @@
    "name": "Salvan",
    "kanton": "CH-VS",
    "website": "https://www.salvan.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: UNABLE_TO_GET_ISSUER_CERT_LOCALLY"
+   "email": "commune@salvan.ch",
+   "quelle": "https://www.salvan.ch",
+   "fehler": null
   },
   {
    "bfs": 6219,
    "name": "Vernayaz",
    "kanton": "CH-VS",
    "website": "https://www.vernayaz.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: UNABLE_TO_GET_ISSUER_CERT_LOCALLY"
+   "email": "info@vernayaz.ch",
+   "quelle": "https://www.vernayaz.ch",
+   "fehler": null
   },
   {
    "bfs": 6220,
@@ -16477,7 +16477,7 @@
    "website": "http://www.verossaz.ch",
    "email": null,
    "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "fehler": "Startseite nicht erreichbar"
   },
   {
    "bfs": 6235,
@@ -16535,12 +16535,12 @@
   },
   {
    "bfs": 6266,
-   "name": "Sitten",
+   "name": "Sion",
    "kanton": "CH-VS",
    "website": "https://www.sion.ch",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/2757528",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "info@sion.ch",
+   "quelle": "https://www.sion.ch",
+   "fehler": null
   },
   {
    "bfs": 6281,
@@ -16565,18 +16565,18 @@
    "name": "Embd",
    "kanton": "CH-VS",
    "website": "http://www.embd.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 510"
+   "email": "gemeinde@embd.ch",
+   "quelle": "http://www.embd.ch",
+   "fehler": null
   },
   {
    "bfs": 6285,
    "name": "Grächen",
    "kanton": "CH-VS",
    "website": "http://www.gemeinde-graechen.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "gemeinde@graechen.ch",
+   "quelle": "http://www.gemeinde-graechen.ch",
+   "fehler": null
   },
   {
    "bfs": 6286,
@@ -16601,27 +16601,27 @@
    "name": "Saas-Almagell",
    "kanton": "CH-VS",
    "website": "https://www.saas-almagell.org",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685360",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "gemeinde@3905.ch",
+   "quelle": "https://www.saas-almagell.org",
+   "fehler": null
   },
   {
    "bfs": 6289,
    "name": "Saas-Balen",
    "kanton": "CH-VS",
    "website": "http://gemeinde-saas-balen.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: UND_ERR_CONNECT_TIMEOUT"
+   "email": "gemeinde@3908.ch",
+   "quelle": "http://gemeinde-saas-balen.ch",
+   "fehler": null
   },
   {
    "bfs": 6290,
    "name": "Saas-Fee",
    "kanton": "CH-VS",
    "website": "https://www.3906.ch",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685362",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "gemeinde@3906.ch",
+   "quelle": "https://www.3906.ch",
+   "fehler": null
   },
   {
    "bfs": 6291,
@@ -16655,18 +16655,18 @@
    "name": "Staldenried",
    "kanton": "CH-VS",
    "website": "http://www.staldenried.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "keine Adresse gefunden"
+   "email": "gemeinde@staldenried.ch",
+   "quelle": "http://www.staldenried.ch",
+   "fehler": null
   },
   {
    "bfs": 6295,
    "name": "Täsch",
    "kanton": "CH-VS",
    "website": "https://www.gemeinde-taesch.ch",
-   "email": null,
-   "source_url": "https://www.openstreetmap.org/relation/1685386",
-   "fehler": "Anbieter sperrt uns aus"
+   "email": "kanzlei@taesch.ch",
+   "quelle": "https://www.gemeinde-taesch.ch",
+   "fehler": null
   },
   {
    "bfs": 6296,

@@ -99,16 +99,48 @@ function adressenAus(html, host) {
     .sort((a, b) => b.punkte - a.punkte)
 }
 
+/**
+ * Eine Seite holen und dabei nachsichtig sein.
+ *
+ * Beim ersten Durchgang fielen fünfzig Walliser Gemeinden aus, und bei einem
+ * Teil lag es nicht an ihnen: ein abgelaufenes Zwischenzertifikat, ein Server
+ * der unseren Kennstring mit 406 abweist, eine Adresse die nur ohne `www`
+ * antwortet. Für das Lesen einer öffentlichen Kontaktseite ist keine dieser
+ * Hürden ein Grund aufzugeben — wir holen hier keine vertraulichen Daten,
+ * sondern eine Adresse, die die Gemeinde selbst veröffentlicht.
+ */
+const BROWSERKENNUNG = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+  + 'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+
+async function nachsichtigHolen(url) {
+  const adressen = [...new Set([
+    url,
+    url.replace('://www.', '://'),
+    url.replace('://', '://www.'),
+    url.startsWith('https://') ? 'http://' + url.slice(8) : 'https://' + url.slice(7),
+  ])]
+  for (const a of adressen) {
+    for (const kennung of ['CampBuddy-Recherche/1.0 (+https://github.com/jannis-drng/campbuddy)', BROWSERKENNUNG]) {
+      try {
+        const antwort = await fetch(a, {
+          signal: AbortSignal.timeout(15000),
+          headers: { 'User-Agent': kennung, 'Accept-Language': 'de,fr,it' },
+        })
+        if (antwort.ok) return await antwort.text()
+      } catch { /* nächster Versuch */ }
+    }
+  }
+  return null
+}
+
 async function eineGemeinde(g) {
   const ergebnis = { bfs: g.bfs, name: g.name, kanton: g.kanton, website: g.website, email: null, quelle: null, fehler: null }
   if (!g.website) { ergebnis.fehler = 'keine Webseite bekannt'; return ergebnis }
 
   const host = new URL(g.website).hostname
-  let start
-  try {
-    start = await hole(g.website)
-  } catch (e) {
-    ergebnis.fehler = `Startseite: ${e.cause?.code ?? e.message}`.slice(0, 60)
+  const start = await nachsichtigHolen(g.website)
+  if (!start) {
+    ergebnis.fehler = 'Startseite nicht erreichbar'
     return ergebnis
   }
 
@@ -125,7 +157,8 @@ async function eineGemeinde(g) {
     .slice(0, 3)
   for (const [url] of seiten) {
     try {
-      const html = await hole(url)
+      const html = await nachsichtigHolen(url)
+      if (!html) continue
       const weitere = adressenAus(html, host)
       if (weitere.length > 0) {
         treffer = [...treffer, ...weitere].sort((a, b) => b.punkte - a.punkte)
@@ -162,6 +195,24 @@ const ZIEL = resolve(ROOT, 'import/recherche')
 mkdirSync(ZIEL, { recursive: true })
 const AUSGABE = resolve(ZIEL, 'kontakte.json')
 
+/**
+ * Ergänzen, nie ersetzen.
+ *
+ * Ein Lauf über einen einzelnen Kanton hat die Datei einmal von 1978 auf 81
+ * Einträge gekürzt — rund tausend mühsam gesammelte Adressen weg, und die
+ * Zahl am Ende sah wie ein Erfolg aus ("60 mit Adresse"). Dieselbe Falle wie
+ * beim Reglement-Läufer: wer einen Teil bearbeitet, darf nicht das Ganze
+ * schreiben.
+ */
+function zusammenfuehren(neueErgebnisse) {
+  const vorher = existsSync(AUSGABE)
+    ? JSON.parse(readFileSync(AUSGABE, 'utf8')).ergebnisse ?? []
+    : []
+  const nachBfs = new Map(vorher.map((r) => [r.bfs, r]))
+  for (const r of neueErgebnisse) nachBfs.set(r.bfs, r)
+  return [...nachBfs.values()].sort((a, b) => (a.bfs ?? 0) - (b.bfs ?? 0))
+}
+
 console.log(`Kontaktsuche für ${offen.length} Gemeinden …`)
 
 const ergebnisse = []
@@ -192,13 +243,17 @@ async function arbeiter() {
     fertig++
     if (fertig % 50 === 0 || fertig === offen.length) {
       console.log(`  ${fertig}/${offen.length} — ${ergebnisse.filter((x) => x.email).length} mit Adresse`)
-      writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse }, null, 1) + '\n')
+      writeFileSync(AUSGABE, JSON.stringify({
+        stand: new Date().toISOString().slice(0, 10), ergebnisse: zusammenfuehren(ergebnisse),
+      }, null, 1) + '\n')
     }
   }
 }
 
 await Promise.all(Array.from({ length: GLEICHZEITIG }, arbeiter))
-ergebnisse.sort((a, b) => (a.bfs ?? 0) - (b.bfs ?? 0))
-writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse }, null, 1) + '\n')
+
+
+const alle = zusammenfuehren(ergebnisse)
+writeFileSync(AUSGABE, JSON.stringify({ stand: new Date().toISOString().slice(0, 10), ergebnisse: alle }, null, 1) + '\n')
 console.log(`\nMit Adresse: ${ergebnisse.filter((r) => r.email).length} von ${ergebnisse.length}`)
 console.log(`-> ${AUSGABE}`)
