@@ -88,11 +88,15 @@ function entschluesseln(text) {
 
 function adressenAus(html, host) {
   html = entschluesseln(html)
+  // Für die Rückfallsuche im Fliesstext müssen die Marken weg. Sonst liest
+  // sie Bruchstücke wie "<br" als Adresse — Champéry stand mit genau dem in
+  // der Liste und wäre so in den Versand gegangen.
+  const nurText = html.replace(/<[^>]*>/g, ' ')
   const roh = new Set()
   for (const m of html.matchAll(MAILTO)) roh.add(decodeURIComponent(m[1]).trim())
   // Manche Seiten schreiben die Adresse nur als Text. Nur dann heranziehen,
   // wenn kein mailto gefunden wurde — sonst überwiegt das Rauschen.
-  if (roh.size === 0) for (const m of html.matchAll(IM_TEXT)) roh.add(m[0].trim())
+  if (roh.size === 0) for (const m of nurText.matchAll(IM_TEXT)) roh.add(m[0].trim())
   return [...roh]
     .map((a) => ({ adresse: a.toLowerCase(), punkte: bewerte(a, host) }))
     .filter((x) => x.punkte > -20)

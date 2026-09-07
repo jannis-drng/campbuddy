@@ -111,7 +111,20 @@ function ausWortschatz(html) {
   return beste[1] >= 8 && beste[1] > zweite[1] * 1.5 ? beste[0] : null
 }
 
+/** Die Sprache am Amtspostfach ablesen. */
+function ausPostfach(adresse) {
+  const vorn = adresse.split('@')[0]?.toLowerCase() ?? ''
+  if (/^(commune|administration|secretariat|greffe|mairie)/.test(vorn)) return 'fr'
+  if (/^(gemeinde|gemeindeverwaltung|gemeindekanzlei|einwohner)/.test(vorn)) return 'de'
+  if (/^(comune|municipio|cancelleria)/.test(vorn)) return 'it'
+  return null
+}
+
 async function spracheVon(g) {
+  // Die Handeintragung geht vor: sie ist der Fall, in dem ein Mensch
+  // hingesehen hat, weil die Maschine es nicht konnte.
+  const handgesetzt = lade(resolve(MAIL, 'sprachen-manuell.json'), { sprachen: {} }).sprachen
+  if (handgesetzt[g.bfs]) return handgesetzt[g.bfs]
   if (SPRACHE[g.kanton]) return SPRACHE[g.kanton]
   if (!GEMISCHT.has(g.kanton) || !g.website) return 'de'
 
@@ -128,6 +141,13 @@ async function spracheVon(g) {
     // wäre still auf Deutsch hinausgegangen. Dann entscheiden die Wörter.
     if (!sprache) sprache = ausWortschatz(html)
   }
+  // Drittes Standbein: das Amtspostfach selbst. Eine Gemeinde, die ihre
+  // Adresse "commune@" nennt, ist französischsprachig, "gemeinde@" deutsch,
+  // "comune@" italienisch. Das ist kein Zufall und kein Näherungswert — es
+  // steht so im Briefkopf. Sechs Walliser Gemeinden blieben ohne diesen
+  // Hinweis liegen, obwohl ihre Adresse die Frage beantwortet.
+  if (!sprache) sprache = ausPostfach(adressen.get(g.bfs) ?? '')
+
   if (!sprache) {
     console.log(`    (Sprache für ${g.name} nicht bestimmbar — Anfrage zurückgestellt)`)
     return null

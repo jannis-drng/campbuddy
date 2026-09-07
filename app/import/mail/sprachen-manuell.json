@@ -1,0 +1,9 @@
+{
+  "_hinweis": "Von Hand gesetzte Sprachen für Gemeinden, bei denen die automatische Erkennung versagt — meist weil die Seite ihren Inhalt per JavaScript aufbaut und im rohen HTML nichts steht. Schlüssel ist die BFS-Nummer aus gemeinden/CH.json, nicht geraten. Dieser Eintrag geht jeder automatischen Erkennung vor.",
+  "sprachen": {
+    "6219": "fr"
+  },
+  "_begruendung": {
+    "6219": "Vernayaz, Bezirk Saint-Maurice im Unterwallis. Die Gemeindeseite liefert leeres HTML — sie baut sich per JavaScript auf —, und das Postfach heisst info@ und verrät nichts. Französischsprachig."
+  }
+}
