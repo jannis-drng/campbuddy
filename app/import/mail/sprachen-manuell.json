@@ -1,9 +1,21 @@
 {
-  "_hinweis": "Von Hand gesetzte Sprachen für Gemeinden, bei denen die automatische Erkennung versagt — meist weil die Seite ihren Inhalt per JavaScript aufbaut und im rohen HTML nichts steht. Schlüssel ist die BFS-Nummer aus gemeinden/CH.json, nicht geraten. Dieser Eintrag geht jeder automatischen Erkennung vor.",
-  "sprachen": {
-    "6219": "fr"
-  },
-  "_begruendung": {
-    "6219": "Vernayaz, Bezirk Saint-Maurice im Unterwallis. Die Gemeindeseite liefert leeres HTML — sie baut sich per JavaScript auf —, und das Postfach heisst info@ und verrät nichts. Französischsprachig."
-  }
+ "_hinweis": "Von Hand gesetzte Sprachen für Gemeinden, bei denen die automatische Erkennung versagt — meist weil die Seite ihren Inhalt per JavaScript aufbaut und im rohen HTML nichts steht. Schlüssel ist die BFS-Nummer aus gemeinden/CH.json, nicht geraten. Dieser Eintrag geht jeder automatischen Erkennung vor.",
+ "sprachen": {
+  "6158": "fr",
+  "6159": "fr",
+  "6181": "de",
+  "6198": "de",
+  "6205": "de",
+  "6219": "fr",
+  "6220": "fr"
+ },
+ "_begruendung": {
+  "6219": "Vernayaz, Bezirk Saint-Maurice im Unterwallis. Die Gemeindeseite liefert leeres HTML — sie baut sich per JavaScript auf —, und das Postfach heisst info@ und verrät nichts. Französischsprachig.",
+  "6205": "Bettmeralp, Bezirk Östlich Raron im Oberwallis. Postfach info@, Seite ohne Sprachangabe. Deutschsprachig.",
+  "6198": "Niedergesteln, Bezirk Westlich Raron im Oberwallis. Deutschsprachig.",
+  "6181": "Riederalp, Bezirk Östlich Raron im Oberwallis. Deutschsprachig.",
+  "6220": "Vérossaz, Bezirk Saint-Maurice im Unterwallis. Französischsprachig.",
+  "6158": "Vionnaz, Bezirk Monthey im Unterwallis. Französischsprachig.",
+  "6159": "Vouvry, Bezirk Monthey im Unterwallis. Postfach office@ ist nicht eindeutig. Französischsprachig."
+ }
 }

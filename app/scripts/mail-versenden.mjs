@@ -114,7 +114,7 @@ function ausWortschatz(html) {
 /** Die Sprache am Amtspostfach ablesen. */
 function ausPostfach(adresse) {
   const vorn = adresse.split('@')[0]?.toLowerCase() ?? ''
-  if (/^(commune|administration|secretariat|greffe|mairie)/.test(vorn)) return 'fr'
+  if (/^(commune|administration|secretariat|secrétariat|greffe|mairie|chancellerie)/.test(vorn)) return 'fr'
   if (/^(gemeinde|gemeindeverwaltung|gemeindekanzlei|einwohner)/.test(vorn)) return 'de'
   if (/^(comune|municipio|cancelleria)/.test(vorn)) return 'it'
   return null
