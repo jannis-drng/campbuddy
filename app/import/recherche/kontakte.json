@@ -1,5 +1,5 @@
 {
- "stand": "2026-09-07",
+ "stand": "2026-09-08",
  "ergebnisse": [
   {
    "bfs": null,
@@ -12866,9 +12866,9 @@
    "name": "Bedretto",
    "kanton": "CH-TI",
    "website": "https://www.bedretto.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: The operation was aborted due to timeout"
+   "email": "comune@bedretto.ch",
+   "quelle": "https://www.bedretto.ch",
+   "fehler": null
   },
   {
    "bfs": 5071,
@@ -13118,9 +13118,9 @@
    "name": "Brusino Arsizio",
    "kanton": "CH-TI",
    "website": "https://www.brusinoarsizio.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 406"
+   "email": "info@brusinoarsizio.ch",
+   "quelle": "https://www.brusinoarsizio.ch",
+   "fehler": null
   },
   {
    "bfs": 5161,
@@ -13199,9 +13199,9 @@
    "name": "Lamone",
    "kanton": "CH-TI",
    "website": "http://www.lamone.ch/",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 406"
+   "email": "info@lamone.ch",
+   "quelle": "http://www.lamone.ch/",
+   "fehler": null
   },
   {
    "bfs": 5192,
@@ -13318,7 +13318,7 @@
    "website": "http://www.ti.ch/porza",
    "email": null,
    "quelle": null,
-   "fehler": "Startseite: HTTP 404"
+   "fehler": "Startseite nicht erreichbar"
   },
   {
    "bfs": 5216,
@@ -13496,9 +13496,9 @@
    "name": "Novazzano",
    "kanton": "CH-TI",
    "website": "https://novazzano.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 406"
+   "email": "cancelleria@novazzano.ch",
+   "quelle": "https://novazzano.ch",
+   "fehler": null
   },
   {
    "bfs": 5263,
@@ -13577,9 +13577,9 @@
    "name": "Cerentino",
    "kanton": "CH-TI",
    "website": "https://cerentino.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 406"
+   "email": "info@cerentino.ch",
+   "quelle": "https://cerentino.ch",
+   "fehler": null
   },
   {
    "bfs": 5310,
@@ -13597,23 +13597,23 @@
    "website": "https://www.linescio.ch",
    "email": null,
    "quelle": null,
-   "fehler": "Startseite: HTTP 406"
+   "fehler": "keine Adresse gefunden"
   },
   {
    "bfs": 5317,
    "name": "Maggia",
    "kanton": "CH-TI",
    "website": "http://www.maggia.ch",
-   "email": null,
-   "quelle": null,
-   "fehler": "Startseite: HTTP 510"
+   "email": "comune@maggia.ch",
+   "quelle": "http://www.maggia.ch",
+   "fehler": null
   },
   {
    "bfs": 5323,
    "name": "Lavizzara",
    "kanton": "CH-TI",
    "website": "https://lavizzara.ch",
-   "email": "info(at)lavizzara(dot)ch",
+   "email": "info@lavizzara.ch",
    "quelle": "https://lavizzara.ch",
    "fehler": null
   },
@@ -13669,7 +13669,7 @@
    "website": "http://intragna.ch/",
    "email": null,
    "quelle": null,
-   "fehler": "Startseite: HTTP 400"
+   "fehler": "Startseite nicht erreichbar"
   },
   {
    "bfs": 5398,
