@@ -92,6 +92,21 @@ function bfsAusBetreff(betreff) {
   return treffer.length === 1 ? treffer[0].bfs : null
 }
 
+/**
+ * Eigene Post ist keine Antwort.
+ *
+ * Die Proben an das eigene Postfach liegen im selben Posteingang. Solange nur
+ * ueber Reply-To und Absenderdomain zugeordnet wurde, fielen sie durch; seit
+ * auch der Betreff zaehlt, tragen sie den Gemeindenamen, den wir selbst
+ * hineingeschrieben haben — und landeten als Antwort der Gemeinde in der
+ * Auswertung.
+ */
+function vonUnsSelbst(mail) {
+  const absender = (mail.from?.value?.[0]?.address ?? '').toLowerCase()
+  const eigene = String(MAIL_USER ?? '').toLowerCase().split('@')[1]
+  return Boolean(eigene && absender.endsWith('@' + eigene))
+}
+
 function istAntwort(mail, bfs, vermutet) {
   if (bfs) return true
   if (vermutet) return true
@@ -115,6 +130,11 @@ const EINGANGSBESTAETIGUNG = new RegExp([
   'wird an die zuständige stelle', 'accusons? (bonne )?réception',
   'wir haben ihre (anfrage|nachricht) erhalten', 'abwesenheitsnotiz', 'out of office',
   'bin ich abwesend', 'je suis absent',
+  // Italienisch — im Tessin die verbreitetste Form, und ohne diese Zeilen
+  // zaehlte jede Empfangsbestaetigung als Auskunft.
+  'conferma di ricezione', 'confermiamo (l.avvenuta )?ricezione',
+  'confermiamo il ricevimento', 'sar[àa] trattat', 'verr[àa] trattato',
+  'nel pi[uù] breve tempo possibile', 'la ringraziamo per la comunicazione',
 ].join('|'), 'i')
 
 /**
@@ -195,7 +215,7 @@ try {
       ? null
       : nachDomain.get(absenderDomain ?? '')?.bfs ?? bfsAusBetreff(mail.subject) ?? null
 
-    if (!istAntwort(mail, bfs, vermutet)) continue
+    if (vonUnsSelbst(mail) || !istAntwort(mail, bfs, vermutet)) continue
 
     const text = (mail.text ?? '').replace(/\r/g, '').trim()
     // Zitierte Teile abschneiden — erst die üblichen Zitatmarken, dann unser

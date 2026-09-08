@@ -227,6 +227,149 @@
     "review_status": "quelle",
     "last_verified": "2026-09-08"
    }
+  },
+  {
+   "bfs": 5113,
+   "name": "Locarno",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Ein Zelt darf nur auf einem Campingplatz stehen. Ausserhalb ist allein das Bergbiwak zulässig — nach Auskunft der Gemeindepolizei oberhalb der Waldgrenze und in der Regel für eine einzige Nacht. Eine Bewilligung braucht es dafür nicht, und es gibt keine Sperrzeiten.",
+    "conditions": "Die Gemeindepolizei verweist auf Art. 2 und 3 der kantonalen Legge sui campeggi. Sie bittet ausdrücklich, auf Beschilderung vor Ort zu achten — örtliche oder befristete Verbote gehen vor — und Flora, Fauna und Ruhe zu achten.",
+    "source": "Schriftliche Auskunft der Gemeindepolizei Locarno, 08.09.2026 (Legge sui campeggi, Art. 2 und 3)",
+    "source_url": "https://m3.ti.ch/CAN/RLeggi/public/index.php/raccolta-leggi/legge/num/631",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5097,
+   "name": "Brissago",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Ausserhalb der offiziellen Campingplätze ist das Übernachten im Zelt grundsätzlich nicht zulässig — auch nicht für eine einzige Nacht und auch nicht mit einem kleinen Zelt. Vorbehalten bleibt allein die kantonale Ausnahme für das Bergbiwak.",
+    "conditions": "Die Gemeinde betont, dass diese Ausnahme keine allgemeine Erlaubnis zum freien Campieren auf dem Gemeindegebiet ist. Sie kennt keine eigene Regelung, die freies Campieren erlauben würde, und hat keine öffentlichen Flächen dafür bezeichnet. Natur- und Landschaftsschutzbestimmungen gehen vor.",
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Brissago, 08.09.2026",
+    "source_url": "http://www.brissago.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5010,
+   "name": "Lumino",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Die Gemeinde kennt keine eigene Regelung zum Campieren oder Übernachten im Freien — weder im Polizeireglement noch anderswo. Es gilt deshalb unmittelbar das kantonale Recht: Campieren nur auf bewilligten Plätzen, ausgenommen das Bergbiwak.",
+    "conditions": "Die Gemeindekanzlei zitiert Art. 2 Abs. 1 und 2 sowie Art. 3 der Legge sui campeggi und verweist für Einzelfragen zum Biwak und zu Schutzgebieten an die kantonalen Stellen.",
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Lumino, 08.09.2026 (Legge sui campeggi RL 943.100)",
+    "source_url": "https://m3.ti.ch/CAN/RLeggi/public/index.php/raccolta-leggi/legge/num/631",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5237,
+   "name": "Alto Malcantone",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Freies Campieren ist im Tessin nicht zulässig. Erlaubt ist allein das Biwak mit Zelt für eine einzige Nacht im Gebirge oberhalb der Waldgrenze.",
+    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2). Die Gemeinde nennt die Waldgrenze und die eine Nacht als Bedingungen.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Alto Malcantone, 08.09.2026",
+    "source_url": "https://www.altomalcantone.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5091,
+   "name": "Ascona",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Ascona hat keine eigene Regelung zum Campieren und keine Flächen dafür vorgesehen. Es gilt deshalb das kantonale Recht: Campieren nur auf bewilligten Plätzen, ausgenommen das Bergbiwak.",
+    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2). Da die Gemeinde keine Campingflächen ausgewiesen hat, bleibt ausserhalb der privaten Campingplätze nur diese Ausnahme.",
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Ascona, 08.09.2026",
+    "source_url": "https://www.ascona.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5141,
+   "name": "Agno",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "unknown",
+    "fire_allowed": "unknown",
+    "summary": "Auf dem Gemeindegebiet gibt es drei Campingplätze; Orte zum Biwakieren sind keine vorgesehen. Ausserhalb der Campingplätze ist das Übernachten im Freien damit nicht vorgesehen.",
+    "conditions": "Die Gemeinde schrieb ausdrücklich, die Karte könne für Agno ohne Eintrag bleiben. Da Agno im Flachland liegt, greift die kantonale Ausnahme für das Bergbiwak hier praktisch nicht.",
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Agno, 08.09.2026",
+    "source_url": "https://www.agno.ch/",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5324,
+   "name": "Avegno Gordevio",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Auf dem gesamten Gemeindegebiet ist Campieren und Übernachten im Freien weder möglich noch bewilligt — ausgenommen sind allein die beiden offiziellen Campingplätze «Piccolo Paradiso» in Avegno und «Bellariva TCS» in Gordevio.",
+    "conditions": "Diese Auskunft ist strenger als die kantonale Ausnahme für das Bergbiwak: die Gemeinde nennt das Übernachten im Freien ohne Einschränkung auf das Flachland. Wer im Gebirgsteil der Gemeinde biwakieren will, frage vorher nach.",
+    "source": "Schriftliche Auskunft des Gemeindesekretariats Avegno Gordevio, 08.09.2026",
+    "source_url": "http://www.avegnogordevio.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6083,
+   "name": "Evolène",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren, Caravaning und Ähnliches sind ausserhalb der von der Behörde ausdrücklich bezeichneten Plätze verboten. Die Gemeinde nennt Art. 54 Abs. 2 ihres Polizeireglements.",
+    "conditions": "Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Evolène, 08.09.2026 (Art. 54 Abs. 2 Polizeireglement)",
+    "source_url": "https://www.commune-evolene.ch/fr/reglements-communaux-104.html",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
   }
  ]
 }

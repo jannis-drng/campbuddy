@@ -158,6 +158,21 @@ async function spracheVon(g) {
   return sprache
 }
 
+/**
+ * Wo eine kantonale Regel die Frage schon halb beantwortet, wird die andere
+ * Hälfte gefragt.
+ *
+ * Im Tessin ist das Campieren kantonal geregelt: nur auf bewilligten Plätzen,
+ * ausgenommen das Bergbiwak (Legge sui campeggi, Art. 2). Die Gemeinde nach
+ * einer Campingregelung zu fragen, heisst dort, sie das Kantonsrecht
+ * abschreiben zu lassen — die Antworten aus Lumino und Ascona lauteten genau
+ * so. Interessant ist allein, wie die Gemeinde die Biwak-Ausnahme handhabt.
+ *
+ * Eine gezielte Frage ist auch die höflichere: sie zeigt, dass wir das
+ * Naheliegende selbst nachgesehen haben.
+ */
+const EIGENE_VORLAGE = { 'CH-TI': 'it-ti' }
+
 const vorlage = (sprache) => {
   const roh = readFileSync(resolve(MAIL, 'vorlagen', `${sprache}.txt`), 'utf8')
   const bruch = roh.indexOf('\n\n')
@@ -242,7 +257,7 @@ const neu = []
 for (const g of dran) {
   const sprache = await spracheVon(g)
   if (!sprache) continue
-  const { betreff, text } = vorlage(sprache)
+  const { betreff, text } = vorlage(EIGENE_VORLAGE[g.kanton] ?? sprache)
   const werte = { gemeinde: g.name, absender: MAIL_ABSENDER, projekt_url: MAIL_PROJEKT_URL }
   const empfaenger = PROBE_AN ?? adressen.get(g.bfs)
   const antwortAn = (MAIL_ANTWORT_AN ?? '').replace('{{bfs}}', String(g.bfs))

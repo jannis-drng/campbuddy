@@ -175,8 +175,18 @@ die das Recht aller Kantone zusammenführt, mit den Begriffen `campieren`,
 | biwakieren | 6 — alle in Jagd-, Wildtierschutz- und Nationalparkrecht |
 | camping sauvage | 19 — alle in Jagd- und Wildschutzverordnungen |
 
-**Wo die Begriffe im Kantonsrecht vorkommen, geht es um Schutzgebiete, Wild und
-Jagd — nie um eine allgemeine Erlaubnis oder ein allgemeines Verbot.** Das
+**Wo die Begriffe im Kantonsrecht vorkommen, geht es meist um Schutzgebiete,
+Wild und Jagd — selten um eine allgemeine Erlaubnis oder ein allgemeines Verbot.**
+
+**Nachtrag vom 08.09.2026 — die Suche war unvollständig.** Das Tessin hat sehr
+wohl ein eigenes Campinggesetz (*Legge sui campeggi*, RL 943.100), dessen
+Art. 2 Abs. 2 das Bergbiwak ausdrücklich vom Campierverbot ausnimmt. Gefunden
+wurde es nicht durch die Suche, sondern durch die Gemeinden selbst: gleich
+mehrere Tessiner Verwaltungen nannten es in ihren Antworten. Der Grund für
+den Fehlschlag ist lehrreich — gesucht wurde nach der Wendung
+`campeggio libero`, unter der das Gesetz nichts trägt; der Erlass heisst
+schlicht `campeggi`. **Wer eine Suche als Beleg für ein Nichtvorhandensein
+nimmt, belegt nur die eigenen Suchbegriffe.** Das
 Bündner Recht etwa kennt einen Artikel «Campieren und Biwakieren» (RJV
 Art. 17), der aber ausdrücklich nur «für die Ausübung der Jagd» gilt und
 Wandernde nicht betrifft.

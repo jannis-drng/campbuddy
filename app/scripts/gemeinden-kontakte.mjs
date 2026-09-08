@@ -83,7 +83,8 @@ function entschluesseln(text) {
     // Die zweite verbreitete Schreibweise: "info (at) gemeinde punkt ch".
     .replace(/\s*\(\s*at\s*\)\s*/gi, '@')
     .replace(/\s*\[\s*at\s*\]\s*/gi, '@')
-    .replace(/\s*\(\s*punkt\s*\)\s*/gi, '.')
+    .replace(/\s*[([]\s*(punkt|dot|point|punto)\s*[)\]]\s*/gi, '.')
+    .replace(/\s*[([]\s*(a|chiocciola)[t]?\s*[)\]]\s*/gi, '@')
 }
 
 function adressenAus(html, host) {

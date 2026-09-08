@@ -1,0 +1,33 @@
+Pernottamento in bivacco — domanda sulla prassi a {{gemeinde}}
+
+Gentili Signore e Signori,
+
+Gestisco una mappa online gratuita dedicata al pernottamento nella natura. Per
+ogni Comune indica che cosa vale, con la fonte e la data dell'ultima verifica.
+
+Per il Ticino il quadro cantonale mi è chiaro: secondo l'art. 2 della Legge sui
+campeggi si può campeggiare unicamente nelle aree autorizzate, con l'eccezione
+dell'attendamento a scopo di bivacco in montagna. La mia domanda riguarda
+quindi soltanto questa eccezione:
+
+Come viene applicata a {{gemeinde}}? In particolare: il bivacco in montagna è
+possibile sul vostro territorio, e a quali condizioni — per esempio sopra il
+limite del bosco, per una sola notte, o con altre limitazioni? Esistono zone
+in cui è escluso (aree protette, bandite federali, divieti segnalati)?
+
+Basta una risposta breve. Se il Comune non ha nulla da aggiungere alla regola
+cantonale, anche questa è un'informazione utile — la mappa lo indicherà così.
+
+La vostra indicazione apparirà sulla mappa con il Comune come fonte e la data.
+Se non lo desiderate, basta un breve cenno; l'area resterà senza indicazione.
+
+Nota di trasparenza: questa richiesta è stata redatta e inviata in modo
+automatizzato, con il contributo di un sistema di IA. Se dovesse risultare
+errata o inopportuna, me ne scuso. Ogni risposta viene letta da una persona, e
+ogni indicazione viene verificata manualmente prima della pubblicazione. Se non
+desiderate ulteriori messaggi, rispondete «nessuna richiesta» — vi toglieremo
+definitivamente dall'elenco.
+
+Cordiali saluti
+{{absender}}
+{{projekt_url}}

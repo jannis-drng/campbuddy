@@ -242,16 +242,17 @@
       "last_verified": "2026-08-30"
     },
     "CH-TI": {
-      "status": "unknown",
-      "tent_allowed": "unknown",
-      "vehicle_allowed": "unknown",
+      "status": "tolerated",
+      "tent_allowed": "no",
+      "vehicle_allowed": "no",
+      "bivouac_allowed": "conditional",
       "fire_allowed": "unknown",
-      "summary": "Tessin kennt keine allgemeine kantonale Regelung zum Campieren oder Biwakieren. Eine Volltextsuche im gesamten schweizerischen Kantonsrecht über lexfind.ch (Begriffe «campieren», «kampieren», «biwakieren», «camping sauvage», «bivouaquer») findet ausserhalb von Obwalden keinen Erlass, der das Übernachten im Freien allgemein regelt. Über das Übernachten im Freien entscheidet in diesem Kanton deshalb die Gemeinde — meist im Polizeireglement. Was die Karte dazu weiss, steht bei der Gemeindefläche.",
-      "conditions": null,
-      "source": "Volltextsuche im Kantonsrecht über lexfind.ch",
-      "source_url": "https://www.lexfind.ch/fe/de/search",
+      "summary": "Das Tessin regelt das Campieren in einem eigenen Gesetz — und macht für das Biwak eine ausdrückliche Ausnahme. Art. 2 Abs. 1 der Legge sui campeggi lässt Campieren nur auf bewilligten Campingplätzen zu; Abs. 2 nimmt davon «l'attendamento a scopo di bivacco in montagna» aus, also das Aufstellen eines Zeltes zum Zweck des Biwakierens im Gebirge.",
+      "conditions": "Das Gesetz selbst nennt weder eine Höhen- oder Waldgrenze noch eine Höchstdauer; es spricht schlicht vom Biwak «in montagna». Die Gemeinden legen es enger aus und nennen übereinstimmend die Waldgrenze und eine Nacht — so Alto Malcantone, Locarno und Brissago in ihren schriftlichen Auskünften. Wer sich darauf verlässt, halte sich an diese engere Lesart.\n\nDie Zuständigkeit der Gemeinden betrifft nach diesem Gesetz die Campingplätze — ihre Ausscheidung im Nutzungsplan (Art. 6) und die Betriebsbewilligung (Art. 13) —, nicht die Biwak-Ausnahme. Eine ausdrückliche Ermächtigung, sie einzuschränken, enthält das Gesetz nicht. In der Praxis handhaben es die Gemeinden trotzdem verschieden: Avegno Gordevio etwa erklärt das Übernachten im Freien auf seinem ganzen Gebiet für nicht bewilligt. Wo eine Gemeinde das so sagt, steht es bei ihr auf der Karte.\n\nFür Wohnwagen und Wohnmobile gilt die Ausnahme nicht: sie betrifft ausdrücklich das Zelt. In Schutzgebieten, Wildruhezonen und wo eine Beschilderung es verbietet, bleibt das Übernachten untersagt.",
+      "source": "Legge sui campeggi vom 26. Januar 2004 (RL 943.100), Art. 2, 3, 6 und 13",
+      "source_url": "https://m3.ti.ch/CAN/RLeggi/public/index.php/raccolta-leggi/legge/num/631",
       "review_status": "quelle",
-      "last_verified": "2026-08-30"
+      "last_verified": "2026-09-08"
     },
     "CH-UR": {
       "status": "unknown",
@@ -314,5 +315,5 @@
       "last_verified": "2026-08-30"
     }
   },
-  "_stand": "2026-08-30"
+  "_stand": "2026-09-08"
 }
