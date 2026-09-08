@@ -74,6 +74,24 @@ function ohneUnserSchreiben(text) {
  * Bestätigungsmails. Ohne diese Prüfung landet das alles als «Antwort einer
  * Gemeinde» in der Auswertung und muss von Hand aussortiert werden.
  */
+/**
+ * Der dritte Weg zur Gemeinde: der Betreff.
+ *
+ * Wir schreiben den Gemeindenamen selbst hinein ("… zur Regelung in Fully"),
+ * und die Antwort trägt ihn zurück. Das rettet die Fälle, in denen jemand von
+ * einer anderen Adresse antwortet als der, die wir angeschrieben haben —
+ * Fully wurde unter admin.fully.ch angeschrieben und antwortete von
+ * fully.ch, womit beide bisherigen Wege ins Leere liefen.
+ *
+ * Nur eindeutige Treffer zählen: kommen zwei Gemeindenamen im Betreff vor,
+ * wird nichts geraten.
+ */
+function bfsAusBetreff(betreff) {
+  if (!betreff) return null
+  const treffer = gemeinden.filter((g) => betreff.includes(g.name))
+  return treffer.length === 1 ? treffer[0].bfs : null
+}
+
 function istAntwort(mail, bfs, vermutet) {
   if (bfs) return true
   if (vermutet) return true
@@ -128,6 +146,9 @@ if (!IMAP_HOST || !MAIL_USER || !MAIL_PASSWORT) {
 }
 
 const versandt = lade(resolve(MAIL, 'versandt.json'), { eintraege: [] }).eintraege
+const gemeinden = JSON.parse(
+  readFileSync(resolve(ROOT, 'import/CH/gemeinden/CH.json'), 'utf8'),
+).features.map((f) => f.properties).filter((g) => g.bfs != null)
 const unsereNachrichten = new Set(versandt.map((e) => e.nachricht_id).filter(Boolean))
 const nachDomain = new Map()
 for (const e of versandt) {
@@ -170,7 +191,9 @@ try {
 
     const bfs = bfsAus(mail)
     const absenderDomain = mail.from?.value?.[0]?.address?.split('@')[1]?.toLowerCase()
-    const vermutet = bfs ? null : nachDomain.get(absenderDomain ?? '')?.bfs ?? null
+    const vermutet = bfs
+      ? null
+      : nachDomain.get(absenderDomain ?? '')?.bfs ?? bfsAusBetreff(mail.subject) ?? null
 
     if (!istAntwort(mail, bfs, vermutet)) continue
 

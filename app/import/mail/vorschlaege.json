@@ -140,6 +140,93 @@
     "last_verified": "2026-09-08",
     "_muster": "de-nur-bezeichnete-zonen"
    }
+  },
+  {
+   "bfs": 6212,
+   "name": "Dorénaz",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Caravaning sind ausserhalb der ausdrücklich dafür bezeichneten Plätze verboten. Massgeblich ist Art. 57 Abs. 2 des Reglements der interkommunalen Polizei Salentin, das die Gemeinde im Wortlaut zitiert.",
+    "conditions": "Vorbehalten bleiben die Vorschriften des Strassenverkehrsrechts. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Dorénaz, 07.09.2026 (Art. 57 Abs. 2 Reglement Police intercommunale du Salentin)",
+    "source_url": "http://www.dorenaz.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6089,
+   "name": "Vex",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Jede Form von Campieren und Caravaning ist auf dem gesamten Gemeindegebiet verboten — nicht nur auf öffentlichem Grund. Die Gemeinde verweist auf Art. 54 ihres Polizeireglements.",
+    "conditions": "Die Auskunft nennt keine Ausnahme. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft sie keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Vex, 08.09.2026 (Art. 54 Polizeireglement)",
+    "source_url": "http://www.vex.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6021,
+   "name": "Ardon",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren, Caravaning und Ähnliches sind ausserhalb der dafür vorgesehenen Plätze auf dem Gemeindegebiet verboten. Die Gemeinde zitiert Art. 54 ihres Polizeireglements im Wortlaut.",
+    "conditions": "Vorbehalten bleiben die Vorschriften des Strassenverkehrsrechts. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Ardon, 08.09.2026 (Art. 54 Polizeireglement)",
+    "source_url": "https://www.ardon.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6159,
+   "name": "Vouvry",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Für den Lac de Taney und die umliegenden Berge auf Gemeindegebiet gilt ein allgemeines Campierverbot. Das Gebiet ist ein eidgenössisch geschütztes Objekt, und die Gemeinde legt Wert darauf, dass das Verbot eingehalten wird.",
+    "conditions": "Die Auskunft betrifft ausdrücklich Taney und die umliegenden Berge — also das Gebiet, das für Übernachtungen im Freien überhaupt in Frage kommt. Zum Talboden trifft sie keine ausdrückliche Aussage. Weitere Hinweise unter taney.ch.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Vouvry, 08.09.2026",
+    "source_url": "https://taney.ch/fr",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6133,
+   "name": "Fully",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Caravaning sind ausserhalb der ausdrücklich vorgesehenen Plätze verboten — wildes Campieren ist damit grundsätzlich nicht erlaubt. Das vereinzelte alpine Biwak wird dagegen je nach Umständen und Ort geduldet: unter freiem Himmel oder mit einem leichten Zelt, das abends aufgestellt und morgens abgebaut wird.",
+    "conditions": "Die Duldung des Biwaks gilt ausdrücklich nicht überall: In eidgenössischen Jagdbanngebieten sind Campieren und Biwakieren verboten, ausser im Notfall — der Tour des Muverans verläuft streckenweise durch solche Gebiete. Rund um die Hütten der Hauts de Fully werden Zelte nicht geduldet. Diese Auskunft stammt von Fully Tourisme, das die Polizeireglemente von Fully, Leytron und Saillon zitiert; sie beschreibt die gelebte Praxis, nicht eine Erlaubnis der Gemeindebehörde.",
+    "source": "Schriftliche Auskunft von Fully Tourisme, 08.09.2026 (zitiert die Polizeireglemente von Fully, Leytron und Saillon)",
+    "source_url": "https://www.fully.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
   }
  ]
 }
