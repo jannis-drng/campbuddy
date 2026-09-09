@@ -47,7 +47,6 @@ function Huettenzeichen({ className = '' }: { className?: string }) {
 }
 
 const BEZUG: Record<ActivityMode, string> = {
-  all: 'Gesamteinstufung',
   tent: 'Regel fürs Zelt',
   bivouac: 'Regel fürs Biwakieren',
   vehicle: 'Regel für Fahrzeuge',

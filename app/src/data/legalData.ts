@@ -137,7 +137,6 @@ export function biwakRegel(
  * Region "geduldet". Ein Filter darf ein Verbot niemals unsichtbar machen.
  */
 export function effectiveStatus(zone: Zone, activity: ActivityMode): LegalStatus {
-  if (activity === 'all') return zone.status
   return PERMISSION_TO_STATUS[zone[ACTIVITY_FIELD[activity]] ?? 'unknown']
 }
 

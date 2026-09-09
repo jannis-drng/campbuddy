@@ -8,10 +8,10 @@
  *   ausgeblendete Hütte behauptet nichts über die Rechtslage.
  *
  * Auf dem Telefon war diese Leiste ein Band, das seitlich weggescrollt werden
- * musste: vier Segmente der Einfärbung und sieben Symbol-Chips, von denen die
+ * musste: die Segmente der Einfärbung und sieben Symbol-Chips, von denen die
  * Hälfte immer ausserhalb des Bildes lag — und ob etwas eingeschaltet war, sah
  * man erst nach dem Wischen. Dort stehen jetzt **zwei** Knöpfe, die jeweils
- * ihren Zustand aussprechen („Gesamt", „Symbole 2") und eine Liste öffnen.
+ * ihren Zustand aussprechen („Zelt", „Symbole 2") und eine Liste öffnen.
  * Beide Listen sind gleich gebaut, damit man die Bedienung einmal lernt.
  *
  * Am Zeiger bleibt alles offen sichtbar: dort ist Breite da, und Sehen ohne
@@ -35,7 +35,6 @@ interface Props {
 }
 
 const AKTIVITAETEN: { wert: ActivityMode; label: string; icon?: LucideIcon; titel?: string }[] = [
-  { wert: 'all', label: 'Gesamt', titel: 'Gesamteinstufung der Zone' },
   { wert: 'tent', label: 'Zelt', icon: Tent, titel: 'Nur die Regel fürs Zelt' },
   { wert: 'bivouac', label: 'Biwak', icon: Moon, titel: 'Nur die Regel fürs Biwakieren — ohne Zelt, im Schlafsack' },
   { wert: 'vehicle', label: 'Fahrzeug', icon: Truck, titel: 'Nur die Regel fürs Fahrzeug' },
@@ -79,7 +78,7 @@ export function FilterBar({ filters, onChange, counts }: Props) {
         <Menue
           etikett="Einfärben nach"
           titel="Einfärben nach"
-          angesagt={aktiv > 0 || filters.activity !== 'all'}
+          angesagt={aktiv > 0 || filters.activity !== 'tent'}
           knopf={
             <>
               {aktivitaet.icon

@@ -65,7 +65,7 @@ import { Auswahl, Button, Segmente } from './ui'
  * sähe aus, als wären sie verloren gegangen.
  */
 const INITIAL_FILTERS: MapFilters = {
-  activity: 'all',
+  activity: 'tent',
   showHuts: false,
   showCampsites: false,
   showVehicleSpots: false,

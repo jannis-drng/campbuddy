@@ -298,10 +298,13 @@ export interface Region {
 }
 
 /**
- * Wofür die Karte gerade eingefärbt wird.
- * 'all' zeigt die Gesamteinstufung der Zone, sonst die Regel für genau diese Aktivität.
+ * Wofür die Karte gerade eingefärbt wird — immer die Regel für genau eine
+ * Aktivität. Eine zusammengefasste Gesamteinstufung gibt es bewusst nicht:
+ * sie verrechnet vier verschiedene Fragen zu einer Farbe, und wer sie liest,
+ * weiss hinterher nicht, ob das Rot dem Zelt, dem Fahrzeug oder dem Feuer
+ * gilt. Der Standard ist `tent` — die Frage, mit der die meisten kommen.
  */
-export type ActivityMode = 'all' | 'tent' | 'bivouac' | 'vehicle' | 'fire'
+export type ActivityMode = 'tent' | 'bivouac' | 'vehicle' | 'fire'
 
 /** Filterzustand der Kartenansicht. */
 export interface MapFilters {
