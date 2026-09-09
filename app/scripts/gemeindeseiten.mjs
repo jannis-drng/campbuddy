@@ -212,7 +212,7 @@ p{margin:.6rem 0}
 .kasten{border:1px solid #1F2A2E;border-radius:.625rem;padding:1rem;margin:1.75rem 0;
         background:#131B1E;font-size:.9rem}
 .leise{color:#8A9A9F;font-size:.85rem}
-    .gebuehr { border-left: 3px solid currentColor; padding: 0.4rem 0 0.4rem 0.8rem; margin: 0.9rem 0; }
+.gebuehr,.ohne-eigene-regel{border-left:3px solid currentColor;padding:.4rem 0 .4rem .8rem;margin:.9rem 0}
 .knopf{display:inline-block;background:#1E7A9C;color:#fff;text-decoration:none;font-weight:600;
        border-radius:.625rem;padding:.7rem 1.2rem;margin:1.5rem 0 .5rem}
 .knopf:hover{background:#2A8FB4;color:#fff}
@@ -309,6 +309,9 @@ function seite(g, e, nachbarn = []) {
   </table>
 
   <h2>Was das bedeutet</h2>
+  ${e.ohne_eigene_regel ? `<p class="ohne-eigene-regel"><strong>${escape(name)} hat keine eigene
+    Regelung.</strong> Was hier steht, ist übergeordnetes Recht — nicht eine Bestimmung
+    dieser Gemeinde.</p>` : ''}
   <p itemprop="description">${escape(e.summary)}</p>
   ${gebuehrZeile(e)}
   ${e.conditions ? `<p>${escape(e.conditions)}</p>` : ''}

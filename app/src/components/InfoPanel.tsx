@@ -325,6 +325,19 @@ function RegionBody({
           <PermissionRow label="Offenes Feuer" value={gemeindeRecht.fire_allowed} icon={Flame} />
           <p className="mt-2.5 text-klein leading-relaxed text-ink-300">{gemeindeRecht.summary}</p>
           {/*
+            Wo die Gemeinde nichts geregelt hat, muss das oben stehen und nicht
+            im Fliesstext: sonst liest sich die kantonale Regel wie ihre eigene.
+          */}
+          {gemeindeRecht.ohne_eigene_regel && (
+            <p className="mt-2 rounded-mittel border border-kante bg-flaeche-1 px-3 py-2
+                          text-klein leading-relaxed text-ink-200">
+              <strong className="font-semibold text-ink-50">
+                {gemeinde.name} hat keine eigene Regelung.
+              </strong>{' '}
+              Was hier steht, ist übergeordnetes Recht — nicht eine Bestimmung dieser Gemeinde.
+            </p>
+          )}
+          {/*
             Eine Gebühr steht eigens und vor den Bedingungen, nicht in ihnen.
             „Erlaubt gegen sieben Franken" ist eine andere Auskunft als
             „erlaubt", und sie entscheidet vor Ort darüber, ob jemand bleibt

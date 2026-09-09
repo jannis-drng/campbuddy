@@ -1,269 +1,6 @@
 {
- "stand": "2026-09-08",
+ "stand": "2026-09-09",
  "vorschlaege": [
-  {
-   "bfs": 6035,
-   "name": "Sembrancher",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Übernachten ausserhalb der dafür bewilligten und eingerichteten Plätze ist verboten. Die Gemeinde verweist auf Art. 58 ihres Bau- und Zonenreglements (RCCZ) und spricht ausdrücklich vom Übernachten, nicht bloss vom Aufstellen eines Zeltes.",
-    "conditions": "Weil der Artikel das Übernachten selbst nennt, ist auch das Nachtlager ohne Zelt erfasst. Zum offenen Feuer trifft die Auskunft keine Aussage.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Sembrancher, 07.09.2026 (Art. 58 RCCZ)",
-    "source_url": "https://www.sembrancher.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6034,
-   "name": "Orsières",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Übernachten im Freien ausserhalb der offiziellen Campingplätze ist auf dem Gemeindegebiet nicht gestattet.",
-    "conditions": "Die Auskunft spricht vom Übernachten im Freien, nicht vom Campieren — damit ist auch das Biwak ohne Zelt erfasst. Zum offenen Feuer trifft sie keine Aussage.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Orsières, 07.09.2026",
-    "source_url": "https://www.orsieres.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6076,
-   "name": "Obergoms",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Campieren ausserhalb der Campingplätze ist verboten.",
-    "conditions": "Die Auskunft ist knapp und nennt keine Ausnahme. Zum Biwakieren ohne Zelt und zum offenen Feuer sagt sie nichts.",
-    "source": "Schriftliche Auskunft der Gemeinde Obergoms, 07.09.2026",
-    "source_url": "https://gemeinde.obergoms.ch/",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6153,
-   "name": "Monthey",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Campieren und Caravaning sind ausserhalb der von der Behörde ausdrücklich bezeichneten Plätze verboten — das umfasst nach der Auskunft der Stadt namentlich das Aufstellen eines Zeltes oder Wohnwagens.",
-    "conditions": "Die Stadt zitiert Art. 40 ihres Polizeireglements im Wortlaut. Zum offenen Feuer trifft der Artikel keine Aussage; im Wallis gilt zeitweise ein kantonales Feuerverbot.",
-    "source": "Schriftliche Auskunft der Stadt Monthey, 07.09.2026 (Art. 40 Polizeireglement)",
-    "source_url": "https://www.monthey.ch/",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6002,
-   "name": "Brig-Glis",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Wildes Campieren ist auf dem Gemeindegebiet nicht erlaubt. Die Stadtpolizei verweist auf die beiden Campingplätze Geschina und Brigerbad.",
-    "conditions": "Die Auskunft nennt keine Ausnahme für das Biwak. Zum offenen Feuer trifft sie keine Aussage.",
-    "source": "Schriftliche Auskunft der Stadtpolizei Brig-Glis, 07.09.2026",
-    "source_url": "http://www.brig-glis.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6266,
-   "name": "Sion",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Campieren und Caravaning sind ausserhalb der von der Gemeindebehörde bewilligten Plätze verboten. Die Stadt zitiert Art. 38 ihres Polizeireglements und nennt die Fundstelle.",
-    "conditions": "Das Reglement fasst den Begriff weit und erfasst auch, was dem Campieren gleichkommt. Zum offenen Feuer trifft der Artikel keine Aussage.",
-    "source": "Schriftliche Auskunft der Stadt Sion, 07.09.2026 (Art. 38 Polizeireglement)",
-    "source_url": "https://www.sion.ch/_docn/1347597/reglement_5_SECURITE_PUBLIQUE_5_1_Reglement_communal_de_police.pdf",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6113,
-   "name": "Salgesch",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "conditional",
-    "vehicle_allowed": "conditional",
-    "fire_allowed": "unknown",
-    "summary": "Wildes Campieren ist bewilligungspflichtig: Art. 27 des Polizeireglements stellt unter Strafe, wer ohne Bewilligung und ausserhalb der offiziellen Campingplätze campiert.",
-    "conditions": "Die Gemeinde hat auf ihre Reglementsammlung verwiesen; der Artikel stammt aus dem dort veröffentlichten Polizeireglement und steht im Strafteil — die Regel ergibt sich daraus im Umkehrschluss. Eine Bewilligung ist vorher einzuholen.",
-    "source": "Polizeireglement Salgesch, Art. 27 Wildes Campieren — auf Verweis der Gemeinde, 07.09.2026",
-    "source_url": "https://www.salgesch-gemeinde.ch/_doc/1524788",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6297,
-   "name": "Visp",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Das ist in Visp allein der Camping Mühleye — die Regionalpolizei nennt ihn als einzigen erlaubten Ort.",
-    "conditions": "Der Artikel nennt das Übernachten neben dem Campieren, damit ist auch das Nachtlager ohne Zelt auf öffentlichem Grund erfasst. Zu privatem Grund und zum offenen Feuer trifft er keine Aussage.",
-    "source": "Schriftliche Auskunft der Regionalpolizei Visp, 07.09.2026 (Art. 15 Polizeireglement vom 31.03.2009)",
-    "source_url": "http://www.visp.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08",
-    "_muster": "de-nur-bezeichnete-zonen"
-   }
-  },
-  {
-   "bfs": 6212,
-   "name": "Dorénaz",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Campieren und Caravaning sind ausserhalb der ausdrücklich dafür bezeichneten Plätze verboten. Massgeblich ist Art. 57 Abs. 2 des Reglements der interkommunalen Polizei Salentin, das die Gemeinde im Wortlaut zitiert.",
-    "conditions": "Vorbehalten bleiben die Vorschriften des Strassenverkehrsrechts. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Dorénaz, 07.09.2026 (Art. 57 Abs. 2 Reglement Police intercommunale du Salentin)",
-    "source_url": "http://www.dorenaz.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6089,
-   "name": "Vex",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Jede Form von Campieren und Caravaning ist auf dem gesamten Gemeindegebiet verboten — nicht nur auf öffentlichem Grund. Die Gemeinde verweist auf Art. 54 ihres Polizeireglements.",
-    "conditions": "Die Auskunft nennt keine Ausnahme. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft sie keine Aussage.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Vex, 08.09.2026 (Art. 54 Polizeireglement)",
-    "source_url": "http://www.vex.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6021,
-   "name": "Ardon",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Campieren, Caravaning und Ähnliches sind ausserhalb der dafür vorgesehenen Plätze auf dem Gemeindegebiet verboten. Die Gemeinde zitiert Art. 54 ihres Polizeireglements im Wortlaut.",
-    "conditions": "Vorbehalten bleiben die Vorschriften des Strassenverkehrsrechts. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Ardon, 08.09.2026 (Art. 54 Polizeireglement)",
-    "source_url": "https://www.ardon.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6159,
-   "name": "Vouvry",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Für den Lac de Taney und die umliegenden Berge auf Gemeindegebiet gilt ein allgemeines Campierverbot. Das Gebiet ist ein eidgenössisch geschütztes Objekt, und die Gemeinde legt Wert darauf, dass das Verbot eingehalten wird.",
-    "conditions": "Die Auskunft betrifft ausdrücklich Taney und die umliegenden Berge — also das Gebiet, das für Übernachtungen im Freien überhaupt in Frage kommt. Zum Talboden trifft sie keine ausdrückliche Aussage. Weitere Hinweise unter taney.ch.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Vouvry, 08.09.2026",
-    "source_url": "https://taney.ch/fr",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6133,
-   "name": "Fully",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "conditional",
-    "fire_allowed": "unknown",
-    "summary": "Campieren und Caravaning sind ausserhalb der ausdrücklich vorgesehenen Plätze verboten — wildes Campieren ist damit grundsätzlich nicht erlaubt. Das vereinzelte alpine Biwak wird dagegen je nach Umständen und Ort geduldet: unter freiem Himmel oder mit einem leichten Zelt, das abends aufgestellt und morgens abgebaut wird.",
-    "conditions": "Die Duldung des Biwaks gilt ausdrücklich nicht überall: In eidgenössischen Jagdbanngebieten sind Campieren und Biwakieren verboten, ausser im Notfall — der Tour des Muverans verläuft streckenweise durch solche Gebiete. Rund um die Hütten der Hauts de Fully werden Zelte nicht geduldet. Diese Auskunft stammt von Fully Tourisme, das die Polizeireglemente von Fully, Leytron und Saillon zitiert; sie beschreibt die gelebte Praxis, nicht eine Erlaubnis der Gemeindebehörde.",
-    "source": "Schriftliche Auskunft von Fully Tourisme, 08.09.2026 (zitiert die Polizeireglemente von Fully, Leytron und Saillon)",
-    "source_url": "https://www.fully.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 5113,
-   "name": "Locarno",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "tolerated",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "conditional",
-    "fire_allowed": "unknown",
-    "summary": "Ein Zelt darf nur auf einem Campingplatz stehen. Ausserhalb ist allein das Bergbiwak zulässig — nach Auskunft der Gemeindepolizei oberhalb der Waldgrenze und in der Regel für eine einzige Nacht. Eine Bewilligung braucht es dafür nicht, und es gibt keine Sperrzeiten.",
-    "conditions": "Die Gemeindepolizei verweist auf Art. 2 und 3 der kantonalen Legge sui campeggi. Sie bittet ausdrücklich, auf Beschilderung vor Ort zu achten — örtliche oder befristete Verbote gehen vor — und Flora, Fauna und Ruhe zu achten.",
-    "source": "Schriftliche Auskunft der Gemeindepolizei Locarno, 08.09.2026 (Legge sui campeggi, Art. 2 und 3)",
-    "source_url": "https://m3.ti.ch/CAN/RLeggi/public/index.php/raccolta-leggi/legge/num/631",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 5097,
-   "name": "Brissago",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "tolerated",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "conditional",
-    "fire_allowed": "unknown",
-    "summary": "Ausserhalb der offiziellen Campingplätze ist das Übernachten im Zelt grundsätzlich nicht zulässig — auch nicht für eine einzige Nacht und auch nicht mit einem kleinen Zelt. Vorbehalten bleibt allein die kantonale Ausnahme für das Bergbiwak.",
-    "conditions": "Die Gemeinde betont, dass diese Ausnahme keine allgemeine Erlaubnis zum freien Campieren auf dem Gemeindegebiet ist. Sie kennt keine eigene Regelung, die freies Campieren erlauben würde, und hat keine öffentlichen Flächen dafür bezeichnet. Natur- und Landschaftsschutzbestimmungen gehen vor.",
-    "source": "Schriftliche Auskunft der Gemeindekanzlei Brissago, 08.09.2026",
-    "source_url": "http://www.brissago.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
   {
    "bfs": 5010,
    "name": "Lumino",
@@ -279,25 +16,8 @@
     "source": "Schriftliche Auskunft der Gemeindekanzlei Lumino, 08.09.2026 (Legge sui campeggi RL 943.100)",
     "source_url": "https://m3.ti.ch/CAN/RLeggi/public/index.php/raccolta-leggi/legge/num/631",
     "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 5237,
-   "name": "Alto Malcantone",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "tolerated",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "conditional",
-    "fire_allowed": "unknown",
-    "summary": "Freies Campieren ist im Tessin nicht zulässig. Erlaubt ist allein das Biwak mit Zelt für eine einzige Nacht im Gebirge oberhalb der Waldgrenze.",
-    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2). Die Gemeinde nennt die Waldgrenze und die eine Nacht als Bedingungen.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Alto Malcantone, 08.09.2026",
-    "source_url": "https://www.altomalcantone.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
+    "last_verified": "2026-09-08",
+    "ohne_eigene_regel": true
    }
   },
   {
@@ -315,120 +35,46 @@
     "source": "Schriftliche Auskunft der Gemeindekanzlei Ascona, 08.09.2026",
     "source_url": "https://www.ascona.ch",
     "review_status": "quelle",
-    "last_verified": "2026-09-08"
+    "last_verified": "2026-09-08",
+    "ohne_eigene_regel": true
    }
   },
   {
-   "bfs": 5141,
-   "name": "Agno",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "unknown",
-    "fire_allowed": "unknown",
-    "summary": "Auf dem Gemeindegebiet gibt es drei Campingplätze; Orte zum Biwakieren sind keine vorgesehen. Ausserhalb der Campingplätze ist das Übernachten im Freien damit nicht vorgesehen.",
-    "conditions": "Die Gemeinde schrieb ausdrücklich, die Karte könne für Agno ohne Eintrag bleiben. Da Agno im Flachland liegt, greift die kantonale Ausnahme für das Bergbiwak hier praktisch nicht.",
-    "source": "Schriftliche Auskunft der Gemeindekanzlei Agno, 08.09.2026",
-    "source_url": "https://www.agno.ch/",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 5324,
-   "name": "Avegno Gordevio",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Auf dem gesamten Gemeindegebiet ist Campieren und Übernachten im Freien weder möglich noch bewilligt — ausgenommen sind allein die beiden offiziellen Campingplätze «Piccolo Paradiso» in Avegno und «Bellariva TCS» in Gordevio.",
-    "conditions": "Diese Auskunft ist strenger als die kantonale Ausnahme für das Bergbiwak: die Gemeinde nennt das Übernachten im Freien ohne Einschränkung auf das Flachland. Wer im Gebirgsteil der Gemeinde biwakieren will, frage vorher nach.",
-    "source": "Schriftliche Auskunft des Gemeindesekretariats Avegno Gordevio, 08.09.2026",
-    "source_url": "http://www.avegnogordevio.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 6083,
-   "name": "Evolène",
-   "kanton": "CH-VS",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Campieren, Caravaning und Ähnliches sind ausserhalb der von der Behörde ausdrücklich bezeichneten Plätze verboten. Die Gemeinde nennt Art. 54 Abs. 2 ihres Polizeireglements.",
-    "conditions": "Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
-    "source": "Schriftliche Auskunft der Gemeindeverwaltung Evolène, 08.09.2026 (Art. 54 Abs. 2 Polizeireglement)",
-    "source_url": "https://www.commune-evolene.ch/fr/reglements-communaux-104.html",
-    "review_status": "quelle",
-    "last_verified": "2026-09-08"
-   }
-  },
-  {
-   "bfs": 5323,
-   "name": "Lavizzara",
+   "bfs": 5097,
+   "name": "Brissago",
    "kanton": "CH-TI",
    "vorschlag": {
     "status": "tolerated",
-    "tent_allowed": "conditional",
-    "vehicle_allowed": "unknown",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
     "bivouac_allowed": "conditional",
     "fire_allowed": "unknown",
-    "gebuehr": {
-     "betrag": 7.0,
-     "waehrung": "CHF",
-     "je": "Person und Woche",
-     "wofuer": "gelegentliches Campieren auf Gemeindeland"
-    },
-    "summary": "Lavizzara lässt gelegentliches Campieren auf Gemeindeland gegen eine Gebühr zu — sieben Franken je Person und Woche. Das Bergbiwak ist ohnehin nach kantonalem Recht zulässig; die Gemeinde bestätigt das ausdrücklich.",
-    "conditions": "Vor dem Aufstellen sind die Grundeigentümer zu benachrichtigen — darauf legt die Gemeinde ausdrücklich Wert. Grundlage der Gebühr ist Art. 4 der Ordnung über die Nutzung des Verwaltungsvermögens, zusammen mit Art. 15 des zugehörigen Reglements.",
-    "source": "Schriftliche Auskunft des Gemeindeschreibers Lavizzara, 09.09.2026 (Art. 4 Ordinanza sull'uso dei beni amministrativi)",
-    "source_url": "https://lavizzara.ch",
+    "summary": "Ausserhalb der offiziellen Campingplätze ist das Übernachten im Zelt grundsätzlich nicht zulässig — auch nicht für eine einzige Nacht und auch nicht mit einem kleinen Zelt. Vorbehalten bleibt allein die kantonale Ausnahme für das Bergbiwak.",
+    "conditions": "Die Gemeinde betont, dass diese Ausnahme keine allgemeine Erlaubnis zum freien Campieren auf dem Gemeindegebiet ist. Sie kennt keine eigene Regelung, die freies Campieren erlauben würde, und hat keine öffentlichen Flächen dafür bezeichnet. Natur- und Landschaftsschutzbestimmungen gehen vor.",
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Brissago, 08.09.2026",
+    "source_url": "http://www.brissago.ch",
     "review_status": "quelle",
-    "last_verified": "2026-09-09"
+    "last_verified": "2026-09-08",
+    "ohne_eigene_regel": true
    }
   },
   {
-   "bfs": 5268,
-   "name": "Vacallo",
+   "bfs": 5113,
+   "name": "Locarno",
    "kanton": "CH-TI",
    "vorschlag": {
-    "status": "forbidden",
+    "status": "tolerated",
     "tent_allowed": "no",
     "vehicle_allowed": "no",
-    "bivouac_allowed": "no",
+    "bivouac_allowed": "conditional",
     "fire_allowed": "unknown",
-    "summary": "In Vacallo und im unteren Mendrisiotto ist das Biwakieren nicht zulässig. Campingplätze gibt es auf dem Gemeindegebiet keine.",
-    "conditions": "Die kantonale Ausnahme gilt nach Auskunft der Gemeinde ausschliesslich im Hochgebirge oberhalb der Waldgrenze — die Vacallo nicht erreicht. Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2).",
-    "source": "Schriftliche Auskunft der Gemeinde Vacallo, 09.09.2026",
-    "source_url": "https://www.vacallo.ch/",
+    "summary": "Ein Zelt darf nur auf einem Campingplatz stehen. Ausserhalb ist allein das Bergbiwak zulässig — nach Auskunft der Gemeindepolizei oberhalb der Waldgrenze und in der Regel für eine einzige Nacht. Eine Bewilligung braucht es dafür nicht, und es gibt keine Sperrzeiten.",
+    "conditions": "Die Gemeindepolizei verweist auf Art. 2 und 3 der kantonalen Legge sui campeggi. Sie bittet ausdrücklich, auf Beschilderung vor Ort zu achten — örtliche oder befristete Verbote gehen vor — und Flora, Fauna und Ruhe zu achten.",
+    "source": "Schriftliche Auskunft der Gemeindepolizei Locarno, 08.09.2026 (Legge sui campeggi, Art. 2 und 3)",
+    "source_url": "https://m3.ti.ch/CAN/RLeggi/public/index.php/raccolta-leggi/legge/num/631",
     "review_status": "quelle",
-    "last_verified": "2026-09-09"
-   }
-  },
-  {
-   "bfs": 5398,
-   "name": "Gambarogno",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "no",
-    "fire_allowed": "unknown",
-    "summary": "Auf dem Gemeindegebiet ist jede Art von Biwak oder Campieren in der Natur ausserhalb der eigens bewilligten Flächen verboten. Einzige zugelassene Möglichkeit ist der Campingplatz von Vira Gambarogno.",
-    "conditions": "Grundlage ist die kommunale Regelung, auf die sich die Gemeinde beruft. Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2).",
-    "source": "Schriftliche Auskunft der Gemeinde Gambarogno, 09.09.2026",
-    "source_url": "https://www.gambarogno.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-09"
+    "last_verified": "2026-09-08",
+    "ohne_eigene_regel": true
    }
   },
   {
@@ -464,41 +110,63 @@
     "source": "Schriftliche Auskunft der Gemeinde Minusio, 09.09.2026 (Legge sui campeggi, Art. 2)",
     "source_url": "http://www.minusio.ch",
     "review_status": "quelle",
-    "last_verified": "2026-09-09"
+    "last_verified": "2026-09-09",
+    "ohne_eigene_regel": true
    }
   },
   {
-   "bfs": 5250,
-   "name": "Chiasso",
+   "bfs": 5141,
+   "name": "Agno",
    "kanton": "CH-TI",
    "vorschlag": {
-    "status": "tolerated",
+    "status": "forbidden",
     "tent_allowed": "no",
     "vehicle_allowed": "no",
-    "bivouac_allowed": "conditional",
+    "bivouac_allowed": "unknown",
     "fire_allowed": "unknown",
-    "summary": "Chiasso kennt keine eigene Regelung zum Campieren oder Übernachten im Freien. Es gilt die kantonale Ausnahme für das Biwak — und die greift ausschliesslich im Hochgebirge oberhalb der Waldgrenze, für eine einzige Nacht.",
-    "conditions": "Die Gemeinde nennt die Bedingungen ausdrücklich: nicht in empfindlichen oder geschützten Gebieten, und unter Beachtung strenger Verhaltensregeln. Chiasso selbst liegt im Flachland; dort greift die Ausnahme nicht.",
-    "source": "Schriftliche Auskunft der Gemeinde Chiasso, 09.09.2026",
-    "source_url": "https://www.chiasso.ch/",
+    "summary": "Auf dem Gemeindegebiet gibt es drei Campingplätze; Orte zum Biwakieren sind keine vorgesehen. Ausserhalb der Campingplätze ist das Übernachten im Freien damit nicht vorgesehen.",
+    "conditions": "Die Gemeinde schrieb ausdrücklich, die Karte könne für Agno ohne Eintrag bleiben. Da Agno im Flachland liegt, greift die kantonale Ausnahme für das Bergbiwak hier praktisch nicht.",
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Agno, 08.09.2026",
+    "source_url": "https://www.agno.ch/",
     "review_status": "quelle",
-    "last_verified": "2026-09-09"
+    "last_verified": "2026-09-08",
+    "ohne_eigene_regel": true
    }
   },
   {
-   "bfs": 5231,
-   "name": "Vezia",
+   "bfs": 5162,
+   "name": "Cadempino",
    "kanton": "CH-TI",
    "vorschlag": {
-    "status": "tolerated",
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "unknown",
+    "fire_allowed": "unknown",
+    "summary": "Cadempino hat keine eigene Regelung zum Campieren und keine für das Übernachten im Freien geeigneten Plätze.",
+    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2). Cadempino liegt im Flachland; die Ausnahme für das Bergbiwak greift dort nicht.",
+    "source": "Schriftliche Auskunft des Gemeindeschreibers Cadempino, 09.09.2026",
+    "source_url": "http://www.cadempino.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09",
+    "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5193,
+   "name": "Magliaso",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
     "tent_allowed": "no",
     "vehicle_allowed": "no",
     "bivouac_allowed": "conditional",
     "fire_allowed": "unknown",
-    "summary": "Vezia verweist auf das kantonale Recht: Campieren nur auf bewilligten Plätzen, ausgenommen das Bergbiwak. Für dessen Auslegung nennt die Gemeinde das Merkblatt des Schweizer Alpen-Clubs — eine Nacht oberhalb der Waldgrenze, sofern keine gegenteiligen Vorschriften gelten.",
-    "conditions": "Die Waldgrenze liegt auf der Alpensüdseite meist zwischen 1700 und 1900 Metern. Die Gemeinde weist darauf hin, dass das Schweizer Recht keine amtliche Biwakerlaubnis kennt, sondern nur Verbote — im Nationalpark, in eidgenössischen Jagdbanngebieten, in Wildruhezonen während der Schonzeit und in kantonalen Schutzgebieten.",
-    "source": "Schriftliche Auskunft der Gemeinde Vezia, 09.09.2026 (Legge sui campeggi Art. 2, SAC-Merkblatt 2018)",
-    "source_url": "https://www.vezia.ch/",
+    "summary": "Magliaso hat keine eigene Regelung zum Campieren oder Übernachten im Freien. Es gilt deshalb unmittelbar das kantonale Recht: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge.",
+    "conditions": "Die Gemeinde hat ausdrücklich darum gebeten, für Magliaso keine gemeindespezifischen Angaben zu machen. Was hier steht, ist deshalb allein die kantonale Legge sui campeggi (RL 943.100, Art. 2) — keine Bestimmung dieser Gemeinde. Magliaso liegt im Flachland am Luganersee; die Ausnahme für das Bergbiwak greift dort praktisch nicht.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft des Gemeindeschreibers Magliaso, 09.09.2026 («non abbiamo una regolamentazione su campeggio o pernottamenti all’aperto»)",
+    "source_url": "https://www.magliaso.ch",
     "review_status": "quelle",
     "last_verified": "2026-09-09"
    }
@@ -518,43 +186,8 @@
     "source": "Schriftliche Auskunft des InfoComune Massagno, 09.09.2026",
     "source_url": "http://www.massagno.ch",
     "review_status": "quelle",
-    "last_verified": "2026-09-09"
-   }
-  },
-  {
-   "bfs": 5238,
-   "name": "Monteceneri",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "tolerated",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "conditional",
-    "fire_allowed": "unknown",
-    "summary": "Monteceneri kennt keine eigene Regelung zum Übernachten im Freien. Es gilt unmittelbar das kantonale Recht.",
-    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2).",
-    "source": "Schriftliche Auskunft der Gemeindekanzlei Monteceneri, 09.09.2026",
-    "source_url": "http://www.monteceneri.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-09"
-   }
-  },
-  {
-   "bfs": 5162,
-   "name": "Cadempino",
-   "kanton": "CH-TI",
-   "vorschlag": {
-    "status": "forbidden",
-    "tent_allowed": "no",
-    "vehicle_allowed": "no",
-    "bivouac_allowed": "unknown",
-    "fire_allowed": "unknown",
-    "summary": "Cadempino hat keine eigene Regelung zum Campieren und keine für das Übernachten im Freien geeigneten Plätze.",
-    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2). Cadempino liegt im Flachland; die Ausnahme für das Bergbiwak greift dort nicht.",
-    "source": "Schriftliche Auskunft des Gemeindeschreibers Cadempino, 09.09.2026",
-    "source_url": "http://www.cadempino.ch",
-    "review_status": "quelle",
-    "last_verified": "2026-09-09"
+    "last_verified": "2026-09-09",
+    "ohne_eigene_regel": true
    }
   },
   {
@@ -576,20 +209,279 @@
    }
   },
   {
-   "bfs": 6154,
-   "name": "Port-Valais",
+   "bfs": 5231,
+   "name": "Vezia",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Vezia verweist auf das kantonale Recht: Campieren nur auf bewilligten Plätzen, ausgenommen das Bergbiwak. Für dessen Auslegung nennt die Gemeinde das Merkblatt des Schweizer Alpen-Clubs — eine Nacht oberhalb der Waldgrenze, sofern keine gegenteiligen Vorschriften gelten.",
+    "conditions": "Die Waldgrenze liegt auf der Alpensüdseite meist zwischen 1700 und 1900 Metern. Die Gemeinde weist darauf hin, dass das Schweizer Recht keine amtliche Biwakerlaubnis kennt, sondern nur Verbote — im Nationalpark, in eidgenössischen Jagdbanngebieten, in Wildruhezonen während der Schonzeit und in kantonalen Schutzgebieten.",
+    "source": "Schriftliche Auskunft der Gemeinde Vezia, 09.09.2026 (Legge sui campeggi Art. 2, SAC-Merkblatt 2018)",
+    "source_url": "https://www.vezia.ch/",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09",
+    "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5237,
+   "name": "Alto Malcantone",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Freies Campieren ist im Tessin nicht zulässig. Erlaubt ist allein das Biwak mit Zelt für eine einzige Nacht im Gebirge oberhalb der Waldgrenze.",
+    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2). Die Gemeinde nennt die Waldgrenze und die eine Nacht als Bedingungen.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Alto Malcantone, 08.09.2026",
+    "source_url": "https://www.altomalcantone.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08",
+    "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5238,
+   "name": "Monteceneri",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Monteceneri kennt keine eigene Regelung zum Übernachten im Freien. Es gilt unmittelbar das kantonale Recht.",
+    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2).",
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Monteceneri, 09.09.2026",
+    "source_url": "http://www.monteceneri.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09",
+    "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5250,
+   "name": "Chiasso",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Chiasso kennt keine eigene Regelung zum Campieren oder Übernachten im Freien. Es gilt die kantonale Ausnahme für das Biwak — und die greift ausschliesslich im Hochgebirge oberhalb der Waldgrenze, für eine einzige Nacht.",
+    "conditions": "Die Gemeinde nennt die Bedingungen ausdrücklich: nicht in empfindlichen oder geschützten Gebieten, und unter Beachtung strenger Verhaltensregeln. Chiasso selbst liegt im Flachland; dort greift die Ausnahme nicht.",
+    "source": "Schriftliche Auskunft der Gemeinde Chiasso, 09.09.2026",
+    "source_url": "https://www.chiasso.ch/",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09",
+    "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5268,
+   "name": "Vacallo",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "In Vacallo und im unteren Mendrisiotto ist das Biwakieren nicht zulässig. Campingplätze gibt es auf dem Gemeindegebiet keine.",
+    "conditions": "Die kantonale Ausnahme gilt nach Auskunft der Gemeinde ausschliesslich im Hochgebirge oberhalb der Waldgrenze — die Vacallo nicht erreicht. Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2).",
+    "source": "Schriftliche Auskunft der Gemeinde Vacallo, 09.09.2026",
+    "source_url": "https://www.vacallo.ch/",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09",
+    "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5323,
+   "name": "Lavizzara",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "conditional",
+    "vehicle_allowed": "unknown",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "gebuehr": {
+     "betrag": 7,
+     "waehrung": "CHF",
+     "je": "Person und Woche",
+     "wofuer": "gelegentliches Campieren auf Gemeindeland"
+    },
+    "summary": "Lavizzara lässt gelegentliches Campieren auf Gemeindeland gegen eine Gebühr zu — sieben Franken je Person und Woche. Das Bergbiwak ist ohnehin nach kantonalem Recht zulässig; die Gemeinde bestätigt das ausdrücklich.",
+    "conditions": "Vor dem Aufstellen sind die Grundeigentümer zu benachrichtigen — darauf legt die Gemeinde ausdrücklich Wert. Grundlage der Gebühr ist Art. 4 der Ordnung über die Nutzung des Verwaltungsvermögens, zusammen mit Art. 15 des zugehörigen Reglements.",
+    "source": "Schriftliche Auskunft des Gemeindeschreibers Lavizzara, 09.09.2026 (Art. 4 Ordinanza sull'uso dei beni amministrativi)",
+    "source_url": "https://lavizzara.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09"
+   }
+  },
+  {
+   "bfs": 5324,
+   "name": "Avegno Gordevio",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Auf dem gesamten Gemeindegebiet ist Campieren und Übernachten im Freien weder möglich noch bewilligt — ausgenommen sind allein die beiden offiziellen Campingplätze «Piccolo Paradiso» in Avegno und «Bellariva TCS» in Gordevio.",
+    "conditions": "Diese Auskunft ist strenger als die kantonale Ausnahme für das Bergbiwak: die Gemeinde nennt das Übernachten im Freien ohne Einschränkung auf das Flachland. Wer im Gebirgsteil der Gemeinde biwakieren will, frage vorher nach.",
+    "source": "Schriftliche Auskunft des Gemeindesekretariats Avegno Gordevio, 08.09.2026",
+    "source_url": "http://www.avegnogordevio.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5398,
+   "name": "Gambarogno",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Auf dem Gemeindegebiet ist jede Art von Biwak oder Campieren in der Natur ausserhalb der eigens bewilligten Flächen verboten. Einzige zugelassene Möglichkeit ist der Campingplatz von Vira Gambarogno.",
+    "conditions": "Grundlage ist die kommunale Regelung, auf die sich die Gemeinde beruft. Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2).",
+    "source": "Schriftliche Auskunft der Gemeinde Gambarogno, 09.09.2026",
+    "source_url": "https://www.gambarogno.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09"
+   }
+  },
+  {
+   "bfs": 6002,
+   "name": "Brig-Glis",
    "kanton": "CH-VS",
    "vorschlag": {
     "status": "forbidden",
     "tent_allowed": "no",
     "vehicle_allowed": "no",
     "fire_allowed": "unknown",
-    "summary": "Das Campieren ist in Art. 56 des Polizeireglements geregelt. Ausgewiesene Flächen dafür gibt es auf dem Gemeindegebiet keine — ausser dem privaten Campingplatz Rive-Bleue.",
-    "conditions": "Zum Biwakieren ohne Zelt und zum offenen Feuer trifft die Auskunft keine Aussage.",
-    "source": "Schriftliche Auskunft des Gemeindeschreibers Port-Valais, 08.09.2026 (Art. 56 Polizeireglement)",
-    "source_url": "https://www.achl.ch/wp-content/uploads/2024/07/Rglementdepolice2018.pdf",
+    "summary": "Wildes Campieren ist auf dem Gemeindegebiet nicht erlaubt. Die Stadtpolizei verweist auf die beiden Campingplätze Geschina und Brigerbad.",
+    "conditions": "Die Auskunft nennt keine Ausnahme für das Biwak. Zum offenen Feuer trifft sie keine Aussage.",
+    "source": "Schriftliche Auskunft der Stadtpolizei Brig-Glis, 07.09.2026",
+    "source_url": "http://www.brig-glis.ch",
     "review_status": "quelle",
-    "last_verified": "2026-09-09"
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6021,
+   "name": "Ardon",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren, Caravaning und Ähnliches sind ausserhalb der dafür vorgesehenen Plätze auf dem Gemeindegebiet verboten. Die Gemeinde zitiert Art. 54 ihres Polizeireglements im Wortlaut.",
+    "conditions": "Vorbehalten bleiben die Vorschriften des Strassenverkehrsrechts. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Ardon, 08.09.2026 (Art. 54 Polizeireglement)",
+    "source_url": "https://www.ardon.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6034,
+   "name": "Orsières",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Übernachten im Freien ausserhalb der offiziellen Campingplätze ist auf dem Gemeindegebiet nicht gestattet.",
+    "conditions": "Die Auskunft spricht vom Übernachten im Freien, nicht vom Campieren — damit ist auch das Biwak ohne Zelt erfasst. Zum offenen Feuer trifft sie keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Orsières, 07.09.2026",
+    "source_url": "https://www.orsieres.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6035,
+   "name": "Sembrancher",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Übernachten ausserhalb der dafür bewilligten und eingerichteten Plätze ist verboten. Die Gemeinde verweist auf Art. 58 ihres Bau- und Zonenreglements (RCCZ) und spricht ausdrücklich vom Übernachten, nicht bloss vom Aufstellen eines Zeltes.",
+    "conditions": "Weil der Artikel das Übernachten selbst nennt, ist auch das Nachtlager ohne Zelt erfasst. Zum offenen Feuer trifft die Auskunft keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Sembrancher, 07.09.2026 (Art. 58 RCCZ)",
+    "source_url": "https://www.sembrancher.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6076,
+   "name": "Obergoms",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren ausserhalb der Campingplätze ist verboten.",
+    "conditions": "Die Auskunft ist knapp und nennt keine Ausnahme. Zum Biwakieren ohne Zelt und zum offenen Feuer sagt sie nichts.",
+    "source": "Schriftliche Auskunft der Gemeinde Obergoms, 07.09.2026",
+    "source_url": "https://gemeinde.obergoms.ch/",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6083,
+   "name": "Evolène",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren, Caravaning und Ähnliches sind ausserhalb der von der Behörde ausdrücklich bezeichneten Plätze verboten. Die Gemeinde nennt Art. 54 Abs. 2 ihres Polizeireglements.",
+    "conditions": "Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Evolène, 08.09.2026 (Art. 54 Abs. 2 Polizeireglement)",
+    "source_url": "https://www.commune-evolene.ch/fr/reglements-communaux-104.html",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6089,
+   "name": "Vex",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Jede Form von Campieren und Caravaning ist auf dem gesamten Gemeindegebiet verboten — nicht nur auf öffentlichem Grund. Die Gemeinde verweist auf Art. 54 ihres Polizeireglements.",
+    "conditions": "Die Auskunft nennt keine Ausnahme. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft sie keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Vex, 08.09.2026 (Art. 54 Polizeireglement)",
+    "source_url": "http://www.vex.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
    }
   },
   {
@@ -607,6 +499,146 @@
     "source_url": "https://leuk.ch/de/reglemente",
     "review_status": "quelle",
     "last_verified": "2026-09-09"
+   }
+  },
+  {
+   "bfs": 6113,
+   "name": "Salgesch",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "conditional",
+    "vehicle_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Wildes Campieren ist bewilligungspflichtig: Art. 27 des Polizeireglements stellt unter Strafe, wer ohne Bewilligung und ausserhalb der offiziellen Campingplätze campiert.",
+    "conditions": "Die Gemeinde hat auf ihre Reglementsammlung verwiesen; der Artikel stammt aus dem dort veröffentlichten Polizeireglement und steht im Strafteil — die Regel ergibt sich daraus im Umkehrschluss. Eine Bewilligung ist vorher einzuholen.",
+    "source": "Polizeireglement Salgesch, Art. 27 Wildes Campieren — auf Verweis der Gemeinde, 07.09.2026",
+    "source_url": "https://www.salgesch-gemeinde.ch/_doc/1524788",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6133,
+   "name": "Fully",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Caravaning sind ausserhalb der ausdrücklich vorgesehenen Plätze verboten — wildes Campieren ist damit grundsätzlich nicht erlaubt. Das vereinzelte alpine Biwak wird dagegen je nach Umständen und Ort geduldet: unter freiem Himmel oder mit einem leichten Zelt, das abends aufgestellt und morgens abgebaut wird.",
+    "conditions": "Die Duldung des Biwaks gilt ausdrücklich nicht überall: In eidgenössischen Jagdbanngebieten sind Campieren und Biwakieren verboten, ausser im Notfall — der Tour des Muverans verläuft streckenweise durch solche Gebiete. Rund um die Hütten der Hauts de Fully werden Zelte nicht geduldet. Diese Auskunft stammt von Fully Tourisme, das die Polizeireglemente von Fully, Leytron und Saillon zitiert; sie beschreibt die gelebte Praxis, nicht eine Erlaubnis der Gemeindebehörde.",
+    "source": "Schriftliche Auskunft von Fully Tourisme, 08.09.2026 (zitiert die Polizeireglemente von Fully, Leytron und Saillon)",
+    "source_url": "https://www.fully.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6153,
+   "name": "Monthey",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Caravaning sind ausserhalb der von der Behörde ausdrücklich bezeichneten Plätze verboten — das umfasst nach der Auskunft der Stadt namentlich das Aufstellen eines Zeltes oder Wohnwagens.",
+    "conditions": "Die Stadt zitiert Art. 40 ihres Polizeireglements im Wortlaut. Zum offenen Feuer trifft der Artikel keine Aussage; im Wallis gilt zeitweise ein kantonales Feuerverbot.",
+    "source": "Schriftliche Auskunft der Stadt Monthey, 07.09.2026 (Art. 40 Polizeireglement)",
+    "source_url": "https://www.monthey.ch/",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6154,
+   "name": "Port-Valais",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Das Campieren ist in Art. 56 des Polizeireglements geregelt. Ausgewiesene Flächen dafür gibt es auf dem Gemeindegebiet keine — ausser dem privaten Campingplatz Rive-Bleue.",
+    "conditions": "Zum Biwakieren ohne Zelt und zum offenen Feuer trifft die Auskunft keine Aussage.",
+    "source": "Schriftliche Auskunft des Gemeindeschreibers Port-Valais, 08.09.2026 (Art. 56 Polizeireglement)",
+    "source_url": "https://www.achl.ch/wp-content/uploads/2024/07/Rglementdepolice2018.pdf",
+    "review_status": "quelle",
+    "last_verified": "2026-09-09"
+   }
+  },
+  {
+   "bfs": 6159,
+   "name": "Vouvry",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Für den Lac de Taney und die umliegenden Berge auf Gemeindegebiet gilt ein allgemeines Campierverbot. Das Gebiet ist ein eidgenössisch geschütztes Objekt, und die Gemeinde legt Wert darauf, dass das Verbot eingehalten wird.",
+    "conditions": "Die Auskunft betrifft ausdrücklich Taney und die umliegenden Berge — also das Gebiet, das für Übernachtungen im Freien überhaupt in Frage kommt. Zum Talboden trifft sie keine ausdrückliche Aussage. Weitere Hinweise unter taney.ch.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Vouvry, 08.09.2026",
+    "source_url": "https://taney.ch/fr",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6212,
+   "name": "Dorénaz",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Caravaning sind ausserhalb der ausdrücklich dafür bezeichneten Plätze verboten. Massgeblich ist Art. 57 Abs. 2 des Reglements der interkommunalen Polizei Salentin, das die Gemeinde im Wortlaut zitiert.",
+    "conditions": "Vorbehalten bleiben die Vorschriften des Strassenverkehrsrechts. Zum Biwakieren ohne Zelt und zum offenen Feuer trifft der Artikel keine Aussage.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Dorénaz, 07.09.2026 (Art. 57 Abs. 2 Reglement Police intercommunale du Salentin)",
+    "source_url": "http://www.dorenaz.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6266,
+   "name": "Sion",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Caravaning sind ausserhalb der von der Gemeindebehörde bewilligten Plätze verboten. Die Stadt zitiert Art. 38 ihres Polizeireglements und nennt die Fundstelle.",
+    "conditions": "Das Reglement fasst den Begriff weit und erfasst auch, was dem Campieren gleichkommt. Zum offenen Feuer trifft der Artikel keine Aussage.",
+    "source": "Schriftliche Auskunft der Stadt Sion, 07.09.2026 (Art. 38 Polizeireglement)",
+    "source_url": "https://www.sion.ch/_docn/1347597/reglement_5_SECURITE_PUBLIQUE_5_1_Reglement_communal_de_police.pdf",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6297,
+   "name": "Visp",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Campieren und Übernachten auf öffentlichem Grund sind nur in den Zonen gestattet, die die Gemeinde dafür bezeichnet hat. Das ist in Visp allein der Camping Mühleye — die Regionalpolizei nennt ihn als einzigen erlaubten Ort.",
+    "conditions": "Der Artikel nennt das Übernachten neben dem Campieren, damit ist auch das Nachtlager ohne Zelt auf öffentlichem Grund erfasst. Zu privatem Grund und zum offenen Feuer trifft er keine Aussage.",
+    "source": "Schriftliche Auskunft der Regionalpolizei Visp, 07.09.2026 (Art. 15 Polizeireglement vom 31.03.2009)",
+    "source_url": "http://www.visp.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-08",
+    "_muster": "de-nur-bezeichnete-zonen"
    }
   }
  ]

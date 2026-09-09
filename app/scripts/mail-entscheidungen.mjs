@@ -42,10 +42,16 @@ const liste = Array.isArray(entscheidungen) ? entscheidungen : Object.values(ent
  * und nicht bloss zu notieren ist der Unterschied zwischen einem Versprechen
  * und einem Vermerk — die Auskunft dieser Gemeinden ist inhaltlich brauchbar,
  * und genau deshalb muss der Riegel im Code sitzen.
+ *
+ * Aufpassen bei der Zuordnung: «wir haben keine eigene Regelung und möchten
+ * keine gemeindespezifischen Angaben» ist etwas anderes als «zeigt uns nicht».
+ * Das Erste ist die Auskunft selbst und gehört als Eintrag mit
+ * `ohne_eigene_regel` in den Datensatz, mit dem Verweis aufs übergeordnete
+ * Recht. Magliaso stand deswegen zu Unrecht in dieser Liste.
  */
 const NICHT_ANZEIGEN = new Set(
-  (lade(resolve(ROOT, 'import/mail/nicht-anzeigen.json'), { gemeinden: [] }).gemeinden ?? [])
-    .map((g) => g.bfs),
+  (JSON.parse(readFileSync(resolve(ROOT, 'import/mail/nicht-anzeigen.json'), 'utf8'))
+    .gemeinden ?? []).map((g) => g.bfs),
 )
 
 let uebernommen = 0

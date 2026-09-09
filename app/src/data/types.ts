@@ -252,6 +252,17 @@ export interface GemeindeRecht {
   fire_allowed: Permission
   /** Was es kostet, wo eine Gemeinde das Übernachten gegen Gebühr zulässt. */
   gebuehr?: Gebuehr
+  /**
+   * Die Gemeinde hat keine eigene Regelung — was hier steht, ist kantonales
+   * oder eidgenössisches Recht.
+   *
+   * Muss sichtbar sein, nicht bloss im Text stehen. Magliaso hat ausdrücklich
+   * darum gebeten, für seine Gemeinde keine «indicazioni specifiche»
+   * auszuweisen: sie regeln nichts, und eine Angabe unter ihrem Namen liest
+   * sich, als täten sie es. Wer die Auskunft der Gemeinde zuschreibt, die
+   * sie gar nicht erteilt hat, verfälscht sie — auch wenn der Inhalt stimmt.
+   */
+  ohne_eigene_regel?: boolean
   /** Was gilt, in zwei bis vier Sätzen. */
   summary: string
   conditions: string | null
