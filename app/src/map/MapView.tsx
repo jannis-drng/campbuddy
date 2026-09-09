@@ -54,6 +54,11 @@ interface Props {
   gemeindenFern: GeoJSON.FeatureCollection
   /** Steuert nur die Einfärbung — es werden nie Zonen ausgeblendet. */
   activity: ActivityMode
+  /**
+   * Wie kräftig die Rechtsfarben über der Grundkarte liegen; 1 ist der
+   * abgestimmte Normalwert, siehe `FARB_EBENEN`.
+   */
+  farbstaerke: number
   basemap: BasemapKey
   /**
    * Ob die Karte gerade sichtbar ist. Sie bleibt beim Ansichtswechsel bewusst
@@ -112,7 +117,8 @@ interface Props {
 }
 
 export function MapView({
-  region, zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, basemap, visible,
+  region, zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, farbstaerke,
+  basemap, visible,
   route, waypoints, waypointLabels, kameraZiel, drawing, markieren,
   onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
   onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
@@ -126,12 +132,14 @@ export function MapView({
   // Aktuelle Daten und Callbacks in Refs spiegeln: die MapLibre-Listener werden
   // genau einmal gebunden, greifen aber immer auf den neuesten Stand zu.
   const latest = useRef({
-    zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, drawing, markieren, waypoints,
+    zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, farbstaerke,
+    drawing, markieren, waypoints,
     onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   })
   latest.current = {
-    zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, drawing, markieren, waypoints,
+    zones, points, peaks, nature, eigene, gemeinden, gemeindenFern, activity, farbstaerke,
+    drawing, markieren, waypoints,
     onZoneClick, onPointClick, onNatureClick, onPeakClick, onEigenClick, onLeerClick, onAusschnitt,
     onAddWaypoint, onInsertWaypoint, onMoveWaypoint, onRemoveWaypoint, onMarkieren,
   }
@@ -203,6 +211,7 @@ export function MapView({
       if (!m.style || m.getSource('zones')) return
       symboleAnlegen(m)
       addLayers(m, latest.current.activity)
+      farbstaerkeSetzen(m, latest.current.farbstaerke)
       updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
       ;(m.getSource('peaks') as GeoJSONSource | undefined)?.setData(peaksToGeoJson(latest.current.peaks))
       ;(m.getSource('natur') as GeoJSONSource | undefined)?.setData(natureToGeoJson(latest.current.nature))
@@ -510,6 +519,11 @@ export function MapView({
     const m = map.current
     if (m && ready.current) gemeindeAktivitaetSetzen(m, activity)
   }, [activity])
+
+  useEffect(() => {
+    const m = map.current
+    if (m && ready.current) farbstaerkeSetzen(m, farbstaerke)
+  }, [farbstaerke])
 
   useEffect(() => {
     const m = map.current
@@ -863,6 +877,65 @@ const eigenSymbol: ExpressionSpecification = [
 ]
 
 /**
+ * Welche Ebenen die Rechtsfarbe tragen, und wie kräftig sie im Normalfall ist.
+ *
+ * Die Grundwerte sind auf die Standardkarte abgestimmt. Darunter liegt aber
+ * wahlweise ein Reliefbild oder die Landeskarte, und beide bringen eigene
+ * Farbe und eigene Beschriftung mit: was über der einen Karte gerade richtig
+ * sitzt, deckt die andere zu. Deshalb ein Regler statt eines festen Werts —
+ * und deshalb stehen die Grundwerte hier an einer Stelle statt verstreut in
+ * den Ebenen, sonst wüsste der Regler nicht, worauf er sich bezieht.
+ *
+ * Die Grenzlinien (`gemeinden-outline*`) stehen bewusst nicht dabei: sie sind
+ * keine Aussage über die Rechtslage, sondern die Orientierung, an der man
+ * abliest, wo eine Auskunft aufhört. Sie bleiben.
+ */
+const FARB_EBENEN: [string, 'fill-opacity' | 'line-opacity', number, number?][] = [
+  /*
+    Der weisse Grund ist der einzige Posten mit einer Obergrenze: er ist kein
+    Farbwert, sondern das Papier darunter, das der Grundkarte Sättigung nimmt,
+    damit die Rechtsfarbe eine Farbe bleibt. Kräftigere Farben brauchen davon
+    nicht mehr — mehr Weiss würde nur die Grundkarte ausbleichen, und die soll
+    man ja gerade lesen können. Nach unten geht er mit, sonst bliebe bei
+    schwacher Farbe ein weisser Schleier ohne Zweck zurück.
+  */
+  ['gemeinden-grund', 'fill-opacity', 0.58, 0.58],
+  ['gemeinden-fill', 'fill-opacity', 0.46],
+  ['gemeinden-fill-unbestaetigt', 'fill-opacity', 0.5],
+  ['gemeinden-rand', 'line-opacity', 1],
+  ['zones-fill', 'fill-opacity', 0.3],
+  ['zones-outline-verified', 'line-opacity', 1],
+  ['zones-outline-draft', 'line-opacity', 1],
+]
+
+function farbstaerkeSetzen(m: MlMap, staerke: number) {
+  for (const [name, eigenschaft, grund, hoechstens] of FARB_EBENEN) {
+    // Die Gemeindeebenen gibt es zweimal, in genau und in fern.
+    for (const id of [name, `${name}-fern`]) {
+      if (!m.getLayer(id)) continue
+      m.setPaintProperty(id, eigenschaft, Math.min(hoechstens ?? 1, grund * staerke))
+    }
+  }
+}
+
+/**
+ * Unter welche Ebene der Hintergrundkarte die eigenen Flächen gehören.
+ *
+ * Ohne diese Angabe legt MapLibre jede neue Ebene zuoberst — und dann liegt
+ * die Rechtsfarbe über «Schweiz», über jedem Ortsnamen und jeder Strasse.
+ * Genau das war der Zustand: die Karte darunter war noch da, nur nicht mehr
+ * zu lesen. Die erste Beschriftungsebene des Styles ist die Grenze; alles
+ * Flächige gehört darunter, die eigenen Beschriftungen und Symbole darüber.
+ *
+ * Die Rasterkarten (Outdoor, Landeskarte) haben keine solche Ebene: dort ist
+ * die Schrift Teil des Bildes und nicht verschiebbar. Sie bekommen `undefined`
+ * und damit die alte Reihenfolge — für sie ist der Farbregler die Antwort.
+ */
+function ersteBeschriftung(m: MlMap): string | undefined {
+  return m.getStyle().layers?.find((l) => l.type === 'symbol')?.id
+}
+
+/**
  * Ab welcher Zoomstufe die genauen Gemeindegrenzen die Übersicht ablösen.
  *
  * Bei Zoom 8 misst ein Bildpunkt auf Schweizer Breite rund 420 m; die
@@ -881,6 +954,7 @@ const GEMEINDE_UMSCHALT = ZOOM_AB.gemeindenGenau
  */
 function gemeindeEbenen(
   m: MlMap, quelle: string, zoom: { minzoom?: number; maxzoom?: number }, activity: ActivityMode,
+  vor: string | undefined,
 ) {
   const id = (name: string) => (quelle === 'gemeinden' ? name : `${name}-fern`)
   const a = gemeindeAusdruecke(activity)
@@ -892,7 +966,7 @@ function gemeindeEbenen(
     source: quelle,
     filter: a.bekannt,
     paint: { 'fill-color': '#FFFFFF', 'fill-opacity': 0.58 },
-  })
+  }, vor)
 
   // Die Statusfarbe sass vorher mit 32 % direkt auf der Grundkarte. Auf einem
   // Reliefbild heisst das: Rot auf Rotbraun — die wichtigste Aussage dieser
@@ -906,7 +980,7 @@ function gemeindeEbenen(
     source: quelle,
     filter: a.belegt,
     paint: { 'fill-color': a.farbe, 'fill-opacity': 0.46 },
-  })
+  }, vor)
 
   // Abgeleitet, aber nicht belegt: schraffiert statt voll. Der Prüfstand ist
   // damit Teil des Kartenbilds und nicht bloss eine Fussnote im Infofeld.
@@ -917,7 +991,7 @@ function gemeindeEbenen(
     source: quelle,
     filter: a.entwurf,
     paint: { 'fill-pattern': a.schraffur, 'fill-opacity': 0.5 },
-  })
+  }, vor)
 
   // Zwei Linien übereinander: eine helle Kasche, darauf die dunkle Grenze.
   // Die Grundkarte lässt sich umschalten und reicht von hellem Papier bis zu
@@ -934,7 +1008,7 @@ function gemeindeEbenen(
       'line-color': 'rgba(255,255,255,0.75)',
       'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1.6, 13, 2.8],
     },
-  })
+  }, vor)
   m.addLayer({
     ...zoom,
     id: id('gemeinden-outline'),
@@ -946,7 +1020,7 @@ function gemeindeEbenen(
       'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 13, 1.1],
       'line-opacity': 0.75,
     },
-  })
+  }, vor)
 
   // Der Rand in der Statusfarbe. Er trägt die Aussage auch dort, wo die Fläche
   // klein ist oder von Schutzgebieten überlagert wird — und er macht auf einen
@@ -962,11 +1036,15 @@ function gemeindeEbenen(
       'line-width': ['interpolate', ['linear'], ['zoom'], 7, 1.6, 11, 3, 14, 4],
       'line-opacity': 1,
     },
-  })
+  }, vor)
 }
 
 function addLayers(m: MlMap, activity: ActivityMode) {
   const empty: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
+
+  // Alles Flächige gehört unter die Beschriftung der Grundkarte, alles
+  // Beschriftete darüber — siehe `ersteBeschriftung`.
+  const vor = ersteBeschriftung(m)
 
   // Hier und nicht als Konstante im Modul: welche Schrift die eigenen
   // Beschriftungen bekommen können, hängt an der Hintergrundkarte — jeder
@@ -1004,8 +1082,8 @@ function addLayers(m: MlMap, activity: ActivityMode) {
   // Auflösung sind die 2119 Grenzen 617 KB gepackt, der grösste Einzelposten
   // der ganzen Anwendung. Wer über die Karte fliegt, braucht davon nichts;
   // wer eine Gemeinde wirklich ansieht, bekommt sie exakt.
-  gemeindeEbenen(m, 'gemeinden-fern', { maxzoom: GEMEINDE_UMSCHALT }, activity)
-  gemeindeEbenen(m, 'gemeinden', { minzoom: GEMEINDE_UMSCHALT }, activity)
+  gemeindeEbenen(m, 'gemeinden-fern', { maxzoom: GEMEINDE_UMSCHALT }, activity, vor)
+  gemeindeEbenen(m, 'gemeinden', { minzoom: GEMEINDE_UMSCHALT }, activity, vor)
 
   m.addLayer({
     id: 'gemeinden-label',
@@ -1021,29 +1099,55 @@ function addLayers(m: MlMap, activity: ActivityMode) {
     },
   })
 
+  /*
+    Ungeklärte Schutzgebiete bekommen keine Füllung, nur ihren Umriss —
+    dieselbe Regel wie bei den Gemeinden, und aus demselben Grund. Ein graues
+    Feld ist keine Auskunft; es sieht bloss aus wie eine. In den Ansichten
+    «Biwak» und «Feuer», wo die meisten Einstufungen fehlen, lag dieser
+    Grauschleier über halben Landesteilen und nahm der Grundkarte jede
+    Lesbarkeit. Dass dort ein Schutzgebiet liegt, sagt weiterhin die Linie.
+  */
   m.addLayer({
     id: 'zones-fill',
     type: 'fill',
     source: 'zones',
+    filter: ['!=', ['get', 'status'], 'unknown'],
     paint: { 'fill-color': statusColor, 'fill-opacity': 0.3 },
-  })
+  }, vor)
 
-  // Zwei Umriss-Layer statt eines: line-dasharray ist nicht datengesteuert,
-  // deshalb trennt ein Filter geprüfte (durchgezogen) von ungeprüften (gestrichelt) Zonen.
+  /*
+    Zwei Umriss-Layer statt eines: line-dasharray ist nicht datengesteuert,
+    deshalb trennt ein Filter geprüfte (durchgezogen) von ungeprüften
+    (gestrichelt) Zonen.
+
+    Die Breite hängt am Zoom, und das ist kein Feinschliff: 1794 Schutzgebiete
+    mit einer festen 2,5-Pixel-Linie ergeben in der Landesansicht keine Karte
+    mehr, sondern einen roten Ausschlag — die Umrisse allein tragen dort mehr
+    Farbe als die Flächen. Weit draussen genügt ein Haarstrich, der die Form
+    andeutet; die Kante wird erst wichtig, wenn man wissen will, wo genau das
+    Gebiet aufhört.
+  */
+  const zonenBreite = (voll: number): ExpressionSpecification =>
+    ['interpolate', ['linear'], ['zoom'], 6, voll * 0.32, 9, voll * 0.6, 12, voll]
+
   m.addLayer({
     id: 'zones-outline-verified',
     type: 'line',
     source: 'zones',
     filter: ['!=', ['get', 'review_status'], 'entwurf'],
-    paint: { 'line-color': statusColor, 'line-width': 2.5 },
-  })
+    paint: { 'line-color': statusColor, 'line-width': zonenBreite(2.5) },
+  }, vor)
   m.addLayer({
     id: 'zones-outline-draft',
     type: 'line',
     source: 'zones',
     filter: ['==', ['get', 'review_status'], 'entwurf'],
-    paint: { 'line-color': statusColor, 'line-width': 2, 'line-dasharray': [2, 2] },
-  })
+    paint: {
+      'line-color': statusColor,
+      'line-width': zonenBreite(2),
+      'line-dasharray': [2, 2],
+    },
+  }, vor)
 
   m.addLayer({
     id: 'zones-label',

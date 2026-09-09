@@ -27,9 +27,14 @@ interface Props {
   basemap: BasemapKey
   onBasemapChange: (key: BasemapKey) => void
   activity: ActivityMode
+  /** Wie kräftig die Rechtsfarben über der Grundkarte liegen; 1 ist normal. */
+  farbstaerke: number
+  onFarbstaerke: (wert: number) => void
 }
 
-export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Props) {
+export function Kartenebenen({
+  region, basemap, onBasemapChange, activity, farbstaerke, onFarbstaerke,
+}: Props) {
   const [offen, setOffen] = useState(false)
 
   // Auf dem Telefon deckt die Blase halbe Karte ab — Escape ist der übliche
@@ -94,7 +99,9 @@ export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Pro
               <BasemapSwitcher region={region} value={basemap} onChange={onBasemapChange} breit />
             </div>
             <div className="border-t border-kante pt-3">
-              <LegendeInhalt activity={activity} />
+              <LegendeInhalt
+                activity={activity} farbstaerke={farbstaerke} onFarbstaerke={onFarbstaerke}
+              />
             </div>
           </div>
         </div>
@@ -105,7 +112,7 @@ export function Kartenebenen({ region, basemap, onBasemapChange, activity }: Pro
         <BasemapSwitcher region={region} value={basemap} onChange={onBasemapChange} />
       </div>
       <div className="hidden min-h-0 sm:flex">
-        <Legende activity={activity} />
+        <Legende activity={activity} farbstaerke={farbstaerke} onFarbstaerke={onFarbstaerke} />
       </div>
     </div>
   )

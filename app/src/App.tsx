@@ -75,6 +75,25 @@ const INITIAL_FILTERS: MapFilters = {
   showEigene: true,
 }
 
+const FARBSTAERKE_SCHLUESSEL = 'cb.farbstaerke'
+
+/**
+ * Die gespeicherte Farbstärke, sonst der Normalwert.
+ *
+ * Der Bereich ist derselbe wie am Regler (siehe `Legend`): unter 0,2 wäre die
+ * Rechtslage nicht mehr abzulesen, über 1,6 deckt sie die Grundkarte zu. Was
+ * ausserhalb liegt oder kein Zahlenwert ist, wird verworfen statt geklemmt —
+ * ein fremder Eintrag unter diesem Schlüssel soll die Karte nicht verstellen.
+ */
+function ladeFarbstaerke(): number {
+  try {
+    const wert = Number(localStorage.getItem(FARBSTAERKE_SCHLUESSEL))
+    return wert >= 0.2 && wert <= 1.6 ? wert : 1
+  } catch {
+    return 1
+  }
+}
+
 type View = 'karte' | 'community' | 'touren' | 'konto'
 
 const mehrereRegionen = Object.keys(REGIONS).length > 1
@@ -129,6 +148,19 @@ export default function App() {
 
   const [regionCode, setRegionCode] = useState(DEFAULT_REGION)
   const [basemap, setBasemap] = useState<BasemapKey>(DEFAULT_BASEMAP)
+
+  /*
+    Wie kräftig die Rechtsfarben über der Grundkarte liegen.
+
+    Bleibt gespeichert, anders als die Wahl der Hintergrundkarte: die trifft
+    man je nach Vorhaben neu, die Farbstärke ist eine Frage von Bildschirm und
+    Auge und für dieselbe Person immer dieselbe. Ein Regler, der bei jedem
+    Besuch zurückspringt, wird beim zweiten Mal nicht mehr angefasst.
+  */
+  const [farbstaerke, setFarbstaerke] = useState(ladeFarbstaerke)
+  useEffect(() => {
+    try { localStorage.setItem(FARBSTAERKE_SCHLUESSEL, String(farbstaerke)) } catch { /* privates Fenster */ }
+  }, [farbstaerke])
   const [filters, setFilters] = useState<MapFilters>(INITIAL_FILTERS)
   const [selection, setSelection] = useState<Selection>(null)
 
@@ -1185,6 +1217,7 @@ export default function App() {
             gemeinden={gemeindenGeo}
             gemeindenFern={gemeindenFern}
             activity={filters.activity}
+            farbstaerke={farbstaerke}
             basemap={basemap}
             visible={view === 'karte'}
             route={routeGeometry}
@@ -1310,6 +1343,8 @@ export default function App() {
             basemap={basemap}
             onBasemapChange={setBasemap}
             activity={filters.activity}
+            farbstaerke={farbstaerke}
+            onFarbstaerke={setFarbstaerke}
           />
           <InfoPanel
             selection={selection}

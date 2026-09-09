@@ -49,15 +49,16 @@ function Huettenzeichen({ className = '' }: { className?: string }) {
 
 /**
  * Eine Zeile je Einstufung, mit beiden Farbwelten nebeneinander: links die
- * Zone (Schutzgebiet), rechts die Gemeinde. `gemeinde: null` heisst „ohne
- * Füllung" — die Gemeindeebene kennt kein eigenes Grau für „ungeklärt", sie
- * lässt die Fläche schlicht leer.
+ * Zone (Schutzgebiet), rechts die Gemeinde. `null` heisst „ohne Füllung" —
+ * keine der beiden Ebenen füllt eine Fläche, zu der sie nichts sagen kann,
+ * sie zeigt nur ihren Umriss. Ein Grauschleier über allem Ungeklärten wäre
+ * keine Auskunft, sondern nur eine vermatschte Grundkarte.
  */
-const EINSTUFUNGEN: [string, string, string | null][] = [
+const EINSTUFUNGEN: [string, string | null, string | null][] = [
   ['Erlaubt', STATUS_COLORS.allowed, GEMEINDE_COLORS.allowed],
   ['Geduldet', STATUS_COLORS.tolerated, GEMEINDE_COLORS.tolerated],
   ['Verboten', STATUS_COLORS.forbidden, GEMEINDE_COLORS.forbidden],
-  ['Ungeklärt', STATUS_COLORS.unknown, null],
+  ['Ungeklärt', null, null],
 ]
 
 /** Dieselbe Schraffur wie auf der Karte, nur als Kachel im Kästchen. */
@@ -89,7 +90,7 @@ const SYMBOLE: [string, string, LucideIcon | typeof Huettenzeichen][] = [
  * Sie klappt nach unten auf und bringt keine eigene Lage mit — die gibt ihr
  * `Kartenebenen`. Was nicht in die Höhe passt, scrollt innen.
  */
-export function Legende({ activity }: { activity: ActivityMode }) {
+export function Legende({ activity, farbstaerke, onFarbstaerke }: LegendeProps) {
   const [offen, setOffen] = useState(true)
 
   return (
@@ -114,15 +115,24 @@ export function Legende({ activity }: { activity: ActivityMode }) {
 
       {offen && (
         <div className="min-h-0 overflow-y-auto border-t border-kante px-3 pb-3 pt-2.5">
-          <LegendeInhalt activity={activity} />
+          <LegendeInhalt
+            activity={activity} farbstaerke={farbstaerke} onFarbstaerke={onFarbstaerke}
+          />
         </div>
       )}
     </div>
   )
 }
 
+export interface LegendeProps {
+  activity: ActivityMode
+  /** Wie kräftig die Rechtsfarben liegen; 1 ist der Normalwert. */
+  farbstaerke: number
+  onFarbstaerke: (wert: number) => void
+}
+
 /** Die Erklärung selbst — ohne Rahmen, ohne Klappmechanik. */
-export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
+export function LegendeInhalt({ activity, farbstaerke, onFarbstaerke }: LegendeProps) {
   return (
     <div className="space-y-3">
       <div>
@@ -141,7 +151,9 @@ export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
             <div key={label} className="flex items-center gap-2 text-klein text-ink-300">
               <span
                 className="h-3 w-3 shrink-0 rounded-[3px] border"
-                style={{ backgroundColor: `${zone}55`, borderColor: zone }}
+                style={zone
+                  ? { backgroundColor: `${zone}55`, borderColor: zone }
+                  : { backgroundColor: 'transparent', borderColor: STATUS_COLORS.unknown }}
                 aria-hidden
               />
               <span
@@ -159,6 +171,56 @@ export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
           Ausserhalb der Schutzgebiete entscheidet die Gemeinde. Ohne Füllung: keine
           bekannte Regel - antippen zeigt den Kontakt.
         </p>
+
+        {/*
+          Der Farbregler.
+
+          Er steht hier und nicht in der Filterleiste, weil er nichts an der
+          Auskunft ändert, sondern nur daran, wie kräftig sie über der
+          Grundkarte liegt — dieselbe Art von Angabe wie die Kästchen darüber.
+          Gebraucht wird er vor allem auf den Rasterkarten: dort ist die
+          Beschriftung Teil des Bildes und lässt sich nicht über die Farbe
+          heben, also muss die Farbe nachgeben können.
+
+          Ganz nach links heisst nicht «aus»: bei 20 % bleibt die Einstufung
+          erkennbar. Eine Karte, die ihre Aussage wegschieben lässt, wäre
+          hübscher und nutzlos.
+        */}
+        <div className="mt-2.5 border-t border-kante pt-2.5">
+          <div className="mb-1.5 flex items-baseline justify-between gap-2">
+            <Label>Farbstärke</Label>
+            <span className="text-mikro tabular-nums text-ink-500">
+              {Math.round(farbstaerke * 100)} %
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0.2}
+            max={1.6}
+            step={0.1}
+            value={farbstaerke}
+            onChange={(e) => onFarbstaerke(Number(e.target.value))}
+            aria-label="Stärke der Rechtsfarben"
+            /*
+              24 Pixel hoch, obwohl die Spur nur vier misst: der Rest ist
+              Trefferfläche für den Finger. Der Daumen bleibt mittig, weil
+              sein Versatz an der Spur hängt und nicht an der Höhe.
+            */
+            className="h-6 w-full cursor-pointer appearance-none bg-transparent
+                       [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:w-3.5
+                       [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0
+                       [&::-moz-range-thumb]:bg-gletscher-300
+                       [&::-moz-range-track]:h-1 [&::-moz-range-track]:rounded-full
+                       [&::-moz-range-track]:bg-flaeche-3
+                       [&::-webkit-slider-runnable-track]:h-1
+                       [&::-webkit-slider-runnable-track]:rounded-full
+                       [&::-webkit-slider-runnable-track]:bg-flaeche-3
+                       [&::-webkit-slider-thumb]:mt-[-0.3125rem] [&::-webkit-slider-thumb]:h-3.5
+                       [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none
+                       [&::-webkit-slider-thumb]:rounded-full
+                       [&::-webkit-slider-thumb]:bg-gletscher-300"
+          />
+        </div>
       </div>
 
       {/*
@@ -198,6 +260,7 @@ export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
           ))}
         </div>
       </div>
+
     </div>
   )
 }
