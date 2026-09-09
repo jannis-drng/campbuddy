@@ -13,7 +13,10 @@
  * Nachbarn oder vom Kanton ab. Genau diese Zurückhaltung ist der Grund, warum
  * man der Karte dort glauben kann, wo sie etwas behauptet.
  */
-import type { Ausschnitt, Gemeinde, GemeindeRecht, LegalStatus, ReviewStatus } from './types'
+import type {
+  ActivityMode, Ausschnitt, Gemeinde, GemeindeRecht, LegalStatus, ReviewStatus,
+} from './types'
+import { statusFuerAktivitaet } from './legalData'
 import type { Position } from './geo'
 import { pointInGeometry } from './geo'
 import { kachelLader, ladeJson, ohneDoppelte } from './snapshot'
@@ -124,6 +127,14 @@ export function gemeindeRecht(gemeinde: Gemeinde | null): GemeindeRecht | null {
   return RECHT[String(gemeinde.bfs)] ?? null
 }
 
+/** Die vier Fragen, die eine Gemeindefläche beantworten kann. */
+const AKTIVITAETEN: ActivityMode[] = ['tent', 'bivouac', 'vehicle', 'fire']
+
+/** Wie das Kartenmerkmal für eine Aktivität heisst: `status_tent` und so fort. */
+export function statusFeld(activity: ActivityMode): string {
+  return `status_${activity}`
+}
+
 /**
  * Wie eine Gemeinde auf der Karte erscheint.
  *
@@ -131,17 +142,30 @@ export function gemeindeRecht(gemeinde: Gemeinde | null): GemeindeRecht | null {
  * belastbar* die Auskunft ist (`bestaetigt`). Eine abgeleitete Einstufung wird
  * schraffiert gezeichnet, eine belegte voll — so ist der Prüfstand im
  * Kartenbild selbst zu sehen und nicht erst im Kleingedruckten.
+ *
+ * Das *was* ist bewusst kein einzelner Wert, sondern eine Einstufung je
+ * Aktivität. Die zusammengefasste `status` einer Gemeinde beantwortet keine
+ * Frage, die jemand stellt: eine Gemeinde kann das Zelt verbieten, das Biwak
+ * nicht regeln und das Feuer erlauben. Färbte die Fläche danach, widerspräche
+ * sie der Legende darüber, die eine bestimmte Regel ankündigt — und der
+ * Widerspruch fiele ausgerechnet dort auf, wo es teuer wird.
  */
 export interface GemeindeAnzeige {
-  status: LegalStatus
+  status: Record<ActivityMode, LegalStatus>
   bestaetigt: boolean
   review_status: ReviewStatus | null
 }
 
+const OHNE_ANGABE = {
+  tent: 'unknown', bivouac: 'unknown', vehicle: 'unknown', fire: 'unknown',
+} as const satisfies Record<ActivityMode, LegalStatus>
+
 export function gemeindeAnzeige(recht: GemeindeRecht | null): GemeindeAnzeige {
-  if (!recht) return { status: 'unknown', bestaetigt: false, review_status: null }
+  if (!recht) return { status: { ...OHNE_ANGABE }, bestaetigt: false, review_status: null }
   return {
-    status: recht.status,
+    status: Object.fromEntries(
+      AKTIVITAETEN.map((a) => [a, statusFuerAktivitaet(recht, a)]),
+    ) as Record<ActivityMode, LegalStatus>,
     bestaetigt: recht.review_status !== 'entwurf',
     review_status: recht.review_status,
   }
@@ -166,7 +190,7 @@ export function gemeindenGeoJSON(welche: 'uebersicht' | 'genau'): GeoJSON.Featur
           bfs: g.bfs,
           name: g.name,
           kanton: g.kanton,
-          status: anzeige.status,
+          ...Object.fromEntries(AKTIVITAETEN.map((a) => [statusFeld(a), anzeige.status[a]])),
           bestaetigt: anzeige.bestaetigt,
         },
         geometry: g.geometry,

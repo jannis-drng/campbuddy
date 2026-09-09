@@ -13,8 +13,8 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type {
-  EigenerPunkt, Gemeinde, GemeindeRecht, Kanton, KantonRecht, NatureFeature, Peak, Point, Region,
-  WegpunktArt, Zone,
+  ActivityMode, EigenerPunkt, Gemeinde, GemeindeRecht, Kanton, KantonRecht, NatureFeature, Peak,
+  Point, Region, WegpunktArt, Zone,
 } from '../data/types'
 import type { Position } from '../data/geo'
 import type { PublicTour } from '../services/supabase'
@@ -23,7 +23,7 @@ import { formatKm, hatWeg, seitdem } from './TourKarte'
 import { RoutenVorschau } from './RoutenVorschau'
 import { Badge, Button, Hinweis, IconButton, Label } from '../ui'
 import { PermissionRow, ReviewBadge, STATUS_LABEL, StatusBadge } from './ui'
-import { biwakRegel } from '../data/legalData'
+import { AKTIVITAET_BEZUG, biwakRegel, statusFuerAktivitaet } from '../data/legalData'
 import { kennung } from '../../scripts/lib/kennung.mjs'
 import { GearHint } from '../affiliate/GearHint'
 import { PunktFoto } from './PunktFoto'
@@ -117,6 +117,12 @@ interface InfoPanelProps {
   selection: Selection
   onClose: () => void
   onOpenPlanner: () => void
+  /**
+   * Wonach die Karte gerade einfärbt. Die Infokarte beantwortet dieselbe
+   * Frage zuoberst — sonst nennt die Fläche unter dem Finger eine Einstufung
+   * und die Karte daneben eine andere.
+   */
+  activity: ActivityMode
   /** Wer gerade angemeldet ist — entscheidet, ob eine Markierung bearbeitbar ist. */
   nutzerId?: string | null
   onPunktBearbeiten?: (punkt: EigenerPunkt) => void
@@ -167,7 +173,7 @@ function kopfDaten(selection: NonNullable<Selection>): { art: string; icon: Luci
 }
 
 export function InfoPanel({
-  selection, onClose, onOpenPlanner, nutzerId, onPunktBearbeiten, onPunktLoeschen,
+  selection, onClose, onOpenPlanner, activity, nutzerId, onPunktBearbeiten, onPunktLoeschen,
   onTourOeffnen, onAlleTouren, onAlsWegpunkt, zeichnetGerade,
 }: InfoPanelProps) {
   if (!selection) return null
@@ -220,9 +226,12 @@ export function InfoPanel({
             grundlagen={selection.kantonGrundlagen}
             gemeinde={selection.gemeinde}
             gemeindeRecht={selection.gemeindeRecht}
+            activity={activity}
           />
         )}
-        {selection.kind === 'zone' && <ZoneBody zone={selection.zone} onOpenPlanner={onOpenPlanner} />}
+        {selection.kind === 'zone' && (
+          <ZoneBody zone={selection.zone} activity={activity} onOpenPlanner={onOpenPlanner} />
+        )}
         {selection.kind === 'point' && <PointBody point={selection.point} />}
         {selection.kind === 'natur' && <NaturBody feature={selection.feature} />}
         {selection.kind === 'eigen' && (
@@ -271,7 +280,7 @@ function kantonRegeltNichts(recht: KantonRecht) {
 }
 
 function RegionBody({
-  region, stats, datenFehler, kanton, recht, grundlagen, gemeinde, gemeindeRecht,
+  region, stats, datenFehler, kanton, recht, grundlagen, gemeinde, gemeindeRecht, activity,
 }: {
   region: Region
   stats: { total: number; entwurf: number }
@@ -281,8 +290,23 @@ function RegionBody({
   grundlagen: { grundlagen: { text: string; zonen: number }[]; quelle: string; stand: string } | null
   gemeinde: Gemeinde | null
   gemeindeRecht: GemeindeRecht | null
+  activity: ActivityMode
 }) {
   const [quellenOffen, setQuellenOffen] = useState(false)
+
+  /*
+    Die Auskunft der zuständigen Ebene, für die gewählte Aktivität — nicht die
+    erstbeste, die etwas sagt. Wenn die Gemeinde das Zelten regelt und zum
+    Biwak schweigt, ist «ungeklärt» die richtige Antwort und nicht die des
+    Kantons: unter der Überschrift «Hier entscheidet Fully» darf nichts
+    stehen, was Fully nie gesagt hat. Der landesweite Rahmen kennt keine
+    Aufschlüsselung nach Aktivität und bleibt deshalb die letzte Zeile.
+  */
+  const auskunft = gemeindeRecht
+    ? statusFuerAktivitaet(gemeindeRecht, activity)
+    : recht
+      ? statusFuerAktivitaet(recht, activity)
+      : region.legal_framework.baseline_status
 
   return (
     <div className="space-y-5 px-5 py-4">
@@ -298,9 +322,8 @@ function RegionBody({
           {gemeinde ? `Hier entscheidet ${gemeinde.name}` : 'Hier ist keine Fläche eingezeichnet, es gilt'}
         </Label>
         <p className="mt-1 text-titel font-semibold text-ink-50">
-          {STATUS_LABEL[
-            gemeindeRecht?.status ?? recht?.status ?? region.legal_framework.baseline_status
-          ]}
+          {STATUS_LABEL[auskunft]}{' '}
+          <span className="text-klein font-medium text-ink-400">{AKTIVITAET_BEZUG[activity]}</span>
         </p>
         {gemeinde && (
           <p className="mt-0.5 text-mikro normal-case tracking-normal text-ink-500">
@@ -592,11 +615,21 @@ function RegionBody({
   )
 }
 
-function ZoneBody({ zone, onOpenPlanner }: { zone: Zone; onOpenPlanner: () => void }) {
+function ZoneBody({ zone, activity, onOpenPlanner }: {
+  zone: Zone
+  activity: ActivityMode
+  onOpenPlanner: () => void
+}) {
   return (
     <div className="space-y-5 px-5 py-4">
+      {/*
+        Das Abzeichen nennt die Einstufung für die gewählte Aktivität — dieselbe,
+        nach der die Fläche auf der Karte eingefärbt ist. Was für die übrigen
+        drei gilt, steht gleich darunter vollständig.
+      */}
       <div className="flex flex-wrap items-center gap-2">
-        <StatusBadge status={zone.status} />
+        <StatusBadge status={statusFuerAktivitaet(zone, activity)} />
+        <span className="text-klein text-ink-400">{AKTIVITAET_BEZUG[activity]}</span>
         <ReviewBadge status={zone.review_status} lastVerified={zone.last_verified} />
       </div>
 

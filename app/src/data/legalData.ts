@@ -128,6 +128,33 @@ export function biwakRegel(
   return recht.bivouac_allowed ?? 'unknown'
 }
 
+/** Wie die gewählte Aktivität im Fliesstext heisst — «Verboten fürs Zelt». */
+export const AKTIVITAET_BEZUG: Record<ActivityMode, string> = {
+  tent: 'fürs Zelt',
+  bivouac: 'fürs Biwakieren',
+  vehicle: 'für Fahrzeuge',
+  fire: 'für offenes Feuer',
+}
+
+/**
+ * Die Einstufung einer Regelung für genau eine Aktivität.
+ *
+ * Gilt für jede Ebene gleich — Schutzgebiet, Gemeinde, Kanton tragen dieselben
+ * vier Felder. Dass die Karte, die Legende und die Infokarte durch dieselbe
+ * Funktion gehen, ist der Punkt: sonst färbt die Fläche nach dem Zelt, während
+ * die Überschrift daneben eine zusammengefasste Einstufung nennt, und beide
+ * behaupten, dasselbe zu beantworten.
+ *
+ * Ein fehlendes Feld ergibt `unknown` und nicht etwa den Wert einer anderen
+ * Aktivität — siehe `biwakRegel`.
+ */
+export function statusFuerAktivitaet(
+  recht: Partial<Record<(typeof ACTIVITY_FIELD)[ActivityMode], Permission>>,
+  activity: ActivityMode,
+): LegalStatus {
+  return PERMISSION_TO_STATUS[recht[ACTIVITY_FIELD[activity]] ?? 'unknown']
+}
+
 /**
  * Welche Einstufung soll für die gewählte Aktivität angezeigt werden?
  *
@@ -137,7 +164,7 @@ export function biwakRegel(
  * Region "geduldet". Ein Filter darf ein Verbot niemals unsichtbar machen.
  */
 export function effectiveStatus(zone: Zone, activity: ActivityMode): LegalStatus {
-  return PERMISSION_TO_STATUS[zone[ACTIVITY_FIELD[activity]] ?? 'unknown']
+  return statusFuerAktivitaet(zone, activity)
 }
 
 export function filterPoints(points: Point[], f: MapFilters): Point[] {

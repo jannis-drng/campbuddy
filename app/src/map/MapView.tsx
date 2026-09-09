@@ -31,6 +31,7 @@ import type {
 import { naechsterIndex, naechsterPunktAufLinie, type Position } from '../data/geo'
 import type { Ausschnitt } from '../data/types'
 import { effectiveStatus } from '../data/legalData'
+import { statusFeld } from '../data/gemeinden'
 import {
   ATTRIBUTION, BASEMAPS, GEMEINDE_COLORS, STATUS_COLORS, textFontFuer, ZOOM_AB, type BasemapKey,
 } from './mapConfig'
@@ -201,7 +202,7 @@ export function MapView({
     const setupLayers = () => {
       if (!m.style || m.getSource('zones')) return
       symboleAnlegen(m)
-      addLayers(m)
+      addLayers(m, latest.current.activity)
       updateData(m, latest.current.zones, latest.current.points, latest.current.activity)
       ;(m.getSource('peaks') as GeoJSONSource | undefined)?.setData(peaksToGeoJson(latest.current.peaks))
       ;(m.getSource('natur') as GeoJSONSource | undefined)?.setData(natureToGeoJson(latest.current.nature))
@@ -503,6 +504,13 @@ export function MapView({
     if (m && ready.current) updateData(m, zones, points, activity)
   }, [zones, points, activity])
 
+  // Die Gemeindeflächen tragen alle vier Einstufungen; hier wechselt nur,
+  // welche davon gezeigt wird.
+  useEffect(() => {
+    const m = map.current
+    if (m && ready.current) gemeindeAktivitaetSetzen(m, activity)
+  }, [activity])
+
   useEffect(() => {
     const m = map.current
     if (!m || !ready.current) return
@@ -779,14 +787,63 @@ const statusColor: ExpressionSpecification = [
   STATUS_COLORS.unknown,
 ]
 
-/** Wie die Gemeindeebene eingefärbt wird — tiefer als die Zonenfarben. */
-const gemeindeColor: ExpressionSpecification = [
-  'match', ['get', 'status'],
-  'allowed', GEMEINDE_COLORS.allowed,
-  'tolerated', GEMEINDE_COLORS.tolerated,
-  'forbidden', GEMEINDE_COLORS.forbidden,
-  GEMEINDE_COLORS.unknown,
-]
+/**
+ * Woraus die Gemeindeebene ihre Aussage zieht — aus der Einstufung für die
+ * gewählte Aktivität, nicht aus einer zusammengefassten.
+ *
+ * Jede Fläche trägt alle vier Einstufungen als Merkmal (`status_tent` und so
+ * fort, siehe `data/gemeinden.ts`). Beim Umschalten wechseln deshalb nur
+ * Filter und Farbausdruck — die Geometrie bleibt liegen. Die Alternative wäre,
+ * die Flächen neu zu bauen und der Karte zu übergeben: das sind über 800 KB
+ * Übersicht plus die Kacheln des Ausschnitts, die MapLibre jedes Mal neu
+ * zerlegen müsste, für eine Änderung, die nur die Farbe betrifft.
+ */
+function gemeindeAusdruecke(activity: ActivityMode) {
+  const status: ExpressionSpecification = ['get', statusFeld(activity)]
+  const bekannt: ExpressionSpecification = ['!=', status, 'unknown']
+  return {
+    bekannt,
+    belegt: ['all', bekannt, ['==', ['get', 'bestaetigt'], true]] as ExpressionSpecification,
+    entwurf: ['all', bekannt, ['==', ['get', 'bestaetigt'], false]] as ExpressionSpecification,
+    /** Tiefer als die Zonenfarben — die Gemeinde ist die Fläche darunter. */
+    farbe: [
+      'match', status,
+      'allowed', GEMEINDE_COLORS.allowed,
+      'tolerated', GEMEINDE_COLORS.tolerated,
+      'forbidden', GEMEINDE_COLORS.forbidden,
+      GEMEINDE_COLORS.unknown,
+    ] as ExpressionSpecification,
+    schraffur: [
+      'match', status,
+      'allowed', 'schraffur-allowed',
+      'tolerated', 'schraffur-tolerated',
+      'forbidden', 'schraffur-forbidden',
+      'schraffur-unknown',
+    ] as ExpressionSpecification,
+  }
+}
+
+/**
+ * Die Gemeindeebenen auf eine andere Aktivität umstellen.
+ *
+ * Idempotent und still, wenn die Ebenen (noch) nicht da sind: nach einem
+ * Wechsel der Grundkarte ist der Style leer, und der Aufruf kommt dann aus
+ * `setupLayers` gleich hinterher.
+ */
+function gemeindeAktivitaetSetzen(m: MlMap, activity: ActivityMode) {
+  const a = gemeindeAusdruecke(activity)
+  for (const suffix of ['', '-fern']) {
+    const id = (name: string) => `${name}${suffix}`
+    if (!m.getLayer(id('gemeinden-grund'))) continue
+    m.setFilter(id('gemeinden-grund'), a.bekannt)
+    m.setFilter(id('gemeinden-fill'), a.belegt)
+    m.setPaintProperty(id('gemeinden-fill'), 'fill-color', a.farbe)
+    m.setFilter(id('gemeinden-fill-unbestaetigt'), a.entwurf)
+    m.setPaintProperty(id('gemeinden-fill-unbestaetigt'), 'fill-pattern', a.schraffur)
+    m.setFilter(id('gemeinden-rand'), a.bekannt)
+    m.setPaintProperty(id('gemeinden-rand'), 'line-color', a.farbe)
+  }
+}
 
 /** Punktarten auf ihr Symbolbild abbilden. */
 const punktSymbol: ExpressionSpecification = ['concat', 'cb-', ['get', 'type']]
@@ -822,15 +879,18 @@ const GEMEINDE_UMSCHALT = ZOOM_AB.gemeindenGenau
  * Farbwerten und Linienbreiten synchron halten zu müssen — und das erste, was
  * bei einer Änderung auseinanderliefe, wäre die Farbe an der Zoomschwelle.
  */
-function gemeindeEbenen(m: MlMap, quelle: string, zoom: { minzoom?: number; maxzoom?: number }) {
+function gemeindeEbenen(
+  m: MlMap, quelle: string, zoom: { minzoom?: number; maxzoom?: number }, activity: ActivityMode,
+) {
   const id = (name: string) => (quelle === 'gemeinden' ? name : `${name}-fern`)
+  const a = gemeindeAusdruecke(activity)
 
   m.addLayer({
     ...zoom,
     id: id('gemeinden-grund'),
     type: 'fill',
     source: quelle,
-    filter: ['!=', ['get', 'status'], 'unknown'],
+    filter: a.bekannt,
     paint: { 'fill-color': '#FFFFFF', 'fill-opacity': 0.58 },
   })
 
@@ -844,8 +904,8 @@ function gemeindeEbenen(m: MlMap, quelle: string, zoom: { minzoom?: number; maxz
     id: id('gemeinden-fill'),
     type: 'fill',
     source: quelle,
-    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], true]],
-    paint: { 'fill-color': gemeindeColor, 'fill-opacity': 0.46 },
+    filter: a.belegt,
+    paint: { 'fill-color': a.farbe, 'fill-opacity': 0.46 },
   })
 
   // Abgeleitet, aber nicht belegt: schraffiert statt voll. Der Prüfstand ist
@@ -855,8 +915,8 @@ function gemeindeEbenen(m: MlMap, quelle: string, zoom: { minzoom?: number; maxz
     id: id('gemeinden-fill-unbestaetigt'),
     type: 'fill',
     source: quelle,
-    filter: ['all', ['!=', ['get', 'status'], 'unknown'], ['==', ['get', 'bestaetigt'], false]],
-    paint: { 'fill-pattern': schraffurBild, 'fill-opacity': 0.5 },
+    filter: a.entwurf,
+    paint: { 'fill-pattern': a.schraffur, 'fill-opacity': 0.5 },
   })
 
   // Zwei Linien übereinander: eine helle Kasche, darauf die dunkle Grenze.
@@ -896,16 +956,16 @@ function gemeindeEbenen(m: MlMap, quelle: string, zoom: { minzoom?: number; maxz
     id: id('gemeinden-rand'),
     type: 'line',
     source: quelle,
-    filter: ['!=', ['get', 'status'], 'unknown'],
+    filter: a.bekannt,
     paint: {
-      'line-color': gemeindeColor,
+      'line-color': a.farbe,
       'line-width': ['interpolate', ['linear'], ['zoom'], 7, 1.6, 11, 3, 14, 4],
       'line-opacity': 1,
     },
   })
 }
 
-function addLayers(m: MlMap) {
+function addLayers(m: MlMap, activity: ActivityMode) {
   const empty: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
 
   // Hier und nicht als Konstante im Modul: welche Schrift die eigenen
@@ -944,8 +1004,8 @@ function addLayers(m: MlMap) {
   // Auflösung sind die 2119 Grenzen 617 KB gepackt, der grösste Einzelposten
   // der ganzen Anwendung. Wer über die Karte fliegt, braucht davon nichts;
   // wer eine Gemeinde wirklich ansieht, bekommt sie exakt.
-  gemeindeEbenen(m, 'gemeinden-fern', { maxzoom: GEMEINDE_UMSCHALT })
-  gemeindeEbenen(m, 'gemeinden', { minzoom: GEMEINDE_UMSCHALT })
+  gemeindeEbenen(m, 'gemeinden-fern', { maxzoom: GEMEINDE_UMSCHALT }, activity)
+  gemeindeEbenen(m, 'gemeinden', { minzoom: GEMEINDE_UMSCHALT }, activity)
 
   m.addLayer({
     id: 'gemeinden-label',
@@ -1374,15 +1434,6 @@ function schraffurenAnlegen(m: MlMap) {
     m.addImage(id, { width: c.width, height: c.height, data: new Uint8Array(bild.data) }, { pixelRatio: dpr })
   }
 }
-
-/** Welche Schraffur zu welcher Rechtslage gehört. */
-const schraffurBild: ExpressionSpecification = [
-  'match', ['get', 'status'],
-  'allowed', 'schraffur-allowed',
-  'tolerated', 'schraffur-tolerated',
-  'forbidden', 'schraffur-forbidden',
-  'schraffur-unknown',
-]
 
 /**
  * Kleines Gipfeldreieck als Bild in den Style legen.

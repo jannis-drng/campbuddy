@@ -31,6 +31,7 @@ import { useState } from 'react'
 import { ChevronDown, Droplet, Eye, Layers, Star, Tent, Truck } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ActivityMode } from '../data/types'
+import { AKTIVITAET_BEZUG } from '../data/legalData'
 import { GEMEINDE_COLORS, STATUS_COLORS } from '../map/mapConfig'
 import { SYMBOL_FARBEN } from '../map/symbole'
 import { Label } from '../ui'
@@ -44,13 +45,6 @@ function Huettenzeichen({ className = '' }: { className?: string }) {
       <path d="M5.5 11.5V19h13v-7.5" />
     </svg>
   )
-}
-
-const BEZUG: Record<ActivityMode, string> = {
-  tent: 'Regel fürs Zelt',
-  bivouac: 'Regel fürs Biwakieren',
-  vehicle: 'Regel für Fahrzeuge',
-  fire: 'Regel für offenes Feuer',
 }
 
 /**
@@ -132,7 +126,7 @@ export function LegendeInhalt({ activity }: { activity: ActivityMode }) {
   return (
     <div className="space-y-3">
       <div>
-        <Label className="mb-1">{BEZUG[activity]}</Label>
+        <Label className="mb-1">Regel {AKTIVITAET_BEZUG[activity]}</Label>
         {/*
           Die Zeile darüber ist der ganze Trick: ohne sie wären zwei Kästchen
           nebeneinander bloss zwei Farben, mit ihr sind sie zwei

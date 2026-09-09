@@ -1315,6 +1315,7 @@ export default function App() {
             selection={selection}
             onClose={() => setSelection(null)}
             onOpenPlanner={() => { setSelection(null); setView('touren') }}
+            activity={filters.activity}
             nutzerId={session?.user.id}
             onPunktBearbeiten={(punkt) => { setDialogPosition(null); setDialogPunkt(punkt) }}
             onPunktLoeschen={(punkt) => void punktEntfernen(punkt)}
