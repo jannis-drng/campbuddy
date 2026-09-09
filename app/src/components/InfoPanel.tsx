@@ -7,7 +7,7 @@
  */
 import { useEffect, useState } from 'react'
 import {
-  Building2, Camera, ChevronRight, Droplet, Eye, ExternalLink, FileText, FileWarning, Flame, Globe, Landmark,
+  Building2, Camera, ChevronRight, Coins, Droplet, Eye, ExternalLink, FileText, FileWarning, Flame, Globe, Landmark,
   Lock, Mail, MapPin, Moon, Mountain, Phone, Pencil, Scale, ScrollText, Star, Tent, Trash2, Truck, Users,
   Footprints, Route as RouteIcon, Waves, X,
 } from 'lucide-react'
@@ -324,6 +324,25 @@ function RegionBody({
           <PermissionRow label="Auto / Camper" value={gemeindeRecht.vehicle_allowed} icon={Truck} />
           <PermissionRow label="Offenes Feuer" value={gemeindeRecht.fire_allowed} icon={Flame} />
           <p className="mt-2.5 text-klein leading-relaxed text-ink-300">{gemeindeRecht.summary}</p>
+          {/*
+            Eine Gebühr steht eigens und vor den Bedingungen, nicht in ihnen.
+            „Erlaubt gegen sieben Franken" ist eine andere Auskunft als
+            „erlaubt", und sie entscheidet vor Ort darüber, ob jemand bleibt
+            oder weiterzieht — im Fliesstext geht sie beim Überfliegen unter.
+          */}
+          {gemeindeRecht.gebuehr && (
+            <p className="mt-2 flex items-baseline gap-2 rounded-mittel border border-kante
+                          bg-flaeche-1 px-3 py-2 text-klein text-ink-200">
+              <Coins size={13} strokeWidth={2} className="shrink-0 translate-y-0.5 text-ink-400" aria-hidden />
+              <span>
+                <strong className="font-semibold text-ink-50">
+                  {gemeindeRecht.gebuehr.betrag.toLocaleString('de-CH', { minimumFractionDigits: 2 })}
+                  {' '}{gemeindeRecht.gebuehr.waehrung} je {gemeindeRecht.gebuehr.je}
+                </strong>
+                {' — '}{gemeindeRecht.gebuehr.wofuer}
+              </span>
+            </p>
+          )}
           {gemeindeRecht.conditions && (
             <p className="mt-1.5 text-klein leading-relaxed text-ink-400">{gemeindeRecht.conditions}</p>
           )}

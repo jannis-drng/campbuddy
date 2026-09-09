@@ -34,6 +34,20 @@ const vorschlaege = new Map(
 const entscheidungen = JSON.parse(readFileSync(QUELLE, 'utf8'))
 const liste = Array.isArray(entscheidungen) ? entscheidungen : Object.values(entscheidungen)
 
+/**
+ * Gemeinden, die gebeten haben, nicht zu erscheinen.
+ *
+ * Im Anschreiben steht: «Ist Ihnen das nicht recht, genügt ein kurzer Hinweis;
+ * dann bleibt die Fläche unmarkiert.» Das ist eine Zusage. Sie hier zu prüfen
+ * und nicht bloss zu notieren ist der Unterschied zwischen einem Versprechen
+ * und einem Vermerk — die Auskunft dieser Gemeinden ist inhaltlich brauchbar,
+ * und genau deshalb muss der Riegel im Code sitzen.
+ */
+const NICHT_ANZEIGEN = new Set(
+  (lade(resolve(ROOT, 'import/mail/nicht-anzeigen.json'), { gemeinden: [] }).gemeinden ?? [])
+    .map((g) => g.bfs),
+)
+
 let uebernommen = 0
 let abgelehnt = 0
 const fehlend = []
@@ -41,6 +55,10 @@ const fehlend = []
 for (const e of liste) {
   const bfs = Number(e.bfs)
   if (e.entscheidung !== 'ja') { abgelehnt++; continue }
+  if (NICHT_ANZEIGEN.has(bfs)) {
+    console.log(`  ${bfs}: Gemeinde wünscht keinen Eintrag — übersprungen`)
+    continue
+  }
   const v = vorschlaege.get(bfs)
   if (!v) { fehlend.push(bfs); continue }
   // Ein bereits eingestufter Eintrag wird nicht stillschweigend überschrieben.

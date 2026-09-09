@@ -212,8 +212,22 @@ const adressen = new Map(kontakte.filter((k) => k.email).map((k) => [k.bfs, k.em
  * Adresse von Hand heraussucht, soll sie an einer Stelle eintragen können und
  * nicht in der gesammelten Datei, die beim nächsten Lauf überschrieben wird.
  */
+const unbrauchbar = []
 for (const e of lade(resolve(MAIL, 'adressen-manuell.json'), { gemeinden: [] }).gemeinden) {
-  if (e.email?.trim()) adressen.set(e.bfs, e.email.trim())
+  const roh = e.email?.trim()
+  if (!roh) continue
+  // Manche Einträge nennen zwei Adressen, getrennt durch einen Schrägstrich —
+  // dann die erste nehmen. Andere sind gar keine Adresse, sondern eine
+  // Webseite. Beides stillschweigend zu überspringen hiesse, die Handarbeit
+  // ins Leere laufen zu lassen, ohne dass es jemand merkt.
+  const erste = roh.split(/\s*[/;,]\s*/)[0].trim()
+  if (ADRESSE_GUELTIG.test(erste)) adressen.set(e.bfs, erste)
+  else unbrauchbar.push(`${e.name}: ${roh.slice(0, 50)}`)
+}
+if (unbrauchbar.length > 0) {
+  console.log('Nachgetragen, aber keine brauchbare Adresse:')
+  for (const u of unbrauchbar) console.log(`  ${u}`)
+  console.log('')
 }
 
 const gemeinden = JSON.parse(readFileSync(resolve(ROOT, 'import/CH/gemeinden/CH.json'), 'utf8')).features

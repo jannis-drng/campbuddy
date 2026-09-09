@@ -1,0 +1,12 @@
+{
+ "_hinweis": "Gemeinden, die ausdrücklich gebeten haben, nicht auf der Karte zu erscheinen. Im Anschreiben steht: «Ist Ihnen das nicht recht, genügt ein kurzer Hinweis; dann bleibt die Fläche unmarkiert.» Das ist eine Zusage, keine Höflichkeitsfloskel — diese Gemeinden bekommen keinen Eintrag, auch wenn ihre Auskunft inhaltlich brauchbar wäre.",
+ "gemeinden": [
+  {
+   "bfs": 5193,
+   "name": "Magliaso",
+   "kanton": "CH-TI",
+   "am": "2026-09-09",
+   "wortlaut": "Gradiremmo che per il nostro Comune non vi fossero indicazioni specifiche sulla vostra mappa."
+  }
+ ]
+}

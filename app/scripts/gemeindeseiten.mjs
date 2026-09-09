@@ -151,6 +151,21 @@ function beschreibung(name, e, bfs) {
        + `Mit Quelle und Prüfdatum (${e.last_verified ?? 'ohne Datum'}).${dazu}`
 }
 
+/**
+ * Die Gebühr als eigener, hervorgehobener Satz.
+ *
+ * Wo eine Gemeinde das Übernachten gegen Geld zulässt, ist der Betrag die
+ * Angabe, die vor Ort zählt. Im Fliesstext der Bedingungen geht sie beim
+ * Überfliegen unter — und wer überfliegt, sucht genau sie.
+ */
+function gebuehrZeile(e) {
+  if (!e.gebuehr) return ''
+  const g = e.gebuehr
+  const betrag = Number(g.betrag).toLocaleString('de-CH', { minimumFractionDigits: 2 })
+  return `<p class="gebuehr"><strong>${escape(betrag)} ${escape(g.waehrung)} je `
+    + `${escape(g.je)}</strong> — ${escape(g.wofuer)}</p>`
+}
+
 const escape = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;')
@@ -197,6 +212,7 @@ p{margin:.6rem 0}
 .kasten{border:1px solid #1F2A2E;border-radius:.625rem;padding:1rem;margin:1.75rem 0;
         background:#131B1E;font-size:.9rem}
 .leise{color:#8A9A9F;font-size:.85rem}
+    .gebuehr { border-left: 3px solid currentColor; padding: 0.4rem 0 0.4rem 0.8rem; margin: 0.9rem 0; }
 .knopf{display:inline-block;background:#1E7A9C;color:#fff;text-decoration:none;font-weight:600;
        border-radius:.625rem;padding:.7rem 1.2rem;margin:1.5rem 0 .5rem}
 .knopf:hover{background:#2A8FB4;color:#fff}
@@ -294,6 +310,7 @@ function seite(g, e, nachbarn = []) {
 
   <h2>Was das bedeutet</h2>
   <p itemprop="description">${escape(e.summary)}</p>
+  ${gebuehrZeile(e)}
   ${e.conditions ? `<p>${escape(e.conditions)}</p>` : ''}
 
   ${e.bivouac_allowed ? '' : `<p class="leise">Zum Biwakieren — dem Übernachten
@@ -514,6 +531,7 @@ function kantonsSeite(code, kantonName, liste, gesamtImKanton, offen) {
 
   <h2>Was das bedeutet</h2>
   <p itemprop="description">${escape(e.summary)}</p>
+  ${gebuehrZeile(e)}
   ${e.conditions ? `<p>${escape(e.conditions)}</p>` : ''}
 
   <div class="kasten">

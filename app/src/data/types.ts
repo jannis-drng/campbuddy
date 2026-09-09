@@ -220,6 +220,29 @@ export interface Gemeinde {
  * Bewusst dieselbe Form wie `KantonRecht`, damit die Oberfläche beide Ebenen
  * gleich darstellen kann und die feinere die gröbere nur überschreibt.
  */
+/**
+ * Eine Gebühr, die das Übernachten möglich macht.
+ *
+ * Kein Sonderfall im Fliesstext, sondern ein eigenes Feld: „erlaubt gegen
+ * sieben Franken" ist eine andere Auskunft als „erlaubt", und sie entscheidet
+ * darüber, ob jemand bleibt oder weiterzieht. Wer sie in `conditions`
+ * versteckt, lässt sie beim Überfliegen untergehen — und genau das ist die
+ * Angabe, die man vor Ort braucht.
+ *
+ * `je` beschreibt den Bezug in Worten («Person und Woche», «Nacht»), weil die
+ * Gemeinden ihn sehr verschieden fassen und jede Normalisierung etwas
+ * verfälschen würde.
+ */
+export interface Gebuehr {
+  betrag: number
+  /** Währung als ISO-Kürzel, in der Schweiz durchgehend CHF. */
+  waehrung: string
+  /** Worauf sich der Betrag bezieht, z. B. «Person und Woche». */
+  je: string
+  /** Wofür sie erhoben wird, z. B. «gelegentliches Campieren auf Gemeindeland». */
+  wofuer: string
+}
+
 export interface GemeindeRecht {
   status: LegalStatus
   tent_allowed: Permission
@@ -227,6 +250,8 @@ export interface GemeindeRecht {
   bivouac_allowed?: Permission
   vehicle_allowed: Permission
   fire_allowed: Permission
+  /** Was es kostet, wo eine Gemeinde das Übernachten gegen Gebühr zulässt. */
+  gebuehr?: Gebuehr
   /** Was gilt, in zwei bis vier Sätzen. */
   summary: string
   conditions: string | null
