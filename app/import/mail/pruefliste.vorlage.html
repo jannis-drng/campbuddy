@@ -1,0 +1,474 @@
+<title>Gemeindestand Schweiz</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --papier: #F6F4EF;
+  --flaeche: #FFFFFF;
+  --flaeche-2: #EFEDE6;
+  --kante: #DCD8CE;
+  --kante-stark: #C4BFB2;
+  --ink: #1A1C20;
+  --ink-2: #4A4F57;
+  --ink-3: #7C8189;
+  --fertig: #0E6E63;
+  --fertig-flaeche: #D3E7E3;
+  --angeschrieben: #5058A6;
+  --angeschrieben-flaeche: #DEE0F2;
+  --offen: #A69E90;
+  --offen-flaeche: #E4E0D7;
+  --pruefung: #A8531E;
+  --pruefung-flaeche: #F6E2D3;
+  --fokus: #0E6E63;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #121417;
+    --flaeche: #1A1D21;
+    --flaeche-2: #22262B;
+    --kante: #2E3339;
+    --kante-stark: #454C54;
+    --ink: #E9E7E2;
+    --ink-2: #A8AEB6;
+    --ink-3: #767C85;
+    --fertig: #4FBFAE;
+    --fertig-flaeche: #17352F;
+    --angeschrieben: #949BE0;
+    --angeschrieben-flaeche: #21244A;
+    --offen: #8A8377;
+    --offen-flaeche: #2A2822;
+    --pruefung: #E39158;
+    --pruefung-flaeche: #3A2415;
+    --fokus: #4FBFAE;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #121417; --flaeche: #1A1D21; --flaeche-2: #22262B;
+  --kante: #2E3339; --kante-stark: #454C54;
+  --ink: #E9E7E2; --ink-2: #A8AEB6; --ink-3: #767C85;
+  --fertig: #4FBFAE; --fertig-flaeche: #17352F;
+  --angeschrieben: #949BE0; --angeschrieben-flaeche: #21244A;
+  --offen: #8A8377; --offen-flaeche: #2A2822;
+  --pruefung: #E39158; --pruefung-flaeche: #3A2415;
+  --fokus: #4FBFAE;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--papier); color: var(--ink);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: 15px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.huelle { max-width: 1080px; margin: 0 auto; padding: 40px 24px 72px; }
+
+h1 {
+  font-family: Archivo, system-ui, sans-serif; font-weight: 700;
+  font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.02em;
+  margin: 0 0 6px; text-wrap: balance;
+}
+.unterzeile { color: var(--ink-2); margin: 0 0 32px; max-width: 62ch; }
+.marke {
+  font-family: "IBM Plex Mono", monospace; font-size: 11px;
+  letter-spacing: 0.11em; text-transform: uppercase; color: var(--ink-3);
+}
+
+/* ---- Gesamtzahlen ---- */
+.gesamt { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--kante); border: 1px solid var(--kante); margin-bottom: 14px; }
+.zahl { background: var(--flaeche); padding: 16px 18px; }
+.zahl b {
+  display: block; font-family: "IBM Plex Mono", monospace; font-weight: 600;
+  font-size: 30px; line-height: 1.1; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.zahl .anteil { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-3); }
+.z-fertig b { color: var(--fertig); }
+.z-angeschrieben b { color: var(--angeschrieben); }
+.z-offen b { color: var(--ink-2); }
+
+/* ---- Balken ---- */
+.balken { display: flex; height: 9px; overflow: hidden; background: var(--offen-flaeche); }
+.balken > i { display: block; height: 100%; }
+.b-fertig { background: var(--fertig); }
+.b-angeschrieben { background: var(--angeschrieben); }
+.gesamtbalken { margin-bottom: 34px; border: 1px solid var(--kante); height: 11px; }
+
+/* ---- Werkzeugleiste ---- */
+.werkzeuge { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; }
+input[type="search"] {
+  flex: 1 1 240px; min-width: 0; padding: 9px 12px; font: inherit;
+  background: var(--flaeche); color: var(--ink);
+  border: 1px solid var(--kante-stark); border-radius: 2px;
+}
+input[type="search"]:focus-visible { outline: 2px solid var(--fokus); outline-offset: 1px; }
+.chips { display: flex; gap: 6px; }
+.chip {
+  font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 7px 11px; cursor: pointer;
+  background: var(--flaeche); color: var(--ink-2);
+  border: 1px solid var(--kante-stark); border-radius: 2px;
+}
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--papier); border-color: var(--ink); }
+.chip:focus-visible { outline: 2px solid var(--fokus); outline-offset: 1px; }
+
+/* ---- Kantonsliste ---- */
+.kantone { border: 1px solid var(--kante); background: var(--flaeche); }
+.kanton {
+  display: grid; grid-template-columns: 1fr 150px 132px 20px;
+  gap: 16px; align-items: center; width: 100%; text-align: left;
+  padding: 13px 16px; background: none; border: 0; border-top: 1px solid var(--kante);
+  font: inherit; color: inherit; cursor: pointer;
+}
+.kanton:first-child { border-top: 0; }
+.kanton:hover { background: var(--flaeche-2); }
+.kanton:focus-visible { outline: 2px solid var(--fokus); outline-offset: -2px; }
+.kanton .name { font-weight: 600; }
+.kanton .kuerzel { font-family: "IBM Plex Mono", monospace; color: var(--ink-3); font-size: 12px; margin-left: 7px; }
+.kanton .zahlen {
+  font-family: "IBM Plex Mono", monospace; font-size: 12px;
+  font-variant-numeric: tabular-nums; color: var(--ink-2); text-align: right;
+}
+.kanton .pfeil { color: var(--ink-3); }
+
+/* ---- Gemeindeliste ---- */
+.zurueck {
+  display: inline-flex; align-items: center; gap: 7px; margin-bottom: 16px;
+  background: none; border: 0; padding: 4px 0; cursor: pointer;
+  font: inherit; color: var(--fokus); font-weight: 500;
+}
+.zurueck:focus-visible { outline: 2px solid var(--fokus); outline-offset: 2px; }
+.tabelle { border: 1px solid var(--kante); background: var(--flaeche); }
+.zeile {
+  display: grid; grid-template-columns: 62px 1fr 130px;
+  gap: 14px; padding: 11px 16px; border-top: 1px solid var(--kante); align-items: baseline;
+}
+.zeile:first-child { border-top: 0; }
+.bfs {
+  font-family: "IBM Plex Mono", monospace; font-size: 12px;
+  color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.gname { font-weight: 500; }
+.gkanton { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-3); margin-left: 6px; }
+.detail { color: var(--ink-2); font-size: 13px; margin-top: 2px; }
+.detail a { color: var(--fokus); }
+.pille {
+  justify-self: end; font-family: "IBM Plex Mono", monospace; font-size: 10.5px;
+  letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 8px;
+  border-radius: 2px; white-space: nowrap;
+}
+.p-fertig { background: var(--fertig-flaeche); color: var(--fertig); }
+.p-angeschrieben { background: var(--angeschrieben-flaeche); color: var(--angeschrieben); }
+.p-offen { background: var(--offen-flaeche); color: var(--ink-2); }
+.antwort-da { font-weight: 600; color: var(--fertig); }
+.verweis { color: var(--pruefung); font-weight: 500; }
+.gebuehr-marke { color: var(--fertig); font-weight: 600; }
+.uebergeordnet { color: var(--pruefung); font-weight: 600; }
+
+.p-pruefung { background: var(--pruefung-flaeche); color: var(--pruefung); }
+.z-pruefung b { color: var(--pruefung); }
+.b-pruefung { background: var(--pruefung); }
+
+.pruefkarte {
+  grid-column: 1 / -1; margin-top: 10px; padding: 14px 16px;
+  background: var(--flaeche-2); border-left: 3px solid var(--pruefung);
+}
+.pruefkarte .werte {
+  display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 9px;
+  font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink-2);
+}
+.pruefkarte .werte b { color: var(--ink); font-weight: 600; }
+.pruefkarte p { margin: 0 0 9px; font-size: 13.5px; }
+.pruefkarte .bedingung { color: var(--ink-2); }
+.zitat {
+  margin: 0 0 11px; padding: 9px 12px; background: var(--flaeche);
+  border: 1px solid var(--kante); font-size: 12.5px; color: var(--ink-2);
+  max-height: 132px; overflow-y: auto;
+}
+.zitat b { display: block; font-family: "IBM Plex Mono", monospace; font-size: 10.5px;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 5px; }
+.knoepfe { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.knopf {
+  font: inherit; font-weight: 600; font-size: 13px; padding: 7px 16px;
+  border-radius: 2px; cursor: pointer; border: 1px solid transparent;
+}
+.knopf:focus-visible { outline: 2px solid var(--fokus); outline-offset: 2px; }
+.k-ja { background: var(--fertig); color: #fff; }
+.k-nein { background: var(--flaeche); color: var(--ink-2); border-color: var(--kante-stark); }
+.k-ja:hover { filter: brightness(1.08); }
+.k-nein:hover { border-color: var(--ink-3); color: var(--ink); }
+.entschieden { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; }
+.e-ja { color: var(--fertig); }
+.e-nein { color: var(--ink-3); }
+.hinweis-db {
+  font-size: 12.5px; color: var(--ink-3); margin-top: 8px;
+}
+.leer { padding: 40px 16px; text-align: center; color: var(--ink-3); }
+.fuss {
+  margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--kante);
+  color: var(--ink-3); font-size: 13px; max-width: 68ch;
+}
+@media (max-width: 620px) {
+  .kanton { grid-template-columns: 1fr 92px 20px; }
+  .kanton .balken-zelle { display: none; }
+  .zeile { grid-template-columns: 52px 1fr; }
+  .pille { grid-column: 2; justify-self: start; margin-top: 4px; }
+  .gesamt { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="huelle">
+  <p class="marke">CampBuddy · Erhebung der kommunalen Regelungen</p>
+  <h1>Gemeindestand Schweiz</h1>
+  <p class="unterzeile">
+    Welche der 2119 Gemeinden ihre Regelung zum Übernachten im Freien schon offengelegt
+    haben — durch eine eigene Antwort oder durch ein auffindbares Reglement — und welche
+    noch aussteht. Stand <span id="stand"></span>.
+  </p>
+
+  <div class="gesamt">
+    <div class="zahl z-fertig"><span class="marke">Fertig</span><b id="g-fertig">–</b><span class="anteil" id="a-fertig"></span></div>
+    <div class="zahl z-angeschrieben"><span class="marke">Angeschrieben</span><b id="g-angeschrieben">–</b><span class="anteil" id="a-angeschrieben"></span></div>
+    <div class="zahl z-pruefung"><span class="marke">Prüfung</span><b id="g-pruefung">–</b><span class="anteil" id="a-pruefung"></span></div>
+    <div class="zahl z-offen"><span class="marke">Offen</span><b id="g-offen">–</b><span class="anteil" id="a-offen"></span></div>
+  </div>
+  <div class="balken gesamtbalken" id="gesamtbalken"></div>
+
+  <div class="werkzeuge">
+    <input type="search" id="suche" placeholder="Gemeinde oder BFS-Nummer suchen …" aria-label="Gemeinde suchen">
+    <div class="chips" role="group" aria-label="Nach Stand filtern">
+      <button class="chip" data-stand="fertig" aria-pressed="false">Fertig</button>
+      <button class="chip" data-stand="pruefung" aria-pressed="false">Prüfung</button>
+      <button class="chip" data-stand="angeschrieben" aria-pressed="false">Angeschrieben</button>
+      <button class="chip" data-stand="offen" aria-pressed="false">Offen</button>
+    </div>
+  </div>
+
+  <div id="ansicht"></div>
+
+  <p class="fuss">
+    <strong>Fertig</strong> heisst: die Rechtslage ist eingestuft und mit einer Quelle belegt —
+    entweder aus dem Reglement der Gemeinde oder aus ihrer schriftlichen Auskunft.
+    <strong>Angeschrieben</strong> heisst: die Anfrage ist raus, die Antwort steht aus.
+    <strong>Offen</strong> heisst: weder das eine noch das andere; bei den meisten fehlt bisher
+    eine erreichbare Adresse.
+  </p>
+</div>
+
+<script>
+const DATEN = {"stand":"","kantone":{}}  // wird von scripts/pruefliste.mjs ersetzt
+
+const el = (id) => document.getElementById(id);
+
+const ansicht = el('ansicht');
+let kantonOffen = null;
+let filter = null;
+let suchtext = '';
+
+const alleGemeinden = [];
+for (const [kuerzel, k] of Object.entries(DATEN.kantone)) {
+  for (const g of k.gemeinden) alleGemeinden.push({ ...g, kanton: kuerzel, kantonName: k.name });
+}
+
+el('stand').textContent = new Date(DATEN.stand).toLocaleDateString('de-CH', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const summe = { fertig: 0, pruefung: 0, angeschrieben: 0, offen: 0 };
+for (const g of alleGemeinden) summe[g.stand]++;
+const gesamt = alleGemeinden.length;
+for (const s of ['fertig', 'pruefung', 'angeschrieben', 'offen']) {
+  el('g-' + s).textContent = summe[s].toLocaleString('de-CH');
+  el('a-' + s).textContent = (summe[s] / gesamt * 100).toFixed(1).replace('.', ',') + ' %';
+}
+el('gesamtbalken').innerHTML =
+  `<i class="b-fertig" style="width:${summe.fertig / gesamt * 100}%"></i>` +
+  `<i class="b-pruefung" style="width:${summe.pruefung / gesamt * 100}%"></i>` +
+  `<i class="b-angeschrieben" style="width:${summe.angeschrieben / gesamt * 100}%"></i>`;
+
+function balken(z) {
+  return `<div class="balken">
+    <i class="b-fertig" style="width:${z.fertig / z.gesamt * 100}%"></i>
+    <i class="b-pruefung" style="width:${(z.pruefung ?? 0) / z.gesamt * 100}%"></i>
+    <i class="b-angeschrieben" style="width:${z.angeschrieben / z.gesamt * 100}%"></i>
+  </div>`;
+}
+
+function detailzeile(g) {
+  if (g.stand === 'fertig') {
+    const woher = g.weg === 'Antwort der Gemeinde' ? 'Antwort der Gemeinde' : 'aus dem Reglement';
+    const biwak = g.biwak && g.biwak !== 'unknown' ? ` · Biwak ${g.biwak === 'no' ? 'verboten' : g.biwak}` : '';
+    const gebuehr = g.gebuehr ? ` · <span class="gebuehr-marke">${g.gebuehr}</span>` : '';
+    const eigen = g.ohne_eigene_regel ? ` · <span class="uebergeordnet">keine eigene Regelung — übergeordnetes Recht</span>` : '';
+    return `${woher} · geprüft ${g.geprueft}${biwak}${gebuehr}${eigen}<br><span style="color:var(--ink-3)">${g.quelle ?? ''}</span>`;
+  }
+  if (g.stand === 'pruefung') {
+    return `Antwort ausgewertet — Vorschlag wartet auf deine Bestätigung`;
+  }
+  if (g.stand === 'angeschrieben') {
+    const kopf = `Anfrage ${g.am} an ${g.an} (${(g.sprache ?? '').toUpperCase()})`;
+    if (g.verweis) {
+      return `${kopf}<br><span class="verweis">Verweist an ${g.verweis} — dort nachfragen</span>`;
+    }
+    if (g.abgemeldet) return `${kopf}<br><span class="verweis">Gemeinde wünscht keine weiteren Anfragen</span>`;
+    if (g.bestaetigung) return `${kopf} · Eingangsbestätigung erhalten, Auskunft steht aus`;
+    if (g.antwort) return `${kopf} · <span class="antwort-da">Antwort da, noch nicht ausgewertet</span>`;
+    return `${kopf} · Antwort steht aus`;
+  }
+  const web = g.website ? ` · <a href="${g.website}" target="_blank" rel="noreferrer noopener">Webseite</a>` : '';
+  return `${g.grund ?? 'offen'}${web}`;
+}
+
+const WERT = { no: 'verboten', yes: 'erlaubt', conditional: 'bedingt', unknown: 'offen' };
+
+/**
+ * Die Prüfkarte: Vorschlag, Wortlaut der Antwort, zwei Knöpfe.
+ *
+ * Der Wortlaut steht bewusst mit dabei und nicht nur der Vorschlag. Wer hier
+ * "passt so" drückt, soll die Auskunft gelesen haben, auf die er sich beruft —
+ * sonst wäre die Prüfung nur ein Klick, der wie eine Prüfung aussieht.
+ */
+function pruefkarte(g) {
+  const e = entscheidungen[g.bfs];
+  const werte = [
+    `Gesamt <b>${WERT[g.status] ?? g.status}</b>`,
+    g.gebuehr ? `Gebühr <b>${g.gebuehr}</b>` : null,
+    g.ohne_eigene_regel ? `<b class="uebergeordnet">keine eigene Regelung</b>` : null,
+    `Zelt <b>${WERT[g.zelt] ?? g.zelt}</b>`,
+    `Fahrzeug <b>${WERT[g.fahrzeug] ?? g.fahrzeug}</b>`,
+    g.biwak && g.biwak !== 'unknown' ? `Biwak <b>${WERT[g.biwak]}</b>` : null,
+    `Feuer <b>${WERT[g.feuer] ?? g.feuer}</b>`,
+  ].filter(Boolean).join('');
+
+  const knoepfe = e
+    ? `<span class="entschieden ${e.entscheidung === 'ja' ? 'e-ja' : 'e-nein'}">
+         ${e.entscheidung === 'ja' ? '✓ übernehmen' : '✕ zurückgestellt'}
+       </span>
+       <button class="knopf k-nein" data-bfs="${g.bfs}" data-wahl="zurueck">ändern</button>`
+    : `<button class="knopf k-ja" data-bfs="${g.bfs}" data-wahl="ja">Passt so</button>
+       <button class="knopf k-nein" data-bfs="${g.bfs}" data-wahl="nein">Nein</button>`;
+
+  return `<div class="pruefkarte">
+    <div class="werte">${werte}</div>
+    <p>${g.summary ?? ''}</p>
+    ${g.conditions ? `<p class="bedingung">${g.conditions}</p>` : ''}
+    ${g.antworttext ? `<div class="zitat"><b>Antwort ${g.von ? 'von ' + g.von : ''}</b>${g.antworttext}</div>` : ''}
+    <div class="knoepfe">${knoepfe}</div>
+    ${db ? '' : '<p class="hinweis-db">Ohne Verbindung zum Speicher — die Wahl lässt sich hier nicht festhalten.</p>'}
+  </div>`;
+}
+
+function gemeindeZeile(g, mitKanton) {
+  return `<div class="zeile">
+    <span class="bfs">${g.bfs ?? '—'}</span>
+    <div>
+      <span class="gname">${g.name}</span>${mitKanton ? `<span class="gkanton">${g.kanton.replace('CH-', '')}</span>` : ''}
+      <div class="detail">${detailzeile(g)}</div>
+      ${g.stand === 'pruefung' ? pruefkarte(g) : ''}
+    </div>
+    <span class="pille p-${g.stand}">${g.stand === 'pruefung' ? 'Prüfung' : g.stand}</span>
+  </div>`;
+}
+
+function passt(g) {
+  if (filter && g.stand !== filter) return false;
+  if (!suchtext) return true;
+  return g.name.toLowerCase().includes(suchtext) || String(g.bfs ?? '').includes(suchtext);
+}
+
+function zeichnen() {
+  if (suchtext || (filter && !kantonOffen)) {
+    const treffer = alleGemeinden.filter(passt).slice(0, 400);
+    ansicht.innerHTML = treffer.length
+      ? `<p class="marke" style="margin-bottom:10px">${treffer.length}${treffer.length === 400 ? '+' : ''} Gemeinden</p>
+         <div class="tabelle">${treffer.map((g) => gemeindeZeile(g, true)).join('')}</div>`
+      : '<div class="tabelle"><p class="leer">Keine Gemeinde passt zu dieser Suche.</p></div>';
+    return;
+  }
+
+  if (kantonOffen) {
+    const k = DATEN.kantone[kantonOffen];
+    const liste = k.gemeinden.filter(passt);
+    ansicht.innerHTML = `
+      <button class="zurueck" id="zurueck">← Alle Kantone</button>
+      <p class="marke" style="margin-bottom:10px">${k.name} · ${k.zahlen.fertig} fertig · ${k.zahlen.pruefung ?? 0} Prüfung · ${k.zahlen.angeschrieben} angeschrieben · ${k.zahlen.offen} offen</p>
+      <div class="tabelle">${liste.length ? liste.map((g) => gemeindeZeile(g, false)).join('') : '<p class="leer">Keine Gemeinde in diesem Filter.</p>'}</div>`;
+    el('zurueck').onclick = () => { kantonOffen = null; zeichnen(); };
+    return;
+  }
+
+  const reihen = Object.entries(DATEN.kantone).map(([kuerzel, k]) => `
+    <button class="kanton" data-kanton="${kuerzel}">
+      <span><span class="name">${k.name}</span><span class="kuerzel">${kuerzel.replace('CH-', '')}</span></span>
+      <span class="balken-zelle">${balken(k.zahlen)}</span>
+      <span class="zahlen">${k.zahlen.fertig} / ${k.zahlen.pruefung ?? 0} / ${k.zahlen.angeschrieben} / ${k.zahlen.offen}</span>
+      <span class="pfeil">›</span>
+    </button>`).join('');
+  ansicht.innerHTML = `<div class="kantone">${reihen}</div>`;
+  for (const b of ansicht.querySelectorAll('.kanton')) {
+    b.onclick = () => { kantonOffen = b.dataset.kanton; zeichnen(); };
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const k = e.target.closest('.knopf');
+  if (k) entscheiden(Number(k.dataset.bfs), k.dataset.wahl);
+});
+
+el('suche').addEventListener('input', (e) => { suchtext = e.target.value.trim().toLowerCase(); zeichnen(); });
+for (const c of document.querySelectorAll('.chip')) {
+  c.onclick = () => {
+    const neu = c.dataset.stand === filter ? null : c.dataset.stand;
+    filter = neu;
+    for (const andere of document.querySelectorAll('.chip')) {
+      andere.setAttribute('aria-pressed', String(andere.dataset.stand === filter));
+    }
+    zeichnen();
+  };
+}
+
+/**
+ * Die Entscheidungen liegen im Speicher des Artefakts, nicht in der Seite.
+ *
+ * Sie sind kein Anzeigezustand, sondern Arbeitsergebnis: sie werden von aussen
+ * ausgelesen und in den Datensatz der Karte übernommen.
+ *
+ * Der Zugriff steht bewusst am Ende und in einem eigenen Block. Beim ersten
+ * Versuch lief er ganz oben und ungeschützt — wo die Umgebung den Speicher
+ * nicht bereitstellt, warf schon der blosse Aufruf, und mit ihm starb das
+ * ganze Skript: die Liste blieb leer, obwohl mit ihr nichts war. Eine
+ * Zusatzfunktion darf die Seite nie mitreissen.
+ */
+let db = null;
+let entscheidungen = {};
+
+async function speicherVerbinden() {
+  if (typeof claude === 'undefined' || typeof claude.use !== 'function') return;
+  const verbindung = await claude.use('db').catch(() => null);
+  if (!verbindung) return;
+  db = verbindung;
+  const uebernehmen = (schnappschuss) => {
+    entscheidungen = {};
+    for (const d of schnappschuss.docs) entscheidungen[d.data().bfs] = d.data();
+    zeichnen();
+  };
+  try {
+    uebernehmen(await db.collection('entscheidungen').get());
+    db.collection('entscheidungen').onSnapshot(uebernehmen, () => {});
+  } catch { /* ohne Speicher bleibt die Liste lesbar */ }
+}
+
+async function entscheiden(bfs, wahl) {
+  if (!db) return;
+  const g = alleGemeinden.find((x) => x.bfs === bfs);
+  if (wahl === 'zurueck') {
+    await db.doc('entscheidungen/' + bfs).delete().catch(() => {});
+    return;
+  }
+  await db.doc('entscheidungen/' + bfs).set({
+    bfs, name: g?.name ?? '', kanton: g?.kanton ?? '',
+    entscheidung: wahl, am: new Date().toISOString(),
+  }).catch(() => {});
+}
+
+zeichnen();
+speicherVerbinden();
+</script>
+

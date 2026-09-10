@@ -1,6 +1,6 @@
 {
   "_hinweis": "Kommunale Regelungen zum Übernachten im Freien. Schlüssel ist die amtliche BFS-Nummer als Zeichenkette (z. B. '6002' für Sion). Ein fehlender Eintrag heisst 'noch nicht recherchiert' — die Karte färbt die Gemeinde dann neutral und sagt es offen. Eintragen NUR mit benannter offizieller Quelle (Reglement, Gemeindewebseite, schriftliche Auskunft) und Prüfdatum. Siehe gemeinden.README.md.",
-  "_stand": "2026-09-09",
+  "_stand": "2026-09-10",
   "gemeinden": {
     "1": {
       "status": "forbidden",
@@ -1677,10 +1677,10 @@
       "fire_allowed": "unknown",
       "summary": "Ausserhalb der bewilligten Flächen ist Campieren in der Regel nicht gestattet. Das kantonale Recht lässt aber ausnahmsweise «gelegentliche Campingplätze» zu — nicht ausgerüstete Flächen, die befristet für diesen Zweck genutzt werden.",
       "conditions": "Wer ausserhalb der bewilligten Flächen campieren will, stellt ein begründetes Gesuch auf dem Formular der Gemeinde. Der Gemeinderat und das kantonale Departement nehmen dazu Stellung. Eine allgemeine Höchstdauer nennt das Gesetz nicht, verlangt aber eine befristete Nutzung.",
-      "source": "Schriftliche Auskunft der Gemeindepolizei Losone, 09.09.2026",
+      "source": "Schriftliche Auskunft der Gemeindepolizei Losone, 09.09.2026, mit dem Gesuchsformular «Istanza apertura di un campeggio occasionale» nach Art. 10 des Ausführungsreglements vom 27.04.2004 zur Legge sui campeggi",
       "source_url": "http://www.losone.ch",
       "review_status": "quelle",
-      "last_verified": "2026-09-09",
+      "last_verified": "2026-09-10",
       "_aus_mail": "entscheidung-2026-09-09"
     },
     "5118": {
@@ -1874,11 +1874,11 @@
       "bivouac_allowed": "no",
       "fire_allowed": "unknown",
       "summary": "Auf dem gesamten Gemeindegebiet ist Campieren und Übernachten im Freien weder möglich noch bewilligt — ausgenommen sind allein die beiden offiziellen Campingplätze «Piccolo Paradiso» in Avegno und «Bellariva TCS» in Gordevio.",
-      "conditions": "Diese Auskunft ist strenger als die kantonale Ausnahme für das Bergbiwak: die Gemeinde nennt das Übernachten im Freien ohne Einschränkung auf das Flachland. Wer im Gebirgsteil der Gemeinde biwakieren will, frage vorher nach.",
-      "source": "Schriftliche Auskunft des Gemeindesekretariats Avegno Gordevio, 08.09.2026",
+      "conditions": "Art. 1 der Ordinanza verbietet das Lagern «con sacco a pelo, tenda, roulotte, motorhomes-camper e simili» — der Schlafsack ist ausdrücklich genannt, das Verbot erfasst also auch das Biwak ohne Zelt. Verstösse kosten 200 bis 500 Franken. Auf begründetes Gesuch, mindestens zehn Tage im Voraus, kann der Gemeindevorstand ausnahmsweise Campieren ausserhalb der Zonen bewilligen; dafür erhebt er bis zu 50 Franken je Zeltplatz.",
+      "source": "Ordinanza municipale contro il campeggio abusivo, Comune di Avegno Gordevio, rm 19/15 vom 19.01.2015, Art. 1 und 4 — vom Gemeindesekretariat am 08.09.2026 zugesandt",
       "source_url": "http://www.avegnogordevio.ch",
       "review_status": "quelle",
-      "last_verified": "2026-09-08",
+      "last_verified": "2026-09-10",
       "_aus_mail": "entscheidung-2026-09-09"
     },
     "5398": {
@@ -1887,12 +1887,12 @@
       "vehicle_allowed": "no",
       "bivouac_allowed": "no",
       "fire_allowed": "unknown",
-      "summary": "Auf dem Gemeindegebiet ist jede Art von Biwak oder Campieren in der Natur ausserhalb der eigens bewilligten Flächen verboten. Einzige zugelassene Möglichkeit ist der Campingplatz von Vira Gambarogno.",
-      "conditions": "Grundlage ist die kommunale Regelung, auf die sich die Gemeinde beruft. Im Tessin gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge (Art. 2).",
-      "source": "Schriftliche Auskunft der Gemeinde Gambarogno, 09.09.2026",
+      "summary": "Lagern mit beweglichen Einrichtungen jeder Art ist allein auf den bewilligten und eingerichteten Campingflächen zulässig. Auf Gemeindeland — Gärten, Parks, Strassen, Plätze, Parkplätze, Wald und Flussauen — und auf offenem Privatgelände ist Campieren verboten.",
+      "conditions": "Art. 1 und 2 der Ordinanza municipale sul campeggio. Verstösse kosten 50 bis 5000 Franken. Der Gemeindevorstand kann nach Art. 3 Notfallflächen für Campingfahrzeuge bezeichnen — höchstens 24 Stunden, 20 Franken je Halt; ob es solche Flächen zurzeit gibt, sagt die Ordinanza nicht.",
+      "source": "Ordinanza municipale sul campeggio, Comune di Gambarogno, Beschluss Nr. 410 vom 25.05.2021, Art. 1–4 — von der Gemeinde am 09.09.2026 zugesandt",
       "source_url": "https://www.gambarogno.ch",
       "review_status": "quelle",
-      "last_verified": "2026-09-09",
+      "last_verified": "2026-09-10",
       "_aus_mail": "entscheidung-2026-09-09"
     },
     "5401": {

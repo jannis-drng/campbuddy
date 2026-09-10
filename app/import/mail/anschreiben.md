@@ -23,7 +23,8 @@ keine kommunale Regelung, ist auch das eine brauchbare Antwort — die Karte
 weist es dann so aus.
 
 Ihre Auskunft erscheint mit der Gemeinde als Quelle und dem Datum. Ist Ihnen
-das nicht recht, genügt ein kurzer Hinweis; dann bleibt die Fläche unmarkiert.
+das nicht recht, genügt ein kurzer Hinweis; dann erscheint Ihre Auskunft nicht
+auf der Karte.
 
 **Transparenzhinweis:** Diese Anfrage wurde automatisiert erstellt und
 versendet, unter Mitwirkung eines KI-Systems. Sollte sie fehlerhaft oder

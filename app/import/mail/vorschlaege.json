@@ -1,6 +1,131 @@
 {
- "stand": "2026-09-09",
+ "stand": "2026-09-10",
  "vorschlaege": [
+  {
+   "bfs": 1202,
+   "name": "Andermatt",
+   "kanton": "CH-UR",
+   "vorschlag": {
+    "status": "allowed",
+    "tent_allowed": "conditional",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Andermatt erlaubt das Biwakieren und die Einzelübernachtung im Zelt ausdrücklich ohne Bewilligung — im Zusammenhang mit Bergsport, Strahlen, Fischen oder Alpwirtschaft. Verboten bleibt das «wilde Campieren»: mehrere Zelte, Wohnwagen, Mobilwagen und Mobilheime ausserhalb der bewilligten Plätze.",
+    "conditions": "Einzelzelte, nicht in Gruppen. Bei mehreren Übernachtungen muss das Zelt oder Biwak tagsüber wieder abgebaut werden. Der Platz ist aufgeräumt zu hinterlassen, sämtliche Abfälle sind mitzunehmen. In Naturschutzgebieten und -zonen, Jagdbanngebieten, Wildruhezonen und Gebieten mit Betretungsverbot ist beides untersagt — ausgenommen das Notbiwak. Weideland und die «Grundnutzung» der Fläche sind zu schonen; die Gemeinde verweist auf das SAC-Merkblatt «Campieren und Biwakieren in den Schweizer Bergen».",
+    "source": "Merkblatt «Bewilligungen im Zusammenhang mit dem Campieren» des Gemeinderats Andermatt vom 18.05.2022 zu Art. 95a Bau- und Zonenordnung, der Gemeindeverwaltung am 09.09.2026 zugesandt",
+    "source_url": "https://www.gemeinde-andermatt.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
+   "bfs": 1220,
+   "name": "Wassen",
+   "kanton": "CH-UR",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "conditional",
+    "vehicle_allowed": "conditional",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Wassen hat weder Campingplätze noch offizielle Stellplätze und kennt kein Verbot. Wer übernachten will, fragt die Grundeigentümer und hinterlässt den Platz sauber — mehr verlangt die Gemeinde nicht.",
+    "conditions": "Die Gemeinde nennt zwei Bedingungen ausdrücklich: die Eigentümer müssen gefragt und die benützten Plätze ordentlich und sauber wieder verlassen werden. Uri kennt keine kantonale Regelung; Schutzgebiete, Wildruhezonen und eine Beschilderung vor Ort gehen weiterhin vor.",
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Wassen, 09.09.2026",
+    "source_url": "https://www.wassen.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
+   "bfs": 3701,
+   "name": "Andeer",
+   "kanton": "CH-GR",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Das Campieren im Zelt, im Auto oder im Wohnwagen ist auf dem Gebiet der Gemeinde Andeer nur auf dem bewilligten Campingplatz und auf sonst dafür freigegebenem Gelände gestattet.",
+    "conditions": "Art. 40 des Polizeigesetzes nennt Zelt, Auto und Wohnwagen. Zum Übernachten im Schlafsack ohne Zelt sagt er nichts — das bleibt ungeklärt.",
+    "source": "Polizeigesetz der Gemeinde Andeer, Art. 40 (Totalrevision, Gemeindeversammlung vom 14.08.2024), von der Gemeindekanzlei am 09.09.2026 zugesandt",
+    "source_url": "https://www.gemeinde-andeer.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
+   "bfs": 3792,
+   "name": "Bregaglia",
+   "kanton": "CH-GR",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Ausserhalb der dafür ausgeschiedenen Zonen — Campingplätze und Camperzonen — ist auf Gemeindeland das Campieren untersagt, ebenso das Abstellen des Fahrzeugs zum Übernachten. Auf begründetes Gesuch kann der Gemeindevorstand eine Ausnahme bewilligen.",
+    "conditions": "Art. 11 des kommunalen Polizeireglements («Divieto di campeggio») spricht ausdrücklich vom Gemeindeland. Zum Biwak ohne Zelt sagt der Artikel nichts.",
+    "source": "Regolamento di polizia comunale Bregaglia, Art. 11 «Divieto di campeggio», im Wortlaut von der Gemeindeschreiberin mitgeteilt, 10.09.2026",
+    "source_url": "https://www.bregaglia.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
+   "bfs": 3804,
+   "name": "Buseno",
+   "kanton": "CH-GR",
+   "vorschlag": {
+    "status": "unknown",
+    "tent_allowed": "unknown",
+    "vehicle_allowed": "unknown",
+    "fire_allowed": "unknown",
+    "summary": "Buseno hat weder einen kommunalen noch einen privaten Campingplatz und nennt keine eigene Regelung zum Übernachten im Freien. Graubünden hat auch keine kantonale — es bleibt der eidgenössische Rahmen.",
+    "conditions": "Die Gemeinde beantwortete die Frage nach Plätzen, nicht die nach einem Verbot. Dass keine Regel genannt wird, heisst nicht, dass Übernachten erlaubt wäre: Schutzgebiete, Wildruhezonen und das Recht der Grundeigentümer gelten unabhängig davon.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft der Gemeindeschreiberin Buseno, 10.09.2026",
+    "source_url": "https://www.buseno.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
+   "bfs": 3882,
+   "name": "Küblis",
+   "kanton": "CH-GR",
+   "vorschlag": {
+    "status": "unknown",
+    "tent_allowed": "unknown",
+    "vehicle_allowed": "unknown",
+    "fire_allowed": "unknown",
+    "summary": "Küblis kennt keine kommunale Regelung zum Übernachten im Freien. Graubünden hat auch keine kantonale — es bleibt der eidgenössische Rahmen: Schutzgebiete, Wildruhezonen, das Recht der Grundeigentümer und die Beschilderung vor Ort.",
+    "conditions": "Das ist kein Freibrief und kein Verbot, sondern die ehrliche Auskunft, dass hier keine Regel besteht, die etwas anderes sagen würde als das allgemeine Recht.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft der Gemeindeverwaltung Küblis, 09.09.2026",
+    "source_url": "https://www.kueblis.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
+   "bfs": 5001,
+   "name": "Arbedo-Castione",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Arbedo-Castione hat keine bewilligten Campingflächen und keine eigene Regelung. Es gilt die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge.",
+    "conditions": "Die Gemeinde zitiert Art. 2 und Art. 3 der Legge sui campeggi und weist darauf hin, dass Natur- und Waldschutzrecht, Privateigentum und zonenspezifische Vorschriften unabhängig davon gelten.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Arbedo-Castione, 10.09.2026 (Legge sui campeggi, Art. 2 und 3)",
+    "source_url": "https://www.arbedo-castione.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
   {
    "bfs": 5010,
    "name": "Lumino",
@@ -18,6 +143,25 @@
     "review_status": "quelle",
     "last_verified": "2026-09-08",
     "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5071,
+   "name": "Dalpe",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "In Dalpe gilt das kantonale Recht: Campieren nur auf bewilligten Plätzen, ausgenommen das Biwak im Gebirge. Die Gemeinde weist aber ausdrücklich darauf hin, dass grosse Teile ihres Gebiets Schutzgebiete sind, in denen auch das verboten ist.",
+    "conditions": "Absolut untersagt ist das Campieren nach Auskunft der Gemeinde im eidgenössischen Jagdbanngebiet Campo Tencia, im Moorreservat Torbiera della Bedrina, im Moor Bolle di Pianaselva sowie in sämtlichen Wildruhezonen und übrigen Schutzgebieten.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft der Gemeindekanzlei Dalpe, 09.09.2026",
+    "source_url": "https://www.dalpe.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
    }
   },
   {
@@ -115,6 +259,25 @@
    }
   },
   {
+   "bfs": 5131,
+   "name": "Tenero-Contra",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Tenero-Contra hat keine eigene Regelung. Es gilt unmittelbar die kantonale Legge sui campeggi: Campieren nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge.",
+    "conditions": "Die Interkommunale Polizei zitiert Art. 2 Abs. 1 und 2 sowie Art. 3 der Legge sui campeggi (RL 943.100). Als Campieren gilt nach Art. 3 auch der blosse vorübergehende Aufenthalt und das Übernachten ausserhalb der eigenen Wohnung mit beweglichen Einrichtungen.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft der Polizia Intercomunale del Piano für Tenero-Contra, 10.09.2026 (Legge sui campeggi, Art. 2 und 3, RL 943.100)",
+    "source_url": "https://www.tenero-contra.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
    "bfs": 5141,
    "name": "Agno",
    "kanton": "CH-TI",
@@ -191,6 +354,24 @@
    }
   },
   {
+   "bfs": 5203,
+   "name": "Morcote",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "In Morcote ist auch das Biwakieren untersagt. Der Monte Arbostora ist vollständig bewaldet, und das Gebiet der Alpe Vicania steht als Trockenwiese unter kantonalem Schutz — die kantonale Ausnahme fürs Bergbiwak greift hier nirgends.",
+    "conditions": "Die Auskunft kommt vom technischen Amt der Gemeinde und begründet das Verbot mit der Beschaffenheit des Gebiets, nicht mit einer eigenen Vorschrift.",
+    "source": "Schriftliche Auskunft des technischen Amtes Morcote, 10.09.2026",
+    "source_url": "https://www.morcote.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
    "bfs": 5216,
    "name": "Pura",
    "kanton": "CH-TI",
@@ -206,6 +387,24 @@
     "source_url": "https://www.pura.ch",
     "review_status": "quelle",
     "last_verified": "2026-09-09"
+   }
+  },
+  {
+   "bfs": 5230,
+   "name": "Vernate",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "In Vernate gibt es keine für das Biwak zugelassenen Flächen; Campieren ist deshalb nicht gestattet.",
+    "conditions": "Die Gemeinde verneint das Biwak ausdrücklich, nicht bloss das Zelten auf einem Campingplatz.",
+    "source": "Schriftliche Auskunft des Gemeindeschreibers Vernate, 09.09.2026",
+    "source_url": "https://www.vernate.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
    }
   },
   {
@@ -285,6 +484,25 @@
    }
   },
   {
+   "bfs": 5266,
+   "name": "Stabio",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Stabio hat keine eigene Regelung; es gilt die kantonale Legge sui campeggi. Weil Stabio in der Ebene und im Hügelland liegt und nicht im Gebirge oberhalb der Waldgrenze, greift die Ausnahme fürs Biwak hier nicht: ein Zelt auf einer Wiese, im Wald oder auf Landwirtschaftsland ist nicht zulässig.",
+    "conditions": "Die Gemeindepolizei verweist für das Übernachten im Zelt auf die bewilligten Campingplätze in der Umgebung.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft der Gemeindepolizei Stabio, 10.09.2026",
+    "source_url": "https://www.stabio.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
+   }
+  },
+  {
    "bfs": 5268,
    "name": "Vacallo",
    "kanton": "CH-TI",
@@ -301,6 +519,24 @@
     "review_status": "quelle",
     "last_verified": "2026-09-09",
     "ohne_eigene_regel": true
+   }
+  },
+  {
+   "bfs": 5310,
+   "name": "Cevio",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "conditional",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Freies Campieren ist auf dem Gebiet von Cevio verboten. Zulässig ist allein das alpine Biwak in grosser Höhe. Für Wohnmobile gibt es in Bignasco einen eingerichteten Stellplatz mit WC, Duschen und Waschbecken.",
+    "conditions": "Die Gemeinde nennt für das Biwak die grosse Höhe als Bedingung. Der Stellplatz in Bignasco ist die einzige von der Gemeinde genannte Möglichkeit fürs Fahrzeug.",
+    "source": "Schriftliche Auskunft des technischen Amtes Cevio, 10.09.2026",
+    "source_url": "https://www.cevio.ch",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
    }
   },
   {
@@ -343,6 +579,25 @@
     "source_url": "http://www.avegnogordevio.ch",
     "review_status": "quelle",
     "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 5397,
+   "name": "Centovalli",
+   "kanton": "CH-TI",
+   "vorschlag": {
+    "status": "tolerated",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "bivouac_allowed": "conditional",
+    "fire_allowed": "unknown",
+    "summary": "Centovalli bestätigt, dass die kantonalen Bestimmungen gelten, und hat derzeit keine eigenen Campingflächen ausgeschieden. Campieren also nur auf bewilligten Plätzen, ausgenommen das Zelten zum Zweck des Biwakierens im Gebirge.",
+    "conditions": "Im Tessin gilt die kantonale Legge sui campeggi (Art. 2). Da die Gemeinde keine Flächen ausgewiesen hat, bleibt ausserhalb dieser Ausnahme nichts übrig.",
+    "ohne_eigene_regel": true,
+    "source": "Schriftliche Auskunft der Gemeinde Centovalli, 09.09.2026",
+    "source_url": "https://www.centovalli.swiss",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
    }
   },
   {
@@ -534,6 +789,23 @@
     "source_url": "https://www.fully.ch",
     "review_status": "quelle",
     "last_verified": "2026-09-08"
+   }
+  },
+  {
+   "bfs": 6152,
+   "name": "Collombey-Muraz",
+   "kanton": "CH-VS",
+   "vorschlag": {
+    "status": "forbidden",
+    "tent_allowed": "no",
+    "vehicle_allowed": "no",
+    "fire_allowed": "unknown",
+    "summary": "Das Campieren ausserhalb der dafür bewilligten Plätze ist verboten. Die Gemeinde beruft sich auf Art. 58 ihres Polizeireglements.",
+    "conditions": "Der Artikel spricht vom Campieren. Zum Übernachten im Schlafsack ohne Zelt trifft die Auskunft keine Aussage.",
+    "source": "Schriftliche Auskunft des Gemeindesekretariats Collombey-Muraz, 10.09.2026 (Art. 58 Règlement de police)",
+    "source_url": "https://www.collombey-muraz.ch/data/documents/administration/reglements_communaux/Rglementdepolice.pdf",
+    "review_status": "quelle",
+    "last_verified": "2026-09-10"
    }
   },
   {

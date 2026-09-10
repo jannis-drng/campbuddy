@@ -19,7 +19,8 @@ Basta una risposta breve. Se il Comune non ha nulla da aggiungere alla regola
 cantonale, anche questa è un'informazione utile — la mappa lo indicherà così.
 
 La vostra indicazione apparirà sulla mappa con il Comune come fonte e la data.
-Se non lo desiderate, basta un breve cenno; l'area resterà senza indicazione.
+Se non lo desiderate, basta un breve cenno; la vostra risposta non comparirà
+allora sulla mappa.
 
 Nota di trasparenza: questa richiesta è stata redatta e inviata in modo
 automatizzato, con il contributo di un sistema di IA. Se dovesse risultare

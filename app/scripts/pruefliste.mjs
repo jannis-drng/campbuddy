@@ -6,10 +6,15 @@
  * entstand ihr Datensatz von Hand — pro Runde neu, und jedes Mal war die
  * Frage, ob er noch zu den Quelldateien passt. Deshalb hier:
  *
- *   node scripts/pruefliste.mjs <stand.html>
+ *   node scripts/pruefliste.mjs <ziel.html>
  *
- * ersetzt in der Datei die Zeile `const DATEN = …` durch den aktuellen Stand.
- * Alles andere an der Seite bleibt unangetastet.
+ * nimmt die Seitenhülle aus `import/mail/pruefliste.vorlage.html` und schreibt
+ * sie mit dem aktuellen Stand nach <ziel.html>. Die Hülle liegt im Git, die
+ * gefüllte Seite nicht: sie ist erzeugt und 350 KB gross.
+ *
+ * Warum die Hülle in die Versionsverwaltung gehört: sie lag bis zum 10.09.2026
+ * nur im Scratchpad der Sitzung, und der wird zwischen Sitzungen geleert. Die
+ * einzige Kopie hing danach am Artefakt.
  *
  * Vier Zustände, feinster gewinnt:
  *   fertig        — steht in gemeinden.legal.json, ist auf der Karte
@@ -32,6 +37,9 @@ if (!ZIEL) {
 const gebuehrText = (g) =>
   g ? `${g.betrag.toFixed(2)} ${g.waehrung} je ${g.je} — ${g.wofuer}` : null
 
+const nachBfsRoh = (liste) =>
+  new Map((liste ?? []).filter((e) => e?.bfs != null).map((e) => [Number(e.bfs), e]))
+
 const lies = (p, ersatz) =>
   existsSync(resolve(ROOT, p)) ? JSON.parse(readFileSync(resolve(ROOT, p), 'utf8')) : ersatz
 
@@ -43,6 +51,13 @@ const antworten = lies('import/mail/antworten.json', { eintraege: [] }).eintraeg
 const kontakte = lies('import/recherche/kontakte.json', { ergebnisse: [] }).ergebnisse
 const manuell = lies('import/mail/adressen-manuell.json', {})
 const abgemeldet = new Set(lies('import/mail/keine-anfragen.json', { bfs: [] }).bfs ?? [])
+// Angekommen ist nicht dasselbe wie abgeschickt. Fünf Gemeinden haben unseren
+// Absender abgewiesen; als «angeschrieben» zu führen, was nie ankam, heisst
+// auf eine Antwort zu warten, die niemand schreiben kann.
+const zurueck = nachBfsRoh(lies('import/mail/zurueck.json', { eintraege: [] }).eintraege)
+// Wer gebeten hat, nicht zu erscheinen, wartet auf nichts mehr. Als
+// «angeschrieben, Antwort steht aus» zu führen wäre schlicht falsch.
+const abgesagt = nachBfsRoh(lies('import/mail/nicht-anzeigen.json', { gemeinden: [] }).gemeinden)
 
 // Bibern hat keine BFS-Nummer. Ohne diesen Filter würde `null` zum Schlüssel,
 // und jede unzuordenbare Zeile erschiene unter ihrem Namen.
@@ -73,6 +88,8 @@ const KANTONSNAMEN = Object.fromEntries(
 /** Warum eine Gemeinde noch offen ist — das entscheidet, was als Nächstes zu tun ist. */
 function grundOffen(bfs) {
   if (abgemeldet.has(bfs)) return 'hat um keine weiteren Anfragen gebeten'
+  const z = zurueck.get(bfs)
+  if (z) return `Anfrage kam nicht an (${z.an}: ${z.grund}) — anderer Weg nötig`
   const k = kontakt.get(bfs)
   if (adressen.get(bfs)?.email) return 'Adresse von Hand ergänzt, noch nicht angeschrieben'
   if (k?.email) return 'Adresse bekannt, noch nicht angeschrieben'
@@ -97,7 +114,13 @@ for (const f of gemeinden) {
   const antwort = (bfs != null ? post.get(bfs) : null) ?? []
 
   let eintrag
-  if (e) {
+  if (bfs != null && abgesagt.has(bfs)) {
+    eintrag = {
+      bfs, name: p.name, stand: 'offen',
+      grund: 'hat gebeten, nicht auf der Karte zu erscheinen — die Zusage gilt',
+      website: null,
+    }
+  } else if (e) {
     eintrag = {
       bfs, name: p.name, stand: 'fertig',
       status: e.status, zelt: e.tent_allowed, biwak: e.bivouac_allowed ?? 'unknown',
@@ -120,7 +143,7 @@ for (const f of gemeinden) {
       von: a?.von ?? null,
       antworttext: a?.text ? a.text.slice(0, 800).replace(/\s+/g, ' ') + '…' : null,
     }
-  } else if (b) {
+  } else if (b && !zurueck.has(bfs)) {
     eintrag = {
       bfs, name: p.name, stand: 'angeschrieben',
       am: String(b.am).slice(0, 10), an: b.an, sprache: b.sprache,
@@ -149,10 +172,11 @@ const DATEN = {
   kantone: Object.fromEntries(Object.entries(kantone).sort(([a], [b]) => a.localeCompare(b))),
 }
 
-const zeilen = readFileSync(ZIEL, 'utf8').split('\n')
+const VORLAGE = resolve(ROOT, 'import/mail/pruefliste.vorlage.html')
+const zeilen = readFileSync(VORLAGE, 'utf8').split('\n')
 const i = zeilen.findIndex((z) => z.startsWith('const DATEN = '))
 if (i < 0) {
-  console.error(`In ${ZIEL} steht keine Zeile «const DATEN = …».`)
+  console.error(`In ${VORLAGE} steht keine Zeile «const DATEN = …».`)
   process.exit(1)
 }
 zeilen[i] = 'const DATEN = ' + JSON.stringify(DATEN)

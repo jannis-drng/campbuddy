@@ -1,0 +1,46 @@
+{
+ "_hinweis": "Anfragen, die nie angekommen sind. Der Versand hat sie als verschickt verbucht, der empfangende Server hat sie abgewiesen — diese Gemeinden gelten deshalb nicht als angeschrieben und stehen in der Liste wieder als offen. Wer hier steht, braucht einen anderen Weg: Kontaktformular, Telefon oder eine zweite Adresse.",
+ "_stand": "2026-09-10",
+ "eintraege": [
+  {
+   "bfs": 5307,
+   "name": "Campo (Vallemaggia)",
+   "an": "comune@campo-vallemaggia.ch",
+   "am": "2026-09-09",
+   "grund": "550 5.4.1 Recipient address rejected: Access denied",
+   "kanton": "CH-TI"
+  },
+  {
+   "bfs": 5214,
+   "name": "Porza",
+   "an": "cancelleria@porza.ch",
+   "am": "2026-09-09",
+   "grund": "554 5.1.8 Sender Address Blocked",
+   "kanton": "CH-TI"
+  },
+  {
+   "bfs": 3881,
+   "name": "Conters im Prättigau",
+   "an": "info@conters.ch",
+   "am": "2026-09-09",
+   "grund": "554 5.1.8 Sender Address Blocked",
+   "kanton": "CH-GR"
+  },
+  {
+   "bfs": 3861,
+   "name": "Fideris",
+   "an": "gemeinde@fideris.ch",
+   "am": "2026-09-09",
+   "grund": "554 5.1.8 Sender Address Blocked",
+   "kanton": "CH-GR"
+  },
+  {
+   "bfs": 3961,
+   "name": "Grüsch",
+   "an": "gemeinde@gruesch.ch",
+   "am": "2026-09-09",
+   "grund": "554 5.1.8 Sender Address Blocked",
+   "kanton": "CH-GR"
+  }
+ ]
+}

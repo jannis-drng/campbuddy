@@ -19,7 +19,8 @@ link. Se non esiste alcuna regolamentazione comunale, anche questa è una
 risposta utile — la mappa lo indicherà di conseguenza.
 
 La vostra indicazione apparirà sulla mappa con il Comune come fonte e la data.
-Se non lo desiderate, basta un breve cenno; l'area resterà senza indicazione.
+Se non lo desiderate, basta un breve cenno; la vostra risposta non comparirà
+allora sulla mappa.
 
 **Nota di trasparenza:** questa richiesta è stata redatta e inviata in modo
 automatizzato, con il contributo di un sistema di IA. Se dovesse risultare

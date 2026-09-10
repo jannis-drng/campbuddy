@@ -75,6 +75,35 @@ function ohneUnserSchreiben(text) {
  * Gemeinde» in der Auswertung und muss von Hand aussortiert werden.
  */
 /**
+ * Einen Anhang auf die Platte legen und den Pfad zurückgeben.
+ *
+ * Bis hierher stand von einem Anhang nur der Name in der Antwort — Andermatt
+ * schickte sein «Merkblatt Camping Ursern», Andeer sein Polizeigesetz, und
+ * beides war nach dem Lauf weg. Ein Reglement, das eine Gemeinde uns selbst
+ * geschickt hat, ist die beste Quelle, die wir kriegen können; sie
+ * wegzuwerfen und danach im Netz zu suchen ist absurd.
+ *
+ * Verworfen wird, was keine Quelle sein kann: eingebettete Bilder (Logos in
+ * der Signatur, oft ein halbes Dutzend je Mail) und alles über 20 MB.
+ */
+function anhangSichern(bfs, anhang) {
+  const nutzlos = !anhang.filename
+    || anhang.contentDisposition === 'inline'
+    || /^image\//.test(anhang.contentType ?? '')
+    || (anhang.size ?? 0) > 20 * 1024 * 1024
+  if (nutzlos) return null
+
+  const ordner = resolve(MAIL, 'anhaenge', String(bfs ?? 'ohne-bfs'))
+  mkdirSync(ordner, { recursive: true })
+  // Der Dateiname kommt von aussen: Pfadtrenner und Punkte am Anfang raus,
+  // sonst schreibt eine Gemeinde uns irgendwohin.
+  const sicher = anhang.filename.replace(/[/\\]/g, '_').replace(/^\.+/, '').slice(0, 120)
+  const ziel = resolve(ordner, sicher)
+  writeFileSync(ziel, anhang.content)
+  return ziel.slice(ROOT.length + 1)
+}
+
+/**
  * Der dritte Weg zur Gemeinde: der Betreff.
  *
  * Wir schreiben den Gemeindenamen selbst hinein ("… zur Regelung in Fully"),
@@ -193,6 +222,7 @@ const schloss = await post.getMailboxLock('INBOX')
 
 let gesehen = 0
 let neu = 0
+let nachgetragen = 0
 try {
   // Nicht nach dem Gelesen-Merkmal suchen, sondern nach dem Zeitraum.
   //
@@ -207,7 +237,22 @@ try {
     gesehen++
     const mail = await simpleParser(nachricht.source)
     const id = mail.messageId ?? `ohne-id-${nachricht.uid}`
-    if (schonDa.has(id)) continue
+    if (schonDa.has(id)) {
+      // Schon aufgenommen — aber vielleicht aus einer Zeit, als Anhänge nur
+      // beim Namen genannt und nicht gesichert wurden. Dann jetzt nachholen.
+      const alt = antworten.eintraege.find((e) => e.nachricht_id === id)
+      const fehlend = alt?.anhaenge?.some((a) => a.datei === undefined)
+      if (fehlend) {
+        const wohin = alt.bfs ?? alt.bfs_vermutet
+        for (const a of mail.attachments ?? []) {
+          const eintrag = alt.anhaenge.find((x) => x.name === a.filename)
+          if (eintrag && eintrag.datei === undefined) eintrag.datei = anhangSichern(wohin, a)
+        }
+        for (const a of alt.anhaenge) if (a.datei === undefined) a.datei = null
+        nachgetragen++
+      }
+      continue
+    }
 
     const bfs = bfsAus(mail)
     const absenderDomain = mail.from?.value?.[0]?.address?.split('@')[1]?.toLowerCase()
@@ -237,7 +282,9 @@ try {
       // Dieselbe Artikel-Extraktion wie bei den Reglementen: nennt die Antwort
       // einen Artikel im Wortlaut, wird er hier sichtbar.
       stellen: fundstellen(ohneZitat),
-      anhaenge: (mail.attachments ?? []).map((a) => ({ name: a.filename, typ: a.contentType, groesse: a.size })),
+      anhaenge: (mail.attachments ?? []).map((a) => ({
+        name: a.filename, typ: a.contentType, groesse: a.size, datei: anhangSichern(bfs ?? vermutet, a),
+      })),
       geprueft: false,
     }
 
@@ -278,6 +325,6 @@ if (neu > 0) {
 }
 
 console.log('')
-console.log(`Angesehen: ${gesehen} · neu aufgenommen: ${neu}`)
+console.log(`Angesehen: ${gesehen} · neu aufgenommen: ${neu}` + (nachgetragen ? ` · Anhänge nachgetragen bei ${nachgetragen}` : ''))
 console.log(`Insgesamt: ${antworten.eintraege.length} Antworten, davon ${antworten.eintraege.filter((e) => !e.geprueft).length} ungeprüft`)
 if (abgemeldet.bfs.length) console.log(`Abgemeldet: ${abgemeldet.bfs.length} Gemeinden`)

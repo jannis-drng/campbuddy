@@ -1,5 +1,15 @@
 {
- "_hinweis": "Gemeinden, die ausdrücklich gebeten haben, nicht auf der Karte zu erscheinen. Im Anschreiben steht: «Ist Ihnen das nicht recht, genügt ein kurzer Hinweis; dann bleibt die Fläche unmarkiert.» Das ist eine Zusage, keine Höflichkeitsfloskel — diese Gemeinden bekommen keinen Eintrag, auch wenn ihre Auskunft inhaltlich brauchbar wäre.",
+ "_hinweis": "Gemeinden, die ausdrücklich gebeten haben, nicht auf der Karte zu erscheinen. Im Anschreiben steht: «Ist Ihnen das nicht recht, genügt ein kurzer Hinweis; dann erscheint Ihre Auskunft nicht auf der Karte.» Das ist eine Zusage, keine Höflichkeitsfloskel — die Auskunft dieser Gemeinden wird nicht ausgewertet, auch wenn sie inhaltlich brauchbar wäre.",
+ "_wortlaut": "Bis zum 10.09.2026 lautete der Satz «dann bleibt die Fläche unmarkiert» — unbedingt formuliert, gemeint war die Auskunft. Fänden wir später zu einer solchen Gemeinde ein öffentlich publiziertes Reglement, stünde der Buchstabe der alten Zusage gegen den Auftrag der Karte. Wer vor diesem Datum abgesagt hat, bekommt die alte Zusage wörtlich eingehalten: keine Fläche, auch nicht aus fremder Quelle. Ab diesem Datum deckt die Zusage das, was sie decken soll — dass wir niemandem seine eigene Mail um die Ohren hauen, nicht ein Schweigen über veröffentlichtes Recht.",
  "_abgrenzung": "Hierher gehört nur, wer gar nicht erscheinen will. Wer schreibt, er habe keine eigene Regelung und wünsche keine gemeindespezifischen Angaben, meint etwas anderes: kein eigener Text, sondern der Verweis auf das übergeordnete Recht. Das ist ein Eintrag mit «ohne_eigene_regel»: true, keine Löschung. Magliaso stand hier zu Unrecht — «non abbiamo una regolamentazione» ist die Auskunft selbst, nicht ihre Verweigerung.",
- "gemeinden": []
+ "gemeinden": [
+  {
+   "bfs": 6217,
+   "name": "Saint-Maurice",
+   "kanton": "CH-VS",
+   "am": "2026-09-10",
+   "wortlaut": "la commune de Saint-Maurice ne souhaite pas figurer sur votre répertoire",
+   "hinweis": "Angeschrieben am 07.09.2026, also noch unter dem alten, unbedingt formulierten Wortlaut («dann bleibt die Fläche unmarkiert»). Diese Zusage wird wörtlich eingehalten: keine Fläche, auch nicht aus fremder Quelle. Die Gemeinde teilte zugleich mit, sie habe keine eigene Regelung — das bleibt hier stehen und geht nicht auf die Karte."
+  }
+ ]
 }

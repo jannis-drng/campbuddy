@@ -265,7 +265,26 @@ const post = SENDEN ? nodemailer.createTransport({
   port: Number(SMTP_PORT ?? 465),
   secure: Number(SMTP_PORT ?? 465) === 465,
   auth: { user: MAIL_USER, pass: MAIL_PASSWORT },
+  // Ohne diese drei wartet nodemailer unbegrenzt auf einen Server, der nicht
+  // mehr antwortet. Ein Lauf, der nachts hängenbleibt, sieht am Morgen aus
+  // wie einer, der noch arbeitet.
+  connectionTimeout: 20000,
+  greetingTimeout: 20000,
+  socketTimeout: 60000,
 }) : null
+
+/**
+ * Wenn der Anbieter dichtmacht, aufhören statt weiterklopfen.
+ *
+ * Am 10.09.2026 wies Zoho jede einzelne Mail mit «550 5.4.6 Unusual sending
+ * activity» ab. Der Lauf machte trotzdem weiter: für jede der fünfzig
+ * Gemeinden erst die Sprache von ihrer Webseite holen, dann in dieselbe
+ * Ablehnung laufen — eine Stunde lang, für null versandte Mails. Drei
+ * Absagen hintereinander sind kein Zufall mehr, sondern eine Sperre.
+ */
+const GESPERRT = /5\.4\.6|unusual sending|rate limit|too many|quota|550 5\.7/i
+const ABBRUCH_NACH = 3
+let hintereinander = 0
 
 const neu = []
 for (const g of dran) {
@@ -298,8 +317,18 @@ for (const g of dran) {
     // Zwischen zwei Mails eine Pause: fünfzig am Tag sind unauffällig, fünfzig
     // in einer Minute nicht. Zoho beobachtet die Rate, nicht die Tagesmenge.
     await new Promise((r) => setTimeout(r, 4000))
+    hintereinander = 0
   } catch (e) {
     console.log(`  ✗ ${g.name}: ${e.message.slice(0, 90)}`)
+    hintereinander = GESPERRT.test(e.message) ? hintereinander + 1 : 0
+    if (hintereinander >= ABBRUCH_NACH) {
+      console.log('')
+      console.log(`Abbruch: ${ABBRUCH_NACH} Absagen hintereinander — der Anbieter nimmt gerade nichts an.`)
+      console.log('Nichts davon wurde als angeschrieben verbucht; der Lauf lässt sich später unverändert')
+      console.log('wiederholen. Mit «node --env-file=.env.mail.local scripts/mail-gesendet.mjs» nachsehen,')
+      console.log('was tatsächlich hinausging.')
+      break
+    }
   }
 }
 

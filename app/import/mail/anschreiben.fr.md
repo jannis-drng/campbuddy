@@ -19,8 +19,8 @@ n'existe aucune réglementation communale, cette réponse nous est tout aussi
 utile — la carte l'indiquera ainsi.
 
 Votre réponse figurera sur la carte avec la commune comme source et la date.
-Si vous ne le souhaitez pas, un bref message suffit ; la zone restera alors
-sans indication.
+Si vous ne le souhaitez pas, un bref message suffit ; votre réponse ne sera
+alors pas publiée sur la carte.
 
 **Transparence :** cette demande a été rédigée et envoyée de manière
 automatisée, avec le concours d'un système d'IA. Si elle devait être erronée

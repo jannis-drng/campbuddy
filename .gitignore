@@ -13,3 +13,5 @@ app/import/mail/keine-anfragen.json
 app/import/mail/sprachen.json
 app/import/mail/antworten.json
 app/import/mail/adressen-manuell.json
+# Von Gemeinden mitgeschickte Reglemente — Fremddokumente, nicht unsere.
+app/import/mail/anhaenge/
