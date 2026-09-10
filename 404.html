@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0C1113" />
+    <meta name="robots" content="noindex" />
+    <title>Seite nicht gefunden — CampBuddy</title>
+    <link rel="icon" type="image/svg+xml" href="/campbuddy/icon.svg" />
+    <!--
+      Bewusst ohne Weiterleitung.
+
+      Eine 404-Seite, die nach zwei Sekunden zur Startseite springt, verschluckt
+      die Auskunft, dass die Adresse falsch war — und wer über einen kaputten
+      Link kommt, merkt nie, dass er einen kaputten Link hat. Hier steht, was
+      los ist, und daneben der Weg weiter.
+
+      Ebenso bewusst ohne Bundle: diese Seite muss auch dann stehen, wenn mit
+      der Anwendung etwas nicht stimmt. Deshalb alles inline.
+    -->
+    <style>
+      :root {
+        --flaeche-1: #0c1113;
+        --flaeche-2: #131b1e;
+        --kante: #233034;
+        --ink-50: #f2f6f7;
+        --ink-300: #94abb0;
+        --ink-400: #8aa1a6;
+        --gletscher-300: #8ccae6;
+        --gletscher-400: #5aafd4;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: var(--flaeche-1);
+        color: var(--ink-300);
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main { width: 100%; max-width: 32rem; }
+      .marke {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        margin-bottom: 2.5rem;
+        text-decoration: none;
+        color: var(--ink-50);
+        font-weight: 600;
+        letter-spacing: -0.015em;
+      }
+      h1 {
+        margin: 0 0 0.75rem;
+        color: var(--ink-50);
+        font-size: clamp(1.75rem, 5vw, 2.5rem);
+        line-height: 1.15;
+        letter-spacing: -0.028em;
+      }
+      p { margin: 0 0 1.75rem; line-height: 1.6; font-size: 0.9375rem; }
+      .code {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: 0.25rem 0.625rem;
+        border: 1px solid var(--kante);
+        border-radius: 999px;
+        background: var(--flaeche-2);
+        color: var(--ink-400);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .wege { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+      a.knopf {
+        display: inline-flex;
+        align-items: center;
+        height: 2.75rem;
+        padding: 0 1.25rem;
+        border-radius: 0.625rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      a.primaer { background: var(--gletscher-300); color: #070a0b; }
+      a.primaer:hover { background: #bee2f2; }
+      a.zweit {
+        border: 1px solid var(--kante);
+        background: var(--flaeche-2);
+        color: var(--ink-50);
+      }
+      a.zweit:hover { border-color: #32444a; }
+      a:focus-visible {
+        outline: 2px solid var(--gletscher-400);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="marke" href="/campbuddy/">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+          <path d="M12 3.5 3 20h18L12 3.5Z" fill="none" stroke="#5AAFD4"
+                stroke-width="1.75" stroke-linejoin="round" />
+          <path d="M12 10.5 17 20H7l5-9.5Z" fill="#5AAFD4" opacity="0.28" />
+        </svg>
+        CampBuddy
+      </a>
+
+      <span class="code">Fehler 404</span>
+      <h1>Diese Seite gibt es nicht.</h1>
+      <p>
+        Die Adresse führt ins Leere — vertippt, veraltet oder ein Link, der nie gestimmt
+        hat. Die Karte selbst liegt unverändert unter der Startadresse.
+      </p>
+
+      <div class="wege">
+        <a class="knopf primaer" href="/campbuddy/#/karte">Zur Karte</a>
+        <a class="knopf zweit" href="/campbuddy/#/start">Was CampBuddy ist</a>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0C1113" />
+    <title>CampBuddy — Wo darf ich draussen übernachten?</title>
+    <meta
+      name="description"
+      content="Karte mit der Rechtslage zum Übernachten in der Natur: erlaubt, verboten oder geduldet — mit Quelle und Prüfstand zu jeder Fläche."
+    />
+    <!--
+      Vorschaubild und Beschreibung für geteilte Links. Die Startseite ist zum
+      Teilen auf Social Media gebaut — ohne diese Angaben zeigt jede Plattform
+      nur eine nackte URL. Absolute Adresse, weil relative Pfade dort nicht
+      aufgelöst werden.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CampBuddy" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:title" content="CampBuddy — Draussen schlafen, ohne zu raten" />
+    <meta
+      property="og:description"
+      content="Die Karte zeigt flächenscharf, wo Übernachten in der Natur erlaubt, geduldet oder verboten ist — mit Quelle und Prüfstand an jeder Fläche."
+    />
+    <meta property="og:url" content="https://jannis-drng.github.io/campbuddy/" />
+    <meta property="og:image" content="https://jannis-drng.github.io/campbuddy/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Ein beleuchtetes Zelt in der Dämmerung oberhalb der Waldgrenze, dahinter eine vergletscherte Bergkette."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!--
+      Während des Umzugs liegt dieselbe Seite unter zwei Adressen. Der Canonical
+      sagt Suchmaschinen, welche davon die richtige ist — sonst konkurrieren die
+      beiden gegeneinander und beide ranken schlechter.
+    -->
+    <link rel="canonical" href="https://jannis-drng.github.io/campbuddy/" />
+
+    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+    <!-- iOS nimmt kein SVG als Haustürsymbol; Android und der Verlauf mögen ein PNG. -->
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <script type="module" crossorigin src="/campbuddy/assets/index-Bxmo136H.js"></script>
+    <link rel="stylesheet" crossorigin href="/campbuddy/assets/index-CNPWZnub.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!--
+      Was ohne JavaScript dasteht.
+
+      Die Startseite ist eine React-Anwendung: im ausgelieferten HTML steht
+      ausser den Kopfangaben kein einziger Satz. Suchmaschinen führen zwar
+      JavaScript aus, aber verzögert und nicht garantiert — und für alles
+      andere, was HTML liest (Vorschauen in Messengern, Leseansichten,
+      Textbrowser, ein Besucher mit blockiertem JavaScript), war die Seite
+      schlicht leer.
+
+      Diese paar Zeilen sind deshalb kein Notbehelf für Ausnahmefälle, sondern
+      der einzige Text, der ohne Zutun da ist. Sie sagen dasselbe wie die
+      Startseite in kurz und führen weiter — vor allem auf die Gemeindeübersicht,
+      die sonst nirgends im ausgelieferten HTML verlinkt ist.
+
+      Bewusst knapp und bewusst wahr: keine Schlagwortsammlung, sondern das,
+      was das Projekt tatsächlich beantwortet.
+    -->
+    <noscript>
+      <main>
+        <h1>CampBuddy — wo darf ich draussen übernachten?</h1>
+        <p>
+          Eine Karte der Rechtslage zum Übernachten in der Natur: für jede Fläche steht,
+          ob Zelten, Biwakieren, Übernachten im Fahrzeug und offenes Feuer erlaubt,
+          geduldet oder verboten sind — mit der Quelle und dem Datum der letzten Prüfung.
+          Ausserhalb der Schutzgebiete entscheidet in der Schweiz fast immer die Gemeinde,
+          deshalb ist die Karte gemeindegenau. Wo nichts recherchiert ist, sagt sie das
+          offen, statt eine Farbe zu raten.
+        </p>
+        <p>
+          Die Karte selbst braucht JavaScript. Die Auskunft zu den bereits belegten
+          Gemeinden steht auch ohne:
+        </p>
+        <ul>
+          <li><a href="/campbuddy/gemeinden">Alle Gemeinden mit belegter Rechtslage</a></li>
+          <li><a href="/campbuddy/#/impressum">Impressum</a></li>
+          <li><a href="/campbuddy/#/datenschutz">Datenschutzerklärung</a></li>
+        </ul>
+        <p><small>Orientierungshilfe, keine Rechtsgarantie — prüfe die Lage vor Ort.</small></p>
+      </main>
+    </noscript>
+    <!--
+      Reichweitenmessung. Wird beim Bauen aus VITE_CF_BEACON_TOKEN eingesetzt
+      und bleibt ohne Kennzeichen leer. Setzt kein Cookie und liest nichts aus
+      dem Browserspeicher; die Datenschutzerklärung beschreibt es unter
+      „Reichweitenmessung". In `_headers` sind static.cloudflareinsights.com
+      und cloudflareinsights.com bereits freigegeben.
+    -->
+    
+  </body>
+</html>

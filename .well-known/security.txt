@@ -1,0 +1,19 @@
+# Sicherheitslücke gefunden? Danke — hier entlang.
+#
+# CampBuddy ist ein Solo-Projekt. Es gibt kein Sicherheitsteam und kein
+# Bug-Bounty, aber jede ernsthafte Meldung wird gelesen und beantwortet.
+
+Contact: https://github.com/jannis-drng/campbuddy/security/advisories/new
+Expires: 2027-08-23T00:00:00.000Z
+Preferred-Languages: de, en
+Canonical: https://jannis-drng.github.io/campbuddy/.well-known/security.txt
+
+# Bitte melde nicht öffentlich, sondern über den Link oben (private Advisory).
+# Besonders relevant: alles, was fremde Konten, gespeicherte Routen oder
+# hochgeladene Fotos betrifft.
+#
+# Nicht relevant: fehlende Kopfzeilen auf Domains, die nicht uns gehören, und
+# Meldungen aus automatisierten Scannern ohne nachvollziehbaren Angriffsweg.
+#
+# Inhaltlich falsche Rechtsangaben auf der Karte sind keine Sicherheitslücke,
+# aber genauso wichtig — dafür gibt es den Melden-Knopf in der App.

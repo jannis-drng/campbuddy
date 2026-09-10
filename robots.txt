@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jannis-drng.github.io/campbuddy/sitemap.xml
